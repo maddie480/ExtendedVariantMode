@@ -54,8 +54,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        public static void ModNormalUpdate(ILContext il)
-        {
+        public static void ModNormalUpdate(ILContext il) {
             ModMethod("NormalUpdate", () => {
                 ILCursor cursor = new ILCursor(il);
 
@@ -66,8 +65,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                 // find out where those constants are loaded into the stack
                 while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4
-                     && ((float)instr.Operand == 160f || (float)instr.Operand == 240f || (float)instr.Operand == 900f)))
-                {
+                     && ((float)instr.Operand == 160f || (float)instr.Operand == 240f || (float)instr.Operand == 900f))) {
 
                     Logger.Log("ExtendedVariantsModule", $"I found a constant to edit at {cursor.Index} in CIL code for NormalUpdate");
 
@@ -82,16 +80,14 @@ namespace Celeste.Mod.ExtendedVariants {
         /// Edits the ClimbUpdate method in Player (handling the player state when climbing).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        public static void ModClimbUpdate(ILContext il)
-        {
+        public static void ModClimbUpdate(ILContext il) {
             ModMethod("ClimbUpdate", () => {
                 ILCursor cursor = new ILCursor(il);
 
                 // we will sneak our method call when "num" gets loaded on this line
                 // this.Speed.Y = Calc.Approach(this.Speed.Y, num, 900f * Engine.DeltaTime);
                 // "num" is loaded just before 900 is loaded via ldc.r4 900
-                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 900f))
-                {
+                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 900f)) {
                     Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for ClimbUpdate");
 
                     // now call the method, it will update "num" just before Calc.Approach gets called
