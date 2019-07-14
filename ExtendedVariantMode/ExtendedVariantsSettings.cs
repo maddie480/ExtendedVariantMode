@@ -10,5 +10,9 @@ namespace Celeste.Mod.ExtendedVariants {
         [YamlIgnore]
         [SettingIgnore]
         public float GravityFactor => Gravity / 10f;
+
+        [SettingName("MODOPTIONS_EXTENDEDVARIANTSMODULE_STAMINA")]
+        [SettingRange(0, 30)]
+        public int Stamina { get; set; } = 11;
     }
 }

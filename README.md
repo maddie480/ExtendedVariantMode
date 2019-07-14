@@ -4,6 +4,7 @@ A simple code mod for Celeste I did to play around with the IL manipulation capa
 
 Adds the following options to the Mod Options menu:
 * Gravity (10% to 300% of the normal gravity)
+* Stamina (controls Madeline's max stamina, between 0 and 300. 110 is the default)
 * (more coming)
 
 ## How to install
