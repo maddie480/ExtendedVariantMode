@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Monocle;
 using FMOD.Studio;
 using Celeste.Mod.UI;
+using Mono.Cecil;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -24,6 +25,7 @@ namespace Celeste.Mod.ExtendedVariants {
             // Add a button to easily revert to default values
             menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
                 Settings.Gravity = 10;
+                Settings.SpeedX = 10;
                 Settings.Stamina = 11;
                 Settings.DashCount = -1;
 
@@ -114,6 +116,8 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
                     cursor.Emit(OpCodes.Mul);
                 }
+
+                ModNormalUpdateSpeedX(il);
             });
         }
 
@@ -183,6 +187,51 @@ namespace Celeste.Mod.ExtendedVariants {
                 // climbing up: apply reverse gravity
                 return initialValue * (1 / Settings.GravityFactor);
             }
+        }
+
+
+        // ================ X speed handling ================
+
+        /// <summary>
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
+        /// to handle the X speed part.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModNormalUpdateSpeedX(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we use 90 as an anchor (an "if" before the instruction we want to mod loads 90 in the stack)
+            // then we jump to the next usage of V_6 to get the reference to it (no idea how to build it otherwise)
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 90f)
+                && cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_S && ((VariableDefinition)instr.Operand).Index == 6)) {
+
+                VariableDefinition variable = (VariableDefinition) cursor.Next.Operand;
+
+                // we jump before the next ldflda, which is between the "if (this.level.InSpace)" and the next one
+                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldflda)) {
+                    Logger.Log("ExtendedVariantsModule", $"I am editing {variable.ToString()} by inserting a method reference at {cursor.Index} in CIL code for NormalUpdate to apply X speed");
+
+                    // pop ldarg.0
+                    cursor.Emit(OpCodes.Pop);
+
+                    // modify variable 6 to apply X factor
+                    cursor.Emit(OpCodes.Ldloc_S, variable);
+                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                    cursor.Emit(OpCodes.Mul);
+                    cursor.Emit(OpCodes.Stloc_S, variable);
+
+                    // execute ldarg.0 again
+                    cursor.Emit(OpCodes.Ldarg_0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the currently configured X speed factor.
+        /// </summary>
+        /// <returns>The speed factor (1 = default speed)</returns>
+        public static float DetermineSpeedXFactor() {
+            return Settings.SpeedXFactor;
         }
 
         // ================ Stamina handling ================

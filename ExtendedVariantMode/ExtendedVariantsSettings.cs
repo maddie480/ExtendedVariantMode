@@ -9,6 +9,13 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public float GravityFactor => Gravity / 10f;
 
+        [SettingRange(1, 30)]
+        public int SpeedX { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float SpeedXFactor => SpeedX / 10f;
+
         [SettingRange(0, 30)]
         public int Stamina { get; set; } = 11;
 
