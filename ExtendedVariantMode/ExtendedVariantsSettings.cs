@@ -1,30 +1,72 @@
-﻿using YamlDotNet.Serialization;
+﻿using System;
+using YamlDotNet.Serialization;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsSettings : EverestModuleSettings {
-        [SettingRange(1, 30)]
         public int Gravity { get; set; } = 10;
 
         [YamlIgnore]
         [SettingIgnore]
         public float GravityFactor => Gravity / 10f;
 
-        [SettingRange(1, 30)]
+        /// <summary>
+        /// Create a selector displaying a factor instead of the actual value.
+        /// </summary>
+        /// <param name="menu">The menu to add the option in</param>
+        /// <param name="inGame">true if in-game menu, false otherwise</param>
+        public void CreateGravityEntry(TextMenu menu, bool inGame) {
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
+                i => $"{i / 10f:f1}x", 1, 30, Gravity).Change(i => Gravity = i));
+        }
+
+
+
         public int SpeedX { get; set; } = 10;
 
         [YamlIgnore]
         [SettingIgnore]
         public float SpeedXFactor => SpeedX / 10f;
 
-        [SettingRange(0, 30)]
+        /// <summary>
+        /// Create a selector displaying a factor instead of the actual value.
+        /// </summary>
+        /// <param name="menu">The menu to add the option in</param>
+        /// <param name="inGame">true if in-game menu, false otherwise</param>
+        public void CreateSpeedXEntry(TextMenu menu, bool inGame) {
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
+                i => $"{i / 10f:f1}x", 1, 30, SpeedX).Change(i => SpeedX = i));
+        }
+
         public int Stamina { get; set; } = 11;
 
-        [SettingRange(0, 30)]
+        /// <summary>
+        /// Create a selector displaying a value multiplied by 10 (to match the internal value).
+        /// </summary>
+        /// <param name="menu">The menu to add the option in</param>
+        /// <param name="inGame">true if in-game menu, false otherwise</param>
+        public void CreateStaminaEntry(TextMenu menu, bool inGame) {
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
+                i => $"{i * 10}", 0, 30, Stamina).Change(i => Stamina = i));
+        }
+
+
         public int DashSpeed { get; set; } = 10;
 
         [YamlIgnore]
         [SettingIgnore]
         public float DashSpeedFactor => DashSpeed / 10f;
+
+        /// <summary>
+        /// Create a selector displaying a factor instead of the actual value.
+        /// </summary>
+        /// <param name="menu">The menu to add the option in</param>
+        /// <param name="inGame">true if in-game menu, false otherwise</param>
+        public void CreateDashSpeedEntry(TextMenu menu, bool inGame) {
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
+                i => $"{i / 10f:f1}x", 0, 30, DashSpeed).Change(i => DashSpeed = i));
+        }
+
+
 
         public int DashCount { get; set; } = -1;
 

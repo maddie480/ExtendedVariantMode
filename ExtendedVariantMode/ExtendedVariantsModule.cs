@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Monocle;
 using FMOD.Studio;
 using Celeste.Mod.UI;
-using Mono.Cecil;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
