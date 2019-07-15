@@ -28,6 +28,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 Settings.SpeedX = 10;
                 Settings.Stamina = 11;
                 Settings.DashCount = -1;
+                Settings.DashSpeed = 10;
 
                 // updating displayed values sounds like a pain, so let's just close the menu instead.
                 if (inGame) {
@@ -51,6 +52,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.RefillDash += ModRefillDash;
             IL.Celeste.Player.UseRefill += ModUseRefill;
             On.Celeste.Player.Added += ModAdded;
+            IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
         }
 
         public override void Unload() {
@@ -66,6 +68,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.RefillDash -= ModRefillDash;
             IL.Celeste.Player.UseRefill -= ModUseRefill;
             On.Celeste.Player.Added -= ModAdded;
+            IL.Celeste.Player.DashCoroutine -= ModCallDashEvents;
 
             moddedMethods.Clear();
         }
@@ -83,9 +86,9 @@ namespace Celeste.Mod.ExtendedVariants {
         private static void ModMethod(string methodName, Action patcher) {
             // for whatever reason mod methods are called multiple times: only patch the methods once
             if (moddedMethods.Contains(methodName)) {
-                Logger.Log("ExtendedVariantsModule", $"Method {methodName} already patched");
+                Logger.Log("ExtendedVariantsModule", $"> Method {methodName} already patched");
             } else {
-                Logger.Log("ExtendedVariantsModule", $"Patching method {methodName}");
+                Logger.Log("ExtendedVariantsModule", $"> Patching method {methodName}");
                 patcher.Invoke();
                 moddedMethods.Add(methodName);
             }
@@ -260,8 +263,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// Edits the constructor of Player.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        public static void ModPlayerConstructor(ILContext il)
-        {
+        public static void ModPlayerConstructor(ILContext il) {
             ModMethod("PlayerConstructor", () => {
                 patchOutStamina(il);
             });
@@ -315,6 +317,36 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <returns>The max stamina (default 110)</returns>
         public static float DetermineBaseStamina() {
             return Settings.Stamina * 10f;
+        }
+
+        // ================ Dash speed handling ================
+
+        /// <summary>
+        /// Edits the CallDashEvents method in Player (called multiple times when the player dashes).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModCallDashEvents(ILContext il) {
+            ModMethod("CallDashEvents", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // enter the 2 ifs in the method and inject ourselves in there
+                if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue) && 
+                    cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue)) {
+                    Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for CallDashEvents to mod dash speed");
+
+                    // just add a call to ModifyDashSpeed (arg 0 = this)
+                    cursor.Emit(OpCodes.Ldarg_0);
+                    cursor.EmitDelegate<Action<Player>>(ModifyDashSpeed);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Modifies the dash speed of the player.
+        /// </summary>
+        /// <param name="self">A reference to the player</param>
+        public static void ModifyDashSpeed(Player self) {
+            self.Speed *= Settings.DashSpeedFactor;
         }
 
         // ================ Dash count handling ================

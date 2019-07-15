@@ -19,6 +19,13 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingRange(0, 30)]
         public int Stamina { get; set; } = 11;
 
+        [SettingRange(0, 30)]
+        public int DashSpeed { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DashSpeedFactor => DashSpeed / 10f;
+
         public int DashCount { get; set; } = -1;
 
         /// <summary>
