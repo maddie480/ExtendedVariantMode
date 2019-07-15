@@ -18,6 +18,6 @@
 # {trigger x} this triggers an in-game event
 # {anchor} controls the visual position of the textbox in-game
 
-MODOPTIONS_EXTENDEDVARIANTSMODULE_TITLE=	Variant Mode étendu
-MODOPTIONS_EXTENDEDVARIANTSMODULE_GRAVITY=	Gravité (10 par défaut)
-MODOPTIONS_EXTENDEDVARIANTSMODULE_STAMINA=	Endurance (11 par défaut)
+MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Variant Mode étendu
+MODOPTIONS_EXTENDEDVARIANTS_GRAVITY=	Gravité (10 par défaut)
+MODOPTIONS_EXTENDEDVARIANTS_STAMINA=	Endurance (11 par défaut)

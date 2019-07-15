@@ -1,9 +1,7 @@
 ﻿using YamlDotNet.Serialization;
 
 namespace Celeste.Mod.ExtendedVariants {
-    [SettingName("MODOPTIONS_EXTENDEDVARIANTSMODULE_TITLE")]
     public class ExtendedVariantsSettings : EverestModuleSettings {
-        [SettingName("MODOPTIONS_EXTENDEDVARIANTSMODULE_GRAVITY")]
         [SettingRange(1, 30)]
         public int Gravity { get; set; } = 10;
 
@@ -11,7 +9,6 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public float GravityFactor => Gravity / 10f;
 
-        [SettingName("MODOPTIONS_EXTENDEDVARIANTSMODULE_STAMINA")]
         [SettingRange(0, 30)]
         public int Stamina { get; set; } = 11;
     }
