@@ -28,6 +28,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 Settings.Stamina = 11;
                 Settings.DashCount = -1;
                 Settings.DashSpeed = 10;
+                Settings.Friction = 10;
 
                 // updating displayed values sounds like a pain, so let's just close the menu instead.
                 if (inGame) {
@@ -121,7 +122,9 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.Emit(OpCodes.Mul);
                 }
 
+                // chain every other NormalUpdate usage
                 ModNormalUpdateSpeedX(il);
+                ModNormalUpdateFriction(il);
             });
         }
 
@@ -145,6 +148,9 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.Emit(OpCodes.Ldc_R4, 0.1f);
                     cursor.Emit(OpCodes.Sub);
                 }
+
+                // chain every other UpdateSprite usage
+                ModUpdateSpriteFriction(il);
             });
         }
 
@@ -425,6 +431,76 @@ namespace Celeste.Mod.ExtendedVariants {
                 return defaultValue;
             }
             return Settings.DashCount;
+        }
+
+        // ================ Ground friction handling ================
+
+        /// <summary>
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply ground friction.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModNormalUpdateFriction(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // jump to the 500 in "this.Speed.X = Calc.Approach(this.Speed.X, 0f, 500f * Engine.DeltaTime);"
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 500f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying friction to constant at {cursor.Index} (ducking stop speed on ground) in CIL code for NormalUpdate");
+
+                cursor.EmitDelegate<Func<float>>(DetermineFrictionFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+
+            // jump to "float num = this.onGround ? 1f : 0.65f;" by jumping to 0.65 then 1 (the numbers are swapped in the IL code)
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.65f)
+                && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 1f)) {
+
+                Logger.Log("ExtendedVariantsModule", $"Applying friction to constant at {cursor.Index} (friction factor on ground) in CIL code for NormalUpdate");
+
+                // 1 is the acceleration when on the ground. Apply the friction factor to it.
+                cursor.EmitDelegate<Func<float>>(DetermineFrictionFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+
+        /// <summary>
+        /// Edits the UpdateSprite method in Player (updating the player animation) to fix the animations when using modded friction.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModUpdateSpriteFriction(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we're jumping to this line: "if (Math.Abs(this.Speed.X) <= 25f && this.moveX == 0)"
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 25f)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in CIL code for UpdateSprite to fix animation with friction");
+
+                // call our method which will essentially replace the 25 with whatever value we want
+                cursor.Emit(OpCodes.Pop);
+                cursor.EmitDelegate<Func<float>>(GetIdleAnimationThreshold);
+            }
+        }
+
+        /// <summary>
+        /// Compute the idle animation threshold (when the player lets go every button, Madeline will use the walking animation until
+        /// her X speed gets below this value. Under this value, she will use her idle animation.)
+        /// </summary>
+        /// <returns>The idle animation threshold (minimum 25, gets higher as the friction factor is lower)</returns>
+        public static float GetIdleAnimationThreshold() {
+            if(Settings.FrictionFactor >= 1f) {
+                // keep the default value
+                return 25f;
+            }
+
+            // shift the "stand still" threshold towards max walking speed, which is 90f
+            // for example, it will give 83.5 when friction factor is 0.1, Madeline will appear to slip standing still.
+            return 25f + (90f * Settings.SpeedXFactor - 25f) * (1 - Settings.FrictionFactor);
+        }
+
+        /// <summary>
+        /// Returns the currently configured friction factor.
+        /// </summary>
+        /// <returns>The friction factor (1 = default friction)</returns>
+        public static float DetermineFrictionFactor() {
+            return Settings.FrictionFactor;
         }
     }
 }

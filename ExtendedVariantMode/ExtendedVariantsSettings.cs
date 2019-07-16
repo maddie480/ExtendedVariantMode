@@ -77,11 +77,44 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="inGame">true if in-game menu, false otherwise</param>
         public void CreateDashCountEntry(TextMenu menu, bool inGame) {
             menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
-                if(i == -1) {
+                if (i == -1) {
                     return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                 }
                 return i.ToString();
             }, -1, 5, DashCount).Change(i => DashCount = i));
+        }
+
+
+
+        public int Friction { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float FrictionFactor {
+            get {
+                switch (Friction)
+                {
+                    case -1: return 0f;
+                    case 0: return 0.05f ;
+                    default: return Friction / 10f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a selector displaying a factor instead of the actual value.
+        /// </summary>
+        /// <param name="menu">The menu to add the option in</param>
+        /// <param name="inGame">true if in-game menu, false otherwise</param>
+        public void CreateFrictionEntry(TextMenu menu, bool inGame) {
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
+                i => {
+                    switch(i) {
+                        case -1: return "0.0x";
+                        case 0: return "0.05x";
+                        default: return $"{i / 10f:f1}x";
+                    }
+                }, -1, 30, Friction).Change(i => Friction = i));
         }
     }
 }
