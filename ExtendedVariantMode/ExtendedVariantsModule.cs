@@ -52,6 +52,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.UseRefill += ModUseRefill;
             On.Celeste.Player.Added += ModAdded;
             IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
+            IL.Celeste.Player.UpdateHair += ModUpdateHair;
         }
 
         public override void Unload() {
@@ -67,7 +68,8 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.RefillDash -= ModRefillDash;
             IL.Celeste.Player.UseRefill -= ModUseRefill;
             On.Celeste.Player.Added -= ModAdded;
-            IL.Celeste.Player.DashCoroutine -= ModCallDashEvents;
+            IL.Celeste.Player.CallDashEvents -= ModCallDashEvents;
+            IL.Celeste.Player.UpdateHair -= ModUpdateHair;
 
             moddedMethods.Clear();
         }
@@ -112,7 +114,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4
                      && ((float)instr.Operand == 160f || (float)instr.Operand == 240f || (float)instr.Operand == 900f))) {
 
-                    Logger.Log("ExtendedVariantsModule", $"I found a constant to edit at {cursor.Index} in CIL code for NormalUpdate to apply gravity");
+                    Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                     // add two instructions to multiply those constants with the "gravity factor"
                     cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
@@ -134,7 +136,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 // the goal is to multiply 160 (max falling speed) with the gravity factor to fix the falling animation
                 // let's search for all 160 occurrences in the IL code
                 while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
-                    Logger.Log("ExtendedVariantsModule", $"I found a constant to edit at {cursor.Index} in CIL code for UpdateSprite to apply gravity");
+                    Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
 
                     // add two instructions to multiply those constants with the "gravity factor"
                     cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
@@ -158,7 +160,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 // this.Speed.Y = Calc.Approach(this.Speed.Y, num, 900f * Engine.DeltaTime);
                 // "num" is loaded just before 900 is loaded via ldc.r4 900
                 if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 900f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for ClimbUpdate to handle gravity");
+                    Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for ClimbUpdate to apply gravity when climbing");
 
                     // now call the method, it will update "num" just before Calc.Approach gets called
                     cursor.EmitDelegate<Func<float, float>>(ModClimbSpeed);
@@ -211,7 +213,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                 // we jump before the next ldflda, which is between the "if (this.level.InSpace)" and the next one
                 if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldflda)) {
-                    Logger.Log("ExtendedVariantsModule", $"I am editing {variable.ToString()} by inserting a method reference at {cursor.Index} in CIL code for NormalUpdate to apply X speed");
+                    Logger.Log("ExtendedVariantsModule", $"Applying X speed modding to variable {variable.ToString()} at {cursor.Index} in CIL code for NormalUpdate");
 
                     // pop ldarg.0
                     cursor.Emit(OpCodes.Pop);
@@ -278,8 +280,7 @@ namespace Celeste.Mod.ExtendedVariants {
             // this is **certainly** the case if the stamina changed and is now 110
             float staminaBeforeCall = self.Stamina;
             orig.Invoke(self);
-            if (self.Stamina == 110f && staminaBeforeCall != 110f)
-            {
+            if (self.Stamina == 110f && staminaBeforeCall != 110f) {
                 // reset it to the value we chose instead of 110
                 self.Stamina = DetermineBaseStamina();
             }
@@ -331,7 +332,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 // enter the 2 ifs in the method and inject ourselves in there
                 if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue) && 
                     cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue)) {
-                    Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for CallDashEvents to mod dash speed");
+                    Logger.Log("ExtendedVariantsModule", $"Adding code to mod dash speed at index {cursor.Index} in CIL code for CallDashEvents");
 
                     // just add a call to ModifyDashSpeed (arg 0 = this)
                     cursor.Emit(OpCodes.Ldarg_0);
@@ -375,7 +376,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                 // we want to insert ourselves just before the first stloc.0
                 if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_0)) {
-                    Logger.Log("ExtendedVariantsModule", $"I found a variable to edit at {cursor.Index} in CIL code for UseRefill to apply dash count");
+                    Logger.Log("ExtendedVariantsModule", $"Modding dash count given by refills at {cursor.Index} in CIL code for UseRefill");
 
                     // call our method just before storing the result from get_MaxDashes in local variable 0
                     cursor.EmitDelegate<Func<int, int>>(DetermineDashCount);
@@ -384,7 +385,27 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         /// <summary>
-        /// Wraps the Added method in the base game (used to refresh the player state).
+        /// Edits the UpdateHair method in Player (mainly computing the hair color).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModUpdateHair(ILContext il) {
+            ModMethod("UpdateHair", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
+                // and be more consistent with the behaviour of the "Infinite Dashes" variant.
+                // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && instr.Next.OpCode == OpCodes.Bne_Un_S)) {
+                    Logger.Log("ExtendedVariantsModule", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
+
+                    // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
+                    cursor.Next.OpCode = OpCodes.Blt_Un_S;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Wraps the Added method in the base game (used to initialize the player state).
         /// </summary>
         /// <param name="orig">The original Added method</param>
         /// <param name="self">The Player instance</param>
