@@ -24,6 +24,7 @@ namespace Celeste.Mod.ExtendedVariants {
             // Add a button to easily revert to default values
             menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
                 Settings.Gravity = 10;
+                Settings.JumpHeight = 10;
                 Settings.SpeedX = 10;
                 Settings.Stamina = 11;
                 Settings.DashCount = -1;
@@ -54,6 +55,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.Added += ModAdded;
             IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
             IL.Celeste.Player.UpdateHair += ModUpdateHair;
+            IL.Celeste.Player.Jump += ModJump;
         }
 
         public override void Unload() {
@@ -71,6 +73,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.Added -= ModAdded;
             IL.Celeste.Player.CallDashEvents -= ModCallDashEvents;
             IL.Celeste.Player.UpdateHair -= ModUpdateHair;
+            IL.Celeste.Player.Jump -= ModJump;
 
             moddedMethods.Clear();
         }
@@ -501,6 +504,38 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <returns>The friction factor (1 = default friction)</returns>
         public static float DetermineFrictionFactor() {
             return Settings.FrictionFactor;
+        }
+
+        // ================ Jump height handling ================
+
+        /// <summary>
+        /// Edits the Jump method in Player (called when jumping, simply.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModJump(ILContext il) {
+            ModMethod("Jump", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // the speed applied to jumping is simply -105f (negative = up). Let's multiply this with our jump height factor.
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -105f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in CIL code for Jump to make jump height editable");
+
+                    // add two instructions to multiply -105f with the "jump height factor"
+                    cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+
+                // chain every other UpdateSprite usage
+                ModUpdateSpriteFriction(il);
+            });
+        }
+
+        /// <summary>
+        /// Returns the currently configured jump height factor.
+        /// </summary>
+        /// <returns>The jump height factor (1 = default jump height)</returns>
+        public static float DetermineJumpHeightFactor() {
+            return Settings.JumpHeightFactor;
         }
     }
 }

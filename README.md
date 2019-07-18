@@ -7,6 +7,7 @@ This mod allows to ~~break~~ change some stuff in the game mechanics... much lik
 
 Adds the following options to the Mod Options menu:
 * **Gravity**: affects falling speed, jump height and climbing
+* **Jump height**: control the max height of Madeline's jumps
 * **Walk speed**: affects all horizontal movement when going around
 * **Stamina**: affects the ability to climb and grab
 * **Dash speed**: modifies the speed of dashing (... duh)
