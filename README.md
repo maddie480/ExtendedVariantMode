@@ -14,6 +14,8 @@ Adds the following options to the Mod Options menu:
 * **Dash count**: disable dashing or give Madeline up to 5 dashes (also affects refills)
 * **Ground friction**: make the ground more or less slippery everywhere
 
+Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
+
 **Compatible with Everest 862 and later.**
 
 ## How to install

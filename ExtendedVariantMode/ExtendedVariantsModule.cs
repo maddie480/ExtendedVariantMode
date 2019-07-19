@@ -14,6 +14,16 @@ namespace Celeste.Mod.ExtendedVariants {
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
         public static ExtendedVariantsSettings Settings => (ExtendedVariantsSettings)Instance._Settings;
 
+        public static TextMenu.Option<bool> MasterSwitchOption;
+        public static TextMenu.Option<int> GravityOption;
+        public static TextMenu.Option<int> JumpHeightOption;
+        public static TextMenu.Option<int> SpeedXOption;
+        public static TextMenu.Option<int> StaminaOption;
+        public static TextMenu.Option<int> DashSpeedOption;
+        public static TextMenu.Option<int> DashCountOption;
+        public static TextMenu.Option<int> FrictionOption;
+        public static TextMenu.Item ResetToDefaultOption;
+
         public ExtendedVariantsModule() {
             Instance = this;
         }
@@ -21,23 +31,104 @@ namespace Celeste.Mod.ExtendedVariants {
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
-            // Add a button to easily revert to default values
-            menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
-                Settings.Gravity = 10;
-                Settings.JumpHeight = 10;
-                Settings.SpeedX = 10;
-                Settings.Stamina = 11;
-                Settings.DashCount = -1;
-                Settings.DashSpeed = 10;
-                Settings.Friction = 10;
-
-                // updating displayed values sounds like a pain, so let's just close the menu instead.
-                if (inGame) {
-                    menu.OnCancel();
-                } else {
-                    OuiModOptions.Instance.Overworld.Goto<OuiMainMenu>();
+            // create every option
+            GravityOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
+                i => $"{i / 10f:f1}x", 1, 30, Settings.Gravity).Change(i => Settings.Gravity = i);
+            JumpHeightOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
+                i => $"{i / 10f:f1}x", 0, 30, Settings.JumpHeight).Change(i => Settings.JumpHeight = i);
+            SpeedXOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
+                i => $"{i / 10f:f1}x", 1, 30, Settings.SpeedX).Change(i => Settings.SpeedX = i);
+            StaminaOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
+                i => $"{i * 10}", 0, 30, Settings.Stamina).Change(i => Settings.Stamina = i);
+            DashSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
+                i => $"{i / 10f:f1}x", 0, 30, Settings.DashSpeed).Change(i => Settings.DashSpeed = i);
+            DashCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
+                if (i == -1) {
+                    return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                 }
-            }));
+                return i.ToString();
+            }, -1, 5, Settings.DashCount).Change(i => Settings.DashCount = i);
+            FrictionOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
+                i => {
+                    switch (i) {
+                        case -1: return "0.0x";
+                        case 0: return "0.05x";
+                        default: return $"{i / 10f:f1}x";
+                    }
+                }, -1, 30, Settings.Friction).Change(i => Settings.Friction = i);
+
+            // create the "master switch" option with specific enable/disable handling.
+            MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
+                .Change(v => {
+                    Settings.MasterSwitch = v;
+                    if (!v) {
+                        // We are disabling extended variants: reset values to their defaults.
+                        resetToDefaultSettings();
+                        refreshOptionMenuValues();
+                    }
+
+                    refreshOptionMenuEnabledStatus();
+                });
+
+            // Add a button to easily revert to default values
+            ResetToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
+                resetToDefaultSettings();
+                refreshOptionMenuValues();
+            });
+
+            refreshOptionMenuEnabledStatus();
+
+            menu.Add(MasterSwitchOption);
+            menu.Add(GravityOption);
+            menu.Add(JumpHeightOption);
+            menu.Add(SpeedXOption);
+            menu.Add(StaminaOption);
+            menu.Add(DashSpeedOption);
+            menu.Add(DashCountOption);
+            menu.Add(FrictionOption);
+            menu.Add(ResetToDefaultOption);
+        }
+
+        private static void resetToDefaultSettings() {
+            Settings.Gravity = 10;
+            Settings.JumpHeight = 10;
+            Settings.SpeedX = 10;
+            Settings.Stamina = 11;
+            Settings.DashSpeed = 10;
+            Settings.DashCount = -1;
+            Settings.Friction = 10;
+        }
+
+        private static void refreshOptionMenuValues() {
+            setValue(GravityOption, 1, Settings.Gravity);
+            setValue(JumpHeightOption, 0, Settings.JumpHeight);
+            setValue(SpeedXOption, 1, Settings.SpeedX);
+            setValue(StaminaOption, 0, Settings.Stamina);
+            setValue(DashSpeedOption, 0, Settings.DashSpeed);
+            setValue(DashCountOption, -1, Settings.DashCount);
+            setValue(FrictionOption, -1, Settings.Friction);
+        }
+
+        private static void refreshOptionMenuEnabledStatus() {
+            GravityOption.Disabled = !Settings.MasterSwitch;
+            JumpHeightOption.Disabled = !Settings.MasterSwitch;
+            SpeedXOption.Disabled = !Settings.MasterSwitch;
+            StaminaOption.Disabled = !Settings.MasterSwitch;
+            DashCountOption.Disabled = !Settings.MasterSwitch;
+            DashSpeedOption.Disabled = !Settings.MasterSwitch;
+            FrictionOption.Disabled = !Settings.MasterSwitch;
+            ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
+        }
+
+        private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
+            newValue -= min;
+
+            if(newValue != option.Index) {
+                // replicate the vanilla behaviour
+                option.PreviousIndex = option.Index;
+                option.Index = newValue;
+                option.ValueWiggler.Start();
+            }
         }
 
         public override void Load() {
@@ -56,6 +147,12 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
             IL.Celeste.Player.UpdateHair += ModUpdateHair;
             IL.Celeste.Player.Jump += ModJump;
+            On.Celeste.AreaComplete.VersionNumberAndVariants += ModVersionNumberAndVariants;
+
+            // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
+            if (!Settings.MasterSwitch) {
+                resetToDefaultSettings();
+            }
         }
 
         public override void Unload() {
@@ -74,8 +171,29 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.CallDashEvents -= ModCallDashEvents;
             IL.Celeste.Player.UpdateHair -= ModUpdateHair;
             IL.Celeste.Player.Jump -= ModJump;
+            On.Celeste.AreaComplete.VersionNumberAndVariants -= ModVersionNumberAndVariants;
 
             moddedMethods.Clear();
+        }
+
+        /// <summary>
+        /// Wraps the VersionNumberAndVariants in the base game in order to add the Variant Mode logo if Extended Variants are enabled.
+        /// </summary>
+        public static void ModVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
+            if(Settings.MasterSwitch) {
+                // The "if" conditioning the display of the Variant Mode logo is in an "orig_" method, we can't access it with IL.Celeste.
+                // The best we can do is turn on Variant Mode, run the method then restore its original value.
+                bool oldVariantModeValue = SaveData.Instance.VariantMode;
+                SaveData.Instance.VariantMode = true;
+
+                orig.Invoke(version, ease, alpha);
+
+                SaveData.Instance.VariantMode = oldVariantModeValue;
+            }
+            else {
+                // Extended Variants are disabled so just keep the original behaviour
+                orig.Invoke(version, ease, alpha);
+            }
         }
 
         /// <summary>
