@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtendedVariantsModule.cs" />
+    <Compile Include="ExtendedVariantTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExtendedVariantsSettings.cs" />
   </ItemGroup>
@@ -96,6 +97,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ahorn\triggers\extendedvariants.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="everest.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -111,6 +115,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\Dialog\French.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README-Mappers.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
