@@ -16,6 +16,8 @@ Adds the following options to the Mod Options menu:
 
 Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
 
+Variants are also usable by maps, with the Extended Variants Trigger. Check the [README-Mappers.txt](ExtendedVariantMode/README-Mappers.txt) for more details.
+
 **Compatible with Everest 862 and later.**
 
 ## How to install
