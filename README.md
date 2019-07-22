@@ -22,8 +22,9 @@ Variants are also usable by maps, with the Extended Variants Trigger. Check the 
 
 ## How to install
 
+You can download this code mod [on GameBanana](https://gamebanana.com/gamefiles/9486).
+
+To build the project yourself:
 * Clone or download the repo
 * Compile the project with Visual Studio
 * Copy the directory `ExtendedVariantMode\bin\Debug` in the `Mods` folder located in the Celeste directory
-
-or alternatively, wait for the first release on GameBanana.
