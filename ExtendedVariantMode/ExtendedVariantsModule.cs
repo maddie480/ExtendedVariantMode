@@ -7,6 +7,7 @@ using FMOD.Studio;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
 using On.Celeste;
+using Mono.Cecil;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -30,6 +31,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> DashCountOption;
         public static TextMenu.Option<int> FrictionOption;
         public static TextMenu.Option<bool> DisableWallJumpingOption;
+        public static TextMenu.Option<bool> DoubleJumpingOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -107,6 +109,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
             DisableWallJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping)
                 .Change(b => Settings.DisableWallJumping = b);
+            DoubleJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DOUBLEJUMPING"), Settings.DoubleJumping)
+                .Change(b => Settings.DoubleJumping = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -139,6 +143,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(DashCountOption);
             menu.Add(FrictionOption);
             menu.Add(DisableWallJumpingOption);
+            menu.Add(DoubleJumpingOption);
             menu.Add(ResetToDefaultOption);
         }
 
@@ -152,6 +157,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DashCount = -1;
             Settings.Friction = 10;
             Settings.DisableWallJumping = false;
+            Settings.DoubleJumping = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -164,6 +170,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DashCountOption, -1, Settings.DashCount);
             setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
+            setValue(DoubleJumpingOption, Settings.DoubleJumping);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -176,6 +183,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DashSpeedOption.Disabled = !Settings.MasterSwitch;
             FrictionOption.Disabled = !Settings.MasterSwitch;
             DisableWallJumpingOption.Disabled = !Settings.MasterSwitch;
+            DoubleJumpingOption.Disabled = !Settings.MasterSwitch;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
         }
 
@@ -490,6 +498,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 ModNormalUpdateFallSpeed(il);
                 ModNormalUpdateSpeedX(il);
                 ModNormalUpdateFriction(il);
+                ModNormalUpdateDoubleJump(il);
             });
         }
 
@@ -1041,6 +1050,51 @@ namespace Celeste.Mod.ExtendedVariants {
             if(!Settings.DisableWallJumping) {
                 orig.Invoke(self, dir);
             }
+        }
+
+        // ================ Double jump handling ================
+
+        private static bool jumpBuffer = true;
+
+        /// <summary>
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply double jump.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModNormalUpdateDoubleJump(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // jump to whenever jumpGraceTimer is retrieved
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("jumpGraceTimer"))) {
+                Logger.Log("ExtendedVariantsModule", $"Patching double jump in at {cursor.Index} in CIL code for NormalUpdate");
+
+                // store a reference to it
+                FieldReference refToJumpGraceTimer = ((FieldReference)cursor.Prev.Operand);
+
+                // and proceed replacing it
+                cursor.EmitDelegate<Func<float, float>>(CanJump);
+
+                // go back to the beginning of the method
+                cursor.Index = 0;
+                // and add a call to RefillJumpBuffer so that we can reset the jumpBuffer flag even if we cannot access jumpGraceTimer (being private)
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldfld, refToJumpGraceTimer);
+                cursor.EmitDelegate<Action<float>>(RefillJumpBuffer);
+            }
+        }
+
+        public static void RefillJumpBuffer(float jumpGraceTimer) {
+            if (jumpGraceTimer > 0f) jumpBuffer = true;
+        }
+
+        /// <summary>
+        /// Detour the WallJump method in order to disable it if we want.
+        /// </summary>
+        public static float CanJump(float initialJumpGraceTimer) {
+            if(!Settings.DoubleJumping || initialJumpGraceTimer > 0f || !jumpBuffer) {
+                return initialJumpGraceTimer;
+            }
+            jumpBuffer = false;
+            return 1f;
         }
     }
 }
