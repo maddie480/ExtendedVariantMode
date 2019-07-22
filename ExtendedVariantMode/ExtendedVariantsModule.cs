@@ -36,20 +36,56 @@ namespace Celeste.Mod.ExtendedVariants {
 
         // ================ Options menu handling ================
 
+        /// <summary>
+        /// List of options shown for multipliers.
+        /// </summary>
+        private static int[] multiplierScale = new int[] {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 250, 500, 1000
+        };
+
+        /// <summary>
+        /// Formats a multiplier (with no decimal point if not required).
+        /// </summary>
+        private static Func<int, string> multiplierFormatter = option => {
+            option = multiplierScale[option];
+            if (option % 10 == 0) {
+                return $"{option / 10f:n0}x";
+            }
+            return $"{option / 10f:n1}x";
+        };
+
+        /// <summary>
+        /// Finds out the index of a multiplier in the multiplierScale table.
+        /// If it is not present, will return the previous option.
+        /// (For example, 18x will return the index for 10x.)
+        /// </summary>
+        /// <param name="option">The multiplier</param>
+        /// <returns>The index of the multiplier in the multiplierScale table</returns>
+        private static int indexFromMultiplier(int option) {
+            for(int index = 0; index < multiplierScale.Length - 1; index++) {
+                if(multiplierScale[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return multiplierScale.Length - 1;
+        }
+
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
             // create every option
             GravityOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
-                i => $"{i / 10f:f1}x", 1, 30, Settings.Gravity).Change(i => Settings.Gravity = i);
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity)).Change(i => Settings.Gravity = multiplierScale[i]);
             JumpHeightOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
-                i => $"{i / 10f:f1}x", 0, 30, Settings.JumpHeight).Change(i => Settings.JumpHeight = i);
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight)).Change(i => Settings.JumpHeight = multiplierScale[i]);
             SpeedXOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
-                i => $"{i / 10f:f1}x", 1, 30, Settings.SpeedX).Change(i => Settings.SpeedX = i);
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX)).Change(i => Settings.SpeedX = multiplierScale[i]);
             StaminaOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
-                i => $"{i * 10}", 0, 30, Settings.Stamina).Change(i => Settings.Stamina = i);
+                i => $"{i * 10}", 0, 50, Settings.Stamina).Change(i => Settings.Stamina = i);
             DashSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
-                i => $"{i / 10f:f1}x", 0, 30, Settings.DashSpeed).Change(i => Settings.DashSpeed = i);
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed)).Change(i => Settings.DashSpeed = multiplierScale[i]);
             DashCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
                 if (i == -1) {
                     return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -59,11 +95,12 @@ namespace Celeste.Mod.ExtendedVariants {
             FrictionOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
                 i => {
                     switch (i) {
-                        case -1: return "0.0x";
+                        case -1: return "0x";
                         case 0: return "0.05x";
-                        default: return $"{i / 10f:f1}x";
+                        default: return multiplierFormatter(i);
                     }
-                }, -1, 30, Settings.Friction).Change(i => Settings.Friction = i);
+                }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction))
+                .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -108,13 +145,13 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private static void refreshOptionMenuValues() {
-            setValue(GravityOption, 1, Settings.Gravity);
-            setValue(JumpHeightOption, 0, Settings.JumpHeight);
-            setValue(SpeedXOption, 1, Settings.SpeedX);
+            setValue(GravityOption, 0, indexFromMultiplier(Settings.Gravity));
+            setValue(JumpHeightOption, 0, indexFromMultiplier(Settings.JumpHeight));
+            setValue(SpeedXOption, 0, indexFromMultiplier(Settings.SpeedX));
             setValue(StaminaOption, 0, Settings.Stamina);
-            setValue(DashSpeedOption, 0, Settings.DashSpeed);
+            setValue(DashSpeedOption, 0, indexFromMultiplier(Settings.DashSpeed));
             setValue(DashCountOption, -1, Settings.DashCount);
-            setValue(FrictionOption, -1, Settings.Friction);
+            setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
         }
 
         private static void refreshOptionMenuEnabledStatus() {
