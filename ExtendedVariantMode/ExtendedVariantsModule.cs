@@ -201,6 +201,9 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
             IL.Celeste.Player.UpdateHair += ModUpdateHair;
             IL.Celeste.Player.Jump += ModJump;
+            IL.Celeste.Player.SuperJump += ModSuperJump;
+            IL.Celeste.Player.SuperWallJump += ModSuperWallJump;
+            IL.Celeste.Player.WallJump += ModWallJump;
             On.Celeste.AreaComplete.VersionNumberAndVariants += ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity += new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn += OnPlayerSpawn;
@@ -232,6 +235,9 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.CallDashEvents -= ModCallDashEvents;
             IL.Celeste.Player.UpdateHair -= ModUpdateHair;
             IL.Celeste.Player.Jump -= ModJump;
+            IL.Celeste.Player.SuperJump -= ModSuperJump;
+            IL.Celeste.Player.SuperWallJump -= ModSuperWallJump;
+            IL.Celeste.Player.WallJump -= ModWallJump;
             On.Celeste.AreaComplete.VersionNumberAndVariants -= ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity -= new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn -= OnPlayerSpawn;
@@ -592,6 +598,66 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         /// <summary>
+        /// Edits the SuperJump method in Player (called when super/hyperdashing.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModSuperJump(ILContext il) {
+            ModMethod("SuperJump", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // we want to multiply 260f (speed given by a superdash) with the X speed factor
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 260f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
+                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+
+                // chain every other SuperJump usage
+                ModSuperJumpHeight(il);
+            });
+        }
+        
+        /// <summary>
+        /// Edits the SuperJump method in Player (called when super/hyperdashing on a wall.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModSuperWallJump(ILContext il)  {
+            ModMethod("SuperWallJump", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // we want to multiply 170f (X speed given by a superdash) with the X speed factor
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 170f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperWallJump");
+                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+
+                // chain every other SuperJump usage
+                ModSuperWallJumpHeight(il);
+            });
+        }
+
+        /// <summary>
+        /// Edits the WallJump method in Player (called when walljumping, obviously.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModWallJump(ILContext il) {
+            ModMethod("WallJump", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // we want to multiply 130f (X speed given by a walljump) with the X speed factor
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 130f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for WallJump");
+                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+
+                // chain every other SuperJump usage
+                ModWallJumpHeight(il);
+            });
+        }
+
+        /// <summary>
         /// Returns the currently configured X speed factor.
         /// </summary>
         /// <returns>The speed factor (1 = default speed)</returns>
@@ -890,6 +956,51 @@ namespace Celeste.Mod.ExtendedVariants {
                 // chain every other UpdateSprite usage
                 ModUpdateSpriteFriction(il);
             });
+        }
+
+        /// <summary>
+        /// Edits the SuperJump method in Player (called when super/hyperdashing.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModSuperJumpHeight(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we want to multiply -105f (height given by a superdash) with the jump height factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -105f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for SuperJump");
+                cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+
+        /// <summary>
+        /// Edits the WallJump method in Player (called when walljumping, obviously.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModWallJumpHeight(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we want to multiply -105f (height given by a superdash) with the jump height factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -105f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for WallJump");
+                cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+
+        /// <summary>
+        /// Edits the SuperWallJump method in Player (called when super/hyperdashing on a wall.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModSuperWallJumpHeight(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we want to multiply -160f (height given by a superdash) with the jump height factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -160f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for SuperWallJump");
+                cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
         }
 
         /// <summary>
