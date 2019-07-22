@@ -29,6 +29,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> DashSpeedOption;
         public static TextMenu.Option<int> DashCountOption;
         public static TextMenu.Option<int> FrictionOption;
+        public static TextMenu.Option<bool> DisableWallJumpingOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -104,6 +105,8 @@ namespace Celeste.Mod.ExtendedVariants {
                     }
                 }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction))
                 .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
+            DisableWallJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping)
+                .Change(b => Settings.DisableWallJumping = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -135,6 +138,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(DashSpeedOption);
             menu.Add(DashCountOption);
             menu.Add(FrictionOption);
+            menu.Add(DisableWallJumpingOption);
             menu.Add(ResetToDefaultOption);
         }
 
@@ -147,6 +151,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DashSpeed = 10;
             Settings.DashCount = -1;
             Settings.Friction = 10;
+            Settings.DisableWallJumping = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -158,6 +163,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DashSpeedOption, 0, indexFromMultiplier(Settings.DashSpeed));
             setValue(DashCountOption, -1, Settings.DashCount);
             setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
+            setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -169,6 +175,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DashCountOption.Disabled = !Settings.MasterSwitch;
             DashSpeedOption.Disabled = !Settings.MasterSwitch;
             FrictionOption.Disabled = !Settings.MasterSwitch;
+            DisableWallJumpingOption.Disabled = !Settings.MasterSwitch;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
         }
 
@@ -179,6 +186,15 @@ namespace Celeste.Mod.ExtendedVariants {
                 // replicate the vanilla behaviour
                 option.PreviousIndex = option.Index;
                 option.Index = newValue;
+                option.ValueWiggler.Start();
+            }
+        }
+
+        private static void setValue(TextMenu.Option<bool> option, bool newValue) {
+            if (newValue != (option.Index == 1)) {
+                // replicate the vanilla behaviour
+                option.PreviousIndex = option.Index;
+                option.Index = newValue ? 1 : 0;
                 option.ValueWiggler.Start();
             }
         }
@@ -204,6 +220,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.SuperJump += ModSuperJump;
             IL.Celeste.Player.SuperWallJump += ModSuperWallJump;
             IL.Celeste.Player.WallJump += ModWallJump;
+            On.Celeste.Player.WallJump += ModOnWallJump;
             On.Celeste.AreaComplete.VersionNumberAndVariants += ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity += new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn += OnPlayerSpawn;
@@ -238,6 +255,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.SuperJump -= ModSuperJump;
             IL.Celeste.Player.SuperWallJump -= ModSuperWallJump;
             IL.Celeste.Player.WallJump -= ModWallJump;
+            On.Celeste.Player.WallJump -= ModOnWallJump;
             On.Celeste.AreaComplete.VersionNumberAndVariants -= ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity -= new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn -= OnPlayerSpawn;
@@ -1009,6 +1027,20 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <returns>The jump height factor (1 = default jump height)</returns>
         public static float DetermineJumpHeightFactor() {
             return Settings.JumpHeightFactor;
+        }
+
+        // ================ Disable walljumping handling ================
+
+        /// <summary>
+        /// Detour the WallJump method in order to disable it if we want.
+        /// </summary>
+        /// <param name="orig">the original method</param>
+        /// <param name="self">the player</param>
+        /// <param name="dir">the wall jump direction</param>
+        private void ModOnWallJump(On.Celeste.Player.orig_WallJump orig, Player self, int dir) {
+            if(!Settings.DisableWallJumping) {
+                orig.Invoke(self, dir);
+            }
         }
     }
 }

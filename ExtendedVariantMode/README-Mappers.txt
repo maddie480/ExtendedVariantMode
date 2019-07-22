@@ -17,6 +17,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 		- The only exception is Friction, where 0 is actually 0.05x and -1 is 0x.
 	- Stamina: the value is the max stamina / 10 (for example, "20" will set max stamina to 200, the default value being 110).
 	- DashCount: the value is simply the dash count you want, -1 being the default behavior (depending on the inventory).
+	- DisableWallJumping: 1 to enable, 0 to disable.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 
 Please note that changes in variants become permanent only when the player goes to a new screen or hits a Change Respawn Trigger. If the player dies in the same screen, values will get reset.

@@ -81,6 +81,16 @@ namespace Celeste.Mod.ExtendedVariants {
 
         // ======================================
 
+        [SettingIgnore]
+        public bool DisableWallJumping { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
+        public bool DoubleJumping { get; set; } = false;
+
+        // ======================================
+
         public Dictionary<int, Dictionary<Variant, int>> OverrideValuesInSave = new Dictionary<int, Dictionary<Variant, int>>();
     }
 }

@@ -13,6 +13,7 @@ Adds the following options to the Mod Options menu:
 * **Dash speed**: modifies the speed of dashing (... duh)
 * **Dash count**: disable dashing or give Madeline up to 5 dashes (also affects refills)
 * **Ground friction**: make the ground more or less slippery everywhere
+* **Disable wall jumping**: remove your ability to wall jump (... let's make Celeste not Celeste anymore)
 
 Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
 

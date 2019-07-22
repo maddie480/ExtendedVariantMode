@@ -21,6 +21,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 switch(variantChange) {
                     case Variant.Stamina: newValue = 11; break;
                     case Variant.DashCount: newValue = -1; break;
+                    case Variant.DisableWallJumping: newValue = 0; break;
                     default: newValue = 10; break;
                 }
             }
@@ -89,6 +90,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.Friction;
                     ExtendedVariantsModule.Settings.Friction = newValue;
                     break;
+                case Variant.DisableWallJumping:
+                    oldValue = ExtendedVariantsModule.Settings.DisableWallJumping ? 1 : 0;
+                    ExtendedVariantsModule.Settings.DisableWallJumping = (newValue != 0);
+                    break;
             }
 
             return oldValue;
@@ -96,6 +101,6 @@ namespace Celeste.Mod.ExtendedVariants {
     }
 
     public enum Variant {
-        Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction
+        Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping
     }
 }
