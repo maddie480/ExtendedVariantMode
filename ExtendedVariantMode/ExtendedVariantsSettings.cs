@@ -19,6 +19,15 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
+        public int FallSpeed { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float FallSpeedFactor => FallSpeed / 10f;
+
+        // ======================================
+
+        [SettingIgnore]
         public int JumpHeight { get; set; } = 10;
 
         [YamlIgnore]

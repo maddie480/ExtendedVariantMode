@@ -6,6 +6,7 @@ using ..Ahorn, Maple
 
 const variants = String[
 	"Gravity",
+	"FallSpeed",
 	"JumpHeight",
 	"SpeedX",
 	"Stamina",

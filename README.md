@@ -6,7 +6,7 @@ IL manipulation basically allows code modders to inject their code (almost) anyw
 This mod allows to ~~break~~ change some stuff in the game mechanics... much like Variant Mode in the original.
 
 Adds the following options to the Mod Options menu:
-* **Gravity**: affects falling speed, jump height and climbing
+* **Gravity** and **Max fall speed**: can be used together to create a "space" effect, where falling is slower
 * **Jump height**: control the max height of Madeline's jumps
 * **Walk speed**: affects all horizontal movement when going around
 * **Stamina**: affects the ability to climb and grab

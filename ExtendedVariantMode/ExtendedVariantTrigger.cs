@@ -38,12 +38,12 @@ namespace Celeste.Mod.ExtendedVariants {
                 Logger.Log("ExtendedVariantTrigger", $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue}");
 
                 if (!ExtendedVariantsModule.OldVariantsInRoom.ContainsKey(variantChange)) {
-                    ExtendedVariantsModule.OldVariantsInRoom.Add(variantChange, oldValue);
+                    ExtendedVariantsModule.OldVariantsInRoom[variantChange] = oldValue;
                 }
                 if (!ExtendedVariantsModule.OldVariantsInSession.ContainsKey(variantChange)) {
-                    ExtendedVariantsModule.OldVariantsInSession.Add(variantChange, oldValue);
+                    ExtendedVariantsModule.OldVariantsInSession[variantChange] = oldValue;
                 }
-                ExtendedVariantsModule.OverridenVariantsInRoom.Add(variantChange, newValue);
+                ExtendedVariantsModule.OverridenVariantsInRoom[variantChange] = newValue;
             }
         }
 
@@ -60,6 +60,10 @@ namespace Celeste.Mod.ExtendedVariants {
                 case Variant.Gravity:
                     oldValue = ExtendedVariantsModule.Settings.Gravity;
                     ExtendedVariantsModule.Settings.Gravity = newValue;
+                    break;
+                case Variant.FallSpeed:
+                    oldValue = ExtendedVariantsModule.Settings.FallSpeed;
+                    ExtendedVariantsModule.Settings.FallSpeed = newValue;
                     break;
                 case Variant.JumpHeight:
                     oldValue = ExtendedVariantsModule.Settings.JumpHeight;
@@ -92,6 +96,6 @@ namespace Celeste.Mod.ExtendedVariants {
     }
 
     public enum Variant {
-        Gravity, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction
+        Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction
     }
 }

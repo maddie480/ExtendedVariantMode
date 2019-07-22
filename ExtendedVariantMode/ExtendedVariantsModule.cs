@@ -22,6 +22,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
         public static TextMenu.Option<bool> MasterSwitchOption;
         public static TextMenu.Option<int> GravityOption;
+        public static TextMenu.Option<int> FallSpeedOption;
         public static TextMenu.Option<int> JumpHeightOption;
         public static TextMenu.Option<int> SpeedXOption;
         public static TextMenu.Option<int> StaminaOption;
@@ -78,6 +79,8 @@ namespace Celeste.Mod.ExtendedVariants {
             // create every option
             GravityOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity)).Change(i => Settings.Gravity = multiplierScale[i]);
+            FallSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed)).Change(i => Settings.FallSpeed = multiplierScale[i]);
             JumpHeightOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight)).Change(i => Settings.JumpHeight = multiplierScale[i]);
             SpeedXOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
@@ -125,6 +128,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             menu.Add(MasterSwitchOption);
             menu.Add(GravityOption);
+            menu.Add(FallSpeedOption);
             menu.Add(JumpHeightOption);
             menu.Add(SpeedXOption);
             menu.Add(StaminaOption);
@@ -136,6 +140,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
         private static void resetToDefaultSettings() {
             Settings.Gravity = 10;
+            Settings.FallSpeed = 10;
             Settings.JumpHeight = 10;
             Settings.SpeedX = 10;
             Settings.Stamina = 11;
@@ -146,6 +151,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
         private static void refreshOptionMenuValues() {
             setValue(GravityOption, 0, indexFromMultiplier(Settings.Gravity));
+            setValue(FallSpeedOption, 0, indexFromMultiplier(Settings.FallSpeed));
             setValue(JumpHeightOption, 0, indexFromMultiplier(Settings.JumpHeight));
             setValue(SpeedXOption, 0, indexFromMultiplier(Settings.SpeedX));
             setValue(StaminaOption, 0, Settings.Stamina);
@@ -156,6 +162,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
         private static void refreshOptionMenuEnabledStatus() {
             GravityOption.Disabled = !Settings.MasterSwitch;
+            FallSpeedOption.Disabled = !Settings.MasterSwitch;
             JumpHeightOption.Disabled = !Settings.MasterSwitch;
             SpeedXOption.Disabled = !Settings.MasterSwitch;
             StaminaOption.Disabled = !Settings.MasterSwitch;
@@ -446,15 +453,8 @@ namespace Celeste.Mod.ExtendedVariants {
             ModMethod("NormalUpdate", () => {
                 ILCursor cursor = new ILCursor(il);
 
-                // we will edit 3 constants here:
-                // * 160 = max falling speed
-                // * 240 = max falling speed when holding Down
-                // * 900 = downward acceleration
-
-                // find out where those constants are loaded into the stack
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4
-                     && ((float)instr.Operand == 160f || (float)instr.Operand == 240f || (float)instr.Operand == 900f))) {
-
+                // find out where the constant 900 (downward acceleration) is loaded into the stack
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 900f)) {
                     Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                     // add two instructions to multiply those constants with the "gravity factor"
@@ -463,56 +463,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 }
 
                 // chain every other NormalUpdate usage
+                ModNormalUpdateFallSpeed(il);
                 ModNormalUpdateSpeedX(il);
                 ModNormalUpdateFriction(il);
-            });
-        }
-
-        /// <summary>
-        /// Edits the UpdateSprite method in Player (updating the player animation.)
-        /// </summary>
-        /// <param name="il">Object allowing CIL patching</param>
-        public static void ModUpdateSprite(ILContext il) {
-            ModMethod("UpdateSprite", () => {
-                ILCursor cursor = new ILCursor(il);
-
-                // the goal is to multiply 160 (max falling speed) with the gravity factor to fix the falling animation
-                // let's search for all 160 occurrences in the IL code
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
-
-                    // add two instructions to multiply those constants with the "gravity factor"
-                    cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
-                    cursor.Emit(OpCodes.Mul);
-                    // also remove 0.1 to prevent an animation glitch caused by rounding (I guess?) on very low gravity
-                    cursor.Emit(OpCodes.Ldc_R4, 0.1f);
-                    cursor.Emit(OpCodes.Sub);
-                }
-
-                // chain every other UpdateSprite usage
-                ModUpdateSpriteFriction(il);
-            });
-        }
-
-        /// <summary>
-        /// Edits the ClimbUpdate method in Player (handling the player state when climbing).
-        /// </summary>
-        /// <param name="il">Object allowing CIL patching</param>
-        public static void ModClimbUpdate(ILContext il) {
-            ModMethod("ClimbUpdate", () => {
-                ILCursor cursor = new ILCursor(il);
-
-                // we will sneak our method call after "num" gets loaded on this line
-                // this.Speed.Y = Calc.Approach(this.Speed.Y, num, 900f * Engine.DeltaTime);
-                // "num" is loaded just before 900 is loaded via ldc.r4 900
-                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 900f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Injecting method at index {cursor.Index} in CIL code for ClimbUpdate to apply gravity when climbing");
-
-                    // now call the method, it will update "num" just before Calc.Approach gets called
-                    cursor.EmitDelegate<Func<float, float>>(ModClimbSpeed);
-                }
-
-                patchOutStamina(il);
             });
         }
 
@@ -524,21 +477,83 @@ namespace Celeste.Mod.ExtendedVariants {
             return Settings.GravityFactor;
         }
 
+        // ================ Fall speed handling ================
+
         /// <summary>
-        /// Computes the climb speed based on gravity.
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// </summary>
-        /// <param name="initialValue">The initial climb speed computed by the vanilla method</param>
-        /// <returns>The modded climb speed</returns>
-        public static float ModClimbSpeed(float initialValue) {
-            if (initialValue > 0) {
-                // climbing down: apply gravity
-                return initialValue * Settings.GravityFactor;
-            } else {
-                // climbing up: apply reverse gravity
-                return initialValue * (1 / Settings.GravityFactor);
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModNormalUpdateFallSpeed(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we will edit 2 constants here:
+            // * 160 = max falling speed
+            // * 240 = max falling speed when holding Down
+
+            // find out where those constants are loaded into the stack
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && ((float)instr.Operand == 160f || (float)instr.Operand == 240f))) {
+                Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalUpdate");
+
+                // add two instructions to multiply those constants with the "fall speed factor"
+                cursor.EmitDelegate<Func<float>>(DetermineFallSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+
+            cursor.Index = 0;
+
+            // go back to the first 240f, then to the next "if" using a comparison
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 240f)
+                && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un)) {
+                Logger.Log("ExtendedVariantsModule", $"Injecting code to fix animation with 0 fall speed at {cursor.Index} in CIL code for NormalUpdate");
+
+                // save the target of this branch
+                object label = cursor.Prev.Operand;
+
+                // the goal here is to add another condition to the if: FallSpeedFactor should not be zero
+                // so that the game does not try computing the animation (doing a nice division by 0 by the way)
+                cursor.EmitDelegate<Func<float>>(DetermineFallSpeedFactor);
+                cursor.Emit(OpCodes.Ldc_R4, 0f);
+                cursor.Emit(OpCodes.Beq, label); // we jump (= skip the "if") if DetermineFallSpeedFactor is equal to 0.
             }
         }
+        
+        /// <summary>
+        /// Edits the UpdateSprite method in Player (updating the player animation.)
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModUpdateSprite(ILContext il) {
+            ModMethod("UpdateSprite", () => {
+                ILCursor cursor = new ILCursor(il);
 
+                // the goal is to multiply 160 (max falling speed) with the fall speed factor to fix the falling animation
+                // let's search for all 160 occurrences in the IL code
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying fall speed and gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
+
+                    // add two instructions to multiply those constants with a mix between fall speed and gravity
+                    cursor.EmitDelegate<Func<float>>(MixFallSpeedAndGravity);
+                    cursor.Emit(OpCodes.Mul);
+                    // also remove 0.1 to prevent an animation glitch caused by rounding (I guess?) on very low fall speeds
+                    cursor.Emit(OpCodes.Ldc_R4, 0.1f);
+                    cursor.Emit(OpCodes.Sub);
+                }
+
+                // chain every other UpdateSprite usage
+                ModUpdateSpriteFriction(il);
+            });
+        }
+
+        /// <summary>
+        /// Returns the currently configured fall speed factor.
+        /// </summary>
+        /// <returns>The fall speed factor (1 = default fall speed)</returns>
+        public static float DetermineFallSpeedFactor() {
+            return Settings.FallSpeedFactor;
+        }
+
+        public static float MixFallSpeedAndGravity() {
+            return Math.Min(Settings.FallSpeedFactor, Settings.GravityFactor);
+        }
 
         // ================ X speed handling ================
 
@@ -585,6 +600,16 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         // ================ Stamina handling ================
+
+        /// <summary>
+        /// Edits the ClimbUpdate method in Player (handling the player state when climbing).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModClimbUpdate(ILContext il) {
+            ModMethod("ClimbUpdate", () => {
+                patchOutStamina(il);
+            });
+        }
 
         /// <summary>
         /// Edits the SwimBegin method in Player (handling the player state when starting to swim).
