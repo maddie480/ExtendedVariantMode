@@ -7,6 +7,8 @@ using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
+using On.Celeste;
+using System.Collections;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -33,6 +35,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> JumpCountOption;
         public static TextMenu.Option<bool> UpsideDownOption;
         public static TextMenu.Option<int> HyperdashSpeedOption;
+        public static TextMenu.Option<int> DashLengthOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -121,6 +124,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(b => Settings.UpsideDown = b);
             HyperdashSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
+            DashLengthOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength)).Change(i => Settings.DashLength = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -157,6 +162,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             addHeading(menu, "DASHING");
             menu.Add(DashSpeedOption);
+            menu.Add(DashLengthOption);
             menu.Add(HyperdashSpeedOption);
             menu.Add(DashCountOption);
 
@@ -186,6 +192,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.JumpCount = 1;
             Settings.UpsideDown = false;
             Settings.HyperdashSpeed = 10;
+            Settings.DashLength = 10;
         }
 
         private static void refreshOptionMenuValues() {
@@ -201,6 +208,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(JumpCountOption, 0, Settings.JumpCount);
             setValue(UpsideDownOption, Settings.UpsideDown);
             setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
+            setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -217,6 +225,7 @@ namespace Celeste.Mod.ExtendedVariants {
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
             UpsideDownOption.Disabled = !Settings.MasterSwitch;
             HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
+            DashLengthOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -270,6 +279,9 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.SaveData.TryDelete += OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += ModRespawnTrigger;
             IL.Celeste.Level.Render += ModLevelRender;
+            IL.Celeste.Player.DashBegin += ModDashBegin;
+            On.Celeste.Player.DashCoroutine += ModDashCoroutine;
+            IL.Celeste.Player.DashUpdate += ModDashUpdate;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -306,6 +318,9 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.SaveData.TryDelete -= OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= ModRespawnTrigger;
             IL.Celeste.Level.Render -= ModLevelRender;
+            IL.Celeste.Player.DashBegin -= ModDashBegin;
+            On.Celeste.Player.DashCoroutine -= ModDashCoroutine;
+            IL.Celeste.Player.DashUpdate -= ModDashUpdate;
 
             moddedMethods.Clear();
         }
@@ -1228,15 +1243,111 @@ namespace Celeste.Mod.ExtendedVariants {
             return effects;
         }
 
-
         // ================ Hyperdash speed handling ================
 
         /// <summary>
-        /// Returns the currently hyperdash speed factor.
+        /// Returns the current hyperdash speed factor.
         /// </summary>
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
         public static float DetermineHyperdashSpeedFactor() {
             return Settings.HyperdashSpeedFactor;
+        }
+
+        // ================ Dash length handling ================
+
+        private static float lastDashDuration = 0f;
+
+        /// <summary>
+        /// Edits the DashBegin method in Player (called when the player dashes).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModDashBegin(ILContext il) {
+            ModMethod("DashBegin", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // jump where 0.3 is loaded (0.3 is the dash timer)
+                if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.3f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying dash length to constant at {cursor.Index} in CIL code for DashBegin");
+
+                    cursor.EmitDelegate<Func<float>>(DetermineDashLengthFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Returns the current dash length factor.
+        /// </summary>
+        /// <returns>The dash length factor (1 = default dash length)</returns>
+        public static float DetermineDashLengthFactor() {
+            return Settings.DashLengthFactor;
+        }
+
+
+        private IEnumerator ModDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
+            // let's try and intercept whenever the DashCoroutine sends out 0.3f or 0.15f
+            // because we should mod that
+            IEnumerator coroutine = orig.Invoke(self);
+            while(coroutine.MoveNext()) {
+                object o = coroutine.Current;
+                if(o != null && o.GetType() == typeof(float)) {
+                    float f = (float)o;
+                    if (f == 0.15f || f == 0.3f) {
+                        f *= Settings.DashLengthFactor;
+                        lastDashDuration = f;
+                    }
+                    yield return f;
+                } else {
+                    yield return o;
+                }
+            }
+
+            yield break;
+        }
+
+        /// <summary>
+        /// Edits the DashUpdate method in Player (called while the player is dashing).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModDashUpdate(ILContext il) {
+            ModMethod("DashUpdate", () => {
+                FieldReference dashTrailCounter = seekReferenceToVariable(il, "dashTrailCounter");
+
+                if (dashTrailCounter != null) {
+                    ILCursor cursor = new ILCursor(il);
+
+                    // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
+                    // so that we add more trails if the dash is made longer than usual
+                    cursor.Emit(OpCodes.Ldarg_0);
+                    cursor.Emit(OpCodes.Ldarg_0);
+                    cursor.Emit(OpCodes.Ldfld, dashTrailCounter);
+                    cursor.EmitDelegate<Func<int, int>>(ModDashTrailCounter);
+                    cursor.Emit(OpCodes.Stfld, dashTrailCounter);
+                }
+            });
+        }
+
+        private static int ModDashTrailCounter(int dashTrailCounter) {
+            if (Settings.DashLengthFactor != 1 && lastDashDuration != 0f) {
+                float bakLastDashDuration = lastDashDuration;
+                lastDashDuration = 0f;
+                return (int)Math.Round(bakLastDashDuration * 10 * Settings.DashLengthFactor) - 1;
+            }
+            return dashTrailCounter;
+        }
+
+        /// <summary>
+        /// Seeks any reference to a named variable in IL code.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        /// <param name="variableName">name of the variable</param>
+        /// <returns>A reference to the variable</returns>
+        private static FieldReference seekReferenceToVariable(ILContext il, String variableName) {
+            ILCursor cursor = new ILCursor(il);
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains(variableName))) {
+                return (FieldReference)cursor.Next.Operand;
+            }
+            return null;
         }
     }
 }

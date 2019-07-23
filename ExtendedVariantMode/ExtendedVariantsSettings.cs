@@ -107,5 +107,14 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public float HyperdashSpeedFactor => HyperdashSpeed / 10f;
 
+        // ======================================
+
+        [SettingIgnore]
+        public int DashLength { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DashLengthFactor => DashLength / 10f;
+
     }
 }

@@ -109,6 +109,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.HyperdashSpeed;
                     ExtendedVariantsModule.Settings.HyperdashSpeed = newValue;
                     break;
+                case Variant.DashLength:
+                    oldValue = ExtendedVariantsModule.Settings.DashLength;
+                    ExtendedVariantsModule.Settings.DashLength = newValue;
+                    break;
             }
 
             return oldValue;
@@ -116,6 +120,6 @@ namespace Celeste.Mod.ExtendedVariants {
     }
 
     public enum Variant {
-        Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed
+        Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, DashLength
     }
 }
