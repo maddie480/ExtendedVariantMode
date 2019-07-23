@@ -134,17 +134,31 @@ namespace Celeste.Mod.ExtendedVariants {
             refreshOptionMenuEnabledStatus();
 
             menu.Add(MasterSwitchOption);
+            menu.Add(ResetToDefaultOption);
+
+            addHeading(menu, "VERTICALSPEED");
             menu.Add(GravityOption);
             menu.Add(FallSpeedOption);
+
+            addHeading(menu, "JUMPING");
             menu.Add(JumpHeightOption);
-            menu.Add(SpeedXOption);
-            menu.Add(StaminaOption);
-            menu.Add(DashSpeedOption);
-            menu.Add(DashCountOption);
-            menu.Add(FrictionOption);
             menu.Add(DisableWallJumpingOption);
             menu.Add(DoubleJumpingOption);
-            menu.Add(ResetToDefaultOption);
+
+            addHeading(menu, "DASHING");
+            menu.Add(DashSpeedOption);
+            menu.Add(DashCountOption);
+
+            addHeading(menu, "MOVING");
+            menu.Add(SpeedXOption);
+            menu.Add(FrictionOption);
+
+            addHeading(menu, "OTHER");
+            menu.Add(StaminaOption);
+        }
+
+        private static void addHeading(TextMenu menu, String headingNameResource) {
+            menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING") + " - " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING_" + headingNameResource)));
         }
 
         private static void resetToDefaultSettings() {
