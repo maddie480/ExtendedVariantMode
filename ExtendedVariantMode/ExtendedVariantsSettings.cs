@@ -87,7 +87,7 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
-        public bool DoubleJumping { get; set; } = false;
+        public int JumpCount { get; set; } = 1;
 
         // ======================================
 

@@ -4,9 +4,7 @@ using MonoMod.Cil;
 using System.Collections.Generic;
 using Monocle;
 using FMOD.Studio;
-using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
-using On.Celeste;
 using Mono.Cecil;
 
 namespace Celeste.Mod.ExtendedVariants {
@@ -31,7 +29,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> DashCountOption;
         public static TextMenu.Option<int> FrictionOption;
         public static TextMenu.Option<bool> DisableWallJumpingOption;
-        public static TextMenu.Option<bool> DoubleJumpingOption;
+        public static TextMenu.Option<int> JumpCountOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -109,8 +107,13 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
             DisableWallJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping)
                 .Change(b => Settings.DisableWallJumping = b);
-            DoubleJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DOUBLEJUMPING"), Settings.DoubleJumping)
-                .Change(b => Settings.DoubleJumping = b);
+            JumpCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"), 
+                i => {
+                    if(i == 6) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
+                    }
+                    return i.ToString();
+                }, 0, 6, Settings.JumpCount).Change(i => Settings.JumpCount = i);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -143,7 +146,7 @@ namespace Celeste.Mod.ExtendedVariants {
             addHeading(menu, "JUMPING");
             menu.Add(JumpHeightOption);
             menu.Add(DisableWallJumpingOption);
-            menu.Add(DoubleJumpingOption);
+            menu.Add(JumpCountOption);
 
             addHeading(menu, "DASHING");
             menu.Add(DashSpeedOption);
@@ -171,7 +174,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DashCount = -1;
             Settings.Friction = 10;
             Settings.DisableWallJumping = false;
-            Settings.DoubleJumping = false;
+            Settings.JumpCount = 1;
         }
 
         private static void refreshOptionMenuValues() {
@@ -184,7 +187,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DashCountOption, -1, Settings.DashCount);
             setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
-            setValue(DoubleJumpingOption, Settings.DoubleJumping);
+            setValue(JumpCountOption, 0, Settings.JumpCount);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -197,7 +200,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DashSpeedOption.Disabled = !Settings.MasterSwitch;
             FrictionOption.Disabled = !Settings.MasterSwitch;
             DisableWallJumpingOption.Disabled = !Settings.MasterSwitch;
-            DoubleJumpingOption.Disabled = !Settings.MasterSwitch;
+            JumpCountOption.Disabled = !Settings.MasterSwitch;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
         }
 
@@ -512,7 +515,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 ModNormalUpdateFallSpeed(il);
                 ModNormalUpdateSpeedX(il);
                 ModNormalUpdateFriction(il);
-                ModNormalUpdateDoubleJump(il);
+                ModNormalUpdateJumpCount(il);
             });
         }
 
@@ -1066,15 +1069,15 @@ namespace Celeste.Mod.ExtendedVariants {
             }
         }
 
-        // ================ Double jump handling ================
+        // ================ Jump count handling ================
 
-        private static bool jumpBuffer = true;
+        private static int jumpBuffer = 0;
 
         /// <summary>
-        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply double jump.
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply jump count.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        public static void ModNormalUpdateDoubleJump(ILContext il) {
+        public static void ModNormalUpdateJumpCount(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to whenever jumpGraceTimer is retrieved
@@ -1089,7 +1092,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                 // go back to the beginning of the method
                 cursor.Index = 0;
-                // and add a call to RefillJumpBuffer so that we can reset the jumpBuffer flag even if we cannot access jumpGraceTimer (being private)
+                // and add a call to RefillJumpBuffer so that we can reset the jumpBuffer even if we cannot access jumpGraceTimer (being private)
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldfld, refToJumpGraceTimer);
                 cursor.EmitDelegate<Action<float>>(RefillJumpBuffer);
@@ -1097,17 +1100,29 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         public static void RefillJumpBuffer(float jumpGraceTimer) {
-            if (jumpGraceTimer > 0f) jumpBuffer = true;
+            // JumpCount - 1 because the first jump is from vanilla Celeste
+            if (jumpGraceTimer > 0f) jumpBuffer = Settings.JumpCount - 1;
         }
 
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
         public static float CanJump(float initialJumpGraceTimer) {
-            if(!Settings.DoubleJumping || initialJumpGraceTimer > 0f || !jumpBuffer) {
+            if(Settings.JumpCount == 0) {
+                // we disabled jumping, so let's pretend the grace timer has run out
+                return 0f;
+            }
+            if(Settings.JumpCount == 6) {
+                // infinite jumping, yay
+                return 1f;
+            }
+            if(Settings.JumpCount == 1 || initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
+                // return the default value because we don't want to change anything 
+                // (we are disabled, our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
             }
-            jumpBuffer = false;
+            // consume an Extended Variant Jump(TM)
+            jumpBuffer--;
             return 1f;
         }
     }
