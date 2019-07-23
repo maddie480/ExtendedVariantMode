@@ -14,7 +14,8 @@ const variants = String[
 	"DashCount",
 	"Friction",
 	"DisableWallJumping",
-	"JumpCount"
+	"JumpCount",
+	"UpsideDown"
 ]
 
 const placements = Ahorn.PlacementDict(

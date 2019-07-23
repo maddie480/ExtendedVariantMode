@@ -6,6 +6,7 @@ using Monocle;
 using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -30,6 +31,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> FrictionOption;
         public static TextMenu.Option<bool> DisableWallJumpingOption;
         public static TextMenu.Option<int> JumpCountOption;
+        public static TextMenu.Option<bool> UpsideDownOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -114,6 +116,8 @@ namespace Celeste.Mod.ExtendedVariants {
                     }
                     return i.ToString();
                 }, 0, 6, Settings.JumpCount).Change(i => Settings.JumpCount = i);
+            UpsideDownOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown)
+                .Change(b => Settings.UpsideDown = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -158,6 +162,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
+            menu.Add(UpsideDownOption);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -175,6 +180,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.Friction = 10;
             Settings.DisableWallJumping = false;
             Settings.JumpCount = 1;
+            Settings.UpsideDown = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -188,6 +194,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
             setValue(JumpCountOption, 0, Settings.JumpCount);
+            setValue(UpsideDownOption, Settings.UpsideDown);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -202,6 +209,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DisableWallJumpingOption.Disabled = !Settings.MasterSwitch;
             JumpCountOption.Disabled = !Settings.MasterSwitch;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
+            UpsideDownOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -254,6 +262,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Everest.Events.Level.OnExit += OnLevelExit;
             On.Celeste.SaveData.TryDelete += OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += ModRespawnTrigger;
+            IL.Celeste.Level.Render += ModLevelRender;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -289,6 +298,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Everest.Events.Level.OnExit -= OnLevelExit;
             On.Celeste.SaveData.TryDelete -= OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= ModRespawnTrigger;
+            IL.Celeste.Level.Render -= ModLevelRender;
 
             moddedMethods.Clear();
         }
@@ -1124,6 +1134,87 @@ namespace Celeste.Mod.ExtendedVariants {
             // consume an Extended Variant Jump(TM)
             jumpBuffer--;
             return 1f;
+        }
+
+
+        // ================ Upside down handling ================
+
+        /// <summary>
+        /// Edits the Render method in Level (handling the whole level rendering).
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModLevelRender(ILContext il) {
+            ModMethod("LevelRender", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // jump right where Mirror Mode is handled
+                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
+                    // move back 2 steps (we are between Instance and MirrorMode in "SaveData.Instance.MirrorMode" and we want to be before that)
+                    cursor.Index -= 2;
+
+                    VariableDefinition positionVector = seekReferenceTo(il, 4);
+                    VariableDefinition paddingVector = seekReferenceTo(il, 8);
+
+                    if(positionVector != null && paddingVector != null) {
+                        // insert our delegates to do about the same thing as vanilla Celeste at about the same time
+                        Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
+
+                        cursor.Emit(OpCodes.Ldloca_S, paddingVector);
+                        cursor.Emit(OpCodes.Ldloca_S, positionVector);
+                        cursor.EmitDelegate<TwoRefVectorParameters>(ApplyUpsideDownEffect);
+                    }
+                }
+
+                // move forward a bit to get after the MirrorMode loading
+                cursor.Index += 3;
+
+                // jump to the next MirrorMode usage again
+                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
+                    // jump back 2 steps
+                    cursor.Index -= 2;
+
+                    Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
+
+                    // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
+                    // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
+                    cursor.RemoveRange(7);
+
+                    // and replace it with a delegate call
+                    cursor.EmitDelegate<Func<SpriteEffects>>(ApplyUpsideDownEffectToSprites);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Seeks any reference to a numbered variable in IL code.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        /// <param name="variableIndex">Index of the variable</param>
+        /// <returns>A reference to the variable</returns>
+        private static VariableDefinition seekReferenceTo(ILContext il, int variableIndex) {
+            ILCursor cursor = new ILCursor(il);
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldloc_S && ((VariableDefinition)instr.Operand).Index == variableIndex)) {
+                return (VariableDefinition)cursor.Next.Operand;
+            }
+            return null;
+        }
+
+        public delegate void TwoRefVectorParameters(ref Vector2 one, ref Vector2 two);
+        
+        public static void ApplyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
+            Input.Aim.InvertedY = (Input.MoveY.Inverted = Settings.UpsideDown);
+
+            if(Settings.UpsideDown) {
+                paddingVector.Y = -paddingVector.Y;
+                positionVector.Y = 90f - (positionVector.Y - 90f);
+            }
+        }
+
+        public static SpriteEffects ApplyUpsideDownEffectToSprites() {
+            SpriteEffects effects = SpriteEffects.None;
+            if (Settings.UpsideDown) effects |= SpriteEffects.FlipVertically;
+            if (SaveData.Instance.Assists.MirrorMode) effects |= SpriteEffects.FlipHorizontally;
+            return effects;
         }
     }
 }
