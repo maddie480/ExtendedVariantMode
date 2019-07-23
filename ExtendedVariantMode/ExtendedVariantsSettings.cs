@@ -98,5 +98,14 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public bool UpsideDown { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public int HyperdashSpeed { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float HyperdashSpeedFactor => HyperdashSpeed / 10f;
+
     }
 }

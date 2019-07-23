@@ -32,6 +32,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> DisableWallJumpingOption;
         public static TextMenu.Option<int> JumpCountOption;
         public static TextMenu.Option<bool> UpsideDownOption;
+        public static TextMenu.Option<int> HyperdashSpeedOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -118,6 +119,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 }, 0, 6, Settings.JumpCount).Change(i => Settings.JumpCount = i);
             UpsideDownOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown)
                 .Change(b => Settings.UpsideDown = b);
+            HyperdashSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -154,6 +157,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             addHeading(menu, "DASHING");
             menu.Add(DashSpeedOption);
+            menu.Add(HyperdashSpeedOption);
             menu.Add(DashCountOption);
 
             addHeading(menu, "MOVING");
@@ -181,6 +185,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DisableWallJumping = false;
             Settings.JumpCount = 1;
             Settings.UpsideDown = false;
+            Settings.HyperdashSpeed = 10;
         }
 
         private static void refreshOptionMenuValues() {
@@ -195,6 +200,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
             setValue(JumpCountOption, 0, Settings.JumpCount);
             setValue(UpsideDownOption, Settings.UpsideDown);
+            setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -210,6 +216,7 @@ namespace Celeste.Mod.ExtendedVariants {
             JumpCountOption.Disabled = !Settings.MasterSwitch;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
             UpsideDownOption.Disabled = !Settings.MasterSwitch;
+            HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -664,6 +671,8 @@ namespace Celeste.Mod.ExtendedVariants {
                     Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
                     cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
                     cursor.Emit(OpCodes.Mul);
+                    cursor.EmitDelegate<Func<float>>(DetermineHyperdashSpeedFactor);
+                    cursor.Emit(OpCodes.Mul);
                 }
 
                 // chain every other SuperJump usage
@@ -1054,6 +1063,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for SuperWallJump");
                 cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
                 cursor.Emit(OpCodes.Mul);
+                cursor.EmitDelegate<Func<float>>(DetermineHyperdashSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
             }
         }
 
@@ -1215,6 +1226,17 @@ namespace Celeste.Mod.ExtendedVariants {
             if (Settings.UpsideDown) effects |= SpriteEffects.FlipVertically;
             if (SaveData.Instance.Assists.MirrorMode) effects |= SpriteEffects.FlipHorizontally;
             return effects;
+        }
+
+
+        // ================ Hyperdash speed handling ================
+
+        /// <summary>
+        /// Returns the currently hyperdash speed factor.
+        /// </summary>
+        /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
+        public static float DetermineHyperdashSpeedFactor() {
+            return Settings.HyperdashSpeedFactor;
         }
     }
 }
