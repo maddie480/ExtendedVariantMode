@@ -7,7 +7,6 @@ using FMOD.Studio;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
-using On.Celeste;
 using System.Collections;
 
 namespace Celeste.Mod.ExtendedVariants {
@@ -36,6 +35,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> UpsideDownOption;
         public static TextMenu.Option<int> HyperdashSpeedOption;
         public static TextMenu.Option<int> DashLengthOption;
+        public static TextMenu.Option<bool> ForceDuckOnGroundOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -126,6 +126,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
             DashLengthOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength)).Change(i => Settings.DashLength = multiplierScale[i]);
+            ForceDuckOnGroundOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround)
+                .Change(b => Settings.ForceDuckOnGround = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -173,6 +175,9 @@ namespace Celeste.Mod.ExtendedVariants {
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
             menu.Add(UpsideDownOption);
+
+            addHeading(menu, "TROLL");
+            menu.Add(ForceDuckOnGroundOption);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -193,6 +198,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.UpsideDown = false;
             Settings.HyperdashSpeed = 10;
             Settings.DashLength = 10;
+            Settings.ForceDuckOnGround = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -209,6 +215,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(UpsideDownOption, Settings.UpsideDown);
             setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
             setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
+            setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -226,6 +233,7 @@ namespace Celeste.Mod.ExtendedVariants {
             UpsideDownOption.Disabled = !Settings.MasterSwitch;
             HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
             DashLengthOption.Disabled = !Settings.MasterSwitch;
+            ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -548,6 +556,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 ModNormalUpdateSpeedX(il);
                 ModNormalUpdateFriction(il);
                 ModNormalUpdateJumpCount(il);
+                ModNormalUpdateForceDuckOnGround(il);
             });
         }
 
@@ -1349,5 +1358,50 @@ namespace Celeste.Mod.ExtendedVariants {
             }
             return null;
         }
+
+        // ================ Force duck on ground handling ================
+
+
+        /// <summary>
+        /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
+        /// to handle the "force duck on ground" variant.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        public static void ModNormalUpdateForceDuckOnGround(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // jump to "if(this.Ducking)"
+            if (cursor.TryGotoNext(MoveType.After, 
+                instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference)instr.Operand).Name.Contains("get_Ducking"),
+                instr => instr.OpCode == OpCodes.Brfalse)) {
+
+                Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
+
+                ILLabel target = (ILLabel)cursor.Prev.Operand;
+
+                // basically, this turns the if into "if(this.Ducking && !Settings.ForceDuckOnGround)": this prevents unducking
+                cursor.EmitDelegate<Func<bool>>(ForceDuckOnGroundEnabled);
+                cursor.Emit(OpCodes.Brtrue, target);
+
+                // jump to the "else" to modify this one too
+                cursor.GotoLabel(target);
+
+                // set ourselves just before the condition we want to mod
+                if(cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldsfld && ((FieldReference)instr.Operand).Name.Contains("MoveY"))) {
+                    ILCursor cursorAfterCondition = cursor.Clone();
+
+                    if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un)) {
+                        Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
+
+                        // so this is basically "if (this.onGround && (Settings.ForceDuckOnGround || Input.MoveY == 1) && this.Speed.Y >= 0f)"
+                        // by telling IL "if Settings.ForceDuckOnGround is true, jump over the Input.MoveY check"
+                        cursor.EmitDelegate<Func<bool>>(ForceDuckOnGroundEnabled);
+                        cursor.Emit(OpCodes.Brtrue, cursorAfterCondition.Next);
+                    }
+                }
+            }
+        }
+
+        private static bool ForceDuckOnGroundEnabled() => Settings.ForceDuckOnGround;
     }
 }

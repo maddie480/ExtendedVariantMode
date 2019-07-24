@@ -18,6 +18,9 @@ Adds the following options to the Mod Options menu:
 * **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 * **Hyperdash Speed**: controls the speed of hyperdashes and "super-wall-jumping" (stacks up with X speed and jump height)
 
+This has some Troll Variants too (weird ideas that somehow got implemented anyway):
+* **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
+
 Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
 
 Variants are also usable by maps, with the Extended Variants Trigger. Check the [README-Mappers.txt](ExtendedVariantMode/README-Mappers.txt) for more details.

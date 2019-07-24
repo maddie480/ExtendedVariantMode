@@ -116,5 +116,10 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public float DashLengthFactor => DashLength / 10f;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool ForceDuckOnGround { get; set; } = false;
+
     }
 }
