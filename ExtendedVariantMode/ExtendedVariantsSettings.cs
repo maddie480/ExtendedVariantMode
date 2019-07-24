@@ -121,5 +121,10 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public bool ForceDuckOnGround { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool InvertDashes { get; set; } = false;
+
     }
 }

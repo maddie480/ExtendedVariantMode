@@ -18,7 +18,8 @@ const variants = String[
 	"UpsideDown",
 	"HyperdashSpeed",
 	"DashLength",
-	"ForceDuckOnGround"
+	"ForceDuckOnGround",
+	"InvertDashes"
 ]
 
 const placements = Ahorn.PlacementDict(

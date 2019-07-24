@@ -20,6 +20,7 @@ Adds the following options to the Mod Options menu:
 
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
+* **Invert Dash**: Dash right by pressing Left + Dash.
 
 Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
 

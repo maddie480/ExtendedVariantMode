@@ -36,6 +36,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> HyperdashSpeedOption;
         public static TextMenu.Option<int> DashLengthOption;
         public static TextMenu.Option<bool> ForceDuckOnGroundOption;
+        public static TextMenu.Option<bool> InvertDashesOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -128,6 +129,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength)).Change(i => Settings.DashLength = multiplierScale[i]);
             ForceDuckOnGroundOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround)
                 .Change(b => Settings.ForceDuckOnGround = b);
+            InvertDashesOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes)
+                .Change(b => Settings.InvertDashes = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -178,6 +181,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             addHeading(menu, "TROLL");
             menu.Add(ForceDuckOnGroundOption);
+            menu.Add(InvertDashesOption);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -199,6 +203,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.HyperdashSpeed = 10;
             Settings.DashLength = 10;
             Settings.ForceDuckOnGround = false;
+            Settings.InvertDashes = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -216,6 +221,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
             setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
+            setValue(InvertDashesOption, Settings.InvertDashes);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -234,6 +240,7 @@ namespace Celeste.Mod.ExtendedVariants {
             HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
             DashLengthOption.Disabled = !Settings.MasterSwitch;
             ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
+            InvertDashesOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -871,6 +878,9 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="self">A reference to the player</param>
         public static void ModifyDashSpeed(Player self) {
             self.Speed *= Settings.DashSpeedFactor;
+
+            // chain call to this
+            ModifyDashSpeedInvertDashes(self);
         }
 
         // ================ Dash count handling ================
@@ -1403,5 +1413,18 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private static bool ForceDuckOnGroundEnabled() => Settings.ForceDuckOnGround;
+
+        // ================ Invert Dashes handling ================
+
+        /// <summary>
+        /// Inverts the dash direction of the player.
+        /// </summary>
+        /// <param name="self">A reference to the player</param>
+        public static void ModifyDashSpeedInvertDashes(Player self) {
+            if (Settings.InvertDashes) {
+                self.Speed *= -1;
+                self.DashDir *= -1;
+            }
+        }
     }
 }
