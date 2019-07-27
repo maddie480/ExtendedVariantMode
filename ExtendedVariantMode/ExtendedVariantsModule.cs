@@ -400,7 +400,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 ILCursor cursor = new ILCursor(il);
 
                 // simply jump into the "if" controlling whether the respawn should be changed or not
-                if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue_S)) {
+                // (yet again, this is brtrue.s in XNA and brfalse.s in FNA. Thanks compiler.)
+                if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue_S || instr.OpCode == OpCodes.Brfalse_S))) {
                     // and call our method in there
                     Logger.Log("ExtendedVariantsModule", $"Inserting call to CommitVariantChanges at index {cursor.Index} in CIL code for OnEnter in ChangeRespawnTrigger");
                     cursor.EmitDelegate<Action>(CommitVariantChanges);
@@ -583,9 +584,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
             cursor.Index = 0;
 
-            // go back to the first 240f, then to the next "if" using a comparison
+            // go back to the first 240f, then to the next "if" implying MoveY
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 240f)
-                && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un)) {
+                && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldsfld && ((FieldReference)instr.Operand).Name.Contains("MoveY"))
+                && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Brfalse)) {
                 Logger.Log("ExtendedVariantsModule", $"Injecting code to fix animation with 0 fall speed at {cursor.Index} in CIL code for NormalUpdate");
 
                 // save the target of this branch
@@ -649,8 +651,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // we use 90 as an anchor (an "if" before the instruction we want to mod loads 90 in the stack)
             // then we jump to the next usage of V_6 to get the reference to it (no idea how to build it otherwise)
+            // (actually, this is V_28 in the FNA version)
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 90f)
-                && cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_S && ((VariableDefinition)instr.Operand).Index == 6)) {
+                && cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_S
+                    && (((VariableDefinition)instr.Operand).Index == 6 || ((VariableDefinition)instr.Operand).Index == 28))) {
 
                 VariableDefinition variable = (VariableDefinition) cursor.Next.Operand;
 
@@ -845,8 +849,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 ILCursor cursor = new ILCursor(il);
 
                 // enter the 2 ifs in the method and inject ourselves in there
-                if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue) && 
-                    cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brtrue)) {
+                // (those are actually brtrue in the XNA version and brfalse in the FNA version. Seriously?)
+                if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse)) && 
+                    cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse))) {
                     Logger.Log("ExtendedVariantsModule", $"Adding code to mod dash speed at index {cursor.Index} in CIL code for CallDashEvents");
 
                     // just add a call to ModifyDashSpeed (arg 0 = this)
@@ -910,11 +915,19 @@ namespace Celeste.Mod.ExtendedVariants {
                 // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
                 // and be more consistent with the behaviour of the "Infinite Dashes" variant.
                 // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && instr.Next.OpCode == OpCodes.Bne_Un_S)) {
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && (instr.Next.OpCode == OpCodes.Bne_Un_S || instr.Next.OpCode == OpCodes.Ceq))) {
                     Logger.Log("ExtendedVariantsModule", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
 
-                    // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
-                    cursor.Next.OpCode = OpCodes.Blt_Un_S;
+                    if (cursor.Next.OpCode == OpCodes.Bne_Un_S) {
+                        // XNA version: this is a branch
+                        // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
+                        cursor.Next.OpCode = OpCodes.Blt_Un_S;
+                    } else {
+                        // FNA version: this is a boolean FOLLOWED by a branch
+                        // we're turning this boolean from "Dashes == 2" to "Dashes > 1"
+                        cursor.Prev.OpCode = OpCodes.Ldc_I4_1;
+                        cursor.Next.OpCode = OpCodes.Cgt;
+                    }
                 }
             });
         }
@@ -1178,8 +1191,13 @@ namespace Celeste.Mod.ExtendedVariants {
                     // move back 2 steps (we are between Instance and MirrorMode in "SaveData.Instance.MirrorMode" and we want to be before that)
                     cursor.Index -= 2;
 
-                    VariableDefinition positionVector = seekReferenceTo(il, 4);
-                    VariableDefinition paddingVector = seekReferenceTo(il, 8);
+                    VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 4);
+                    VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 8);
+
+                    if(positionVector == null || paddingVector == null) {
+                        positionVector = seekReferenceTo(il, cursor.Index, 7);
+                        paddingVector = seekReferenceTo(il, cursor.Index, 11);
+                    }
 
                     if(positionVector != null && paddingVector != null) {
                         // insert our delegates to do about the same thing as vanilla Celeste at about the same time
@@ -1217,8 +1235,9 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="il">Object allowing CIL patching</param>
         /// <param name="variableIndex">Index of the variable</param>
         /// <returns>A reference to the variable</returns>
-        private static VariableDefinition seekReferenceTo(ILContext il, int variableIndex) {
+        private static VariableDefinition seekReferenceTo(ILContext il, int startingPoint, int variableIndex) {
             ILCursor cursor = new ILCursor(il);
+            cursor.Index = startingPoint;
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldloc_S && ((VariableDefinition)instr.Operand).Index == variableIndex)) {
                 return (VariableDefinition)cursor.Next.Operand;
             }
@@ -1315,6 +1334,8 @@ namespace Celeste.Mod.ExtendedVariants {
 
                 if (dashTrailCounter != null) {
                     ILCursor cursor = new ILCursor(il);
+
+                    Logger.Log("ExtendedVariantsModule", $"Patching dashTrailCounter to fix animation with long dashes at {cursor.Index} in CIL code for DashUpdate");
 
                     // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
                     // so that we add more trails if the dash is made longer than usual
