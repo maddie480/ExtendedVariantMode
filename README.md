@@ -21,12 +21,13 @@ Adds the following options to the Mod Options menu:
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
 * **Invert Dash**: Dash right by pressing Left + Dash.
+* **Change Variants Randomly**: The mod will change some variants while you play (_including vanilla variants_), turning the game into complete chaos.
 
 Enabling Extended Variant Mode will add the Variant Mode logo to the Chapter Complete screen.
 
 Variants are also usable by maps, with the Extended Variants Trigger. Check the [README-Mappers.txt](ExtendedVariantMode/README-Mappers.txt) for more details.
 
-**Compatible with Everest 862 and later.**
+**Compatible with Everest 868 and later.**
 
 ## How to install
 
