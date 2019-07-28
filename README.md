@@ -16,7 +16,7 @@ Adds the following options to the Mod Options menu:
 * **Disable wall jumping**: remove your ability to wall jump (... let's make Celeste not Celeste anymore)
 * **Jump count**: removes your ability to jump or gives you the ability to jump again in midair
 * **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
-* **Hyperdash Speed**: controls the speed of hyperdashes and "super-wall-jumping" (stacks up with X speed and jump height)
+* **Hyperdash Speed**: controls the speed of hyperdashes (stacks up with X speed)
 
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
