@@ -1401,10 +1401,18 @@ namespace Celeste.Mod.ExtendedVariants {
         public static void ModNormalUpdateForceDuckOnGround(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            // jump to "if(this.Ducking)"
+            // jump to "if(this.Ducking)" => that's a brfalse
+            // (or, in the FNA version, "bool ducking = this.Ducking;" => that's a stloc.s)
             if (cursor.TryGotoNext(MoveType.After, 
                 instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference)instr.Operand).Name.Contains("get_Ducking"),
-                instr => instr.OpCode == OpCodes.Brfalse)) {
+                instr => (instr.OpCode == OpCodes.Brfalse || instr.OpCode == OpCodes.Stloc_S))
+                // in the XNA version, we get after the brfalse. In the FNA version, we have a ldloc.s and a brfalse after the cursor
+                && (cursor.Prev.OpCode == OpCodes.Brfalse || cursor.Next.Next.OpCode == OpCodes.Brfalse)) {
+
+                if(cursor.Prev.OpCode == OpCodes.Stloc_S) {
+                    // get after the brfalse in order to line up with the XNA version
+                    cursor.Index += 2;
+                }
 
                 Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
@@ -1421,7 +1429,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 if(cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldsfld && ((FieldReference)instr.Operand).Name.Contains("MoveY"))) {
                     ILCursor cursorAfterCondition = cursor.Clone();
 
-                    if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un)) {
+                    if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Bne_Un_S))) {
                         Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
                         // so this is basically "if (this.onGround && (Settings.ForceDuckOnGround || Input.MoveY == 1) && this.Speed.Y >= 0f)"
