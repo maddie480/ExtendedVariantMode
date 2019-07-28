@@ -126,5 +126,13 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public bool InvertDashes { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public int ChangeVariantsRandomly { get; set; } = 0;
+
+        [SettingIgnore]
+        public int ChangeVariantsInterval { get; set; } = 1;
+
     }
 }

@@ -37,6 +37,8 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> DashLengthOption;
         public static TextMenu.Option<bool> ForceDuckOnGroundOption;
         public static TextMenu.Option<bool> InvertDashesOption;
+        public static TextMenu.Option<int> ChangeVariantsRandomlyOption;
+        public static TextMenu.Option<int> ChangeVariantsIntervalOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -44,7 +46,7 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         // ================ Options menu handling ================
-
+        
         /// <summary>
         /// List of options shown for multipliers.
         /// </summary>
@@ -72,13 +74,37 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="option">The multiplier</param>
         /// <returns>The index of the multiplier in the multiplierScale table</returns>
         private static int indexFromMultiplier(int option) {
-            for(int index = 0; index < multiplierScale.Length - 1; index++) {
-                if(multiplierScale[index + 1] > option) {
+            for (int index = 0; index < multiplierScale.Length - 1; index++) {
+                if (multiplierScale[index + 1] > option) {
                     return index;
                 }
             }
 
             return multiplierScale.Length - 1;
+        }
+
+        /// <summary>
+        /// List of options shown for Change Variants Interval.
+        /// </summary>
+        private static int[] changeVariantsIntervalScale = new int[] {
+            1, 2, 5, 10, 15, 30, 60
+        };
+
+        /// <summary>
+        /// Finds out the index of an interval in the changeVariantsIntervalScale table.
+        /// If it is not present, will return the previous option.
+        /// (For example, 26s will return the index for 15s.)
+        /// </summary>
+        /// <param name="option">The interval</param>
+        /// <returns>The index of the interval in the changeVariantsIntervalScale table</returns>
+        private static int indexFromChangeVariantsInterval(int option) {
+            for (int index = 0; index < changeVariantsIntervalScale.Length - 1; index++) {
+                if (changeVariantsIntervalScale[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return changeVariantsIntervalScale.Length - 1;
         }
 
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
@@ -114,9 +140,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
             DisableWallJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping)
                 .Change(b => Settings.DisableWallJumping = b);
-            JumpCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"), 
+            JumpCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
                 i => {
-                    if(i == 6) {
+                    if (i == 6) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
                     }
                     return i.ToString();
@@ -131,6 +157,18 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(b => Settings.ForceDuckOnGround = b);
             InvertDashesOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes)
                 .Change(b => Settings.InvertDashes = b);
+            ChangeVariantsRandomlyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"),
+                i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] { "OFF", "VANILLA", "EXTENDED", "BOTH" }[i]), 0, 3, Settings.ChangeVariantsRandomly)
+                .Change(i => {
+                    Settings.ChangeVariantsRandomly = i;
+                    refreshOptionMenuEnabledStatus();
+                });
+            ChangeVariantsIntervalOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSINTERVAL"),
+                i => $"{changeVariantsIntervalScale[i]}s", 0, changeVariantsIntervalScale.Length - 1, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval))
+                .Change(i => {
+                    Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
+                    changeVariantTimer = Settings.ChangeVariantsInterval;
+                });
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -149,6 +187,7 @@ namespace Celeste.Mod.ExtendedVariants {
             ResetToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
                 resetToDefaultSettings();
                 refreshOptionMenuValues();
+                refreshOptionMenuEnabledStatus();
             });
 
             refreshOptionMenuEnabledStatus();
@@ -182,6 +221,8 @@ namespace Celeste.Mod.ExtendedVariants {
             addHeading(menu, "TROLL");
             menu.Add(ForceDuckOnGroundOption);
             menu.Add(InvertDashesOption);
+            menu.Add(ChangeVariantsRandomlyOption);
+            menu.Add(ChangeVariantsIntervalOption);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -204,6 +245,8 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DashLength = 10;
             Settings.ForceDuckOnGround = false;
             Settings.InvertDashes = false;
+            Settings.ChangeVariantsRandomly = 0;
+            Settings.ChangeVariantsInterval = 1;
         }
 
         private static void refreshOptionMenuValues() {
@@ -222,6 +265,8 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(InvertDashesOption, Settings.InvertDashes);
+            setValue(ChangeVariantsRandomlyOption, 0, Settings.ChangeVariantsRandomly);
+            setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -241,6 +286,8 @@ namespace Celeste.Mod.ExtendedVariants {
             DashLengthOption.Disabled = !Settings.MasterSwitch;
             ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
             InvertDashesOption.Disabled = !Settings.MasterSwitch;
+            ChangeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
+            ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -266,6 +313,8 @@ namespace Celeste.Mod.ExtendedVariants {
         // ================ Module loading ================
 
         public override void Load() {
+            changeVariantTimer = Settings.ChangeVariantsInterval;
+
             // mod methods here
             IL.Celeste.Player.NormalUpdate += ModNormalUpdate;
             IL.Celeste.Player.ClimbUpdate += ModClimbUpdate;
@@ -810,7 +859,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="orig">The original Update method</param>
         /// <param name="self">The Player instance</param>
-        public static void ModUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        public void ModUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             // since we cannot patch IL in orig_Update, we will wrap it and try to guess if the stamina was reset
             // this is **certainly** the case if the stamina changed and is now 110
             float staminaBeforeCall = self.Stamina;
@@ -819,6 +868,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 // reset it to the value we chose instead of 110
                 self.Stamina = DetermineBaseStamina();
             }
+
+            // chain the other functions of Update()
+            ModUpdateChangeVariantsRandomly(orig, self);
         }
 
         /// <summary>
@@ -1110,8 +1162,6 @@ namespace Celeste.Mod.ExtendedVariants {
                 Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for SuperWallJump");
                 cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
                 cursor.Emit(OpCodes.Mul);
-                cursor.EmitDelegate<Func<float>>(DetermineHyperdashSpeedFactor);
-                cursor.Emit(OpCodes.Mul);
             }
         }
 
@@ -1392,7 +1442,6 @@ namespace Celeste.Mod.ExtendedVariants {
 
         // ================ Force duck on ground handling ================
 
-
         /// <summary>
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// to handle the "force duck on ground" variant.
@@ -1453,6 +1502,70 @@ namespace Celeste.Mod.ExtendedVariants {
             if (Settings.InvertDashes) {
                 self.Speed *= -1;
                 self.DashDir *= -1;
+            }
+        }
+
+        // ================ Change Variants Randomly handling ================
+
+        private float changeVariantTimer = 9999f;
+        private Random randomGenerator = new Random();
+
+        public void ModUpdateChangeVariantsRandomly(On.Celeste.Player.orig_Update orig, Player self) {
+            // don't bother doing anything if Change Variants Randomly is off, or if it is set to Vanilla Only and vanilla Variant Mode is off
+            if(Settings.ChangeVariantsRandomly != 0 && (Settings.ChangeVariantsRandomly != 1 || SaveData.Instance.VariantMode)) {
+                changeVariantTimer -= Engine.DeltaTime;
+
+                if(changeVariantTimer < 0) {
+                    changeVariantTimer = Settings.ChangeVariantsInterval;
+
+                    bool isVanilla;
+                    switch(Settings.ChangeVariantsRandomly) {
+                        case 1: isVanilla = true; break;
+                        case 2: isVanilla = false; break;
+                        default: isVanilla = randomGenerator.Next(2) == 0; break;
+                    }
+
+                    // never enable vanilla variants if Variant Mode is off, that would be odd
+                    if (!SaveData.Instance.VariantMode) isVanilla = false;
+
+                    if(isVanilla) {
+                        switch (randomGenerator.Next(11)) {
+                            case 0:
+                                SaveData.Instance.Assists.MirrorMode = !SaveData.Instance.Assists.MirrorMode;
+                                Input.Aim.InvertedX = SaveData.Instance.Assists.MirrorMode;
+                                Input.MoveX.Inverted = SaveData.Instance.Assists.MirrorMode;
+                                break;
+                            case 1: SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 10, 12, 14, 16 }[randomGenerator.Next(9)]; break;
+                            case 2: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
+                            case 3: SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Normal, Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(3)]; break;
+                            case 4: SaveData.Instance.Assists.InfiniteStamina = !SaveData.Instance.Assists.InfiniteStamina; break;
+                            case 5: SaveData.Instance.Assists.ThreeSixtyDashing = !SaveData.Instance.Assists.ThreeSixtyDashing; break;
+                            case 6: SaveData.Instance.Assists.InvisibleMotion = !SaveData.Instance.Assists.InvisibleMotion; break;
+                            case 7: SaveData.Instance.Assists.NoGrabbing = !SaveData.Instance.Assists.NoGrabbing; break;
+                            case 8: SaveData.Instance.Assists.LowFriction = !SaveData.Instance.Assists.LowFriction; break;
+                            case 9: SaveData.Instance.Assists.SuperDashing = !SaveData.Instance.Assists.SuperDashing; break;
+                            case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
+                        }
+                    } else {
+                        switch (randomGenerator.Next(15)) {
+                            case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 3: Settings.DisableWallJumping = !Settings.DisableWallJumping; break;
+                            case 4: Settings.JumpCount = (Settings.JumpCount != 1 ? 1 : randomGenerator.Next(7)); break;
+                            case 5: Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 6: Settings.DashLength = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 7: Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 8: Settings.DashCount = (Settings.DashCount != -1 ? -1 : randomGenerator.Next(6)); break;
+                            case 9: Settings.SpeedX = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 10: Settings.Friction = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 11: Settings.Stamina = randomGenerator.Next(23); break;
+                            case 12: Settings.UpsideDown = !Settings.UpsideDown; break;
+                            case 13: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
+                            case 14: Settings.InvertDashes = !Settings.InvertDashes; break;
+                        }
+                    }
+                }
             }
         }
     }

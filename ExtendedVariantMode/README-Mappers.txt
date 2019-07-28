@@ -19,6 +19,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- DashCount: the value is simply the dash count you want, -1 being the default behavior (depending on the inventory).
 	- JumpCount: the number of jumps you want, 6 is infinite (yep).
 	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes: 1 to enable, 0 to disable.
+	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
+	- ChangeVariantsInterval: The interval in seconds between two variant changes
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 
 Please note that changes in variants become permanent only when the player goes to a new screen or hits a Change Respawn Trigger. If the player dies in the same screen, values will get reset.
