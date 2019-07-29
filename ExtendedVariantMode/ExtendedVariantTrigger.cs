@@ -126,6 +126,14 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.InvertDashes ? 1 : 0;
                     ExtendedVariantsModule.Settings.InvertDashes = (newValue != 0);
                     break;
+                case Variant.ChangeVariantsRandomly:
+                    oldValue = ExtendedVariantsModule.Settings.ChangeVariantsRandomly;
+                    ExtendedVariantsModule.Settings.ChangeVariantsRandomly = newValue;
+                    break;
+                case Variant.ChangeVariantsInterval:
+                    oldValue = ExtendedVariantsModule.Settings.ChangeVariantsInterval;
+                    ExtendedVariantsModule.Settings.ChangeVariantsInterval = newValue;
+                    break;
             }
 
             return oldValue;
