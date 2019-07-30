@@ -34,6 +34,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> JumpCountOption;
         public static TextMenu.Option<bool> UpsideDownOption;
         public static TextMenu.Option<int> HyperdashSpeedOption;
+        public static TextMenu.Option<int> WallBouncingSpeedOption;
         public static TextMenu.Option<int> DashLengthOption;
         public static TextMenu.Option<bool> ForceDuckOnGroundOption;
         public static TextMenu.Option<bool> InvertDashesOption;
@@ -151,6 +152,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(b => Settings.UpsideDown = b);
             HyperdashSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
+            WallBouncingSpeedOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.WallBouncingSpeed)).Change(i => Settings.WallBouncingSpeed = multiplierScale[i]);
             DashLengthOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength)).Change(i => Settings.DashLength = multiplierScale[i]);
             ForceDuckOnGroundOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround)
@@ -201,6 +204,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             addHeading(menu, "JUMPING");
             menu.Add(JumpHeightOption);
+            menu.Add(WallBouncingSpeedOption);
             menu.Add(DisableWallJumpingOption);
             menu.Add(JumpCountOption);
 
@@ -242,6 +246,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.JumpCount = 1;
             Settings.UpsideDown = false;
             Settings.HyperdashSpeed = 10;
+            Settings.WallBouncingSpeed = 10;
             Settings.DashLength = 10;
             Settings.ForceDuckOnGround = false;
             Settings.InvertDashes = false;
@@ -262,6 +267,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(JumpCountOption, 0, Settings.JumpCount);
             setValue(UpsideDownOption, Settings.UpsideDown);
             setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
+            setValue(WallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
             setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(InvertDashesOption, Settings.InvertDashes);
@@ -283,6 +289,7 @@ namespace Celeste.Mod.ExtendedVariants {
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
             UpsideDownOption.Disabled = !Settings.MasterSwitch;
             HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
+            WallBouncingSpeedOption.Disabled = !Settings.MasterSwitch;
             DashLengthOption.Disabled = !Settings.MasterSwitch;
             ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
             InvertDashesOption.Disabled = !Settings.MasterSwitch;
@@ -1162,6 +1169,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 Logger.Log("ExtendedVariantsModule", $"Applying jump height to constant at {cursor.Index} in CIL code for SuperWallJump");
                 cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
                 cursor.Emit(OpCodes.Mul);
+                cursor.EmitDelegate<Func<float>>(DetermineWallBouncingSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
             }
         }
 
@@ -1339,6 +1348,18 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
         public static float DetermineHyperdashSpeedFactor() {
             return Settings.HyperdashSpeedFactor;
+        }
+
+
+        // ================ Wallbouncing speed handling ================
+
+        /// <summary>
+        /// Returns the current wallbounce speed factor.
+        /// </summary>
+        /// <returns>The wallbounce speed factor (1 = default wallbounce speed)</returns>
+        public static float DetermineWallBouncingSpeedFactor()
+        {
+            return Settings.WallBouncingSpeedFactor;
         }
 
         // ================ Dash length handling ================
@@ -1547,7 +1568,7 @@ namespace Celeste.Mod.ExtendedVariants {
                             case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
                         }
                     } else {
-                        switch (randomGenerator.Next(15)) {
+                        switch (randomGenerator.Next(16)) {
                             case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                             case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                             case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
@@ -1556,13 +1577,14 @@ namespace Celeste.Mod.ExtendedVariants {
                             case 5: Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                             case 6: Settings.DashLength = multiplierScale[randomGenerator.Next(23)]; break;
                             case 7: Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 8: Settings.DashCount = (Settings.DashCount != -1 ? -1 : randomGenerator.Next(6)); break;
-                            case 9: Settings.SpeedX = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 10: Settings.Friction = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 11: Settings.Stamina = randomGenerator.Next(23); break;
-                            case 12: Settings.UpsideDown = !Settings.UpsideDown; break;
-                            case 13: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
-                            case 14: Settings.InvertDashes = !Settings.InvertDashes; break;
+                            case 8: Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 9: Settings.DashCount = (Settings.DashCount != -1 ? -1 : randomGenerator.Next(6)); break;
+                            case 10: Settings.SpeedX = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 11: Settings.Friction = multiplierScale[randomGenerator.Next(23)]; break;
+                            case 12: Settings.Stamina = randomGenerator.Next(23); break;
+                            case 13: Settings.UpsideDown = !Settings.UpsideDown; break;
+                            case 14: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
+                            case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
                         }
                     }
                 }

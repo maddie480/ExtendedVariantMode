@@ -110,6 +110,15 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
+        public int WallBouncingSpeed { get; set; } = 10;
+
+        [YamlIgnore]
+        [SettingIgnore]
+        public float WallBouncingSpeedFactor => WallBouncingSpeed / 10f;
+
+        // ======================================
+
+        [SettingIgnore]
         public int DashLength { get; set; } = 10;
 
         [YamlIgnore]

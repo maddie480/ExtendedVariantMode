@@ -17,6 +17,7 @@ const variants = String[
 	"JumpCount",
 	"UpsideDown",
 	"HyperdashSpeed",
+	"WallBouncingSpeed",
 	"DashLength",
 	"ForceDuckOnGround",
 	"InvertDashes",
