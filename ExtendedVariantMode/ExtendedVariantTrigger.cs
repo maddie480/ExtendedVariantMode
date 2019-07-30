@@ -21,15 +21,19 @@ namespace Celeste.Mod.ExtendedVariants {
                 switch(variantChange) {
                     case Variant.Stamina: newValue = 11; break;
                     case Variant.DashCount: newValue = -1; break;
+
                     case Variant.DisableWallJumping:
                     case Variant.UpsideDown:
                     case Variant.ForceDuckOnGround:
                     case Variant.InvertDashes:
+                    case Variant.DisableNeutralJumping:
                     case Variant.ChangeVariantsRandomly:
                         newValue = 0; break;
+
                     case Variant.JumpCount:
                     case Variant.ChangeVariantsInterval:
                         newValue = 1; break;
+
                     default: newValue = 10; break;
                 }
             }
@@ -130,6 +134,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.InvertDashes ? 1 : 0;
                     ExtendedVariantsModule.Settings.InvertDashes = (newValue != 0);
                     break;
+                case Variant.DisableNeutralJumping:
+                    oldValue = ExtendedVariantsModule.Settings.DisableNeutralJumping ? 1 : 0;
+                    ExtendedVariantsModule.Settings.DisableNeutralJumping = (newValue != 0);
+                    break;
                 case Variant.ChangeVariantsRandomly:
                     oldValue = ExtendedVariantsModule.Settings.ChangeVariantsRandomly;
                     ExtendedVariantsModule.Settings.ChangeVariantsRandomly = newValue;
@@ -146,6 +154,6 @@ namespace Celeste.Mod.ExtendedVariants {
 
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
-        DashLength, ForceDuckOnGround, InvertDashes, ChangeVariantsRandomly, ChangeVariantsInterval
+        DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval
     }
 }

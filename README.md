@@ -17,6 +17,7 @@ Adds the following options to the Mod Options menu:
 * **Jump count**: removes your ability to jump or gives you the ability to jump again in midair
 * **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 * **Hyperdash Speed** and **Wallbouncing speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
+* **Disable neutral jumping**: Prevents you from using that technique to climb walls without losing stamina. Neutral jumps now behave like normal jumps!
 
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!

@@ -138,6 +138,11 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
+        public bool DisableNeutralJumping { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public int ChangeVariantsRandomly { get; set; } = 0;
 
         [SettingIgnore]

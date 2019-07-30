@@ -38,6 +38,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> DashLengthOption;
         public static TextMenu.Option<bool> ForceDuckOnGroundOption;
         public static TextMenu.Option<bool> InvertDashesOption;
+        public static TextMenu.Option<bool> DisableNeutralJumpingOption;
         public static TextMenu.Option<int> ChangeVariantsRandomlyOption;
         public static TextMenu.Option<int> ChangeVariantsIntervalOption;
         public static TextMenu.Item ResetToDefaultOption;
@@ -160,6 +161,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(b => Settings.ForceDuckOnGround = b);
             InvertDashesOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes)
                 .Change(b => Settings.InvertDashes = b);
+            DisableNeutralJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping)
+                .Change(b => Settings.DisableNeutralJumping = b);
             ChangeVariantsRandomlyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"),
                 i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] { "OFF", "VANILLA", "EXTENDED", "BOTH" }[i]), 0, 3, Settings.ChangeVariantsRandomly)
                 .Change(i => {
@@ -221,6 +224,7 @@ namespace Celeste.Mod.ExtendedVariants {
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
             menu.Add(UpsideDownOption);
+            menu.Add(DisableNeutralJumpingOption);
 
             addHeading(menu, "TROLL");
             menu.Add(ForceDuckOnGroundOption);
@@ -250,6 +254,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DashLength = 10;
             Settings.ForceDuckOnGround = false;
             Settings.InvertDashes = false;
+            Settings.DisableNeutralJumping = false;
             Settings.ChangeVariantsRandomly = 0;
             Settings.ChangeVariantsInterval = 1;
         }
@@ -271,6 +276,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(InvertDashesOption, Settings.InvertDashes);
+            setValue(DisableNeutralJumpingOption, Settings.DisableNeutralJumping);
             setValue(ChangeVariantsRandomlyOption, 0, Settings.ChangeVariantsRandomly);
             setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
         }
@@ -293,6 +299,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DashLengthOption.Disabled = !Settings.MasterSwitch;
             ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
             InvertDashesOption.Disabled = !Settings.MasterSwitch;
+            DisableNeutralJumpingOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
         }
@@ -786,7 +793,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.Emit(OpCodes.Mul);
                 }
 
-                // chain every other SuperJump usage
+                // chain every other SuperWallJump usage
                 ModSuperWallJumpHeight(il);
             });
         }
@@ -806,8 +813,9 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.Emit(OpCodes.Mul);
                 }
 
-                // chain every other SuperJump usage
+                // chain every other WallJump usage
                 ModWallJumpHeight(il);
+                ModWallJumpNeutralJumping(il);
             });
         }
 
@@ -1526,6 +1534,35 @@ namespace Celeste.Mod.ExtendedVariants {
             }
         }
 
+
+        // ================ Disable Neutral Jumping handling ================
+
+        private static void ModWallJumpNeutralJumping(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // jump to the first MoveX usage (this.MoveX => ldarg.0 then ldfld MoveX basically)
+            if(cursor.TryGotoNext(MoveType.Before,
+                instr => instr.OpCode == OpCodes.Ldarg_0,
+                instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("moveX"))) {
+
+                ILCursor cursorAfterBranch = cursor.Clone();
+                if(cursorAfterBranch.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brfalse_S)) {
+                    Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Disable Neutral Jumping at {cursor.Index} in CIL code for WallJump");
+
+                    // before the MoveX check, check if neutral jumping is enabled: if it is not, skip the MoveX check
+                    cursor.EmitDelegate<Func<bool>>(NeutralJumpingEnabled);
+                    cursor.Emit(OpCodes.Brfalse_S, cursorAfterBranch.Next);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if neutral jumping is enabled.
+        /// </summary>
+        public static bool NeutralJumpingEnabled() {
+            return !Settings.DisableNeutralJumping;
+        }
+
         // ================ Change Variants Randomly handling ================
 
         private float changeVariantTimer = 9999f;
@@ -1568,7 +1605,7 @@ namespace Celeste.Mod.ExtendedVariants {
                             case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
                         }
                     } else {
-                        switch (randomGenerator.Next(16)) {
+                        switch (randomGenerator.Next(17)) {
                             case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                             case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                             case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
@@ -1585,6 +1622,7 @@ namespace Celeste.Mod.ExtendedVariants {
                             case 13: Settings.UpsideDown = !Settings.UpsideDown; break;
                             case 14: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
                             case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
+                            case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
                         }
                     }
                 }

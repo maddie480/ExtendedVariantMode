@@ -21,6 +21,7 @@ const variants = String[
 	"DashLength",
 	"ForceDuckOnGround",
 	"InvertDashes",
+	"DisableNeutralJumping",
 	"ChangeVariantsRandomly",
 	"ChangeVariantsInterval"
 ]
