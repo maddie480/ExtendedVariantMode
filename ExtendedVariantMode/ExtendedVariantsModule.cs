@@ -936,7 +936,12 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="orig">The original RefillStamina method</param>
         /// <param name="self">The Player instance</param>
         public static void ModRefillStamina(On.Celeste.Player.orig_RefillStamina orig, Player self) {
-            self.Stamina = DetermineBaseStamina();
+            // invoking the original method is not really useful, but another mod may try to hook it, so don't break it if the Stamina variant is disabled
+            orig.Invoke(self);
+
+            if (Settings.Stamina != 11) {
+                self.Stamina = DetermineBaseStamina();
+            }
         }
 
         /// <summary>
