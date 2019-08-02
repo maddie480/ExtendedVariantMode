@@ -337,6 +337,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.DreamDashBegin += ModDreamDashBegin;
             On.Celeste.Player.Update += ModUpdate;
             IL.Celeste.Player.ctor += ModPlayerConstructor;
+            On.Celeste.SummitGem.SmashRoutine += ModSummitGemSmash;
             IL.Celeste.Player.UpdateSprite += ModUpdateSprite;
             On.Celeste.Player.RefillDash += ModRefillDash;
             IL.Celeste.Player.UseRefill += ModUseRefill;
@@ -376,6 +377,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.DreamDashBegin -= ModDreamDashBegin;
             On.Celeste.Player.Update -= ModUpdate;
             IL.Celeste.Player.ctor -= ModPlayerConstructor;
+            On.Celeste.SummitGem.SmashRoutine -= ModSummitGemSmash;
             IL.Celeste.Player.UpdateSprite -= ModUpdateSprite;
             On.Celeste.Player.RefillDash -= ModRefillDash;
             IL.Celeste.Player.UseRefill -= ModUseRefill;
@@ -867,6 +869,30 @@ namespace Celeste.Mod.ExtendedVariants {
             ModMethod("PlayerConstructor", () => {
                 patchOutStamina(il);
             });
+        }
+
+        /// <summary>
+        /// Mods the SmashRoutine in SummitGem.
+        /// </summary>
+        /// <param name="orig">The original method</param>
+        /// <param name="self">The SummitGem instance</param>
+        /// <param name="player">The player</param>
+        /// <param name="level">(unused)</param>
+        /// <returns></returns>
+        private IEnumerator ModSummitGemSmash(On.Celeste.SummitGem.orig_SmashRoutine orig, SummitGem self, Player player, Level level) {
+            IEnumerator coroutine = orig.Invoke(self, player, level);
+
+            // get the first value, this includes the code setting stamina back to 110f
+            coroutine.MoveNext();
+            yield return coroutine.Current;
+
+            player.Stamina = DetermineBaseStamina();
+
+            // leave the rest of the coroutine intact
+            while (coroutine.MoveNext()) {
+                yield return coroutine.Current;
+            }
+            yield break;
         }
 
         /// <summary>
