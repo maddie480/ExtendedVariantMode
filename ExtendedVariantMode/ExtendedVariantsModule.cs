@@ -349,6 +349,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.SuperWallJump += ModSuperWallJump;
             IL.Celeste.Player.WallJump += ModWallJump;
             On.Celeste.Player.WallJump += ModOnWallJump;
+            On.Celeste.Player.WallJumpCheck += ModWallJumpCheck;
             On.Celeste.AreaComplete.VersionNumberAndVariants += ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity += new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn += OnPlayerSpawn;
@@ -389,6 +390,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.SuperWallJump -= ModSuperWallJump;
             IL.Celeste.Player.WallJump -= ModWallJump;
             On.Celeste.Player.WallJump -= ModOnWallJump;
+            On.Celeste.Player.WallJumpCheck -= ModWallJumpCheck;
             On.Celeste.AreaComplete.VersionNumberAndVariants -= ModVersionNumberAndVariants;
             Everest.Events.Level.OnLoadEntity -= new Everest.Events.Level.LoadEntityHandler(OnLoadEntity);
             Everest.Events.Player.OnSpawn -= OnPlayerSpawn;
@@ -1230,9 +1232,23 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="self">the player</param>
         /// <param name="dir">the wall jump direction</param>
         private void ModOnWallJump(On.Celeste.Player.orig_WallJump orig, Player self, int dir) {
-            if(!Settings.DisableWallJumping) {
-                orig.Invoke(self, dir);
+            if (!Settings.DisableWallJumping) {
+                orig(self, dir);
             }
+        }
+
+        /// <summary>
+        /// Mods the WallJumpCheck method, checking if a walljump is possible.
+        /// </summary>
+        /// <param name="orig"></param>
+        /// <param name="self">the player</param>
+        /// <param name="dir">the direction</param>
+        /// <returns>true if walljumping is possible, false otherwise</returns>
+        private bool ModWallJumpCheck(On.Celeste.Player.orig_WallJumpCheck orig, Player self, int dir) {
+            if(Settings.DisableWallJumping) {
+                return false;
+            }
+            return orig(self, dir);
         }
 
         // ================ Jump count handling ================
@@ -1244,11 +1260,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModNormalUpdateJumpCount(ILContext il) {
+            patchJumpGraceTimer(il);
+        }
+
+        private static void patchJumpGraceTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to whenever jumpGraceTimer is retrieved
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("jumpGraceTimer"))) {
-                Logger.Log("ExtendedVariantsModule", $"Patching double jump in at {cursor.Index} in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantsModule", $"Patching jump count in at {cursor.Index} in CIL code");
 
                 // store a reference to it
                 FieldReference refToJumpGraceTimer = ((FieldReference)cursor.Prev.Operand);
@@ -1474,6 +1494,9 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.EmitDelegate<Func<int, int>>(ModDashTrailCounter);
                     cursor.Emit(OpCodes.Stfld, dashTrailCounter);
                 }
+
+                // chain call to other patches
+                patchJumpGraceTimer(il);
             });
         }
 
