@@ -28,11 +28,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.InvertDashes:
                     case Variant.DisableNeutralJumping:
                     case Variant.ChangeVariantsRandomly:
+                    case Variant.ChangeVariantsInterval:
                         newValue = 0; break;
 
-                    case Variant.JumpCount:
-                    case Variant.ChangeVariantsInterval:
-                        newValue = 1; break;
+                    case Variant.JumpCount: newValue = 1; break;
 
                     default: newValue = 10; break;
                 }

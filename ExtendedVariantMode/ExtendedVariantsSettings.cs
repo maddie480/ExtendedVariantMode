@@ -146,7 +146,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public int ChangeVariantsRandomly { get; set; } = 0;
 
         [SettingIgnore]
-        public int ChangeVariantsInterval { get; set; } = 1;
+        public int ChangeVariantsInterval { get; set; } = 0;
 
     }
 }

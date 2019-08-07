@@ -89,7 +89,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// List of options shown for Change Variants Interval.
         /// </summary>
         private static int[] changeVariantsIntervalScale = new int[] {
-            1, 2, 5, 10, 15, 30, 60
+            0, 1, 2, 5, 10, 15, 30, 60
         };
 
         /// <summary>
@@ -170,7 +170,12 @@ namespace Celeste.Mod.ExtendedVariants {
                     refreshOptionMenuEnabledStatus();
                 });
             ChangeVariantsIntervalOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSINTERVAL"),
-                i => $"{changeVariantsIntervalScale[i]}s", 0, changeVariantsIntervalScale.Length - 1, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval))
+                i => {
+                    if(i == 0) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ONSCREENTRANSITION");
+                    }
+                    return $"{Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERY")} {changeVariantsIntervalScale[i]}s";
+                }, 0, changeVariantsIntervalScale.Length - 1, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval))
                 .Change(i => {
                     Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
                     changeVariantTimer = Settings.ChangeVariantsInterval;
@@ -256,7 +261,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.InvertDashes = false;
             Settings.DisableNeutralJumping = false;
             Settings.ChangeVariantsRandomly = 0;
-            Settings.ChangeVariantsInterval = 1;
+            Settings.ChangeVariantsInterval = 0;
         }
 
         private static void refreshOptionMenuValues() {
@@ -471,6 +476,10 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="direction">unused</param>
         public void OnLevelTransitionTo(Level level, LevelData next, Vector2 direction) {
             CommitVariantChanges();
+
+            if (Settings.ChangeVariantsRandomly != 0 && (Settings.ChangeVariantsRandomly != 1 || SaveData.Instance.VariantMode) && Settings.ChangeVariantsInterval == 0) {
+                changeVariantRandomly();
+            }
         }
 
         /// <summary>
@@ -1624,61 +1633,65 @@ namespace Celeste.Mod.ExtendedVariants {
 
         public void ModUpdateChangeVariantsRandomly(On.Celeste.Player.orig_Update orig, Player self) {
             // don't bother doing anything if Change Variants Randomly is off, or if it is set to Vanilla Only and vanilla Variant Mode is off
-            if(Settings.ChangeVariantsRandomly != 0 && (Settings.ChangeVariantsRandomly != 1 || SaveData.Instance.VariantMode)) {
+            if(Settings.ChangeVariantsRandomly != 0 && (Settings.ChangeVariantsRandomly != 1 || SaveData.Instance.VariantMode) && Settings.ChangeVariantsInterval != 0) {
                 changeVariantTimer -= Engine.DeltaTime;
 
-                if(changeVariantTimer < 0) {
+                if (changeVariantTimer < 0) {
                     changeVariantTimer = Settings.ChangeVariantsInterval;
+                    changeVariantRandomly();
+                }
+                    
+            }
+        }
 
-                    bool isVanilla;
-                    switch(Settings.ChangeVariantsRandomly) {
-                        case 1: isVanilla = true; break;
-                        case 2: isVanilla = false; break;
-                        default: isVanilla = randomGenerator.Next(2) == 0; break;
-                    }
+        private void changeVariantRandomly() {
+            bool isVanilla;
+            switch (Settings.ChangeVariantsRandomly) {
+                case 1: isVanilla = true; break;
+                case 2: isVanilla = false; break;
+                default: isVanilla = randomGenerator.Next(2) == 0; break;
+            }
 
-                    // never enable vanilla variants if Variant Mode is off, that would be odd
-                    if (!SaveData.Instance.VariantMode) isVanilla = false;
+            // never enable vanilla variants if Variant Mode is off, that would be odd
+            if (!SaveData.Instance.VariantMode) isVanilla = false;
 
-                    if(isVanilla) {
-                        switch (randomGenerator.Next(11)) {
-                            case 0:
-                                SaveData.Instance.Assists.MirrorMode = !SaveData.Instance.Assists.MirrorMode;
-                                Input.Aim.InvertedX = SaveData.Instance.Assists.MirrorMode;
-                                Input.MoveX.Inverted = SaveData.Instance.Assists.MirrorMode;
-                                break;
-                            case 1: SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 10, 12, 14, 16 }[randomGenerator.Next(9)]; break;
-                            case 2: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
-                            case 3: SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Normal, Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(3)]; break;
-                            case 4: SaveData.Instance.Assists.InfiniteStamina = !SaveData.Instance.Assists.InfiniteStamina; break;
-                            case 5: SaveData.Instance.Assists.ThreeSixtyDashing = !SaveData.Instance.Assists.ThreeSixtyDashing; break;
-                            case 6: SaveData.Instance.Assists.InvisibleMotion = !SaveData.Instance.Assists.InvisibleMotion; break;
-                            case 7: SaveData.Instance.Assists.NoGrabbing = !SaveData.Instance.Assists.NoGrabbing; break;
-                            case 8: SaveData.Instance.Assists.LowFriction = !SaveData.Instance.Assists.LowFriction; break;
-                            case 9: SaveData.Instance.Assists.SuperDashing = !SaveData.Instance.Assists.SuperDashing; break;
-                            case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
-                        }
-                    } else {
-                        switch (randomGenerator.Next(17)) {
-                            case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 3: Settings.DisableWallJumping = !Settings.DisableWallJumping; break;
-                            case 4: Settings.JumpCount = (Settings.JumpCount != 1 ? 1 : randomGenerator.Next(7)); break;
-                            case 5: Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 6: Settings.DashLength = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 7: Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 8: Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 9: Settings.DashCount = (Settings.DashCount != -1 ? -1 : randomGenerator.Next(6)); break;
-                            case 10: Settings.SpeedX = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 11: Settings.Friction = multiplierScale[randomGenerator.Next(23)]; break;
-                            case 12: Settings.Stamina = randomGenerator.Next(23); break;
-                            case 13: Settings.UpsideDown = !Settings.UpsideDown; break;
-                            case 14: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
-                            case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
-                            case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
-                        }
-                    }
+            if (isVanilla) {
+                switch (randomGenerator.Next(11)) {
+                    case 0:
+                        SaveData.Instance.Assists.MirrorMode = !SaveData.Instance.Assists.MirrorMode;
+                        Input.Aim.InvertedX = SaveData.Instance.Assists.MirrorMode;
+                        Input.MoveX.Inverted = SaveData.Instance.Assists.MirrorMode;
+                        break;
+                    case 1: SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 10, 12, 14, 16 }[randomGenerator.Next(9)]; break;
+                    case 2: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
+                    case 3: SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Normal, Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(3)]; break;
+                    case 4: SaveData.Instance.Assists.InfiniteStamina = !SaveData.Instance.Assists.InfiniteStamina; break;
+                    case 5: SaveData.Instance.Assists.ThreeSixtyDashing = !SaveData.Instance.Assists.ThreeSixtyDashing; break;
+                    case 6: SaveData.Instance.Assists.InvisibleMotion = !SaveData.Instance.Assists.InvisibleMotion; break;
+                    case 7: SaveData.Instance.Assists.NoGrabbing = !SaveData.Instance.Assists.NoGrabbing; break;
+                    case 8: SaveData.Instance.Assists.LowFriction = !SaveData.Instance.Assists.LowFriction; break;
+                    case 9: SaveData.Instance.Assists.SuperDashing = !SaveData.Instance.Assists.SuperDashing; break;
+                    case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
+                }
+            } else {
+                switch (randomGenerator.Next(17)) {
+                    case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 3: Settings.DisableWallJumping = !Settings.DisableWallJumping; break;
+                    case 4: Settings.JumpCount = (Settings.JumpCount != 1 ? 1 : randomGenerator.Next(7)); break;
+                    case 5: Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 6: Settings.DashLength = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 7: Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 8: Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 9: Settings.DashCount = (Settings.DashCount != -1 ? -1 : randomGenerator.Next(6)); break;
+                    case 10: Settings.SpeedX = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 11: Settings.Friction = multiplierScale[randomGenerator.Next(23)]; break;
+                    case 12: Settings.Stamina = randomGenerator.Next(23); break;
+                    case 13: Settings.UpsideDown = !Settings.UpsideDown; break;
+                    case 14: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
+                    case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
+                    case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
                 }
             }
         }
