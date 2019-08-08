@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
+using On.Celeste;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -368,6 +369,12 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.DashCoroutine += ModDashCoroutine;
             IL.Celeste.Player.DashUpdate += ModDashUpdate;
 
+            IL.Celeste.BadelineOldsite.Added += ModBadelineOldsiteAdded;
+            IL.Celeste.BadelineOldsite.CanChangeMusic += ModBadelineOldsiteCanChangeMusic;
+            On.Celeste.BadelineOldsite.Update += ModBadelineOldsiteUpdate;
+            On.Celeste.Level.LoadLevel += ModLoadLevel;
+            On.Celeste.Level.TransitionRoutine += ModTransitionRoutine;
+
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
                 resetToDefaultSettings();
@@ -408,6 +415,12 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.DashBegin -= ModDashBegin;
             On.Celeste.Player.DashCoroutine -= ModDashCoroutine;
             IL.Celeste.Player.DashUpdate -= ModDashUpdate;
+
+            IL.Celeste.BadelineOldsite.Added -= ModBadelineOldsiteAdded;
+            IL.Celeste.BadelineOldsite.CanChangeMusic -= ModBadelineOldsiteCanChangeMusic;
+            On.Celeste.BadelineOldsite.Update -= ModBadelineOldsiteUpdate;
+            On.Celeste.Level.LoadLevel -= ModLoadLevel;
+            On.Celeste.Level.TransitionRoutine -= ModTransitionRoutine;
 
             moddedMethods.Clear();
         }
@@ -1624,6 +1637,148 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         public static bool NeutralJumpingEnabled() {
             return !Settings.DisableNeutralJumping;
+        }
+
+
+        // ================ Badeline Chasers Everywhere handling ================
+
+        /// <summary>
+        /// Wraps the LoadLevel method in order to add Badeline chasers when needed.
+        /// </summary>
+        /// <param name="orig">The base method</param>
+        /// <param name="self">The level entity</param>
+        /// <param name="playerIntro">The type of player intro</param>
+        /// <param name="isFromLoader">unused</param>
+        private void ModLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+            orig(self, playerIntro, isFromLoader);
+
+            // this method takes care of every situation except transitions, we let this one to TransitionRoutine
+            if (Settings.BadelineChasersEverywhere && playerIntro != Player.IntroTypes.Transition) {
+                // set this to avoid the player being instakilled during the level intro animation
+                Player player = self.Tracker.GetEntity<Player>();
+                if (player != null) player.JustRespawned = true;
+
+                injectBadelineChasers(self);
+            }
+        }
+
+        /// <summary>
+        /// Wraps the TransitionRoutine in Level, in order to add Badeline chasers when needed.
+        /// This is not done in LoadLevel, since this one will wait for the transition to be done, so that the entities from the previous screen are unloaded.
+        /// </summary>
+        /// <param name="orig">The base method</param>
+        /// <param name="self">The level entity</param>
+        /// <param name="next">unused</param>
+        /// <param name="direction">unused</param>
+        /// <returns></returns>
+        private IEnumerator ModTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+            // just make sure the whole transition routine is over
+            IEnumerator origEnum = orig(self, next, direction);
+            while (origEnum.MoveNext()) {
+                yield return origEnum.Current;
+            }
+
+            // then decide whether to add Badeline or not
+            injectBadelineChasers(self);
+
+            yield break;
+        }
+
+        /// <summary>
+        /// Mods the Added method in BadelineOldsite, to make it not kill chasers on screens they are not supposed to be.
+        /// </summary>
+        /// <param name="il">Object allowing IL modding</param>
+        private void ModBadelineOldsiteAdded(ILContext il) {
+            ModMethod("BadelineOldsiteAdded", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go right after the equality check that compares the level set name with "Celeste"
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
+
+                    // mod the result of that check to prevent the chasers we will spawn from... committing suicide
+                    cursor.Emit(OpCodes.Ldarg_1);
+                    cursor.EmitDelegate<Func<bool, Scene, bool>>(ModVanillaBehaviorCheckForChasers);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Mods the CanChangeMusic method in BadelineOldsite, so that forcibly added chasers do not change the level music.
+        /// </summary>
+        /// <param name="il">Object allowing IL modding</param>
+        private void ModBadelineOldsiteCanChangeMusic(ILContext il) {
+            ModMethod("BadelineOldsiteCanChangeMusic", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go right after the equality check that compares the level set name with "Celeste"
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
+
+                    // mod the result of that check to always use modded value, even in vanilla levels
+                    cursor.EmitDelegate<Func<bool, bool>>(ModVanillaBehaviorCheckForMusic);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Wraps the Update method in BadelineOldsite, so that chasers remove themselves whenever a cutscene starts.
+        /// </summary>
+        /// <param name="orig">The original method</param>
+        /// <param name="self">The Badeline entity</param>
+        private void ModBadelineOldsiteUpdate(On.Celeste.BadelineOldsite.orig_Update orig, BadelineOldsite self) {
+            orig(self);
+
+            if (Settings.BadelineChasersEverywhere) {
+                Level level = self.SceneAs<Level>();
+                Player player = level.Tracker.GetEntity<Player>();
+
+                if (player != null && player.StateMachine.State == 11
+                    && (level.Session.Area.GetLevelSet() != "Celeste" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal)) {
+                    // we are in a cutscene **but not the Badeline Intro one**
+                    // so we should just make the chasers disappear to prevent them from killing the player mid-cutscene
+                    Audio.Play("event:/char/badeline/disappear", self.Position);
+                    level.Displacement.AddBurst(self.Center, 0.5f, 24f, 96f, 0.4f, null, null);
+                    level.Particles.Emit(BadelineOldsite.P_Vanish, 12, self.Center, Vector2.One * 6f);
+                    self.RemoveSelf();
+                }
+            }
+        }
+
+        private void injectBadelineChasers(Level level) {
+            if (Settings.BadelineChasersEverywhere) {
+                Player player = level.Tracker.GetEntity<Player>();
+
+                // check if the base level already has chasers
+                if (player != null && level.Tracker.CountEntities<BadelineOldsite>() == 0) {
+                    // add a Badeline chaser where the player is, and tell it not to change the music to the chase music
+                    EntityData noMusicChange = new EntityData();
+                    noMusicChange.Values = new Dictionary<string, object>();
+                    noMusicChange.Values["canChangeMusic"] = false;
+                    level.Add(new BadelineOldsite(noMusicChange, player.Position, 0));
+
+                    level.Entities.UpdateLists();
+                }
+            }
+        }
+
+        private bool ModVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
+            if (Settings.BadelineChasersEverywhere) {
+                // tell the game to use the boolean stored in EntityData (the default is true, the chasers we add have false)
+                return false;
+            }
+            return shouldUseVanilla;
+        }
+
+        private bool ModVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
+            Session session = (scene as Level).Session;
+
+            // Badeline chasers remove themselves if flag 3 is not set, or if flag 11 is set
+            // and we obviously don't want that, so we shall mod Everest to tell it this is not a vanilla level even when it is
+            if (Settings.BadelineChasersEverywhere && (!session.GetLevelFlag("3") || session.GetLevelFlag("11"))) {
+                return false;
+            }
+            return shouldUseVanilla;
         }
 
         // ================ Change Variants Randomly handling ================

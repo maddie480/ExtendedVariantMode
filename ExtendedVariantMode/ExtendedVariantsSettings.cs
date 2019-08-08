@@ -148,5 +148,9 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public int ChangeVariantsInterval { get; set; } = 0;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool BadelineChasersEverywhere { get; set; } = true;
     }
 }
