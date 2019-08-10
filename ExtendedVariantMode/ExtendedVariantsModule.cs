@@ -1906,7 +1906,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
                 }
             } else {
-                switch (randomGenerator.Next(17)) {
+                switch (randomGenerator.Next(18)) {
                     case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                     case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                     case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
