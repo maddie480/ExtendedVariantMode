@@ -9,11 +9,14 @@ namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantTrigger : Trigger {
         private Variant variantChange;
         private int newValue;
+        private bool revertOnLeave;
+        private int oldValueToRevertOnLeave;
 
         public ExtendedVariantTrigger(EntityData data, Vector2 offset): base(data, offset) {
             // parse the trigger parameters
             variantChange = data.Enum("variantChange", Variant.Gravity);
             newValue = data.Int("newValue", 10);
+            revertOnLeave = data.Bool("revertOnLeave", false);
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
@@ -40,6 +43,9 @@ namespace Celeste.Mod.ExtendedVariants {
                     default: newValue = 10; break;
                 }
             }
+
+            // failsafe
+            oldValueToRevertOnLeave = newValue;
         }
 
         public override void OnEnter(Player player) {
@@ -51,7 +57,7 @@ namespace Celeste.Mod.ExtendedVariants {
             // store the fact that the variant was changed within the room
             // so that it can be reverted if we die, or saved if we save & quit later
             if (oldValue != newValue) {
-                Logger.Log("ExtendedVariantTrigger", $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue}");
+                Logger.Log("ExtendedVariantTrigger", $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave})");
 
                 if (!ExtendedVariantsModule.OldVariantsInRoom.ContainsKey(variantChange)) {
                     ExtendedVariantsModule.OldVariantsInRoom[variantChange] = oldValue;
@@ -59,7 +65,21 @@ namespace Celeste.Mod.ExtendedVariants {
                 if (!ExtendedVariantsModule.OldVariantsInSession.ContainsKey(variantChange)) {
                     ExtendedVariantsModule.OldVariantsInSession[variantChange] = oldValue;
                 }
-                ExtendedVariantsModule.OverridenVariantsInRoom[variantChange] = newValue;
+                if (revertOnLeave) {
+                    // save the value we will revert when leaving the trigger
+                    oldValueToRevertOnLeave = oldValue;
+                } else { // we don't want the value to be committed when leaving the room, since this is temporary
+                    ExtendedVariantsModule.OverridenVariantsInRoom[variantChange] = newValue;
+                }
+            }
+        }
+
+        public override void OnLeave(Player player) {
+            base.OnLeave(player);
+
+            if(revertOnLeave) {
+                SetVariantValue(variantChange, oldValueToRevertOnLeave);
+                Logger.Log("ExtendedVariantTrigger", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
             }
         }
 

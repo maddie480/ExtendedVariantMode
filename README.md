@@ -18,6 +18,7 @@ Adds the following options to the Mod Options menu:
 * **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 * **Hyperdash Speed** and **Wallbouncing speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 * **Disable neutral jumping**: Prevents you from using that technique to climb walls without losing stamina. Neutral jumps now behave like normal jumps!
+* **Badeline Chasers Everywhere**: Get Badeline to chase you on every screen in the mountain (with customizable number of Badelines because why not).
 
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!

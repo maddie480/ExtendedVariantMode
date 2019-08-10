@@ -22,7 +22,22 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers: 1 to enable, 0 to disable.
 	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
 	- ChangeVariantsInterval: The interval in seconds between two variant changes, or 0 to change variants on each new screen
+- Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 
 Please note that changes in variants become permanent only when the player goes to a new screen or hits a Change Respawn Trigger. If the player dies in the same screen, values will get reset.
 This rule allows keeping gameplay consistent if an Extended Variant Trigger is set in the middle of a long screen: the first part should be played without the change, and the second part with it.
+
+Use cases:
+
+- If you want a variant to be enabled for the whole map
+	=> just add an Extended Variant Trigger right on the spawn point at the beginning of your map.
+- If you want a variant to be enabled on a specific area in a room
+	=> cover the area with an Extended Variant Trigger, and check "Revert On Leave".
+- If you want a variant to be enabled in a room
+	=> either cover the entire room with an Extended Variant Trigger and check "Revert On Leave", or follow the next point.
+- If you want a variant to be enabled in a bunch of successive rooms (for example, rooms 3 to 7)
+	=> put an Extended Variant Trigger to **enable** the variant at the beginning of room 3 and at the end of room 7.
+	=> put an Extended Variant Trigger to **disable** the variant at the end of room 2 and at the beginning of room 8.
+	=> make sure that these triggers cover the spawn points.
+	This will ensure the variant is always applied to rooms 3 to 7, even if the player goes back from room 8 to room 7 for example.

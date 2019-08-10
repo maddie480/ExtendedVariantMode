@@ -1809,7 +1809,7 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private bool notInBadelineIntroCutscene(Level level) {
-            return (level.Session.Area.GetLevelSet() != "Celeste" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
+            return (level.Session.Area.GetSID() != "Celeste/2-OldSite" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
         }
 
         private EntityData noMusicChange() {
@@ -1830,9 +1830,11 @@ namespace Celeste.Mod.ExtendedVariants {
         private bool ModVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
             Session session = (scene as Level).Session;
 
-            // Badeline chasers remove themselves if flag 3 is not set, or if flag 11 is set
-            // and we obviously don't want that, so we shall mod Everest to tell it this is not a vanilla level even when it is
-            if (Settings.BadelineChasersEverywhere && (!session.GetLevelFlag("3") || session.GetLevelFlag("11"))) {
+            if (Settings.BadelineChasersEverywhere && 
+                // don't use vanilla behaviour when that would lead the chasers to commit suicide
+                (!session.GetLevelFlag("3") || session.GetLevelFlag("11") || 
+                // don't use vanilla behaviour when that would trigger the Badeline intro cutscene, except (of course) on Old Site
+                (session.Area.GetSID() != "Celeste/2-OldSite" && session.Level == "3" && session.Area.Mode == AreaMode.Normal))) {
                 return false;
             }
             return shouldUseVanilla;
