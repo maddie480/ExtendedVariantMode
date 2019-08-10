@@ -42,6 +42,9 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> DisableNeutralJumpingOption;
         public static TextMenu.Option<int> ChangeVariantsRandomlyOption;
         public static TextMenu.Option<int> ChangeVariantsIntervalOption;
+        public static TextMenu.Option<bool> BadelineChasersEverywhereOption;
+        public static TextMenu.Option<int> ChaserCountOption;
+        public static TextMenu.Option<bool> AffectExistingChasersOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -164,6 +167,12 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(b => Settings.InvertDashes = b);
             DisableNeutralJumpingOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping)
                 .Change(b => Settings.DisableNeutralJumping = b);
+            BadelineChasersEverywhereOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere)
+                .Change(b => Settings.BadelineChasersEverywhere = b);
+            AffectExistingChasersOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AFFECTEXISTINGCHASERS"), Settings.AffectExistingChasers)
+                .Change(b => Settings.AffectExistingChasers = b);
+            ChaserCountOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
+                i => i.ToString(), 1, 10, Settings.ChaserCount).Change(i => Settings.ChaserCount = i);
             ChangeVariantsRandomlyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"),
                 i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] { "OFF", "VANILLA", "EXTENDED", "BOTH" }[i]), 0, 3, Settings.ChangeVariantsRandomly)
                 .Change(i => {
@@ -227,6 +236,11 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(SpeedXOption);
             menu.Add(FrictionOption);
 
+            addHeading(menu, "CHASERS");
+            menu.Add(BadelineChasersEverywhereOption);
+            menu.Add(ChaserCountOption);
+            menu.Add(AffectExistingChasersOption);
+
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
             menu.Add(UpsideDownOption);
@@ -261,6 +275,9 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.ForceDuckOnGround = false;
             Settings.InvertDashes = false;
             Settings.DisableNeutralJumping = false;
+            Settings.BadelineChasersEverywhere = false;
+            Settings.ChaserCount = 1;
+            Settings.AffectExistingChasers = false;
             Settings.ChangeVariantsRandomly = 0;
             Settings.ChangeVariantsInterval = 0;
         }
@@ -283,6 +300,9 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(ForceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(InvertDashesOption, Settings.InvertDashes);
             setValue(DisableNeutralJumpingOption, Settings.DisableNeutralJumping);
+            setValue(BadelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);
+            setValue(ChaserCountOption, 1, Settings.ChaserCount);
+            setValue(AffectExistingChasersOption, Settings.AffectExistingChasers);
             setValue(ChangeVariantsRandomlyOption, 0, Settings.ChangeVariantsRandomly);
             setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
         }
@@ -306,6 +326,9 @@ namespace Celeste.Mod.ExtendedVariants {
             ForceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
             InvertDashesOption.Disabled = !Settings.MasterSwitch;
             DisableNeutralJumpingOption.Disabled = !Settings.MasterSwitch;
+            BadelineChasersEverywhereOption.Disabled = !Settings.MasterSwitch;
+            ChaserCountOption.Disabled = !Settings.MasterSwitch;
+            AffectExistingChasersOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
         }
@@ -374,6 +397,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.BadelineOldsite.Update += ModBadelineOldsiteUpdate;
             On.Celeste.Level.LoadLevel += ModLoadLevel;
             On.Celeste.Level.TransitionRoutine += ModTransitionRoutine;
+            IL.Celeste.Player.UpdateChaserStates += ModUpdateChaserStates;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -421,6 +445,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.BadelineOldsite.Update -= ModBadelineOldsiteUpdate;
             On.Celeste.Level.LoadLevel -= ModLoadLevel;
             On.Celeste.Level.TransitionRoutine -= ModTransitionRoutine;
+            IL.Celeste.Player.UpdateChaserStates -= ModUpdateChaserStates;
 
             moddedMethods.Clear();
         }
@@ -1657,7 +1682,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 // set this to avoid the player being instakilled during the level intro animation
                 Player player = self.Tracker.GetEntity<Player>();
                 if (player != null) player.JustRespawned = true;
+            }
 
+            if((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers) && playerIntro != Player.IntroTypes.Transition) {
                 injectBadelineChasers(self);
             }
         }
@@ -1733,11 +1760,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 Level level = self.SceneAs<Level>();
                 Player player = level.Tracker.GetEntity<Player>();
 
-                if (player != null && player.StateMachine.State == 11
-                    && (level.Session.Area.GetLevelSet() != "Celeste" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal)) {
+                if (player != null && player.StateMachine.State == 11 && notInBadelineIntroCutscene(level)) {
                     // we are in a cutscene **but not the Badeline Intro one**
                     // so we should just make the chasers disappear to prevent them from killing the player mid-cutscene
-                    Audio.Play("event:/char/badeline/disappear", self.Position);
                     level.Displacement.AddBurst(self.Center, 0.5f, 24f, 96f, 0.4f, null, null);
                     level.Particles.Emit(BadelineOldsite.P_Vanish, 12, self.Center, Vector2.One * 6f);
                     self.RemoveSelf();
@@ -1746,20 +1771,52 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private void injectBadelineChasers(Level level) {
+            bool hasChasersInBaseLevel = level.Tracker.CountEntities<BadelineOldsite>() != 0;
+
             if (Settings.BadelineChasersEverywhere) {
                 Player player = level.Tracker.GetEntity<Player>();
 
                 // check if the base level already has chasers
-                if (player != null && level.Tracker.CountEntities<BadelineOldsite>() == 0) {
+                if (player != null && !hasChasersInBaseLevel) {
                     // add a Badeline chaser where the player is, and tell it not to change the music to the chase music
-                    EntityData noMusicChange = new EntityData();
-                    noMusicChange.Values = new Dictionary<string, object>();
-                    noMusicChange.Values["canChangeMusic"] = false;
-                    level.Add(new BadelineOldsite(noMusicChange, player.Position, 0));
+                    for (int i = 0; i < Settings.ChaserCount; i++) {
+                        level.Add(new BadelineOldsite(noMusicChange(), player.Position, i));
+                    }
 
                     level.Entities.UpdateLists();
                 }
             }
+
+            // plz disregard the settings and don't touch the chasers if in Badeline Intro cutscene
+            // because the chaser triggers the cutscene, so having 10 chasers triggers 10 instances of the cutscene at the same time (a)
+            if(Settings.AffectExistingChasers && hasChasersInBaseLevel && notInBadelineIntroCutscene(level)) {
+                List<Entity> chasers = level.Tracker.GetEntities<BadelineOldsite>();
+                if (chasers.Count > Settings.ChaserCount) {
+                    // for example, if there are 6 chasers and we want 3, we will ask chasers 4-6 to commit suicide
+                    for(int i = chasers.Count - 1; i >= Settings.ChaserCount; i--) {
+                        chasers[i].RemoveSelf();
+                    }
+                } else if(chasers.Count < Settings.ChaserCount) {
+                    // for example, if we have 2 chasers and we want 6, we will duplicate both chasers twice
+                    for(int i = chasers.Count; i < Settings.ChaserCount; i++) {
+                        int baseChaser = i % chasers.Count;
+                        level.Add(new BadelineOldsite(noMusicChange(), chasers[baseChaser].Position, i));
+                    }
+                }
+
+                level.Entities.UpdateLists();
+            }
+        }
+
+        private bool notInBadelineIntroCutscene(Level level) {
+            return (level.Session.Area.GetLevelSet() != "Celeste" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
+        }
+
+        private EntityData noMusicChange() {
+            EntityData noMusicChange = new EntityData();
+            noMusicChange.Values = new Dictionary<string, object>();
+            noMusicChange.Values["canChangeMusic"] = false;
+            return noMusicChange;
         }
 
         private bool ModVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
@@ -1779,6 +1836,24 @@ namespace Celeste.Mod.ExtendedVariants {
                 return false;
             }
             return shouldUseVanilla;
+        }
+
+        /// <summary>
+        /// Mods the UpdateChaserStates to tell it to save a bit more history of chaser states, so that we can spawn more chasers.
+        /// </summary>
+        /// <param name="il">Object allowing IL modding</param>
+        private void ModUpdateChaserStates(ILContext il) {
+            ModMethod("UpdateChaserStates", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go where the "4" is
+                while (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 4f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
+
+                    // and replace it with a "5.5" in order to support up to 10 chasers
+                    cursor.Next.Operand = 5.5f;
+                }
+            });
         }
 
         // ================ Change Variants Randomly handling ================
@@ -1847,6 +1922,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 14: Settings.ForceDuckOnGround = !Settings.ForceDuckOnGround; break;
                     case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
                     case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
+                    case 17: Settings.BadelineChasersEverywhere = !Settings.BadelineChasersEverywhere; break;
                 }
             }
         }

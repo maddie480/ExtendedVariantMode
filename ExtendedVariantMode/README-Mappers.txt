@@ -18,7 +18,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- Stamina: the value is the max stamina / 10 (for example, "20" will set max stamina to 200, the default value being 110).
 	- DashCount: the value is simply the dash count you want, -1 being the default behavior (depending on the inventory).
 	- JumpCount: the number of jumps you want, 6 is infinite (yep).
-	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping: 1 to enable, 0 to disable.
+	- ChaserCount: the number of chasers you want for the "BadelineChasersEverywhere" variant.
+	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers: 1 to enable, 0 to disable.
 	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
 	- ChangeVariantsInterval: The interval in seconds between two variant changes, or 0 to change variants on each new screen
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.

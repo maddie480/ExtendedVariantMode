@@ -151,6 +151,12 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
-        public bool BadelineChasersEverywhere { get; set; } = true;
+        public bool BadelineChasersEverywhere { get; set; } = false;
+
+        [SettingIgnore]
+        public int ChaserCount { get; set; } = 1;
+
+        [SettingIgnore]
+        public bool AffectExistingChasers { get; set; } = false;
     }
 }

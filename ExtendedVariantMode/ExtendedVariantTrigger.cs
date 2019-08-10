@@ -29,9 +29,13 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.DisableNeutralJumping:
                     case Variant.ChangeVariantsRandomly:
                     case Variant.ChangeVariantsInterval:
+                    case Variant.BadelineChasersEverywhere:
+                    case Variant.AffectExistingChasers:
                         newValue = 0; break;
 
-                    case Variant.JumpCount: newValue = 1; break;
+                    case Variant.JumpCount:
+                    case Variant.ChaserCount:
+                        newValue = 1; break;
 
                     default: newValue = 10; break;
                 }
@@ -137,6 +141,18 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.DisableNeutralJumping ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableNeutralJumping = (newValue != 0);
                     break;
+                case Variant.BadelineChasersEverywhere:
+                    oldValue = ExtendedVariantsModule.Settings.BadelineChasersEverywhere ? 1 : 0;
+                    ExtendedVariantsModule.Settings.BadelineChasersEverywhere = (newValue != 0);
+                    break;
+                case Variant.ChaserCount:
+                    oldValue = ExtendedVariantsModule.Settings.ChaserCount;
+                    ExtendedVariantsModule.Settings.ChaserCount = newValue;
+                    break;
+                case Variant.AffectExistingChasers:
+                    oldValue = ExtendedVariantsModule.Settings.AffectExistingChasers ? 1 : 0;
+                    ExtendedVariantsModule.Settings.AffectExistingChasers = (newValue != 0);
+                    break;
                 case Variant.ChangeVariantsRandomly:
                     oldValue = ExtendedVariantsModule.Settings.ChangeVariantsRandomly;
                     ExtendedVariantsModule.Settings.ChangeVariantsRandomly = newValue;
@@ -153,6 +169,6 @@ namespace Celeste.Mod.ExtendedVariants {
 
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
-        DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval
+        DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers
     }
 }

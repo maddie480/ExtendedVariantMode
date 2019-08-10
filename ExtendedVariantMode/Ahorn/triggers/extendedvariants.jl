@@ -23,7 +23,10 @@ const variants = String[
 	"InvertDashes",
 	"DisableNeutralJumping",
 	"ChangeVariantsRandomly",
-	"ChangeVariantsInterval"
+	"ChangeVariantsInterval",
+	"BadelineChasersEverywhere",
+	"ChaserCount",
+	"AffectExistingChasers"
 ]
 
 const placements = Ahorn.PlacementDict(
