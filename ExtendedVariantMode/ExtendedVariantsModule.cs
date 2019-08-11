@@ -1791,7 +1791,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 if (player != null && !hasChasersInBaseLevel) {
                     // add a Badeline chaser where the player is, and tell it not to change the music to the chase music
                     for (int i = 0; i < Settings.ChaserCount; i++) {
-                        level.Add(new BadelineOldsite(noMusicChange(), player.Position, i));
+                        level.Add(new BadelineOldsite(generateBadelineEntityData(level, i), player.Position, i));
                     }
 
                     level.Entities.UpdateLists();
@@ -1811,7 +1811,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     // for example, if we have 2 chasers and we want 6, we will duplicate both chasers twice
                     for(int i = chasers.Count; i < Settings.ChaserCount; i++) {
                         int baseChaser = i % chasers.Count;
-                        level.Add(new BadelineOldsite(noMusicChange(), chasers[baseChaser].Position, i));
+                        level.Add(new BadelineOldsite(generateBadelineEntityData(level, i), chasers[baseChaser].Position, i));
                     }
                 }
 
@@ -1823,11 +1823,17 @@ namespace Celeste.Mod.ExtendedVariants {
             return (level.Session.Area.GetSID() != "Celeste/2-OldSite" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
         }
 
-        private EntityData noMusicChange() {
-            EntityData noMusicChange = new EntityData();
-            noMusicChange.Values = new Dictionary<string, object>();
-            noMusicChange.Values["canChangeMusic"] = false;
-            return noMusicChange;
+        private EntityData generateBadelineEntityData(Level level, int badelineNumber) {
+            EntityData entityData = new EntityData();
+
+            // come up with some way to generate deterministic but unique-per-room IDs
+            int roomHash = Math.Abs(level.Session.Level.GetHashCode()) % 100000000;
+            entityData.ID = 1000000000 + roomHash * 10 + badelineNumber;
+
+            entityData.Level = level.Session.LevelData;
+            entityData.Values = new Dictionary<string, object>();
+            entityData.Values["canChangeMusic"] = false;
+            return entityData;
         }
 
         private bool ModVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
