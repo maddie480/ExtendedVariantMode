@@ -45,6 +45,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> BadelineChasersEverywhereOption;
         public static TextMenu.Option<int> ChaserCountOption;
         public static TextMenu.Option<bool> AffectExistingChasersOption;
+        public static TextMenu.Option<int> RegularHiccupsOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -190,6 +191,12 @@ namespace Celeste.Mod.ExtendedVariants {
                     Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
                     changeVariantTimer = Settings.ChangeVariantsInterval;
                 });
+            RegularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
+                i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"), 
+                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
+                    Settings.RegularHiccups = multiplierScale[i];
+                    regularHiccupTimer = Settings.RegularHiccups / 10f;
+                });
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -245,6 +252,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(StaminaOption);
             menu.Add(UpsideDownOption);
             menu.Add(DisableNeutralJumpingOption);
+            menu.Add(RegularHiccupsOption);
 
             addHeading(menu, "TROLL");
             menu.Add(ForceDuckOnGroundOption);
@@ -280,6 +288,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.AffectExistingChasers = false;
             Settings.ChangeVariantsRandomly = 0;
             Settings.ChangeVariantsInterval = 0;
+            Settings.RegularHiccups = 0;
         }
 
         private static void refreshOptionMenuValues() {
@@ -305,6 +314,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(AffectExistingChasersOption, Settings.AffectExistingChasers);
             setValue(ChangeVariantsRandomlyOption, 0, Settings.ChangeVariantsRandomly);
             setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
+            setValue(RegularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -331,6 +341,7 @@ namespace Celeste.Mod.ExtendedVariants {
             AffectExistingChasersOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
+            RegularHiccupsOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -960,7 +971,8 @@ namespace Celeste.Mod.ExtendedVariants {
             }
 
             // chain the other functions of Update()
-            ModUpdateChangeVariantsRandomly(orig, self);
+            ModUpdateChangeVariantsRandomly();
+            ModUpdateRegularHiccups(self);
         }
 
         /// <summary>
@@ -1857,12 +1869,27 @@ namespace Celeste.Mod.ExtendedVariants {
             });
         }
 
+        // ================ Regular Hiccups handling ================
+
+        private float regularHiccupTimer = 9999f;
+
+        private void ModUpdateRegularHiccups(Player self) {
+            if(Settings.RegularHiccups != 0 && !SaveData.Instance.Assists.Hiccups) {
+                regularHiccupTimer -= Engine.DeltaTime;
+
+                if(regularHiccupTimer <= 0) {
+                    regularHiccupTimer = Settings.RegularHiccups / 10f;
+                    self.HiccupJump();
+                }
+            }
+        }
+
         // ================ Change Variants Randomly handling ================
 
         private float changeVariantTimer = 9999f;
         private Random randomGenerator = new Random();
 
-        public void ModUpdateChangeVariantsRandomly(On.Celeste.Player.orig_Update orig, Player self) {
+        public void ModUpdateChangeVariantsRandomly() {
             // don't bother doing anything if Change Variants Randomly is off, or if it is set to Vanilla Only and vanilla Variant Mode is off
             if(Settings.ChangeVariantsRandomly != 0 && (Settings.ChangeVariantsRandomly != 1 || SaveData.Instance.VariantMode) && Settings.ChangeVariantsInterval != 0) {
                 changeVariantTimer -= Engine.DeltaTime;

@@ -20,6 +20,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- JumpCount: the number of jumps you want, 6 is infinite (yep).
 	- ChaserCount: the number of chasers you want for the "BadelineChasersEverywhere" variant.
 	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers: 1 to enable, 0 to disable.
+	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
 	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
 	- ChangeVariantsInterval: The interval in seconds between two variant changes, or 0 to change variants on each new screen
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.

@@ -26,7 +26,8 @@ const variants = String[
 	"ChangeVariantsInterval",
 	"BadelineChasersEverywhere",
 	"ChaserCount",
-	"AffectExistingChasers"
+	"AffectExistingChasers",
+	"RegularHiccups"
 ]
 
 const placements = Ahorn.PlacementDict(

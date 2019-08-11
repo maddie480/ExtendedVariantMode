@@ -158,5 +158,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public bool AffectExistingChasers { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
+        public int RegularHiccups { get; set; } = 0;
     }
 }
