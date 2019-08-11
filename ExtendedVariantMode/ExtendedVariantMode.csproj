@@ -88,6 +88,7 @@
     <Compile Include="ExtendedVariantTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExtendedVariantsSettings.cs" />
+    <Compile Include="TextMenuOptionExt.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Everest\Celeste.Mod.mm\Celeste.Mod.mm.csproj">
