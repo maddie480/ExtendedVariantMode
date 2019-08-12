@@ -33,6 +33,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> FrictionOption;
         public static TextMenu.Option<bool> DisableWallJumpingOption;
         public static TextMenu.Option<int> JumpCountOption;
+        public static TextMenu.Option<bool> RefillJumpsOnDashRefillOption;
         public static TextMenu.Option<bool> UpsideDownOption;
         public static TextMenu.Option<int> HyperdashSpeedOption;
         public static TextMenu.Option<int> WallBouncingSpeedOption;
@@ -153,7 +154,12 @@ namespace Celeste.Mod.ExtendedVariants {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
                     }
                     return i.ToString();
-                }, 0, 6, Settings.JumpCount, 1).Change(i => Settings.JumpCount = i);
+                }, 0, 6, Settings.JumpCount, 1).Change(i => {
+                    Settings.JumpCount = i;
+                    refreshOptionMenuEnabledStatus();
+                });
+            RefillJumpsOnDashRefillOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
+                .Change(b => Settings.RefillJumpsOnDashRefill = b);
             UpsideDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
                 .Change(b => Settings.UpsideDown = b);
             HyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
@@ -232,6 +238,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(WallBouncingSpeedOption);
             menu.Add(DisableWallJumpingOption);
             menu.Add(JumpCountOption);
+            menu.Add(RefillJumpsOnDashRefillOption);
 
             addHeading(menu, "DASHING");
             menu.Add(DashSpeedOption);
@@ -276,6 +283,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.Friction = 10;
             Settings.DisableWallJumping = false;
             Settings.JumpCount = 1;
+            Settings.RefillJumpsOnDashRefill = false;
             Settings.UpsideDown = false;
             Settings.HyperdashSpeed = 10;
             Settings.WallBouncingSpeed = 10;
@@ -302,6 +310,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(FrictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(DisableWallJumpingOption, Settings.DisableWallJumping);
             setValue(JumpCountOption, 0, Settings.JumpCount);
+            setValue(RefillJumpsOnDashRefillOption, Settings.RefillJumpsOnDashRefill);
             setValue(UpsideDownOption, Settings.UpsideDown);
             setValue(HyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
             setValue(WallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
@@ -328,6 +337,7 @@ namespace Celeste.Mod.ExtendedVariants {
             FrictionOption.Disabled = !Settings.MasterSwitch;
             DisableWallJumpingOption.Disabled = !Settings.MasterSwitch;
             JumpCountOption.Disabled = !Settings.MasterSwitch;
+            RefillJumpsOnDashRefillOption.Disabled = !Settings.MasterSwitch || Settings.JumpCount < 2;
             ResetToDefaultOption.Disabled = !Settings.MasterSwitch;
             UpsideDownOption.Disabled = !Settings.MasterSwitch;
             HyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
@@ -1054,7 +1064,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="orig">The original RefillDash method</param>
         /// <param name="self">The Player instance</param>
         public static bool ModRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
-            if (Settings.JumpCount != 1) {
+            if (Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2) {
                 RefillJumpBuffer(1f);
             }
 
@@ -1130,7 +1140,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="defaultValue">The default value (= Player.MaxDashes)</param>
         /// <returns>The dash count</returns>
         public static int DetermineDashCount(int defaultValue) {
-            if(Settings.JumpCount != 1) {
+            if(Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2) {
                 RefillJumpBuffer(1f);
             }
 

@@ -89,6 +89,9 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public int JumpCount { get; set; } = 1;
 
+        [SettingIgnore]
+        public bool RefillJumpsOnDashRefill { get; set; } = false;
+
         // ======================================
 
         public Dictionary<int, Dictionary<Variant, int>> OverrideValuesInSave = new Dictionary<int, Dictionary<Variant, int>>();

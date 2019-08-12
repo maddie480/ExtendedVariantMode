@@ -35,6 +35,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.BadelineChasersEverywhere:
                     case Variant.AffectExistingChasers:
                     case Variant.RegularHiccups:
+                    case Variant.RefillJumpsOnDashRefill:
                         newValue = 0; break;
 
                     case Variant.JumpCount:
@@ -186,6 +187,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.RegularHiccups;
                     ExtendedVariantsModule.Settings.RegularHiccups = newValue;
                     break;
+                case Variant.RefillJumpsOnDashRefill:
+                    oldValue = ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
+                    ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
+                    break;
             }
 
             return oldValue;
@@ -195,6 +200,6 @@ namespace Celeste.Mod.ExtendedVariants {
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
         DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups
+        RegularHiccups, RefillJumpsOnDashRefill
     }
 }
