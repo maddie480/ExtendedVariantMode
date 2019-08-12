@@ -1054,6 +1054,10 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="orig">The original RefillDash method</param>
         /// <param name="self">The Player instance</param>
         public static bool ModRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
+            if (Settings.JumpCount != 1) {
+                RefillJumpBuffer(1f);
+            }
+
             if (Settings.DashCount == -1) {
                 return orig.Invoke(self);
             } else if(self.Dashes < Settings.DashCount) {
@@ -1126,9 +1130,14 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="defaultValue">The default value (= Player.MaxDashes)</param>
         /// <returns>The dash count</returns>
         public static int DetermineDashCount(int defaultValue) {
+            if(Settings.JumpCount != 1) {
+                RefillJumpBuffer(1f);
+            }
+
             if (Settings.DashCount == -1) {
                 return defaultValue;
             }
+
             return Settings.DashCount;
         }
 
