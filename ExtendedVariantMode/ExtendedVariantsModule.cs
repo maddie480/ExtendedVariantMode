@@ -43,6 +43,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> DisableNeutralJumpingOption;
         public static TextMenu.Option<int> ChangeVariantsRandomlyOption;
         public static TextMenu.Option<int> ChangeVariantsIntervalOption;
+        public static TextMenu.Option<bool> DoNotRandomizeInvincibilityOption;
         public static TextMenu.Option<bool> BadelineChasersEverywhereOption;
         public static TextMenu.Option<int> ChaserCountOption;
         public static TextMenu.Option<bool> AffectExistingChasersOption;
@@ -197,6 +198,8 @@ namespace Celeste.Mod.ExtendedVariants {
                     Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
                     changeVariantTimer = Settings.ChangeVariantsInterval;
                 });
+            DoNotRandomizeInvincibilityOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONOTRANDOMIZEINVINCIBILITY"), Settings.DoNotRandomizeInvincibility, false)
+                .Change(b => Settings.DoNotRandomizeInvincibility = b);
             RegularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"), 
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
@@ -266,6 +269,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(InvertDashesOption);
             menu.Add(ChangeVariantsRandomlyOption);
             menu.Add(ChangeVariantsIntervalOption);
+            menu.Add(DoNotRandomizeInvincibilityOption);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -296,6 +300,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.AffectExistingChasers = false;
             Settings.ChangeVariantsRandomly = 0;
             Settings.ChangeVariantsInterval = 0;
+            Settings.DoNotRandomizeInvincibility = false;
             Settings.RegularHiccups = 0;
         }
 
@@ -323,6 +328,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(AffectExistingChasersOption, Settings.AffectExistingChasers);
             setValue(ChangeVariantsRandomlyOption, 0, Settings.ChangeVariantsRandomly);
             setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
+            setValue(DoNotRandomizeInvincibilityOption, Settings.DoNotRandomizeInvincibility);
             setValue(RegularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
         }
 
@@ -351,6 +357,7 @@ namespace Celeste.Mod.ExtendedVariants {
             AffectExistingChasersOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
             ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
+            DoNotRandomizeInvincibilityOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly % 2 != 1;
             RegularHiccupsOption.Disabled = !Settings.MasterSwitch;
         }
 
@@ -1970,25 +1977,25 @@ namespace Celeste.Mod.ExtendedVariants {
             if (!SaveData.Instance.VariantMode) isVanilla = false;
 
             if (isVanilla) {
-                switch (randomGenerator.Next(11)) {
+                switch (randomGenerator.Next(Settings.DoNotRandomizeInvincibility ? 10 : 11)) {
                     case 0:
                         SaveData.Instance.Assists.MirrorMode = !SaveData.Instance.Assists.MirrorMode;
                         Input.Aim.InvertedX = SaveData.Instance.Assists.MirrorMode;
                         Input.MoveX.Inverted = SaveData.Instance.Assists.MirrorMode;
                         break;
                     case 1: SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 10, 12, 14, 16 }[randomGenerator.Next(9)]; break;
-                    case 2: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
-                    case 3: SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Normal, Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(3)]; break;
-                    case 4: SaveData.Instance.Assists.InfiniteStamina = !SaveData.Instance.Assists.InfiniteStamina; break;
-                    case 5: SaveData.Instance.Assists.ThreeSixtyDashing = !SaveData.Instance.Assists.ThreeSixtyDashing; break;
-                    case 6: SaveData.Instance.Assists.InvisibleMotion = !SaveData.Instance.Assists.InvisibleMotion; break;
-                    case 7: SaveData.Instance.Assists.NoGrabbing = !SaveData.Instance.Assists.NoGrabbing; break;
-                    case 8: SaveData.Instance.Assists.LowFriction = !SaveData.Instance.Assists.LowFriction; break;
-                    case 9: SaveData.Instance.Assists.SuperDashing = !SaveData.Instance.Assists.SuperDashing; break;
-                    case 10: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
+                    case 2: SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Normal, Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(3)]; break;
+                    case 3: SaveData.Instance.Assists.InfiniteStamina = !SaveData.Instance.Assists.InfiniteStamina; break;
+                    case 4: SaveData.Instance.Assists.ThreeSixtyDashing = !SaveData.Instance.Assists.ThreeSixtyDashing; break;
+                    case 5: SaveData.Instance.Assists.InvisibleMotion = !SaveData.Instance.Assists.InvisibleMotion; break;
+                    case 6: SaveData.Instance.Assists.NoGrabbing = !SaveData.Instance.Assists.NoGrabbing; break;
+                    case 7: SaveData.Instance.Assists.LowFriction = !SaveData.Instance.Assists.LowFriction; break;
+                    case 8: SaveData.Instance.Assists.SuperDashing = !SaveData.Instance.Assists.SuperDashing; break;
+                    case 9: SaveData.Instance.Assists.Hiccups = !SaveData.Instance.Assists.Hiccups; break;
+                    case 10: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
                 }
             } else {
-                switch (randomGenerator.Next(18)) {
+                switch (randomGenerator.Next(19)) {
                     case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                     case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                     case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
@@ -2007,6 +2014,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 15: Settings.InvertDashes = !Settings.InvertDashes; break;
                     case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
                     case 17: Settings.BadelineChasersEverywhere = !Settings.BadelineChasersEverywhere; break;
+                    case 18: Settings.RegularHiccups = (Settings.RegularHiccups != 0 ? 0 : multiplierScale[randomGenerator.Next(13) + 10]); break;
                 }
             }
         }

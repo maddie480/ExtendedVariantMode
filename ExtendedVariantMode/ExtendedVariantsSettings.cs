@@ -151,6 +151,9 @@ namespace Celeste.Mod.ExtendedVariants {
         [SettingIgnore]
         public int ChangeVariantsInterval { get; set; } = 0;
 
+        [SettingIgnore]
+        public bool DoNotRandomizeInvincibility { get; set; } = false;
+
         // ======================================
 
         [SettingIgnore]
