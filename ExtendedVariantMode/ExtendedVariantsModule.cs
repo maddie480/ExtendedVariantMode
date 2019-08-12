@@ -1324,15 +1324,27 @@ namespace Celeste.Mod.ExtendedVariants {
         private static void patchJumpGraceTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
+            MethodReference wallJumpCheck = seekReferenceToMethod(il, "WallJumpCheck");
+
             // jump to whenever jumpGraceTimer is retrieved
-            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("jumpGraceTimer"))) {
+            if (wallJumpCheck != null && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("jumpGraceTimer"))) {
                 Logger.Log("ExtendedVariantsModule", $"Patching jump count in at {cursor.Index} in CIL code");
 
                 // store a reference to it
                 FieldReference refToJumpGraceTimer = ((FieldReference)cursor.Prev.Operand);
 
-                // and proceed replacing it
-                cursor.EmitDelegate<Func<float, float>>(CanJump);
+                // call this.WallJumpCheck(1)
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldc_I4_1);
+                cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
+
+                // call this.WallJumpCheck(-1)
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldc_I4_M1);
+                cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
+
+                // replace the jumpGraceTimer with the modded value
+                cursor.EmitDelegate<Func<float, bool, bool, float>>(CanJump);
 
                 // go back to the beginning of the method
                 cursor.Index = 0;
@@ -1351,10 +1363,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
-        public static float CanJump(float initialJumpGraceTimer) {
+        public static float CanJump(float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
             if(Settings.JumpCount == 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
+            }
+            if(canWallJumpLeft || canWallJumpRight) {
+                // no matter what, don't touch vanilla behavior if a wall jump is possible
+                // because inserting extra jumps would kill wall jumping
+                return initialJumpGraceTimer;
             }
             if(Settings.JumpCount == 6) {
                 // infinite jumping, yay
@@ -1368,6 +1385,20 @@ namespace Celeste.Mod.ExtendedVariants {
             // consume an Extended Variant Jump(TM)
             jumpBuffer--;
             return 1f;
+        }
+
+        /// <summary>
+        /// Seeks any reference to a named method (callvirt) in IL code.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        /// <param name="methodName">name of the method</param>
+        /// <returns>A reference to the method</returns>
+        private static MethodReference seekReferenceToMethod(ILContext il, string methodName) {
+            ILCursor cursor = new ILCursor(il);
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference)instr.Operand).Name.Contains(methodName))) {
+                return (MethodReference)cursor.Next.Operand;
+            }
+            return null;
         }
 
 
