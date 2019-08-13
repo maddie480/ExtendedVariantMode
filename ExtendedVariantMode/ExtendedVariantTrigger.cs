@@ -23,7 +23,10 @@ namespace Celeste.Mod.ExtendedVariants {
                 // (most of the time, the default value is 10)
                 switch(variantChange) {
                     case Variant.Stamina: newValue = 11; break;
-                    case Variant.DashCount: newValue = -1; break;
+
+                    case Variant.DashCount:
+                    case Variant.RoomLighting:
+                        newValue = -1; break;
 
                     case Variant.DisableWallJumping:
                     case Variant.UpsideDown:
@@ -196,6 +199,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.DoNotRandomizeInvincibility ? 1 : 0;
                     ExtendedVariantsModule.Settings.DoNotRandomizeInvincibility = (newValue != 0);
                     break;
+                case Variant.RoomLighting:
+                    oldValue = ExtendedVariantsModule.Settings.RoomLighting;
+                    ExtendedVariantsModule.Settings.RoomLighting = newValue;
+                    break;
             }
 
             return oldValue;
@@ -205,6 +212,6 @@ namespace Celeste.Mod.ExtendedVariants {
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
         DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility
+        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting
     }
 }

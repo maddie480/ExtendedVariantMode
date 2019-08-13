@@ -48,6 +48,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> ChaserCountOption;
         public static TextMenu.Option<bool> AffectExistingChasersOption;
         public static TextMenu.Option<int> RegularHiccupsOption;
+        public static TextMenu.Option<int> RoomLightingOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -206,6 +207,18 @@ namespace Celeste.Mod.ExtendedVariants {
                     Settings.RegularHiccups = multiplierScale[i];
                     regularHiccupTimer = Settings.RegularHiccups / 10f;
                 });
+            RoomLightingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING"),
+                i => {
+                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                    return $"{i * 10}%";
+                }, -1, 10, Settings.RoomLighting, 0).Change(i => {
+                    Settings.RoomLighting = i;
+                    if(Engine.Scene.GetType() == typeof(Level)) {
+                        // currently in level, change lighting right away
+                        Level lvl = (Engine.Scene as Level);
+                        lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
+                    }
+                });
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -263,6 +276,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(UpsideDownOption);
             menu.Add(DisableNeutralJumpingOption);
             menu.Add(RegularHiccupsOption);
+            menu.Add(RoomLightingOption);
 
             addHeading(menu, "TROLL");
             menu.Add(ForceDuckOnGroundOption);
@@ -277,6 +291,12 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private static void resetToDefaultSettings() {
+            if(Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
+                // currently in level, change lighting right away
+                Level lvl = (Engine.Scene as Level);
+                lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
+            }
+
             Settings.Gravity = 10;
             Settings.FallSpeed = 10;
             Settings.JumpHeight = 10;
@@ -302,6 +322,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.ChangeVariantsInterval = 0;
             Settings.DoNotRandomizeInvincibility = false;
             Settings.RegularHiccups = 0;
+            Settings.RoomLighting = -1;
         }
 
         private static void refreshOptionMenuValues() {
@@ -330,6 +351,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(ChangeVariantsIntervalOption, 0, indexFromChangeVariantsInterval(Settings.ChangeVariantsInterval));
             setValue(DoNotRandomizeInvincibilityOption, Settings.DoNotRandomizeInvincibility);
             setValue(RegularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
+            setValue(RoomLightingOption, -1, Settings.RoomLighting);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -359,6 +381,7 @@ namespace Celeste.Mod.ExtendedVariants {
             ChangeVariantsIntervalOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly == 0;
             DoNotRandomizeInvincibilityOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly % 2 != 1;
             RegularHiccupsOption.Disabled = !Settings.MasterSwitch;
+            RoomLightingOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -427,6 +450,8 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Level.TransitionRoutine += ModTransitionRoutine;
             IL.Celeste.Player.UpdateChaserStates += ModUpdateChaserStates;
 
+            On.Celeste.LightFadeTrigger.OnStay += ModOnLightFadeTriggerStay;
+
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
                 resetToDefaultSettings();
@@ -474,6 +499,8 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Level.LoadLevel -= ModLoadLevel;
             On.Celeste.Level.TransitionRoutine -= ModTransitionRoutine;
             IL.Celeste.Player.UpdateChaserStates -= ModUpdateChaserStates;
+
+            On.Celeste.LightFadeTrigger.OnStay -= ModOnLightFadeTriggerStay;
 
             moddedMethods.Clear();
         }
@@ -1755,6 +1782,9 @@ namespace Celeste.Mod.ExtendedVariants {
             if((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers) && playerIntro != Player.IntroTypes.Transition) {
                 injectBadelineChasers(self);
             }
+
+            // chain calls
+            ModLoadLevelLighting(self, playerIntro);
         }
 
         /// <summary>
@@ -1775,6 +1805,9 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // then decide whether to add Badeline or not
             injectBadelineChasers(self);
+
+            // chain other calls
+            unmodBaseLightingAlpha(self);
 
             yield break;
         }
@@ -1947,6 +1980,62 @@ namespace Celeste.Mod.ExtendedVariants {
             }
         }
 
+        // ================ Room Lighting handling ================
+
+        private float initialBaseLightingAlpha = -1f;
+
+        /// <summary>
+        /// Mods the lighting of a new room being loaded.
+        /// </summary>
+        /// <param name="self">The level we are in</param>
+        /// <param name="introType">How the player enters the level</param>
+        private void ModLoadLevelLighting(Level self, Player.IntroTypes introType) {
+            if (Settings.RoomLighting != -1) {
+                float lightingTarget = 1 - Settings.RoomLighting / 10f;
+                if (introType == Player.IntroTypes.Transition) {
+                    // we force the game into thinking this is not a dark room, so that it uses the BaseLightingAlpha + LightingAlphaAdd formula
+                    // (this change is not permanent, exiting and re-entering will reset this flag)
+                    self.DarkRoom = false;
+
+                    // we mod BaseLightingAlpha temporarily so that it adds up with LightingAlphaAdd to the right value: the transition routine will smoothly switch to it
+                    // (we are sure BaseLightingAlpha will not move for the entire session: it's only set when the map is loaded)
+                    initialBaseLightingAlpha = self.BaseLightingAlpha;
+                    self.BaseLightingAlpha = lightingTarget - self.Session.LightingAlphaAdd;
+                } else {
+                    // just set the initial value
+                    self.Lighting.Alpha = lightingTarget;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resets the BaseLightingAlpha to its initial value (if modified by ModLoadLevelLighting).
+        /// </summary>
+        /// <param name="self">The level</param>
+        private void unmodBaseLightingAlpha(Level self) {
+            if (initialBaseLightingAlpha != -1f) {
+                self.BaseLightingAlpha = initialBaseLightingAlpha;
+                initialBaseLightingAlpha = -1f;
+            }
+        }
+
+        /// <summary>
+        /// Locks the lighting to the value set by the user even when they hit a Light Fade Trigger.
+        /// (The Light Fade Trigger will still change the LightingAlphaAdd, so it will be effective immediately if the variant is disabled.)
+        /// </summary>
+        /// <param name="orig">The original method</param>
+        /// <param name="self">The trigger itself</param>
+        /// <param name="player">The player hitting the trigger</param>
+        private void ModOnLightFadeTriggerStay(On.Celeste.LightFadeTrigger.orig_OnStay orig, LightFadeTrigger self, Player player) {
+            orig(self, player);
+
+            if (Settings.RoomLighting != -1) {
+                // be sure to lock the lighting alpha to the value set by the player
+                float lightingTarget = 1 - Settings.RoomLighting / 10f;
+                (self.Scene as Level).Lighting.Alpha = lightingTarget;
+            }
+        }
+
         // ================ Change Variants Randomly handling ================
 
         private float changeVariantTimer = 9999f;
@@ -1995,7 +2084,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 10: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
                 }
             } else {
-                switch (randomGenerator.Next(19)) {
+                switch (randomGenerator.Next(20)) {
                     case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                     case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                     case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
@@ -2015,6 +2104,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 16: Settings.DisableNeutralJumping = !Settings.DisableNeutralJumping; break;
                     case 17: Settings.BadelineChasersEverywhere = !Settings.BadelineChasersEverywhere; break;
                     case 18: Settings.RegularHiccups = (Settings.RegularHiccups != 0 ? 0 : multiplierScale[randomGenerator.Next(13) + 10]); break;
+                    case 19: Settings.RoomLighting = (Settings.RoomLighting != -1 ? -1 : randomGenerator.Next(11)); break;
                 }
             }
         }

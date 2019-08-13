@@ -20,6 +20,7 @@ Adds the following options to the Mod Options menu:
 * **Disable neutral jumping**: Prevents you from using that technique to climb walls without losing stamina. Neutral jumps now behave like normal jumps!
 * **Badeline Chasers Everywhere**: Get Badeline to chase you on every screen in the mountain (with customizable number of Badelines because why not).
 * **Regular Hiccups**: Exactly like the vanilla variant, but you can set the hiccup frequency instead of having a random delay between 1.2 and 1.8 seconds. You can make it go down to 0.1 second. Except you shouldn't. _(Please note this won't have any effect if the vanilla Hiccups variant is enabled.)_
+* **Room Lighting**: Set the lighting of all the rooms in the game. In case you want Golden Ridge to be dark and Mirror Temple to be bright.
 
 This has some Troll Variants too (weird ideas that somehow got implemented anyway):
 * **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!

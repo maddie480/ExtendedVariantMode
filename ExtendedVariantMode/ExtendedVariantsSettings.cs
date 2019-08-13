@@ -169,5 +169,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public int RegularHiccups { get; set; } = 0;
+
+        // ======================================
+
+        [SettingIgnore]
+        public int RoomLighting { get; set; } = -1;
     }
 }
