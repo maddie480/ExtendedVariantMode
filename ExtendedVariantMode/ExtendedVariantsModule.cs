@@ -410,6 +410,7 @@ namespace Celeste.Mod.ExtendedVariants {
             changeVariantTimer = Settings.ChangeVariantsInterval;
 
             // mod methods here
+            IL.Celeste.Player.NormalBegin += ModNormalBegin;
             IL.Celeste.Player.NormalUpdate += ModNormalUpdate;
             IL.Celeste.Player.ClimbUpdate += ModClimbUpdate;
             On.Celeste.Player.RefillStamina += ModRefillStamina;
@@ -461,6 +462,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
         public override void Unload() {
             // unmod methods here
+            IL.Celeste.Player.NormalBegin -= ModNormalBegin;
             IL.Celeste.Player.NormalUpdate -= ModNormalUpdate;
             IL.Celeste.Player.ClimbUpdate -= ModClimbUpdate;
             On.Celeste.Player.RefillStamina -= ModRefillStamina;
@@ -750,6 +752,25 @@ namespace Celeste.Mod.ExtendedVariants {
         // ================ Fall speed handling ================
 
         /// <summary>
+        /// Edits the NormalBegin method in Player, so that ma fall speed is applied right when entering the "normal" state.
+        /// </summary>
+        /// <param name="il">Object allowing CIL patching</param>
+        private void ModNormalBegin(ILContext il) {
+            ModMethod("NormalBegin", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
+
+                    // add two instructions to multiply those constants with the "fall speed factor"
+                    cursor.EmitDelegate<Func<float>>(DetermineFallSpeedFactor);
+                    cursor.Emit(OpCodes.Mul);
+                }
+            });
+        }
+
+        /// <summary>
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
@@ -1019,6 +1040,8 @@ namespace Celeste.Mod.ExtendedVariants {
             // chain the other functions of Update()
             ModUpdateChangeVariantsRandomly();
             ModUpdateRegularHiccups(self);
+
+            Logger.Log("EVM", $"Speed X {self.Speed.X}, Speed Y {self.Speed.Y}, Stamina {self.Stamina}, State {self.StateMachine.State}");
         }
 
         /// <summary>
