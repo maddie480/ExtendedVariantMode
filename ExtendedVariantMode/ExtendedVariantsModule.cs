@@ -421,6 +421,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.UpdateSprite += ModUpdateSprite;
             On.Celeste.Player.RefillDash += ModRefillDash;
             IL.Celeste.Player.UseRefill += ModUseRefill;
+            On.Celeste.Player.UseRefill += ModOnUseRefill;
             On.Celeste.Player.Added += ModAdded;
             IL.Celeste.Player.CallDashEvents += ModCallDashEvents;
             IL.Celeste.Player.UpdateHair += ModUpdateHair;
@@ -471,6 +472,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.UpdateSprite -= ModUpdateSprite;
             On.Celeste.Player.RefillDash -= ModRefillDash;
             IL.Celeste.Player.UseRefill -= ModUseRefill;
+            On.Celeste.Player.UseRefill -= ModOnUseRefill;
             On.Celeste.Player.Added -= ModAdded;
             IL.Celeste.Player.CallDashEvents -= ModCallDashEvents;
             IL.Celeste.Player.UpdateHair -= ModUpdateHair;
@@ -1127,6 +1129,24 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.EmitDelegate<Func<int, int>>(DetermineDashCount);
                 }
             });
+        }
+
+        /// <summary>
+        /// Wraps the UseRefill method, so that it returns true when crystals refill jumps.
+        /// </summary>
+        /// <param name="orig">The original method</param>
+        /// <param name="self">The Player entity</param>
+        /// <param name="twoDashes">unused</param>
+        /// <returns>true if the original method returned true OR the refill also refilled dashes, false otherwise</returns>
+        private bool ModOnUseRefill(On.Celeste.Player.orig_UseRefill orig, Player self, bool twoDashes) {
+            int jumpBufferBefore = jumpBuffer;
+
+            bool origResult = orig(self, twoDashes);
+            if(Settings.RefillJumpsOnDashRefill && jumpBuffer > jumpBufferBefore) {
+                // break the crystal because it refilled jumps
+                return true;
+            }
+            return origResult;
         }
 
         /// <summary>
