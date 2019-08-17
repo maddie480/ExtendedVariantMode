@@ -1040,8 +1040,6 @@ namespace Celeste.Mod.ExtendedVariants {
             // chain the other functions of Update()
             ModUpdateChangeVariantsRandomly();
             ModUpdateRegularHiccups(self);
-
-            Logger.Log("EVM", $"Speed X {self.Speed.X}, Speed Y {self.Speed.Y}, Stamina {self.Stamina}, State {self.StateMachine.State}");
         }
 
         /// <summary>
