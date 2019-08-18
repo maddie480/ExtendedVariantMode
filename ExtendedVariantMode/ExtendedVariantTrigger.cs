@@ -45,6 +45,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.WindEverywhere:
                     case Variant.SnowballsEverywhere:
                     case Variant.AddSeekers:
+                    case Variant.BadelineLag:
                         newValue = 0; break;
 
                     case Variant.JumpCount:
@@ -228,6 +229,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.AddSeekers;
                     ExtendedVariantsModule.Settings.AddSeekers = newValue;
                     break;
+                case Variant.BadelineLag:
+                    oldValue = ExtendedVariantsModule.Settings.BadelineLag;
+                    ExtendedVariantsModule.Settings.BadelineLag = newValue;
+                    break;
             }
 
             return oldValue;
@@ -237,6 +242,6 @@ namespace Celeste.Mod.ExtendedVariants {
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
         DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers
+        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, BadelineLag
     }
 }

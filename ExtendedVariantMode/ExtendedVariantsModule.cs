@@ -54,6 +54,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> SnowballsEverywhereOption;
         public static TextMenu.Option<int> SnowballDelayOption;
         public static TextMenu.Option<int> AddSeekersOption;
+        public static TextMenu.Option<int> BadelineLagOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -238,6 +239,9 @@ namespace Celeste.Mod.ExtendedVariants {
                 .Change(i => Settings.SnowballDelay = multiplierScale[i]);
             AddSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
                 i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
+            BadelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
+                i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
+                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -289,6 +293,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(BadelineChasersEverywhereOption);
             menu.Add(ChaserCountOption);
             menu.Add(AffectExistingChasersOption);
+            menu.Add(BadelineLagOption);
 
             addHeading(menu, "EVERYWHERE");
             menu.Add(OshiroEverywhereOption);
@@ -354,6 +359,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.SnowballsEverywhere = false;
             Settings.SnowballDelay = 8;
             Settings.AddSeekers = 0;
+            Settings.BadelineLag = 0;
         }
 
         private static void refreshOptionMenuValues() {
@@ -388,6 +394,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(SnowballsEverywhereOption, Settings.SnowballsEverywhere);
             setValue(SnowballDelayOption, 0, Settings.SnowballDelay);
             setValue(AddSeekersOption, 0, Settings.AddSeekers);
+            setValue(BadelineLagOption, 0, Settings.BadelineLag);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -423,6 +430,7 @@ namespace Celeste.Mod.ExtendedVariants {
             SnowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
             SnowballDelayOption.Disabled = !Settings.MasterSwitch;
             AddSeekersOption.Disabled = !Settings.MasterSwitch;
+            BadelineLagOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -486,6 +494,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.DashCoroutine += ModDashCoroutine;
             IL.Celeste.Player.DashUpdate += ModDashUpdate;
 
+            IL.Celeste.BadelineOldsite.ctor_Vector2_int += ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added += ModBadelineOldsiteAdded;
             IL.Celeste.BadelineOldsite.CanChangeMusic += ModBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.Update += ModBadelineOldsiteUpdate;
@@ -543,6 +552,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.Player.DashCoroutine -= ModDashCoroutine;
             IL.Celeste.Player.DashUpdate -= ModDashUpdate;
 
+            IL.Celeste.BadelineOldsite.ctor_Vector2_int -= ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added -= ModBadelineOldsiteAdded;
             IL.Celeste.BadelineOldsite.CanChangeMusic -= ModBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.Update -= ModBadelineOldsiteUpdate;
@@ -1857,6 +1867,26 @@ namespace Celeste.Mod.ExtendedVariants {
 
 
         // ================ Badeline Chasers Everywhere handling ================
+
+
+        private void ModBadelineOldsiteConstructor(ILContext il) {
+            ModMethod("BadelineOldsiteConstructor", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go everywhere where the 1.55 second delay is defined
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 1.55f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding Badeline lag at {cursor.Index} in CIL code for BadelineOldsite constructor");
+
+                    // and substitute it with our own value
+                    cursor.Emit(OpCodes.Pop);
+                    cursor.EmitDelegate<Func<float>>(DetermineBadelineLag);
+                }
+            });
+        }
+
+        private float DetermineBadelineLag() {
+            return Settings.BadelineLag == 0 ? 1.55f : Settings.BadelineLag / 10f;
+        }
 
         /// <summary>
         /// Wraps the LoadLevel method in order to add Badeline chasers when needed.
