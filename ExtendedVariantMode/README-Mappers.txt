@@ -25,6 +25,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
 	- ChangeVariantsInterval: The interval in seconds between two variant changes, or 0 to change variants on each new screen
 	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
+	- WindEverywhere: 0 = DISABLED, 1 = HORIZONTAL, 2 = HORIZONTAL_STRONG, 3 = HORIZONTAL_ONOFF, 4 = HORIZONTAL_ONOFF_STRONG, 5 = VERTICAL, 6 = RANDOM
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 

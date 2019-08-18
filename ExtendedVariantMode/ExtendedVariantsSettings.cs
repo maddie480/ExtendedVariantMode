@@ -179,5 +179,11 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public bool OshiroEverywhere { get; set; } = false;
+
+
+        // ======================================
+
+        [SettingIgnore]
+        public int WindEverywhere { get; set; } = 0;
     }
 }

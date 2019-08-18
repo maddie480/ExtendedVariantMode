@@ -41,6 +41,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.RefillJumpsOnDashRefill:
                     case Variant.DoNotRandomizeInvincibility:
                     case Variant.OshiroEverywhere:
+                    case Variant.WindEverywhere:
                         newValue = 0; break;
 
                     case Variant.JumpCount:
@@ -217,6 +218,6 @@ namespace Celeste.Mod.ExtendedVariants {
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
         DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere
+        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere
     }
 }
