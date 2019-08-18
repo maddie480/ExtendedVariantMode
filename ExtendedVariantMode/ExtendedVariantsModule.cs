@@ -49,6 +49,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<bool> AffectExistingChasersOption;
         public static TextMenu.Option<int> RegularHiccupsOption;
         public static TextMenu.Option<int> RoomLightingOption;
+        public static TextMenu.Option<bool> OshiroEverywhereOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -219,6 +220,8 @@ namespace Celeste.Mod.ExtendedVariants {
                         lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
                     }
                 });
+            OshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
+                .Change(b => Settings.OshiroEverywhere = b);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -270,6 +273,9 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(BadelineChasersEverywhereOption);
             menu.Add(ChaserCountOption);
             menu.Add(AffectExistingChasersOption);
+
+            addHeading(menu, "EVERYWHERE");
+            menu.Add(OshiroEverywhereOption);
 
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
@@ -323,6 +329,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.DoNotRandomizeInvincibility = false;
             Settings.RegularHiccups = 0;
             Settings.RoomLighting = -1;
+            Settings.OshiroEverywhere = false;
         }
 
         private static void refreshOptionMenuValues() {
@@ -352,6 +359,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(DoNotRandomizeInvincibilityOption, Settings.DoNotRandomizeInvincibility);
             setValue(RegularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
             setValue(RoomLightingOption, -1, Settings.RoomLighting);
+            setValue(OshiroEverywhereOption, Settings.OshiroEverywhere);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -382,6 +390,7 @@ namespace Celeste.Mod.ExtendedVariants {
             DoNotRandomizeInvincibilityOption.Disabled = !Settings.MasterSwitch || Settings.ChangeVariantsRandomly % 2 != 1;
             RegularHiccupsOption.Disabled = !Settings.MasterSwitch;
             RoomLightingOption.Disabled = !Settings.MasterSwitch;
+            OshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -454,6 +463,8 @@ namespace Celeste.Mod.ExtendedVariants {
 
             On.Celeste.LightFadeTrigger.OnStay += ModOnLightFadeTriggerStay;
 
+            On.Celeste.AngryOshiro.Update += ModAngryOshiroUpdate;
+
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
                 resetToDefaultSettings();
@@ -505,6 +516,8 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.UpdateChaserStates -= ModUpdateChaserStates;
 
             On.Celeste.LightFadeTrigger.OnStay -= ModOnLightFadeTriggerStay;
+
+            On.Celeste.AngryOshiro.Update -= ModAngryOshiroUpdate;
 
             moddedMethods.Clear();
         }
@@ -1826,6 +1839,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // chain calls
             ModLoadLevelLighting(self, playerIntro);
+            if (playerIntro != Player.IntroTypes.Transition) addOshiroToLevel(self);
         }
 
         /// <summary>
@@ -1849,6 +1863,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // chain other calls
             unmodBaseLightingAlpha(self);
+            addOshiroToLevel(self);
 
             yield break;
         }
@@ -1898,17 +1913,15 @@ namespace Celeste.Mod.ExtendedVariants {
         private void ModBadelineOldsiteUpdate(On.Celeste.BadelineOldsite.orig_Update orig, BadelineOldsite self) {
             orig(self);
 
-            if (Settings.BadelineChasersEverywhere) {
-                Level level = self.SceneAs<Level>();
-                Player player = level.Tracker.GetEntity<Player>();
+            Level level = self.SceneAs<Level>();
+            Player player = level.Tracker.GetEntity<Player>();
 
-                if (player != null && player.StateMachine.State == 11 && notInBadelineIntroCutscene(level)) {
-                    // we are in a cutscene **but not the Badeline Intro one**
-                    // so we should just make the chasers disappear to prevent them from killing the player mid-cutscene
-                    level.Displacement.AddBurst(self.Center, 0.5f, 24f, 96f, 0.4f, null, null);
-                    level.Particles.Emit(BadelineOldsite.P_Vanish, 12, self.Center, Vector2.One * 6f);
-                    self.RemoveSelf();
-                }
+            if (player != null && player.StateMachine.State == 11 && notInBadelineIntroCutscene(level)) {
+                // we are in a cutscene **but not the Badeline Intro one**
+                // so we should just make the chasers disappear to prevent them from killing the player mid-cutscene
+                level.Displacement.AddBurst(self.Center, 0.5f, 24f, 96f, 0.4f, null, null);
+                level.Particles.Emit(BadelineOldsite.P_Vanish, 12, self.Center, Vector2.One * 6f);
+                self.RemoveSelf();
             }
         }
 
@@ -1954,15 +1967,33 @@ namespace Celeste.Mod.ExtendedVariants {
             return (level.Session.Area.GetSID() != "Celeste/2-OldSite" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
         }
 
-        private EntityData generateBadelineEntityData(Level level, int badelineNumber) {
+        /// <summary>
+        /// Generates a new EntityData instance, linked to the level given, an ID which will be the same if and only if generated
+        /// in the same room with the same entityNumber, and an empty map of attributes.
+        /// </summary>
+        /// <param name="level">The level the entity belongs to</param>
+        /// <param name="entityNumber">An entity number, between 0 and 19 inclusive</param>
+        /// <returns>A fresh EntityData linked to the level, and with an ID</returns>
+        private EntityData generateBasicEntityData(Level level, int entityNumber) {
             EntityData entityData = new EntityData();
 
-            // come up with some way to generate deterministic but unique-per-room IDs
-            int roomHash = Math.Abs(level.Session.Level.GetHashCode()) % 100000000;
-            entityData.ID = 1000000000 + roomHash * 10 + badelineNumber;
+            // we hash the current level name, so we will get a hopefully-unique "room hash" for each room in the level
+            // the resulting hash should be between 0 and 49_999_999 inclusive
+            int roomHash = Math.Abs(level.Session.Level.GetHashCode()) % 50_000_000;
+
+            // generate an ID, minimum 1_000_000_000 (to minimize chances of conflicting with existing entities)
+            // and maximum 1_999_999_999 inclusive (1_000_000_000 + 49_999_999 * 20 + 19) => max value for int32 is 2_147_483_647
+            // => if the same entity (same entityNumber) is generated in the same room, it will have the same ID, like any other entity would
+            entityData.ID = 1_000_000_000 + roomHash * 20 + entityNumber;
 
             entityData.Level = level.Session.LevelData;
             entityData.Values = new Dictionary<string, object>();
+
+            return entityData;
+        }
+
+        private EntityData generateBadelineEntityData(Level level, int badelineNumber) {
+            EntityData entityData = generateBasicEntityData(level, badelineNumber);
             entityData.Values["canChangeMusic"] = false;
             return entityData;
         }
@@ -2004,6 +2035,48 @@ namespace Celeste.Mod.ExtendedVariants {
                     cursor.Next.Operand = 5.5f;
                 }
             });
+        }
+
+        // ================ Oshiro Everywhere handling ================
+
+        private bool oshiroFromVanillaLevel = false;
+
+        private void addOshiroToLevel(Level level) {
+            oshiroFromVanillaLevel = true;
+
+            // if no Oshiro is present...
+            if(Settings.OshiroEverywhere && level.Tracker.CountEntities<AngryOshiro>() == 0) {
+                Player player = level.Tracker.GetEntity<Player>();
+
+                if (player != null) {
+                    // this replicates the behavior of Oshiro Trigger in vanilla Celeste
+                    Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
+                    level.Add(new AngryOshiro(position, false));
+                    oshiroFromVanillaLevel = false;
+
+                    level.Entities.UpdateLists();
+                }
+            }
+        }
+
+        private void ModAngryOshiroUpdate(On.Celeste.AngryOshiro.orig_Update orig, AngryOshiro self) {
+            orig(self);
+
+            Level level = self.SceneAs<Level>();
+            Player player = level.Tracker.GetEntity<Player>();
+
+            if (player != null && player.StateMachine.State == 11 && !oshiroFromVanillaLevel) {
+                // during cutscenes, tell Oshiro to get outta here the same way as Badeline
+                // (we can't use the "official" way of making him leave because that doesn't cancel his attack.
+                // A Badeline vanish animation looks weird but nicer than a flat out disappearance imo)
+                level.Displacement.AddBurst(self.Center, 0.5f, 24f, 96f, 0.4f, null, null);
+                level.Particles.Emit(BadelineOldsite.P_Vanish, 12, self.Center, Vector2.One * 6f);
+                self.RemoveSelf();
+
+                // make sure that the anxiety set by Oshiro went away (why doesn't that work in real life tho)
+                Distort.Anxiety = 0;
+                Distort.GameRate = 1;
+            }
         }
 
         // ================ Regular Hiccups handling ================

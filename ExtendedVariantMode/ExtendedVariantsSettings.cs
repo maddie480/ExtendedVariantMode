@@ -174,5 +174,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public int RoomLighting { get; set; } = -1;
+
+        // ======================================
+
+        [SettingIgnore]
+        public bool OshiroEverywhere { get; set; } = false;
     }
 }
