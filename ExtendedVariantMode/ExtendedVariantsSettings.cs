@@ -185,5 +185,14 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public int WindEverywhere { get; set; } = 0;
+
+
+        // ======================================
+
+        [SettingIgnore]
+        public bool SnowballsEverywhere { get; set; } = false;
+
+        [SettingIgnore]
+        public int SnowballDelay { get; set; } = 8;
     }
 }

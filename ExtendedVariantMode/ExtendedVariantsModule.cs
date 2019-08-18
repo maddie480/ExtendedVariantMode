@@ -51,6 +51,8 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> RoomLightingOption;
         public static TextMenu.Option<bool> OshiroEverywhereOption;
         public static TextMenu.Option<int> WindEverywhereOption;
+        public static TextMenu.Option<bool> SnowballsEverywhereOption;
+        public static TextMenu.Option<int> SnowballDelayOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -228,6 +230,11 @@ namespace Celeste.Mod.ExtendedVariants {
                     "DISABLED", "WINDEVERYWHERE_HORIZONTAL", "WINDEVERYWHERE_HORIZONTAL_STRONG", "WINDEVERYWHERE_HORIZONTAL_ONOFF", "WINDEVERYWHERE_HORIZONTAL_ONOFF_STRONG", "WINDEVERYWHERE_VERTICAL", "WINDEVERYWHERE_RANDOM" }[i]),
                 0, 6, Settings.WindEverywhere, 0)
                 .Change(i => Settings.WindEverywhere = i);
+            SnowballsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
+                .Change(b => Settings.SnowballsEverywhere = b);
+            SnowballDelayOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY"),
+                i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
+                .Change(i => Settings.SnowballDelay = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -283,6 +290,8 @@ namespace Celeste.Mod.ExtendedVariants {
             addHeading(menu, "EVERYWHERE");
             menu.Add(OshiroEverywhereOption);
             menu.Add(WindEverywhereOption);
+            menu.Add(SnowballsEverywhereOption);
+            menu.Add(SnowballDelayOption);
 
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
@@ -338,6 +347,8 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.RoomLighting = -1;
             Settings.OshiroEverywhere = false;
             Settings.WindEverywhere = 0;
+            Settings.SnowballsEverywhere = false;
+            Settings.SnowballDelay = 8;
         }
 
         private static void refreshOptionMenuValues() {
@@ -369,6 +380,8 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(RoomLightingOption, -1, Settings.RoomLighting);
             setValue(OshiroEverywhereOption, Settings.OshiroEverywhere);
             setValue(WindEverywhereOption, 0, Settings.WindEverywhere);
+            setValue(SnowballsEverywhereOption, Settings.SnowballsEverywhere);
+            setValue(SnowballDelayOption, 0, Settings.SnowballDelay);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -401,6 +414,8 @@ namespace Celeste.Mod.ExtendedVariants {
             RoomLightingOption.Disabled = !Settings.MasterSwitch;
             OshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
             WindEverywhereOption.Disabled = !Settings.MasterSwitch;
+            SnowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
+            SnowballDelayOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -474,6 +489,8 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.LightFadeTrigger.OnStay += ModOnLightFadeTriggerStay;
 
             On.Celeste.AngryOshiro.Update += ModAngryOshiroUpdate;
+            IL.Celeste.Snowball.Update += ModSnowballUpdateIL;
+            On.Celeste.Snowball.Update += ModSnowballUpdate;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -528,6 +545,8 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.LightFadeTrigger.OnStay -= ModOnLightFadeTriggerStay;
 
             On.Celeste.AngryOshiro.Update -= ModAngryOshiroUpdate;
+            IL.Celeste.Snowball.Update -= ModSnowballUpdateIL;
+            On.Celeste.Snowball.Update -= ModSnowballUpdate;
 
             moddedMethods.Clear();
         }
@@ -1856,6 +1875,7 @@ namespace Celeste.Mod.ExtendedVariants {
             if (playerIntro != Player.IntroTypes.Transition) {
                 addOshiroToLevel(self);
                 applyWind(self);
+                addSnowballToLevel(self);
             }
         }
 
@@ -1882,6 +1902,7 @@ namespace Celeste.Mod.ExtendedVariants {
             unmodBaseLightingAlpha(self);
             addOshiroToLevel(self);
             applyWind(self);
+            addSnowballToLevel(self);
 
             yield break;
         }
@@ -2017,11 +2038,8 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private bool ModVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
-            if (Settings.BadelineChasersEverywhere) {
-                // tell the game to use the boolean stored in EntityData (the default is true, the chasers we add have false)
-                return false;
-            }
-            return shouldUseVanilla;
+            // tell the game to use the boolean stored in EntityData (the default is true, the chasers we add have false)
+            return false;
         }
 
         private bool ModVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
@@ -2064,16 +2082,12 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // if no Oshiro is present...
             if(Settings.OshiroEverywhere && level.Tracker.CountEntities<AngryOshiro>() == 0) {
-                Player player = level.Tracker.GetEntity<Player>();
+                // this replicates the behavior of Oshiro Trigger in vanilla Celeste
+                Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
+                level.Add(new AngryOshiro(position, false));
+                oshiroFromVanillaLevel = false;
 
-                if (player != null) {
-                    // this replicates the behavior of Oshiro Trigger in vanilla Celeste
-                    Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
-                    level.Add(new AngryOshiro(position, false));
-                    oshiroFromVanillaLevel = false;
-
-                    level.Entities.UpdateLists();
-                }
+                level.Entities.UpdateLists();
             }
         }
 
@@ -2142,6 +2156,49 @@ namespace Celeste.Mod.ExtendedVariants {
                 // remove the backdrop
                 level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(WindSnowFG));
                 snowBackdropAddedByEVM = false;
+            }
+        }
+
+        // ================ Snowballs Everywhere handling ================
+
+        private void addSnowballToLevel(Level level) {
+            // do pretty much the same thing as the so-called "Wind Attack Trigger" from vanilla
+            if (Settings.SnowballsEverywhere && level.Entities.FindFirst<Snowball>() == null) {
+                Snowball snowball = new Snowball();
+                level.Add(snowball);
+                level.Entities.UpdateLists();
+
+                // send the snowball off-screen, so that the player gets 0.8 seconds before the first snowball
+                snowball.X = level.Camera.Left - 60f;
+            }
+        }
+
+        private void ModSnowballUpdateIL(ILContext il) {
+            ModMethod("SnowballUpdate", () => {
+                ILCursor cursor = new ILCursor(il);
+
+                // go everywhere where the 0.8 second delay is defined
+                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.8f)) {
+                    Logger.Log("ExtendedVariantsModule", $"Modding delay between snowballs at {cursor.Index} in CIL code for Update in Snowball");
+
+                    // and substitute it with our own value
+                    cursor.Emit(OpCodes.Pop);
+                    cursor.EmitDelegate<Func<float>>(DetermineDelayBetweenSnowballs);
+                }
+            });
+        }
+
+        private float DetermineDelayBetweenSnowballs() {
+            return Settings.SnowballDelay / 10f;
+        }
+
+        private void ModSnowballUpdate(On.Celeste.Snowball.orig_Update orig, Snowball self) {
+            orig(self);
+
+            Player player = self.SceneAs<Level>().Tracker.GetEntity<Player>();
+            if (player != null && player.StateMachine.State == 11) {
+                // kill the snowball no matter what
+                self.RemoveSelf();
             }
         }
 

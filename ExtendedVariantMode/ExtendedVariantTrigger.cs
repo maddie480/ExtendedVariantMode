@@ -23,6 +23,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 // (most of the time, the default value is 10)
                 switch(variantChange) {
                     case Variant.Stamina: newValue = 11; break;
+                    case Variant.SnowballDelay: newValue = 8; break;
 
                     case Variant.DashCount:
                     case Variant.RoomLighting:
@@ -42,6 +43,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.DoNotRandomizeInvincibility:
                     case Variant.OshiroEverywhere:
                     case Variant.WindEverywhere:
+                    case Variant.SnowballsEverywhere:
                         newValue = 0; break;
 
                     case Variant.JumpCount:
@@ -209,6 +211,18 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.OshiroEverywhere ? 1 : 0;
                     ExtendedVariantsModule.Settings.OshiroEverywhere = (newValue != 0);
                     break;
+                case Variant.WindEverywhere:
+                    oldValue = ExtendedVariantsModule.Settings.WindEverywhere;
+                    ExtendedVariantsModule.Settings.WindEverywhere = newValue;
+                    break;
+                case Variant.SnowballsEverywhere:
+                    oldValue = ExtendedVariantsModule.Settings.SnowballsEverywhere ? 1 : 0;
+                    ExtendedVariantsModule.Settings.SnowballsEverywhere = (newValue != 0);
+                    break;
+                case Variant.SnowballDelay:
+                    oldValue = ExtendedVariantsModule.Settings.SnowballDelay;
+                    ExtendedVariantsModule.Settings.SnowballDelay = newValue;
+                    break;
             }
 
             return oldValue;
@@ -218,6 +232,6 @@ namespace Celeste.Mod.ExtendedVariants {
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
         DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere
+        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay
     }
 }
