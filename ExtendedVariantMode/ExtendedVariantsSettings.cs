@@ -194,5 +194,11 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public int SnowballDelay { get; set; } = 8;
+
+
+        // ======================================
+
+        [SettingIgnore]
+        public int AddSeekers { get; set; } = 0;
     }
 }

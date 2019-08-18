@@ -53,6 +53,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> WindEverywhereOption;
         public static TextMenu.Option<bool> SnowballsEverywhereOption;
         public static TextMenu.Option<int> SnowballDelayOption;
+        public static TextMenu.Option<int> AddSeekersOption;
         public static TextMenu.Item ResetToDefaultOption;
 
         public ExtendedVariantsModule() {
@@ -235,6 +236,8 @@ namespace Celeste.Mod.ExtendedVariants {
             SnowballDelayOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY"),
                 i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
                 .Change(i => Settings.SnowballDelay = multiplierScale[i]);
+            AddSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
+                i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -292,6 +295,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(WindEverywhereOption);
             menu.Add(SnowballsEverywhereOption);
             menu.Add(SnowballDelayOption);
+            menu.Add(AddSeekersOption);
 
             addHeading(menu, "OTHER");
             menu.Add(StaminaOption);
@@ -349,6 +353,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Settings.WindEverywhere = 0;
             Settings.SnowballsEverywhere = false;
             Settings.SnowballDelay = 8;
+            Settings.AddSeekers = 0;
         }
 
         private static void refreshOptionMenuValues() {
@@ -382,6 +387,7 @@ namespace Celeste.Mod.ExtendedVariants {
             setValue(WindEverywhereOption, 0, Settings.WindEverywhere);
             setValue(SnowballsEverywhereOption, Settings.SnowballsEverywhere);
             setValue(SnowballDelayOption, 0, Settings.SnowballDelay);
+            setValue(AddSeekersOption, 0, Settings.AddSeekers);
         }
 
         private static void refreshOptionMenuEnabledStatus() {
@@ -416,6 +422,7 @@ namespace Celeste.Mod.ExtendedVariants {
             WindEverywhereOption.Disabled = !Settings.MasterSwitch;
             SnowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
             SnowballDelayOption.Disabled = !Settings.MasterSwitch;
+            AddSeekersOption.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
@@ -491,6 +498,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.AngryOshiro.Update += ModAngryOshiroUpdate;
             IL.Celeste.Snowball.Update += ModSnowballUpdateIL;
             On.Celeste.Snowball.Update += ModSnowballUpdate;
+            On.Celeste.Seeker.Update += ModSeekerUpdate;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -547,6 +555,7 @@ namespace Celeste.Mod.ExtendedVariants {
             On.Celeste.AngryOshiro.Update -= ModAngryOshiroUpdate;
             IL.Celeste.Snowball.Update -= ModSnowballUpdateIL;
             On.Celeste.Snowball.Update -= ModSnowballUpdate;
+            On.Celeste.Seeker.Update -= ModSeekerUpdate;
 
             moddedMethods.Clear();
         }
@@ -1872,6 +1881,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // chain calls
             ModLoadLevelLighting(self, playerIntro);
+            addSeekersToLevel(self);
             if (playerIntro != Player.IntroTypes.Transition) {
                 addOshiroToLevel(self);
                 applyWind(self);
@@ -2202,6 +2212,49 @@ namespace Celeste.Mod.ExtendedVariants {
             }
         }
 
+        // ================ Add Seekers handling ================
+
+        private void addSeekersToLevel(Level level) {
+            Player player = level.Tracker.GetEntity<Player>();
+                
+            if(player != null && Settings.AddSeekers != 0) { 
+                for(int seekerCount = 0; seekerCount < Settings.AddSeekers; seekerCount++) {
+                    for (int i = 0; i < 100; i++) {
+                        // roll a seeker position in the room
+                        int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
+                        int y = randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
+
+                        // should be at least 100 pixels from the player
+                        double playerDistance = Math.Sqrt(Math.Pow(MathHelper.Distance(x, player.X), 2) + Math.Pow(MathHelper.Distance(y, player.Y), 2));
+
+                        // also check if we are not spawning in a wall, that would be a shame
+                        Rectangle collideRectangle = new Rectangle(x - 8, y - 8, 16, 16);
+                        if (playerDistance > 100 && !level.CollideCheck<Solid>(collideRectangle) && !level.CollideCheck<Seeker>(collideRectangle)) {
+                            // build a Seeker with a proper EntityID to make Speedrun Tool happy (this is useless in vanilla Celeste but the constructor call is intercepted by Speedrun Tool)
+                            EntityData seekerData = generateBasicEntityData(level, 10 + seekerCount);
+                            seekerData.Position = new Vector2(x, y);
+                            Seeker seeker = new Seeker(seekerData, Vector2.Zero);
+                            level.Add(seeker);
+                            break;
+                        }
+                    }
+                }
+
+                level.Entities.UpdateLists();
+            }
+        }
+
+
+        private void ModSeekerUpdate(On.Celeste.Seeker.orig_Update orig, Seeker self) {
+            orig(self);
+
+            Player player = self.SceneAs<Level>().Tracker.GetEntity<Player>();
+            if (player != null && player.StateMachine.State == 11) {
+                // kill the snowball no matter what
+                self.RemoveSelf();
+            }
+        }
+
         // ================ Regular Hiccups handling ================
 
         private float regularHiccupTimer = 9999f;
@@ -2321,7 +2374,7 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 10: SaveData.Instance.Assists.Invincible = !SaveData.Instance.Assists.Invincible; break;
                 }
             } else {
-                switch (randomGenerator.Next(20)) {
+                switch (randomGenerator.Next(24)) {
                     case 0: Settings.Gravity = multiplierScale[randomGenerator.Next(23)]; break;
                     case 1: Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)]; break;
                     case 2: Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)]; break;
@@ -2342,6 +2395,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     case 17: Settings.BadelineChasersEverywhere = !Settings.BadelineChasersEverywhere; break;
                     case 18: Settings.RegularHiccups = (Settings.RegularHiccups != 0 ? 0 : multiplierScale[randomGenerator.Next(13) + 10]); break;
                     case 19: Settings.RoomLighting = (Settings.RoomLighting != -1 ? -1 : randomGenerator.Next(11)); break;
+                    case 20: Settings.OshiroEverywhere = !Settings.OshiroEverywhere; break;
+                    case 21: Settings.WindEverywhere = (Settings.WindEverywhere != 0 ? 0 : 6); break;
+                    case 22: Settings.SnowballsEverywhere = !Settings.SnowballsEverywhere; break;
+                    case 23: Settings.AddSeekers = (Settings.AddSeekers != 0 ? 0 : 1); break;
                 }
             }
         }
