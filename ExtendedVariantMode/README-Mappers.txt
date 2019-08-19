@@ -25,7 +25,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- ChangeVariantsRandomly: 0 to disable, 1 to change vanilla variants, 2 to change extended variants, 3 for both
 	- ChangeVariantsInterval: The interval in seconds between two variant changes, or 0 to change variants on each new screen
 	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
-	- WindEverywhere: 0 = DISABLED, 1 = HORIZONTAL, 2 = HORIZONTAL_STRONG, 3 = HORIZONTAL_ONOFF, 4 = HORIZONTAL_ONOFF_STRONG, 5 = VERTICAL, 6 = RANDOM
+	- WindEverywhere: 0 = DISABLED, 1 = HORIZONTAL, 2 = HORIZONTAL_STRONG, 3 = HORIZONTAL_ONOFF, 4 = HORIZONTAL_ONOFF_FAST, 5 = VERTICAL, 6 = RANDOM
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).
 	- BadelineLag: The delay between the player and the first Badeline, multiplied by 10, default is 0.
 	- AddSeekers: The number of seekers to add.

@@ -84,6 +84,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoDestroyingAngryOshiro.cs" />
+    <Compile Include="AutoDestroyingBadelineOldsite.cs" />
+    <Compile Include="AutoDestroyingSeeker.cs" />
+    <Compile Include="AutoDestroyingSnowball.cs" />
     <Compile Include="ExtendedVariantsModule.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
