@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
+using On.Celeste;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -496,6 +497,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.BadelineOldsite.ctor_Vector2_int += ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added += ModBadelineOldsiteAdded;
             IL.Celeste.BadelineOldsite.CanChangeMusic += ModBadelineOldsiteCanChangeMusic;
+            On.Celeste.BadelineOldsite.IsChaseEnd += ModBadelineOldsiteIsChaseEnd;
             On.Celeste.Level.LoadLevel += ModLoadLevel;
             On.Celeste.Level.TransitionRoutine += ModTransitionRoutine;
             IL.Celeste.Player.UpdateChaserStates += ModUpdateChaserStates;
@@ -553,6 +555,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.BadelineOldsite.ctor_Vector2_int -= ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added -= ModBadelineOldsiteAdded;
             IL.Celeste.BadelineOldsite.CanChangeMusic -= ModBadelineOldsiteCanChangeMusic;
+            On.Celeste.BadelineOldsite.IsChaseEnd -= ModBadelineOldsiteIsChaseEnd;
             On.Celeste.Level.LoadLevel -= ModLoadLevel;
             On.Celeste.Level.TransitionRoutine -= ModTransitionRoutine;
             IL.Celeste.Player.UpdateChaserStates -= ModUpdateChaserStates;
@@ -2079,6 +2082,15 @@ namespace Celeste.Mod.ExtendedVariants {
                 return false;
             }
             return shouldUseVanilla;
+        }
+
+        private bool ModBadelineOldsiteIsChaseEnd(On.Celeste.BadelineOldsite.orig_IsChaseEnd orig, BadelineOldsite self, bool value) {
+            Session session = self.SceneAs<Level>().Session;
+            if (session.Area.GetLevelSet() == "Celeste" && session.Area.GetSID() != "Celeste/2-OldSite") {
+                // there is no chase end outside Old Site in the vanilla game.
+                return false;
+            }
+            return orig(self, value);
         }
 
         /// <summary>
