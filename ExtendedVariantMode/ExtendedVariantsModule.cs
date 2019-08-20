@@ -2287,6 +2287,16 @@ namespace Celeste.Mod.ExtendedVariants {
                 yield return coroutine.Current;
             }
             BadelineBoosting = false;
+
+            // apply the dash refill rules here (this does not call RefillDash)
+            if(Settings.DashCount != -1) {
+                // an alarm set off in the coroutine will add one more dash in 0.15 seconds
+                player.Dashes = Settings.DashCount - 1;
+            }
+            if (Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2) {
+                RefillJumpBuffer(1f);
+            }
+
             yield break;
         }
 
