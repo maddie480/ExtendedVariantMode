@@ -10,7 +10,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Level level = SceneAs<Level>();
             Player player = level.Tracker.GetEntity<Player>();
 
-            if (player != null && player.StateMachine.State == 11) {
+            if (ExtendedVariantsModule.ShouldEntitiesAutoDestroy(player)) {
                 // during cutscenes, tell Oshiro to get outta here the same way as Badeline
                 // (we can't use the "official" way of making him leave because that doesn't cancel his attack.
                 // A Badeline vanish animation looks weird but nicer than a flat out disappearance imo)

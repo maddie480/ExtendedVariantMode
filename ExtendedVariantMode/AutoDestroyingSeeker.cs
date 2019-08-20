@@ -8,7 +8,7 @@ namespace Celeste.Mod.ExtendedVariants {
             base.Update();
 
             Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
-            if (player != null && player.StateMachine.State == 11) {
+            if (ExtendedVariantsModule.ShouldEntitiesAutoDestroy(player)) {
                 RemoveSelf();
             }
         }

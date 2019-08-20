@@ -10,7 +10,7 @@ namespace Celeste.Mod.ExtendedVariants {
             Level level = SceneAs<Level>();
             Player player = level.Tracker.GetEntity<Player>();
 
-            if (player != null && player.StateMachine.State == 11) {
+            if (ExtendedVariantsModule.ShouldEntitiesAutoDestroy(player)) {
                 // we are in a cutscene **but not the Badeline Intro one**
                 // so we should just make the chasers disappear to prevent them from killing the player mid-cutscene
                 level.Displacement.AddBurst(Center, 0.5f, 24f, 96f, 0.4f, null, null);
