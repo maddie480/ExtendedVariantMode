@@ -2067,8 +2067,12 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private bool ModVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
-            // tell the game to use the boolean stored in EntityData (the default is true, the chasers we add have false)
-            return false;
+            // we can use the "flag-based behavior" on all A-sides
+            if (Engine.Scene.GetType() == typeof(Level) && (Engine.Scene as Level).Session.Area.Mode == AreaMode.Normal) {
+                return false;
+            }
+            // fall back to standard Everest behavior everywhere else: vanilla will not trigger chase music, and Everest will be flag-based
+            return shouldUseVanilla;
         }
 
         private bool ModVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
