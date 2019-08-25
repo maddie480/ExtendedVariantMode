@@ -203,5 +203,11 @@ namespace Celeste.Mod.ExtendedVariants {
 
         [SettingIgnore]
         public int AddSeekers { get; set; } = 0;
+
+
+        // ======================================
+
+        [SettingIgnore]
+        public Dictionary<string, bool> RandomizerEnabledVariants { get; set; } = new Dictionary<string, bool>();
     }
 }
