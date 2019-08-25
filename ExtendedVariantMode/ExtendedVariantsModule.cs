@@ -9,6 +9,7 @@ using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using On.Celeste;
+using Celeste.Mod.UI;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantsModule : EverestModule {
@@ -56,6 +57,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Option<int> AddSeekersOption;
         public static TextMenu.Option<int> BadelineLagOption;
         public static TextMenu.Item ResetToDefaultOption;
+        public static TextMenu.Item RandomizerOptions;
 
         public ExtendedVariantsModule() {
             Instance = this;
@@ -263,6 +265,46 @@ namespace Celeste.Mod.ExtendedVariants {
                 refreshOptionMenuEnabledStatus();
             });
 
+            if(inGame) {
+                Level level = Engine.Scene as Level;
+
+                // this is how it works in-game
+                RandomizerOptions = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER")).Pressed(() => {
+                    // close the Mod Options menu
+                    menu.RemoveSelf();
+
+                    // create our menu and prepare it
+                    TextMenu randomizerMenu = OuiRandomizerOptions.BuildMenu();
+
+                    randomizerMenu.OnESC = randomizerMenu.OnCancel = () => {
+                        // close the randomizer options
+                        Audio.Play(Sfxs.ui_main_button_back);
+                        randomizerMenu.Close();
+
+                        // and open the Mod Options menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
+                        // "what could possibly go wrong?" ~ famous last words
+                        level.Add(menu);
+                    };
+
+                    randomizerMenu.OnPause = () => {
+                        // we're unpausing, so close that menu, and save the mod settings because the Mod Options menu won't do that for us
+                        Audio.Play(Sfxs.ui_main_button_back);
+                        randomizerMenu.CloseAndRun(Everest.SaveSettings(), () => {
+                            level.Paused = false;
+                            Engine.FreezeTimer = 0.15f;
+                        });
+                    };
+
+                    // finally, add the menu to the scene
+                    level.Add(randomizerMenu);
+                });
+            } else {
+                // this is how it works in the main menu: way more simply than the in-game mess.
+                RandomizerOptions = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER")).Pressed(() => {
+                    OuiModOptions.Instance.Overworld.Goto<OuiRandomizerOptions>();
+                });
+            }
+
             refreshOptionMenuEnabledStatus();
 
             menu.Add(MasterSwitchOption);
@@ -315,6 +357,7 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(ChangeVariantsRandomlyOption);
             menu.Add(ChangeVariantsIntervalOption);
             menu.Add(DoNotRandomizeInvincibilityOption);
+            menu.Add(RandomizerOptions);
         }
 
         private static void addHeading(TextMenu menu, String headingNameResource) {
@@ -431,6 +474,7 @@ namespace Celeste.Mod.ExtendedVariants {
             SnowballDelayOption.Disabled = !Settings.MasterSwitch;
             AddSeekersOption.Disabled = !Settings.MasterSwitch;
             BadelineLagOption.Disabled = !Settings.MasterSwitch;
+            RandomizerOptions.Disabled = !Settings.MasterSwitch;
         }
 
         private static void setValue(TextMenu.Option<int> option, int min, int newValue) {
