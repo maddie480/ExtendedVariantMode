@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Celeste.Mod.ExtendedVariants {
     public class ExtendedVariantTrigger : Trigger {
@@ -34,13 +29,10 @@ namespace Celeste.Mod.ExtendedVariants {
                     case Variant.ForceDuckOnGround:
                     case Variant.InvertDashes:
                     case Variant.DisableNeutralJumping:
-                    case Variant.ChangeVariantsRandomly:
-                    case Variant.ChangeVariantsInterval:
                     case Variant.BadelineChasersEverywhere:
                     case Variant.AffectExistingChasers:
                     case Variant.RegularHiccups:
                     case Variant.RefillJumpsOnDashRefill:
-                    case Variant.DoNotRandomizeInvincibility:
                     case Variant.OshiroEverywhere:
                     case Variant.WindEverywhere:
                     case Variant.SnowballsEverywhere:
@@ -185,14 +177,6 @@ namespace Celeste.Mod.ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.AffectExistingChasers ? 1 : 0;
                     ExtendedVariantsModule.Settings.AffectExistingChasers = (newValue != 0);
                     break;
-                case Variant.ChangeVariantsRandomly:
-                    oldValue = ExtendedVariantsModule.Settings.ChangeVariantsRandomly;
-                    ExtendedVariantsModule.Settings.ChangeVariantsRandomly = newValue;
-                    break;
-                case Variant.ChangeVariantsInterval:
-                    oldValue = ExtendedVariantsModule.Settings.ChangeVariantsInterval;
-                    ExtendedVariantsModule.Settings.ChangeVariantsInterval = newValue;
-                    break;
                 case Variant.RegularHiccups:
                     oldValue = ExtendedVariantsModule.Settings.RegularHiccups;
                     ExtendedVariantsModule.Settings.RegularHiccups = newValue;
@@ -200,10 +184,6 @@ namespace Celeste.Mod.ExtendedVariants {
                 case Variant.RefillJumpsOnDashRefill:
                     oldValue = ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
                     ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
-                    break;
-                case Variant.DoNotRandomizeInvincibility:
-                    oldValue = ExtendedVariantsModule.Settings.DoNotRandomizeInvincibility ? 1 : 0;
-                    ExtendedVariantsModule.Settings.DoNotRandomizeInvincibility = (newValue != 0);
                     break;
                 case Variant.RoomLighting:
                     oldValue = ExtendedVariantsModule.Settings.RoomLighting;
@@ -241,7 +221,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
     public enum Variant {
         Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
-        DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, ChangeVariantsRandomly, ChangeVariantsInterval, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-        RegularHiccups, RefillJumpsOnDashRefill, DoNotRandomizeInvincibility, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, BadelineLag
+        DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers, RegularHiccups,
+        RefillJumpsOnDashRefill, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, BadelineLag
     }
 }

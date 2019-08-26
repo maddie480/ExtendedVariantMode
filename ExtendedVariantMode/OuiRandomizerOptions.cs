@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,6 +9,31 @@ namespace Celeste.Mod.ExtendedVariants {
     // That's just me trying to implement a mod options submenu. Don't mind me
     // Heavily based off the OuiModOptions from Everest: https://github.com/EverestAPI/Everest/blob/master/Celeste.Mod.mm/Mod/UI/OuiModOptions.cs
     class OuiRandomizerOptions : Oui {
+        
+        /// <summary>
+        /// List of options shown for Change Variants Interval.
+        /// </summary>
+        private static int[] changeVariantsIntervalScale = new int[] {
+            0, 1, 2, 5, 10, 15, 30, 60
+        };
+
+        /// <summary>
+        /// Finds out the index of an interval in the changeVariantsIntervalScale table.
+        /// If it is not present, will return the previous option.
+        /// (For example, 26s will return the index for 15s.)
+        /// </summary>
+        /// <param name="option">The interval</param>
+        /// <returns>The index of the interval in the changeVariantsIntervalScale table</returns>
+        private static int indexFromChangeVariantsInterval(int option) {
+            for (int index = 0; index < changeVariantsIntervalScale.Length - 1; index++) {
+                if (changeVariantsIntervalScale[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return changeVariantsIntervalScale.Length - 1;
+        }
+
 
         private TextMenu menu;
 
@@ -27,6 +53,37 @@ namespace Celeste.Mod.ExtendedVariants {
             OptionItems items = new OptionItems();
 
             menu.Add(new TextMenu.Header(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE")));
+
+            // Add the general settings
+            menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_GENERALSETTINGS")));
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSINTERVAL"),
+                i => {
+                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ONSCREENTRANSITION");
+                    return $"{Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERY")} {changeVariantsIntervalScale[i]}s";
+                }, 0, changeVariantsIntervalScale.Length - 1, indexFromChangeVariantsInterval(ExtendedVariantsModule.Settings.ChangeVariantsInterval))
+                .Change(i =>  ExtendedVariantsModule.Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i]));
+
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VARIANTSET"),
+                i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] { "OFF", "VANILLA", "EXTENDED", "BOTH" }[i]), 1, 3, ExtendedVariantsModule.Settings.VariantSet)
+                .Change(i => {
+                    ExtendedVariantsModule.Settings.VariantSet = i;
+                    refreshOptionMenuEnabledStatus(items);
+                }));
+
+            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_REROLLMODE"), ExtendedVariantsModule.Settings.RerollMode)
+                .Change(newValue => ExtendedVariantsModule.Settings.RerollMode = newValue));
+
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS"), i => i.ToString(), 0, 35, ExtendedVariantsModule.Settings.MaxEnabledVariants)
+                .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue));
+
+            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VANILLAFY"), i => {
+                if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
+                return $"{i.ToString()} min";
+            }, 0, 10, ExtendedVariantsModule.Settings.Vanillafy)
+                .Change(newValue => ExtendedVariantsModule.Settings.Vanillafy = newValue));
+
+            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_OUTPUT"), ExtendedVariantsModule.Settings.FileOutput)
+                .Change(newValue => ExtendedVariantsModule.Settings.FileOutput = newValue));
 
             // build the toggles to individually enable or disable all vanilla variants
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA")));
@@ -69,9 +126,16 @@ namespace Celeste.Mod.ExtendedVariants {
             items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.ForceDuckOnGround));
             items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.InvertDashes));
 
+            refreshOptionMenuEnabledStatus(items);
+
             return menu;
         }
-        
+
+        private static void refreshOptionMenuEnabledStatus(OptionItems items) {
+            foreach (TextMenu.Item item in items.VanillaVariantOptions) item.Disabled = (ExtendedVariantsModule.Settings.VariantSet % 2 == 0);
+            foreach (TextMenu.Item item in items.ExtendedVariantOptions) item.Disabled = (ExtendedVariantsModule.Settings.VariantSet / 2 == 0);
+        }
+
         private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, Variant variant, string label = null) {
             if(label == null) {
                 label = "MODOPTIONS_EXTENDEDVARIANTS_" + variant.ToString().ToUpperInvariant();

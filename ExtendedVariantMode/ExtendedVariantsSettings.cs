@@ -146,17 +146,6 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
-        public int ChangeVariantsRandomly { get; set; } = 0;
-
-        [SettingIgnore]
-        public int ChangeVariantsInterval { get; set; } = 0;
-
-        [SettingIgnore]
-        public bool DoNotRandomizeInvincibility { get; set; } = false;
-
-        // ======================================
-
-        [SettingIgnore]
         public bool BadelineChasersEverywhere { get; set; } = false;
 
         [SettingIgnore]
@@ -208,6 +197,27 @@ namespace Celeste.Mod.ExtendedVariants {
         // ======================================
 
         [SettingIgnore]
+        public bool ChangeVariantsRandomly { get; set; } = false;
+
+        [SettingIgnore]
+        public int VariantSet { get; set; } = 3;
+
+        [SettingIgnore]
+        public int ChangeVariantsInterval { get; set; } = 0;
+
+        [SettingIgnore]
         public Dictionary<string, bool> RandomizerEnabledVariants { get; set; } = new Dictionary<string, bool>();
+
+        [SettingIgnore]
+        public bool RerollMode { get; set; } = false;
+
+        [SettingIgnore]
+        public int MaxEnabledVariants { get; set; } = 35;
+
+        [SettingIgnore]
+        public int Vanillafy { get; set; } = 0;
+
+        [SettingIgnore]
+        public bool FileOutput { get; set; } = false;
     }
 }
