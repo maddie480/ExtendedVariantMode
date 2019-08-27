@@ -95,6 +95,7 @@
     <Compile Include="ExtendedVariantsSettings.cs" />
     <Compile Include="TextMenuExt.cs" />
     <Compile Include="TextMenuOptionExt.cs" />
+    <Compile Include="VariantRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Everest\Celeste.Mod.mm\Celeste.Mod.mm.csproj">

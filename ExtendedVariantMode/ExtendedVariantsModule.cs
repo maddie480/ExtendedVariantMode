@@ -57,8 +57,11 @@ namespace Celeste.Mod.ExtendedVariants {
         public static TextMenu.Item ResetToDefaultOption;
         public static TextMenu.Item RandomizerOptions;
 
+        public static VariantRandomizer Randomizer;
+
         public ExtendedVariantsModule() {
             Instance = this;
+            Randomizer = new VariantRandomizer();
         }
 
         // ================ Options menu handling ================
@@ -66,7 +69,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <summary>
         /// List of options shown for multipliers.
         /// </summary>
-        private static int[] multiplierScale = new int[] {
+        public static int[] MultiplierScale = new int[] {
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 250, 500, 1000
         };
@@ -75,7 +78,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// Formats a multiplier (with no decimal point if not required).
         /// </summary>
         private static Func<int, string> multiplierFormatter = option => {
-            option = multiplierScale[option];
+            option = MultiplierScale[option];
             if (option % 10 == 0) {
                 return $"{option / 10f:n0}x";
             }
@@ -90,13 +93,13 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="option">The multiplier</param>
         /// <returns>The index of the multiplier in the multiplierScale table</returns>
         private static int indexFromMultiplier(int option) {
-            for (int index = 0; index < multiplierScale.Length - 1; index++) {
-                if (multiplierScale[index + 1] > option) {
+            for (int index = 0; index < MultiplierScale.Length - 1; index++) {
+                if (MultiplierScale[index + 1] > option) {
                     return index;
                 }
             }
 
-            return multiplierScale.Length - 1;
+            return MultiplierScale.Length - 1;
         }
 
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
@@ -104,17 +107,17 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // create every option
             GravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = MultiplierScale[i]);
             FallSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed), indexFromMultiplier(10)).Change(i => Settings.FallSpeed = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed), indexFromMultiplier(10)).Change(i => Settings.FallSpeed = MultiplierScale[i]);
             JumpHeightOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight), indexFromMultiplier(10)).Change(i => Settings.JumpHeight = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight), indexFromMultiplier(10)).Change(i => Settings.JumpHeight = MultiplierScale[i]);
             SpeedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = MultiplierScale[i]);
             StaminaOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
                 i => $"{i * 10}", 0, 50, Settings.Stamina, 11).Change(i => Settings.Stamina = i);
             DashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = MultiplierScale[i]);
             DashCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
                 if (i == -1) {
                     return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -128,8 +131,8 @@ namespace Celeste.Mod.ExtendedVariants {
                         case 0: return "0.05x";
                         default: return multiplierFormatter(i);
                     }
-                }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction), indexFromMultiplier(10) + 1)
-                .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
+                }, -1, MultiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction), indexFromMultiplier(10) + 1)
+                .Change(i => Settings.Friction = (i == -1 ? -1 : MultiplierScale[i]));
             DisableWallJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
                 .Change(b => Settings.DisableWallJumping = b);
             JumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
@@ -147,11 +150,11 @@ namespace Celeste.Mod.ExtendedVariants {
             UpsideDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
                 .Change(b => Settings.UpsideDown = b);
             HyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = MultiplierScale[i]);
             WallBouncingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.WallBouncingSpeed), indexFromMultiplier(10)).Change(i => Settings.WallBouncingSpeed = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.WallBouncingSpeed), indexFromMultiplier(10)).Change(i => Settings.WallBouncingSpeed = MultiplierScale[i]);
             DashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
+                multiplierFormatter, 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = MultiplierScale[i]);
             ForceDuckOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround, false)
                 .Change(b => Settings.ForceDuckOnGround = b);
             InvertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
@@ -171,8 +174,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 });
             RegularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"), 
-                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
-                    Settings.RegularHiccups = multiplierScale[i];
+                0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
+                    Settings.RegularHiccups = MultiplierScale[i];
                     regularHiccupTimer = Settings.RegularHiccups / 10f;
                 });
             RoomLightingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING"),
@@ -197,13 +200,13 @@ namespace Celeste.Mod.ExtendedVariants {
             SnowballsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
                 .Change(b => Settings.SnowballsEverywhere = b);
             SnowballDelayOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY"),
-                i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
-                .Change(i => Settings.SnowballDelay = multiplierScale[i]);
+                i => multiplierFormatter(i).Replace("x", "s"), 0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
+                .Change(i => Settings.SnowballDelay = MultiplierScale[i]);
             AddSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
                 i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
             BadelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
-                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
+                0, MultiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = MultiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             MasterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -489,6 +492,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.DashBegin += ModDashBegin;
             On.Celeste.Player.DashCoroutine += ModDashCoroutine;
             IL.Celeste.Player.DashUpdate += ModDashUpdate;
+            On.Celeste.Level.EndPauseEffects += ModEndPauseEffects;
 
             IL.Celeste.BadelineOldsite.ctor_Vector2_int += ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added += ModBadelineOldsiteAdded;
@@ -547,6 +551,7 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Player.DashBegin -= ModDashBegin;
             On.Celeste.Player.DashCoroutine -= ModDashCoroutine;
             IL.Celeste.Player.DashUpdate -= ModDashUpdate;
+            On.Celeste.Level.EndPauseEffects -= ModEndPauseEffects;
 
             IL.Celeste.BadelineOldsite.ctor_Vector2_int -= ModBadelineOldsiteConstructor;
             IL.Celeste.BadelineOldsite.Added -= ModBadelineOldsiteAdded;
@@ -566,6 +571,13 @@ namespace Celeste.Mod.ExtendedVariants {
             moddedMethods.Clear();
         }
 
+        private void ModEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
+            orig(self);
+
+            // rewrite the file in case the player changed anything in the pause menu
+            Randomizer.SpitOutEnabledVariantsInFile();
+        }
+
         // ================ Extended Variant Trigger handling ================
 
         /// <summary>
@@ -574,6 +586,11 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="session">unused</param>
         /// <param name="fromSaveData">true if loaded from save data, false otherwise</param>
         public void OnLevelEnter(Session session, bool fromSaveData) {
+            // be sure to load the settings in the randomizer first
+            Randomizer.UpdateCountersFromSettings();
+
+            Randomizer.SpitOutEnabledVariantsInFile();
+
             int slot = SaveData.Instance.FileSlot;
             if (fromSaveData && Settings.OverrideValuesInSave.ContainsKey(slot)) {
                 // reset all variants that got set in the room
@@ -677,6 +694,8 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         public void OnLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            Randomizer.ClearFile();
+
             int fileSlot = SaveData.Instance.FileSlot;
             if (mode != LevelExit.Mode.SaveAndQuit && Settings.OverrideValuesInSave.ContainsKey(fileSlot)) {
                 // we definitely exited the level: reset the variants state
@@ -1086,6 +1105,9 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="orig">The original Update method</param>
         /// <param name="self">The Player instance</param>
         public void ModUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+            // notify the randomizer a frame happened, so that it can trigger timed events like vanillafying
+            Randomizer.OnUpdate();
+
             // since we cannot patch IL in orig_Update, we will wrap it and try to guess if the stamina was reset
             // this is **certainly** the case if the stamina changed and is now 110
             float staminaBeforeCall = self.Stamina;
@@ -1929,6 +1951,9 @@ namespace Celeste.Mod.ExtendedVariants {
         /// <param name="direction">unused</param>
         /// <returns></returns>
         private IEnumerator ModTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+            // first, notify the randomizer we're changing rooms so that the variants can be modified
+            Randomizer.OnRoomChange();
+
             // just make sure the whole transition routine is over
             IEnumerator origEnum = orig(self, next, direction);
             while (origEnum.MoveNext()) {
@@ -2315,13 +2340,16 @@ namespace Celeste.Mod.ExtendedVariants {
 
         // ================ Regular Hiccups handling ================
 
-        private float regularHiccupTimer = 9999f;
+        private float regularHiccupTimer = 0f;
 
         private void ModUpdateRegularHiccups(Player self) {
             if(Settings.RegularHiccups != 0 && !SaveData.Instance.Assists.Hiccups) {
                 regularHiccupTimer -= Engine.DeltaTime;
 
-                if(regularHiccupTimer <= 0) {
+                if (regularHiccupTimer > Settings.RegularHiccups / 10f) {
+                    regularHiccupTimer = Settings.RegularHiccups / 10f;
+                }
+                if (regularHiccupTimer <= 0) {
                     regularHiccupTimer = Settings.RegularHiccups / 10f;
                     self.HiccupJump();
                 }

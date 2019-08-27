@@ -7,6 +7,8 @@ namespace Celeste.Mod.ExtendedVariants {
         private bool revertOnLeave;
         private int oldValueToRevertOnLeave;
 
+        public static readonly int NO_CHANGE = -2_000_000;
+
         public ExtendedVariantTrigger(EntityData data, Vector2 offset): base(data, offset) {
             // parse the trigger parameters
             variantChange = data.Enum("variantChange", Variant.Gravity);
@@ -16,40 +18,46 @@ namespace Celeste.Mod.ExtendedVariants {
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
                 // (most of the time, the default value is 10)
-                switch(variantChange) {
-                    case Variant.Stamina: newValue = 11; break;
-                    case Variant.SnowballDelay: newValue = 8; break;
-
-                    case Variant.DashCount:
-                    case Variant.RoomLighting:
-                        newValue = -1; break;
-
-                    case Variant.DisableWallJumping:
-                    case Variant.UpsideDown:
-                    case Variant.ForceDuckOnGround:
-                    case Variant.InvertDashes:
-                    case Variant.DisableNeutralJumping:
-                    case Variant.BadelineChasersEverywhere:
-                    case Variant.AffectExistingChasers:
-                    case Variant.RegularHiccups:
-                    case Variant.RefillJumpsOnDashRefill:
-                    case Variant.OshiroEverywhere:
-                    case Variant.WindEverywhere:
-                    case Variant.SnowballsEverywhere:
-                    case Variant.AddSeekers:
-                    case Variant.BadelineLag:
-                        newValue = 0; break;
-
-                    case Variant.JumpCount:
-                    case Variant.ChaserCount:
-                        newValue = 1; break;
-
-                    default: newValue = 10; break;
-                }
+                newValue = GetDefaultValueForVariant(variantChange);
             }
 
             // failsafe
             oldValueToRevertOnLeave = newValue;
+        }
+
+        public static int GetDefaultValueForVariant(Variant variant) {
+            int value;
+            switch (variant) {
+                case Variant.Stamina: value = 11; break;
+                case Variant.SnowballDelay: value = 8; break;
+
+                case Variant.DashCount:
+                case Variant.RoomLighting:
+                    value = -1; break;
+
+                case Variant.DisableWallJumping:
+                case Variant.UpsideDown:
+                case Variant.ForceDuckOnGround:
+                case Variant.InvertDashes:
+                case Variant.DisableNeutralJumping:
+                case Variant.BadelineChasersEverywhere:
+                case Variant.AffectExistingChasers:
+                case Variant.RegularHiccups:
+                case Variant.RefillJumpsOnDashRefill:
+                case Variant.OshiroEverywhere:
+                case Variant.WindEverywhere:
+                case Variant.SnowballsEverywhere:
+                case Variant.AddSeekers:
+                case Variant.BadelineLag:
+                    value = 0; break;
+
+                case Variant.JumpCount:
+                case Variant.ChaserCount:
+                    value = 1; break;
+
+                default: value = 10; break;
+            }
+            return value;
         }
 
         public override void OnEnter(Player player) {
@@ -99,119 +107,119 @@ namespace Celeste.Mod.ExtendedVariants {
             switch(variantChange) {
                 case Variant.Gravity:
                     oldValue = ExtendedVariantsModule.Settings.Gravity;
-                    ExtendedVariantsModule.Settings.Gravity = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.Gravity = newValue;
                     break;
                 case Variant.FallSpeed:
                     oldValue = ExtendedVariantsModule.Settings.FallSpeed;
-                    ExtendedVariantsModule.Settings.FallSpeed = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.FallSpeed = newValue;
                     break;
                 case Variant.JumpHeight:
                     oldValue = ExtendedVariantsModule.Settings.JumpHeight;
-                    ExtendedVariantsModule.Settings.JumpHeight = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.JumpHeight = newValue;
                     break;
                 case Variant.SpeedX:
                     oldValue = ExtendedVariantsModule.Settings.SpeedX;
-                    ExtendedVariantsModule.Settings.SpeedX = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.SpeedX = newValue;
                     break;
                 case Variant.Stamina:
                     oldValue = ExtendedVariantsModule.Settings.Stamina;
-                    ExtendedVariantsModule.Settings.Stamina = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.Stamina = newValue;
                     break;
                 case Variant.DashSpeed:
                     oldValue = ExtendedVariantsModule.Settings.DashSpeed;
-                    ExtendedVariantsModule.Settings.DashSpeed = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.DashSpeed = newValue;
                     break;
                 case Variant.DashCount:
                     oldValue = ExtendedVariantsModule.Settings.DashCount;
-                    ExtendedVariantsModule.Settings.DashCount = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.DashCount = newValue;
                     break;
                 case Variant.Friction:
                     oldValue = ExtendedVariantsModule.Settings.Friction;
-                    ExtendedVariantsModule.Settings.Friction = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.Friction = newValue;
                     break;
                 case Variant.DisableWallJumping:
                     oldValue = ExtendedVariantsModule.Settings.DisableWallJumping ? 1 : 0;
-                    ExtendedVariantsModule.Settings.DisableWallJumping = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.DisableWallJumping = (newValue != 0);
                     break;
                 case Variant.JumpCount:
                     oldValue = ExtendedVariantsModule.Settings.JumpCount;
-                    ExtendedVariantsModule.Settings.JumpCount = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.JumpCount = newValue;
                     break;
                 case Variant.UpsideDown:
                     oldValue = ExtendedVariantsModule.Settings.UpsideDown ? 1 : 0;
-                    ExtendedVariantsModule.Settings.UpsideDown = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.UpsideDown = (newValue != 0);
                     break;
                 case Variant.HyperdashSpeed:
                     oldValue = ExtendedVariantsModule.Settings.HyperdashSpeed;
-                    ExtendedVariantsModule.Settings.HyperdashSpeed = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.HyperdashSpeed = newValue;
                     break;
                 case Variant.WallBouncingSpeed:
                     oldValue = ExtendedVariantsModule.Settings.WallBouncingSpeed;
-                    ExtendedVariantsModule.Settings.WallBouncingSpeed = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.WallBouncingSpeed = newValue;
                     break;
                 case Variant.DashLength:
                     oldValue = ExtendedVariantsModule.Settings.DashLength;
-                    ExtendedVariantsModule.Settings.DashLength = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.DashLength = newValue;
                     break;
                 case Variant.ForceDuckOnGround:
                     oldValue = ExtendedVariantsModule.Settings.ForceDuckOnGround ? 1 : 0;
-                    ExtendedVariantsModule.Settings.ForceDuckOnGround = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.ForceDuckOnGround = (newValue != 0);
                     break;
                 case Variant.InvertDashes:
                     oldValue = ExtendedVariantsModule.Settings.InvertDashes ? 1 : 0;
-                    ExtendedVariantsModule.Settings.InvertDashes = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.InvertDashes = (newValue != 0);
                     break;
                 case Variant.DisableNeutralJumping:
                     oldValue = ExtendedVariantsModule.Settings.DisableNeutralJumping ? 1 : 0;
-                    ExtendedVariantsModule.Settings.DisableNeutralJumping = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.DisableNeutralJumping = (newValue != 0);
                     break;
                 case Variant.BadelineChasersEverywhere:
                     oldValue = ExtendedVariantsModule.Settings.BadelineChasersEverywhere ? 1 : 0;
-                    ExtendedVariantsModule.Settings.BadelineChasersEverywhere = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.BadelineChasersEverywhere = (newValue != 0);
                     break;
                 case Variant.ChaserCount:
                     oldValue = ExtendedVariantsModule.Settings.ChaserCount;
-                    ExtendedVariantsModule.Settings.ChaserCount = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.ChaserCount = newValue;
                     break;
                 case Variant.AffectExistingChasers:
                     oldValue = ExtendedVariantsModule.Settings.AffectExistingChasers ? 1 : 0;
-                    ExtendedVariantsModule.Settings.AffectExistingChasers = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.AffectExistingChasers = (newValue != 0);
                     break;
                 case Variant.RegularHiccups:
                     oldValue = ExtendedVariantsModule.Settings.RegularHiccups;
-                    ExtendedVariantsModule.Settings.RegularHiccups = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.RegularHiccups = newValue;
                     break;
                 case Variant.RefillJumpsOnDashRefill:
                     oldValue = ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
-                    ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
                     break;
                 case Variant.RoomLighting:
                     oldValue = ExtendedVariantsModule.Settings.RoomLighting;
-                    ExtendedVariantsModule.Settings.RoomLighting = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.RoomLighting = newValue;
                     break;
                 case Variant.OshiroEverywhere:
                     oldValue = ExtendedVariantsModule.Settings.OshiroEverywhere ? 1 : 0;
-                    ExtendedVariantsModule.Settings.OshiroEverywhere = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.OshiroEverywhere = (newValue != 0);
                     break;
                 case Variant.WindEverywhere:
                     oldValue = ExtendedVariantsModule.Settings.WindEverywhere;
-                    ExtendedVariantsModule.Settings.WindEverywhere = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.WindEverywhere = newValue;
                     break;
                 case Variant.SnowballsEverywhere:
                     oldValue = ExtendedVariantsModule.Settings.SnowballsEverywhere ? 1 : 0;
-                    ExtendedVariantsModule.Settings.SnowballsEverywhere = (newValue != 0);
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.SnowballsEverywhere = (newValue != 0);
                     break;
                 case Variant.SnowballDelay:
                     oldValue = ExtendedVariantsModule.Settings.SnowballDelay;
-                    ExtendedVariantsModule.Settings.SnowballDelay = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.SnowballDelay = newValue;
                     break;
                 case Variant.AddSeekers:
                     oldValue = ExtendedVariantsModule.Settings.AddSeekers;
-                    ExtendedVariantsModule.Settings.AddSeekers = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.AddSeekers = newValue;
                     break;
                 case Variant.BadelineLag:
                     oldValue = ExtendedVariantsModule.Settings.BadelineLag;
-                    ExtendedVariantsModule.Settings.BadelineLag = newValue;
+                    if (newValue != NO_CHANGE) ExtendedVariantsModule.Settings.BadelineLag = newValue;
                     break;
             }
 

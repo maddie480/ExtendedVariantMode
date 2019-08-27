@@ -33,6 +33,21 @@ namespace Celeste.Mod.ExtendedVariants {
 
             return changeVariantsIntervalScale.Length - 1;
         }
+        
+
+        private static int[] vanillafyScale = new int[] {
+            0, 15, 30, 60, 120, 300, 600
+        };
+
+        private static int indexFromVanillafyScale(int option) {
+            for (int index = 0; index < vanillafyScale.Length - 1; index++) {
+                if (vanillafyScale[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return vanillafyScale.Length - 1;
+        }
 
 
         private TextMenu menu;
@@ -45,6 +60,7 @@ namespace Celeste.Mod.ExtendedVariants {
         private class OptionItems {
             public HashSet<TextMenu.Item> VanillaVariantOptions = new HashSet<TextMenu.Item>();
             public HashSet<TextMenu.Item> ExtendedVariantOptions = new HashSet<TextMenu.Item>();
+            public TextMenu.Option<int> VanillafyOption;
         }
 
         public static TextMenu BuildMenu() {
@@ -61,7 +77,11 @@ namespace Celeste.Mod.ExtendedVariants {
                     if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ONSCREENTRANSITION");
                     return $"{Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERY")} {changeVariantsIntervalScale[i]}s";
                 }, 0, changeVariantsIntervalScale.Length - 1, indexFromChangeVariantsInterval(ExtendedVariantsModule.Settings.ChangeVariantsInterval))
-                .Change(i =>  ExtendedVariantsModule.Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i]));
+                .Change(i => {
+                    ExtendedVariantsModule.Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
+                    refreshOptionMenuEnabledStatus(items);
+                    ExtendedVariantsModule.Randomizer.UpdateCountersFromSettings();
+                }));
 
             menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VARIANTSET"),
                 i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] { "OFF", "VANILLA", "EXTENDED", "BOTH" }[i]), 1, 3, ExtendedVariantsModule.Settings.VariantSet)
@@ -76,28 +96,33 @@ namespace Celeste.Mod.ExtendedVariants {
             menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS"), i => i.ToString(), 0, 35, ExtendedVariantsModule.Settings.MaxEnabledVariants)
                 .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue));
 
-            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VANILLAFY"), i => {
+            menu.Add(items.VanillafyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VANILLAFY"), i => {
                 if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
-                return $"{i.ToString()} min";
-            }, 0, 10, ExtendedVariantsModule.Settings.Vanillafy)
-                .Change(newValue => ExtendedVariantsModule.Settings.Vanillafy = newValue));
+                i = vanillafyScale[i];
+                if(i < 60) return $"{i.ToString()}s";
+                return $"{(i / 60).ToString()} min";
+            }, 0, vanillafyScale.Length - 1, indexFromVanillafyScale(ExtendedVariantsModule.Settings.Vanillafy))
+                .Change(newValue => {
+                    ExtendedVariantsModule.Settings.Vanillafy = vanillafyScale[newValue];
+                    ExtendedVariantsModule.Randomizer.UpdateCountersFromSettings();
+                }));
 
             menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_OUTPUT"), ExtendedVariantsModule.Settings.FileOutput)
                 .Change(newValue => ExtendedVariantsModule.Settings.FileOutput = newValue));
 
             // build the toggles to individually enable or disable all vanilla variants
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA")));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "GameSpeed", "MENU_ASSIST_GAMESPEED"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "MirrorMode", "MENU_VARIANT_MIRROR"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "ThreeSixtyDashing", "MENU_VARIANT_360DASHING"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "InvisibleMotion", "MENU_VARIANT_INVISMOTION"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "NoGrabbing", "MENU_VARIANT_NOGRABBING"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "LowFriction", "MENU_VARIANT_LOWFRICTION"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "SuperDashing", "MENU_VARIANT_SUPERDASHING"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "Hiccups", "MENU_VARIANT_HICCUPS"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "InfiniteStamina", "MENU_ASSIST_INFINITE_STAMINA"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "DashMode", "MENU_ASSIST_AIR_DASHES"));
-            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, "Invincible", "MENU_ASSIST_INVINCIBLE"));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.GameSpeed));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.MirrorMode));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.ThreeSixtyDashing));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.InvisibleMotion));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.NoGrabbing));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.LowFriction));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.SuperDashing));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.Hiccups));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.InfiniteStamina));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.DashMode));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.Invincible));
 
             // and do the same with extended ones
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_EXTENDED")));
@@ -134,13 +159,23 @@ namespace Celeste.Mod.ExtendedVariants {
         private static void refreshOptionMenuEnabledStatus(OptionItems items) {
             foreach (TextMenu.Item item in items.VanillaVariantOptions) item.Disabled = (ExtendedVariantsModule.Settings.VariantSet % 2 == 0);
             foreach (TextMenu.Item item in items.ExtendedVariantOptions) item.Disabled = (ExtendedVariantsModule.Settings.VariantSet / 2 == 0);
+            items.VanillafyOption.Disabled = ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0;
+
+            if(ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0 && ExtendedVariantsModule.Settings.Vanillafy != 0) {
+                // vanillafy is impossible, so set its value to 0
+                ExtendedVariantsModule.Settings.Vanillafy = 0;
+                items.VanillafyOption.PreviousIndex = items.VanillafyOption.Index;
+                items.VanillafyOption.Index = 0;
+                items.VanillafyOption.ValueWiggler.Start();
+            }
         }
 
-        private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, Variant variant, string label = null) {
-            if(label == null) {
-                label = "MODOPTIONS_EXTENDEDVARIANTS_" + variant.ToString().ToUpperInvariant();
-            }
-            return addToggleOptionToMenu(menu, variant.ToString(), label);
+        private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, VanillaVariant variant) {
+            return addToggleOptionToMenu(menu, variant.Name, variant.Label);
+        }
+
+        private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, Variant variant) {
+            return addToggleOptionToMenu(menu, variant.ToString(), "MODOPTIONS_EXTENDEDVARIANTS_" + variant.ToString().ToUpperInvariant());
         }
 
         private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, string keyName, string label) {
