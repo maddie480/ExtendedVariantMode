@@ -903,10 +903,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
             // we use 90 as an anchor (an "if" before the instruction we want to mod loads 90 in the stack)
             // then we jump to the next usage of V_6 to get the reference to it (no idea how to build it otherwise)
-            // (actually, this is V_28 in the FNA version)
+            // (actually, this is V_31 in the FNA version)
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 90f)
                 && cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_S
-                    && (((VariableDefinition)instr.Operand).Index == 6 || ((VariableDefinition)instr.Operand).Index == 28))) {
+                    && (((VariableDefinition)instr.Operand).Index == 6 || ((VariableDefinition)instr.Operand).Index == 31))) {
 
                 VariableDefinition variable = (VariableDefinition) cursor.Next.Operand;
 
@@ -1534,12 +1534,12 @@ namespace Celeste.Mod.ExtendedVariants {
                 // move back 2 steps (we are between Instance and MirrorMode in "SaveData.Instance.MirrorMode" and we want to be before that)
                 cursor.Index -= 2;
 
-                VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 4);
-                VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 8);
+                VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 5);
+                VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 9);
 
                 if(positionVector == null || paddingVector == null) {
-                    positionVector = seekReferenceTo(il, cursor.Index, 7);
-                    paddingVector = seekReferenceTo(il, cursor.Index, 11);
+                    positionVector = seekReferenceTo(il, cursor.Index, 10);
+                    paddingVector = seekReferenceTo(il, cursor.Index, 14);
                 }
 
                 if(positionVector != null && paddingVector != null) {
@@ -1560,7 +1560,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 // jump back 2 steps
                 cursor.Index -= 2;
 
-                Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
+                Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender for sprite effects");
 
                 // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
                 // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
@@ -1800,13 +1800,23 @@ namespace Celeste.Mod.ExtendedVariants {
                 instr => instr.OpCode == OpCodes.Ldarg_0,
                 instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("moveX"))) {
 
+                // sneak between the ldarg.0 and the ldfld (the ldarg.0 is the target to a jump instruction, so we should put ourselves after that.)
+                cursor.Index++;
+
                 ILCursor cursorAfterBranch = cursor.Clone();
                 if(cursorAfterBranch.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brfalse_S)) {
+
                     Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Disable Neutral Jumping at {cursor.Index} in CIL code for WallJump");
+
+                    // pop the ldarg.0
+                    cursor.Emit(OpCodes.Pop);
 
                     // before the MoveX check, check if neutral jumping is enabled: if it is not, skip the MoveX check
                     cursor.EmitDelegate<Func<bool>>(NeutralJumpingEnabled);
                     cursor.Emit(OpCodes.Brfalse_S, cursorAfterBranch.Next);
+
+                    // push the ldarg.0 again
+                    cursor.Emit(OpCodes.Ldarg_0);
                 }
             }
         }
