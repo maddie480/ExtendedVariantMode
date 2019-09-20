@@ -241,7 +241,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                     randomizerMenu.OnESC = randomizerMenu.OnCancel = () => {
                         // close the randomizer options
-                        Audio.Play(Sfxs.ui_main_button_back);
+                        Audio.Play(SFX.ui_main_button_back);
                         randomizerMenu.Close();
 
                         // and open the Mod Options menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
@@ -251,7 +251,7 @@ namespace Celeste.Mod.ExtendedVariants {
 
                     randomizerMenu.OnPause = () => {
                         // we're unpausing, so close that menu, and save the mod settings because the Mod Options menu won't do that for us
-                        Audio.Play(Sfxs.ui_main_button_back);
+                        Audio.Play(SFX.ui_main_button_back);
                         randomizerMenu.CloseAndRun(Everest.SaveSettings(), () => {
                             level.Paused = false;
                             Engine.FreezeTimer = 0.15f;
@@ -567,8 +567,6 @@ namespace Celeste.Mod.ExtendedVariants {
             IL.Celeste.Pathfinder.ctor -= ModPathfinderConstructor;
 
             On.Celeste.BadelineBoost.BoostRoutine -= WrapBadelineBoostRoutine;
-
-            moddedMethods.Clear();
         }
 
         private void ModEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
@@ -654,17 +652,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModRespawnTrigger(ILContext il) {
-            ModMethod("RespawnTrigger", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // simply jump into the "if" controlling whether the respawn should be changed or not
-                // (yet again, this is brtrue.s in XNA and brfalse.s in FNA. Thanks compiler.)
-                if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue_S || instr.OpCode == OpCodes.Brfalse_S))) {
-                    // and call our method in there
-                    Logger.Log("ExtendedVariantsModule", $"Inserting call to CommitVariantChanges at index {cursor.Index} in CIL code for OnEnter in ChangeRespawnTrigger");
-                    cursor.EmitDelegate<Action>(CommitVariantChanges);
-                }
-            });
+            // simply jump into the "if" controlling whether the respawn should be changed or not
+            // (yet again, this is brtrue.s in XNA and brfalse.s in FNA. Thanks compiler.)
+            if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue_S || instr.OpCode == OpCodes.Brfalse_S))) {
+                // and call our method in there
+                Logger.Log("ExtendedVariantsModule", $"Inserting call to CommitVariantChanges at index {cursor.Index} in CIL code for OnEnter in ChangeRespawnTrigger");
+                cursor.EmitDelegate<Action>(CommitVariantChanges);
+            }
         }
 
         /// <summary>
@@ -766,30 +762,7 @@ namespace Celeste.Mod.ExtendedVariants {
                 orig.Invoke(version, ease, alpha);
             }
         }
-
-        // ================ Utility methods for IL modding ================
-
-        /// <summary>
-        /// Keeps track of already patched methods.
-        /// </summary>
-        private static HashSet<string> moddedMethods = new HashSet<string>();
-
-        /// <summary>
-        /// Utility method to prevent methods from getting patched multiple times.
-        /// </summary>
-        /// <param name="methodName">Name of the patched method</param>
-        /// <param name="patcher">Action to run in order to patch method</param>
-        private static void ModMethod(string methodName, Action patcher) {
-            // for whatever reason mod methods are called multiple times: only patch the methods once
-            if (moddedMethods.Contains(methodName)) {
-                Logger.Log("ExtendedVariantsModule", $"> Method {methodName} already patched");
-            } else {
-                Logger.Log("ExtendedVariantsModule", $"> Patching method {methodName}");
-                patcher.Invoke();
-                moddedMethods.Add(methodName);
-            }
-        }
-
+        
         // ================ Gravity handling ================
 
         /// <summary>
@@ -797,25 +770,23 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModNormalUpdate(ILContext il) {
-            ModMethod("NormalUpdate", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // find out where the constant 900 (downward acceleration) is loaded into the stack
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 900f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
+            // find out where the constant 900 (downward acceleration) is loaded into the stack
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 900f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
-                    // add two instructions to multiply those constants with the "gravity factor"
-                    cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
+                // add two instructions to multiply those constants with the "gravity factor"
+                cursor.EmitDelegate<Func<float>>(DetermineGravityFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
 
-                // chain every other NormalUpdate usage
-                ModNormalUpdateFallSpeed(il);
-                ModNormalUpdateSpeedX(il);
-                ModNormalUpdateFriction(il);
-                ModNormalUpdateJumpCount(il);
-                ModNormalUpdateForceDuckOnGround(il);
-            });
+            // chain every other NormalUpdate usage
+            ModNormalUpdateFallSpeed(il);
+            ModNormalUpdateSpeedX(il);
+            ModNormalUpdateFriction(il);
+            ModNormalUpdateJumpCount(il);
+            ModNormalUpdateForceDuckOnGround(il);
         }
 
         /// <summary>
@@ -833,18 +804,16 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         private void ModNormalBegin(ILContext il) {
-            ModMethod("NormalBegin", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
+            // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
 
-                    // add two instructions to multiply those constants with the "fall speed factor"
-                    cursor.EmitDelegate<Func<float>>(DetermineFallSpeedFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
-            });
+                // add two instructions to multiply those constants with the "fall speed factor"
+                cursor.EmitDelegate<Func<float>>(DetermineFallSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
         }
 
         /// <summary>
@@ -891,25 +860,23 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModUpdateSprite(ILContext il) {
-            ModMethod("UpdateSprite", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // the goal is to multiply 160 (max falling speed) with the fall speed factor to fix the falling animation
-                // let's search for all 160 occurrences in the IL code
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying fall speed and gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
+            // the goal is to multiply 160 (max falling speed) with the fall speed factor to fix the falling animation
+            // let's search for all 160 occurrences in the IL code
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying fall speed and gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
 
-                    // add two instructions to multiply those constants with a mix between fall speed and gravity
-                    cursor.EmitDelegate<Func<float>>(MixFallSpeedAndGravity);
-                    cursor.Emit(OpCodes.Mul);
-                    // also remove 0.1 to prevent an animation glitch caused by rounding (I guess?) on very low fall speeds
-                    cursor.Emit(OpCodes.Ldc_R4, 0.1f);
-                    cursor.Emit(OpCodes.Sub);
-                }
+                // add two instructions to multiply those constants with a mix between fall speed and gravity
+                cursor.EmitDelegate<Func<float>>(MixFallSpeedAndGravity);
+                cursor.Emit(OpCodes.Mul);
+                // also remove 0.1 to prevent an animation glitch caused by rounding (I guess?) on very low fall speeds
+                cursor.Emit(OpCodes.Ldc_R4, 0.1f);
+                cursor.Emit(OpCodes.Sub);
+            }
 
-                // chain every other UpdateSprite usage
-                ModUpdateSpriteFriction(il);
-            });
+            // chain every other UpdateSprite usage
+            ModUpdateSpriteFriction(il);
         }
 
         /// <summary>
@@ -967,21 +934,19 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModSuperJump(ILContext il) {
-            ModMethod("SuperJump", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // we want to multiply 260f (speed given by a superdash) with the X speed factor
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 260f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
-                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
-                    cursor.Emit(OpCodes.Mul);
-                    cursor.EmitDelegate<Func<float>>(DetermineHyperdashSpeedFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
+            // we want to multiply 260f (speed given by a superdash) with the X speed factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 260f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
+                cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                cursor.Emit(OpCodes.Mul);
+                cursor.EmitDelegate<Func<float>>(DetermineHyperdashSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
 
-                // chain every other SuperJump usage
-                ModSuperJumpHeight(il);
-            });
+            // chain every other SuperJump usage
+            ModSuperJumpHeight(il);
         }
         
         /// <summary>
@@ -989,19 +954,17 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModSuperWallJump(ILContext il)  {
-            ModMethod("SuperWallJump", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // we want to multiply 170f (X speed given by a superdash) with the X speed factor
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 170f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperWallJump");
-                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
+            // we want to multiply 170f (X speed given by a superdash) with the X speed factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 170f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperWallJump");
+                cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
 
-                // chain every other SuperWallJump usage
-                ModSuperWallJumpHeight(il);
-            });
+            // chain every other SuperWallJump usage
+            ModSuperWallJumpHeight(il);
         }
 
         /// <summary>
@@ -1009,20 +972,18 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModWallJump(ILContext il) {
-            ModMethod("WallJump", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // we want to multiply 130f (X speed given by a walljump) with the X speed factor
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 130f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for WallJump");
-                    cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
+            // we want to multiply 130f (X speed given by a walljump) with the X speed factor
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 130f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for WallJump");
+                cursor.EmitDelegate<Func<float>>(DetermineSpeedXFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
 
-                // chain every other WallJump usage
-                ModWallJumpHeight(il);
-                ModWallJumpNeutralJumping(il);
-            });
+            // chain every other WallJump usage
+            ModWallJumpHeight(il);
+            ModWallJumpNeutralJumping(il);
         }
 
         /// <summary>
@@ -1040,9 +1001,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModClimbUpdate(ILContext il) {
-            ModMethod("ClimbUpdate", () => {
-                patchOutStamina(il);
-            });
+            patchOutStamina(il);
         }
 
         /// <summary>
@@ -1050,9 +1009,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModSwimBegin(ILContext il) {
-            ModMethod("SwimBegin", () => {
-                patchOutStamina(il);
-            });
+            patchOutStamina(il);
         }
 
         /// <summary>
@@ -1060,9 +1017,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModDreamDashBegin(ILContext il) {
-            ModMethod("DreamDashBegin", () => {
-                patchOutStamina(il);
-            });
+            patchOutStamina(il);
         }
 
         /// <summary>
@@ -1070,9 +1025,7 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModPlayerConstructor(ILContext il) {
-            ModMethod("PlayerConstructor", () => {
-                patchOutStamina(il);
-            });
+            patchOutStamina(il);
         }
 
         /// <summary>
@@ -1166,19 +1119,17 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModCallDashEvents(ILContext il) {
-            ModMethod("CallDashEvents", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // enter the if in the method (the "if" checks if dash events were already called) and inject ourselves in there
-                // (those are actually brtrue in the XNA version and brfalse in the FNA version. Seriously?)
-                if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse))) {
-                    Logger.Log("ExtendedVariantsModule", $"Adding code to mod dash speed at index {cursor.Index} in CIL code for CallDashEvents");
+            // enter the if in the method (the "if" checks if dash events were already called) and inject ourselves in there
+            // (those are actually brtrue in the XNA version and brfalse in the FNA version. Seriously?)
+            if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse))) {
+                Logger.Log("ExtendedVariantsModule", $"Adding code to mod dash speed at index {cursor.Index} in CIL code for CallDashEvents");
 
-                    // just add a call to ModifyDashSpeed (arg 0 = this)
-                    cursor.Emit(OpCodes.Ldarg_0);
-                    cursor.EmitDelegate<Action<Player>>(ModifyDashSpeed);
-                }
-            });
+                // just add a call to ModifyDashSpeed (arg 0 = this)
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Action<Player>>(ModifyDashSpeed);
+            }
         }
 
         /// <summary>
@@ -1218,17 +1169,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModUseRefill(ILContext il) {
-            ModMethod("UseRefill", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // we want to insert ourselves just before the first stloc.0
-                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_0)) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding dash count given by refills at {cursor.Index} in CIL code for UseRefill");
+            // we want to insert ourselves just before the first stloc.0
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_0)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding dash count given by refills at {cursor.Index} in CIL code for UseRefill");
 
-                    // call our method just before storing the result from get_MaxDashes in local variable 0
-                    cursor.EmitDelegate<Func<int, int>>(DetermineDashCount);
-                }
-            });
+                // call our method just before storing the result from get_MaxDashes in local variable 0
+                cursor.EmitDelegate<Func<int, int>>(DetermineDashCount);
+            }
         }
 
         /// <summary>
@@ -1254,27 +1203,25 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModUpdateHair(ILContext il) {
-            ModMethod("UpdateHair", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
-                // and be more consistent with the behaviour of the "Infinite Dashes" variant.
-                // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && (instr.Next.OpCode == OpCodes.Bne_Un_S || instr.Next.OpCode == OpCodes.Ceq))) {
-                    Logger.Log("ExtendedVariantsModule", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
+            // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
+            // and be more consistent with the behaviour of the "Infinite Dashes" variant.
+            // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && (instr.Next.OpCode == OpCodes.Bne_Un_S || instr.Next.OpCode == OpCodes.Ceq))) {
+                Logger.Log("ExtendedVariantsModule", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
 
-                    if (cursor.Next.OpCode == OpCodes.Bne_Un_S) {
-                        // XNA version: this is a branch
-                        // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
-                        cursor.Next.OpCode = OpCodes.Blt_Un_S;
-                    } else {
-                        // FNA version: this is a boolean FOLLOWED by a branch
-                        // we're turning this boolean from "Dashes == 2" to "Dashes > 1"
-                        cursor.Prev.OpCode = OpCodes.Ldc_I4_1;
-                        cursor.Next.OpCode = OpCodes.Cgt;
-                    }
+                if (cursor.Next.OpCode == OpCodes.Bne_Un_S) {
+                    // XNA version: this is a branch
+                    // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
+                    cursor.Next.OpCode = OpCodes.Blt_Un_S;
+                } else {
+                    // FNA version: this is a boolean FOLLOWED by a branch
+                    // we're turning this boolean from "Dashes == 2" to "Dashes > 1"
+                    cursor.Prev.OpCode = OpCodes.Ldc_I4_1;
+                    cursor.Next.OpCode = OpCodes.Cgt;
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -1382,21 +1329,19 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModJump(ILContext il) {
-            ModMethod("Jump", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // the speed applied to jumping is simply -105f (negative = up). Let's multiply this with our jump height factor.
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -105f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in CIL code for Jump to make jump height editable");
+            // the speed applied to jumping is simply -105f (negative = up). Let's multiply this with our jump height factor.
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == -105f)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in CIL code for Jump to make jump height editable");
 
-                    // add two instructions to multiply -105f with the "jump height factor"
-                    cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
+                // add two instructions to multiply -105f with the "jump height factor"
+                cursor.EmitDelegate<Func<float>>(DetermineJumpHeightFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
 
-                // chain every other UpdateSprite usage
-                ModUpdateSpriteFriction(il);
-            });
+            // chain every other UpdateSprite usage
+            ModUpdateSpriteFriction(il);
         }
 
         /// <summary>
@@ -1582,50 +1527,48 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModLevelRender(ILContext il) {
-            ModMethod("LevelRender", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // jump right where Mirror Mode is handled
-                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
-                    // move back 2 steps (we are between Instance and MirrorMode in "SaveData.Instance.MirrorMode" and we want to be before that)
-                    cursor.Index -= 2;
+            // jump right where Mirror Mode is handled
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
+                // move back 2 steps (we are between Instance and MirrorMode in "SaveData.Instance.MirrorMode" and we want to be before that)
+                cursor.Index -= 2;
 
-                    VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 4);
-                    VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 8);
+                VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 4);
+                VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 8);
 
-                    if(positionVector == null || paddingVector == null) {
-                        positionVector = seekReferenceTo(il, cursor.Index, 7);
-                        paddingVector = seekReferenceTo(il, cursor.Index, 11);
-                    }
-
-                    if(positionVector != null && paddingVector != null) {
-                        // insert our delegates to do about the same thing as vanilla Celeste at about the same time
-                        Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
-
-                        cursor.Emit(OpCodes.Ldloca_S, paddingVector);
-                        cursor.Emit(OpCodes.Ldloca_S, positionVector);
-                        cursor.EmitDelegate<TwoRefVectorParameters>(ApplyUpsideDownEffect);
-                    }
+                if(positionVector == null || paddingVector == null) {
+                    positionVector = seekReferenceTo(il, cursor.Index, 7);
+                    paddingVector = seekReferenceTo(il, cursor.Index, 11);
                 }
 
-                // move forward a bit to get after the MirrorMode loading
-                cursor.Index += 3;
-
-                // jump to the next MirrorMode usage again
-                if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
-                    // jump back 2 steps
-                    cursor.Index -= 2;
-
+                if(positionVector != null && paddingVector != null) {
+                    // insert our delegates to do about the same thing as vanilla Celeste at about the same time
                     Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
 
-                    // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
-                    // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
-                    cursor.RemoveRange(7);
-
-                    // and replace it with a delegate call
-                    cursor.EmitDelegate<Func<SpriteEffects>>(ApplyUpsideDownEffectToSprites);
+                    cursor.Emit(OpCodes.Ldloca_S, paddingVector);
+                    cursor.Emit(OpCodes.Ldloca_S, positionVector);
+                    cursor.EmitDelegate<TwoRefVectorParameters>(ApplyUpsideDownEffect);
                 }
-            });
+            }
+
+            // move forward a bit to get after the MirrorMode loading
+            cursor.Index += 3;
+
+            // jump to the next MirrorMode usage again
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
+                // jump back 2 steps
+                cursor.Index -= 2;
+
+                Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
+
+                // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
+                // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
+                cursor.RemoveRange(7);
+
+                // and replace it with a delegate call
+                cursor.EmitDelegate<Func<SpriteEffects>>(ApplyUpsideDownEffectToSprites);
+            }
         }
 
         /// <summary>
@@ -1692,17 +1635,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModDashBegin(ILContext il) {
-            ModMethod("DashBegin", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // jump where 0.3 is loaded (0.3 is the dash timer)
-                if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.3f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying dash length to constant at {cursor.Index} in CIL code for DashBegin");
+            // jump where 0.3 is loaded (0.3 is the dash timer)
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.3f)) {
+                Logger.Log("ExtendedVariantsModule", $"Applying dash length to constant at {cursor.Index} in CIL code for DashBegin");
 
-                    cursor.EmitDelegate<Func<float>>(DetermineDashLengthFactor);
-                    cursor.Emit(OpCodes.Mul);
-                }
-            });
+                cursor.EmitDelegate<Func<float>>(DetermineDashLengthFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
         }
 
         /// <summary>
@@ -1740,26 +1681,24 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
         public static void ModDashUpdate(ILContext il) {
-            ModMethod("DashUpdate", () => {
-                FieldReference dashTrailCounter = seekReferenceToVariable(il, "dashTrailCounter");
+            FieldReference dashTrailCounter = seekReferenceToVariable(il, "dashTrailCounter");
 
-                if (dashTrailCounter != null) {
-                    ILCursor cursor = new ILCursor(il);
+            if (dashTrailCounter != null) {
+                ILCursor cursor = new ILCursor(il);
 
-                    Logger.Log("ExtendedVariantsModule", $"Patching dashTrailCounter to fix animation with long dashes at {cursor.Index} in CIL code for DashUpdate");
+                Logger.Log("ExtendedVariantsModule", $"Patching dashTrailCounter to fix animation with long dashes at {cursor.Index} in CIL code for DashUpdate");
 
-                    // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
-                    // so that we add more trails if the dash is made longer than usual
-                    cursor.Emit(OpCodes.Ldarg_0);
-                    cursor.Emit(OpCodes.Ldarg_0);
-                    cursor.Emit(OpCodes.Ldfld, dashTrailCounter);
-                    cursor.EmitDelegate<Func<int, int>>(ModDashTrailCounter);
-                    cursor.Emit(OpCodes.Stfld, dashTrailCounter);
-                }
+                // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
+                // so that we add more trails if the dash is made longer than usual
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldfld, dashTrailCounter);
+                cursor.EmitDelegate<Func<int, int>>(ModDashTrailCounter);
+                cursor.Emit(OpCodes.Stfld, dashTrailCounter);
+            }
 
-                // chain call to other patches
-                patchJumpGraceTimer(il);
-            });
+            // chain call to other patches
+            patchJumpGraceTimer(il);
         }
 
         private static int ModDashTrailCounter(int dashTrailCounter) {
@@ -1884,18 +1823,16 @@ namespace Celeste.Mod.ExtendedVariants {
 
 
         private void ModBadelineOldsiteConstructor(ILContext il) {
-            ModMethod("BadelineOldsiteConstructor", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go everywhere where the 1.55 second delay is defined
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 1.55f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding Badeline lag at {cursor.Index} in CIL code for BadelineOldsite constructor");
+            // go everywhere where the 1.55 second delay is defined
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 1.55f)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding Badeline lag at {cursor.Index} in CIL code for BadelineOldsite constructor");
 
-                    // and substitute it with our own value
-                    cursor.Emit(OpCodes.Pop);
-                    cursor.EmitDelegate<Func<float>>(DetermineBadelineLag);
-                }
-            });
+                // and substitute it with our own value
+                cursor.Emit(OpCodes.Pop);
+                cursor.EmitDelegate<Func<float>>(DetermineBadelineLag);
+            }
         }
 
         private float DetermineBadelineLag() {
@@ -1977,18 +1914,16 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
         private void ModBadelineOldsiteAdded(ILContext il) {
-            ModMethod("BadelineOldsiteAdded", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go right after the equality check that compares the level set name with "Celeste"
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
+            // go right after the equality check that compares the level set name with "Celeste"
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+                Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
 
-                    // mod the result of that check to prevent the chasers we will spawn from... committing suicide
-                    cursor.Emit(OpCodes.Ldarg_1);
-                    cursor.EmitDelegate<Func<bool, Scene, bool>>(ModVanillaBehaviorCheckForChasers);
-                }
-            });
+                // mod the result of that check to prevent the chasers we will spawn from... committing suicide
+                cursor.Emit(OpCodes.Ldarg_1);
+                cursor.EmitDelegate<Func<bool, Scene, bool>>(ModVanillaBehaviorCheckForChasers);
+            }
         }
 
         /// <summary>
@@ -1996,17 +1931,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
         private void ModBadelineOldsiteCanChangeMusic(ILContext il) {
-            ModMethod("BadelineOldsiteCanChangeMusic", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go right after the equality check that compares the level set name with "Celeste"
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
+            // go right after the equality check that compares the level set name with "Celeste"
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+                Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
 
-                    // mod the result of that check to always use modded value, even in vanilla levels
-                    cursor.EmitDelegate<Func<bool, bool>>(ModVanillaBehaviorCheckForMusic);
-                }
-            });
+                // mod the result of that check to always use modded value, even in vanilla levels
+                cursor.EmitDelegate<Func<bool, bool>>(ModVanillaBehaviorCheckForMusic);
+            }
         }
 
         private void injectBadelineChasers(Level level) {
@@ -2118,17 +2051,15 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
         private void ModUpdateChaserStates(ILContext il) {
-            ModMethod("UpdateChaserStates", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go where the "4" is
-                while (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 4f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
+            // go where the "4" is
+            while (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 4f)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
 
-                    // and replace it with a "5.5" in order to support up to 10 chasers
-                    cursor.Next.Operand = 5.5f;
-                }
-            });
+                // and replace it with a "5.5" in order to support up to 10 chasers
+                cursor.Next.Operand = 5.5f;
+            }
         }
 
         // ================ Oshiro Everywhere handling ================
@@ -2209,18 +2140,16 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private void ModSnowballUpdateIL(ILContext il) {
-            ModMethod("SnowballUpdate", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go everywhere where the 0.8 second delay is defined
-                while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.8f)) {
-                    Logger.Log("ExtendedVariantsModule", $"Modding delay between snowballs at {cursor.Index} in CIL code for Update in Snowball");
+            // go everywhere where the 0.8 second delay is defined
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.8f)) {
+                Logger.Log("ExtendedVariantsModule", $"Modding delay between snowballs at {cursor.Index} in CIL code for Update in Snowball");
 
-                    // and substitute it with our own value
-                    cursor.Emit(OpCodes.Pop);
-                    cursor.EmitDelegate<Func<float>>(DetermineDelayBetweenSnowballs);
-                }
-            });
+                // and substitute it with our own value
+                cursor.Emit(OpCodes.Pop);
+                cursor.EmitDelegate<Func<float>>(DetermineDelayBetweenSnowballs);
+            }
         }
 
         private float DetermineDelayBetweenSnowballs() {
@@ -2277,25 +2206,23 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private void ModPathfinderConstructor(ILContext il) {
-            ModMethod("PathfinderConstructor", () => {
-                ILCursor cursor = new ILCursor(il);
+            ILCursor cursor = new ILCursor(il);
 
-                // go everywhere where the 0.8 second delay is defined
-                if (cursor.TryGotoNext(MoveType.After,
-                    instr => instr.OpCode == OpCodes.Ldc_I4 && (int)instr.Operand == 200,
-                    instr => instr.OpCode == OpCodes.Ldc_I4 && (int)instr.Operand == 200)) {
+            // go everywhere where the 0.8 second delay is defined
+            if (cursor.TryGotoNext(MoveType.After,
+                instr => instr.OpCode == OpCodes.Ldc_I4 && (int)instr.Operand == 200,
+                instr => instr.OpCode == OpCodes.Ldc_I4 && (int)instr.Operand == 200)) {
 
-                    Logger.Log("ExtendedVariantsModule", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
+                Logger.Log("ExtendedVariantsModule", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
 
-                    // we will resize the pathfinder (provided that the seekers everywhere variant is enabled) to fit all rooms in vanilla Celeste
-                    cursor.Emit(OpCodes.Pop);
-                    cursor.Emit(OpCodes.Pop);
-                    cursor.Emit(OpCodes.Ldarg_1);
-                    cursor.EmitDelegate<Func<Pathfinder, int>>(DeterminePathfinderWidth);
-                    cursor.Emit(OpCodes.Ldarg_1);
-                    cursor.EmitDelegate<Func<Pathfinder, int>>(DeterminePathfinderHeight);
-                }
-            });
+                // we will resize the pathfinder (provided that the seekers everywhere variant is enabled) to fit all rooms in vanilla Celeste
+                cursor.Emit(OpCodes.Pop);
+                cursor.Emit(OpCodes.Pop);
+                cursor.Emit(OpCodes.Ldarg_1);
+                cursor.EmitDelegate<Func<Pathfinder, int>>(DeterminePathfinderWidth);
+                cursor.Emit(OpCodes.Ldarg_1);
+                cursor.EmitDelegate<Func<Pathfinder, int>>(DeterminePathfinderHeight);
+            }
         }
 
         private int DeterminePathfinderWidth(Pathfinder self) {
