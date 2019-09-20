@@ -1846,15 +1846,19 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private float DetermineBadelineLag() {
-            bool ignoreBadelineLagSetting = false;
-            if(Engine.Scene.GetType() == typeof(Level)) {
+            return shouldIgnoreCustomDelaySettings() || Settings.BadelineLag == 0 ? 1.55f : Settings.BadelineLag / 10f;
+        }
+
+        private static bool shouldIgnoreCustomDelaySettings() {
+            if (Engine.Scene.GetType() == typeof(Level)) {
                 Player player = (Engine.Scene as Level).Tracker.GetEntity<Player>();
                 // those states are "Intro Walk", "Intro Jump" and "Intro Wake Up". Getting killed during such an intro is annoying but can also **crash the game**
-                if(player != null && (player.StateMachine.State == 12 || player.StateMachine.State == 13 || player.StateMachine.State == 15)) {
-                    ignoreBadelineLagSetting = true;
+                if (player != null && (player.StateMachine.State == 12 || player.StateMachine.State == 13 || player.StateMachine.State == 15)) {
+                    return true;
                 }
             }
-            return ignoreBadelineLagSetting || Settings.BadelineLag == 0 ? 1.55f : Settings.BadelineLag / 10f;
+
+            return false;
         }
 
         /// <summary>
@@ -2163,6 +2167,9 @@ namespace Celeste.Mod.ExtendedVariants {
         }
 
         private float DetermineDelayBetweenSnowballs() {
+            if(shouldIgnoreCustomDelaySettings()) {
+                return 0.8f;
+            }
             return Settings.SnowballDelay / 10f;
         }
 
