@@ -260,7 +260,7 @@ namespace Celeste.Mod.ExtendedVariants {
             else if (variant == Variant.Stamina) ExtendedVariantsModule.Settings.Stamina = randomGenerator.Next(23); // random 0~220
             else if (variant == Variant.RegularHiccups) ExtendedVariantsModule.Settings.RegularHiccups = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(13) + 10]; // random 1~3 seconds
             else if (variant == Variant.RoomLighting) ExtendedVariantsModule.Settings.RoomLighting = randomGenerator.Next(11); // random 0~100%
-            else if (variant == Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 6; // 6 is the random setting
+            else if (variant == Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
             else if (variant == Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
         }
 

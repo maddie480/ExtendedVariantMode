@@ -193,9 +193,12 @@ namespace Celeste.Mod.ExtendedVariants {
             OshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
                 .Change(b => Settings.OshiroEverywhere = b);
             WindEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
-                i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + new string[] {
-                    "DISABLED", "WINDEVERYWHERE_HORIZONTAL", "WINDEVERYWHERE_HORIZONTAL_STRONG", "WINDEVERYWHERE_HORIZONTAL_ONOFF", "WINDEVERYWHERE_HORIZONTAL_ONOFF_STRONG", "WINDEVERYWHERE_VERTICAL", "WINDEVERYWHERE_RANDOM" }[i]),
-                0, 6, Settings.WindEverywhere, 0)
+                i => {
+                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
+                    if (i == availableWindPatterns.Length + 1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
+                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_{availableWindPatterns[i - 1].ToString()}");
+                },
+                0, availableWindPatterns.Length + 1, Settings.WindEverywhere, 0)
                 .Change(i => Settings.WindEverywhere = i);
             SnowballsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
                 .Change(b => Settings.SnowballsEverywhere = b);
@@ -2095,15 +2098,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
         private bool snowBackdropAddedByEVM = false;
 
-        private readonly WindController.Patterns[][] patternsBySetting = new WindController.Patterns[][] {
-            new WindController.Patterns[] { WindController.Patterns.Left, WindController.Patterns.Right },
-            new WindController.Patterns[] { WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong },
-            new WindController.Patterns[] { WindController.Patterns.LeftOnOff, WindController.Patterns.RightOnOff, WindController.Patterns.Alternating },
-            new WindController.Patterns[] { WindController.Patterns.LeftOnOffFast, WindController.Patterns.RightOnOffFast },
-            new WindController.Patterns[] { WindController.Patterns.Down, WindController.Patterns.Up },
-            new WindController.Patterns[] { WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong,
+        private readonly WindController.Patterns[] availableWindPatterns = new WindController.Patterns[] {
+            WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
                 WindController.Patterns.LeftOnOff, WindController.Patterns.RightOnOff, WindController.Patterns.Alternating, WindController.Patterns.LeftOnOffFast,
-                WindController.Patterns.RightOnOffFast, WindController.Patterns.Down, WindController.Patterns.Up },
+                WindController.Patterns.RightOnOffFast, WindController.Patterns.Down, WindController.Patterns.Up
         };
 
         private void applyWind(Level level) {
@@ -2118,9 +2116,14 @@ namespace Celeste.Mod.ExtendedVariants {
                 // (that's done by switching to the ch4 audio ambience. yep)
                 Audio.SetAmbience("event:/env/amb/04_main", true);
 
-                // pick up random wind
-                WindController.Patterns[] availablePatterns = patternsBySetting[Settings.WindEverywhere - 1];
-                WindController.Patterns selectedPattern = availablePatterns[randomGenerator.Next(availablePatterns.Length)];
+                WindController.Patterns selectedPattern;
+                if (Settings.WindEverywhere == availableWindPatterns.Length + 1) {
+                    // pick up random wind
+                    selectedPattern = availableWindPatterns[randomGenerator.Next(availableWindPatterns.Length)];
+                } else {
+                    // pick up the chosen wind pattern
+                    selectedPattern = availableWindPatterns[Settings.WindEverywhere - 1];
+                }
 
                 // and apply it; this is basically what Wind Trigger does
                 WindController windController = level.Entities.FindFirst<WindController>();
