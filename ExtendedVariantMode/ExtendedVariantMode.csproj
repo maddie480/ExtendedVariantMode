@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="Celeste">
       <HintPath>..\lib-stripped\Celeste.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FNA">
       <HintPath>..\Everest\lib-stripped\FNA.dll</HintPath>
