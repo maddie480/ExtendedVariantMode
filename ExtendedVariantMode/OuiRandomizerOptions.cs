@@ -120,9 +120,13 @@ namespace Celeste.Mod.ExtendedVariants {
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.LowFriction));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.SuperDashing));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.Hiccups));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.PlayAsBadeline));
+
+            menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA_ASSISTS")));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.InfiniteStamina));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.DashMode));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.Invincible));
+            items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.DashAssist));
 
             // and do the same with extended ones
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_EXTENDED")));

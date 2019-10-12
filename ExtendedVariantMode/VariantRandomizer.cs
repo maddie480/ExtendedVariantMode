@@ -39,9 +39,11 @@ namespace Celeste.Mod.ExtendedVariants {
         public static readonly VanillaVariant LowFriction = new VanillaVariant("LowFriction", "MENU_VARIANT_LOWFRICTION");
         public static readonly VanillaVariant SuperDashing = new VanillaVariant("SuperDashing", "MENU_VARIANT_SUPERDASHING");
         public static readonly VanillaVariant Hiccups = new VanillaVariant("Hiccups", "MENU_VARIANT_HICCUPS");
+        public static readonly VanillaVariant PlayAsBadeline = new VanillaVariant("PlayAsBadeline", "MENU_VARIANT_PLAYASBADELINE");
         public static readonly VanillaVariant InfiniteStamina = new VanillaVariant("InfiniteStamina", "MENU_ASSIST_INFINITE_STAMINA");
         public static readonly VanillaVariant DashMode = new VanillaVariant("DashMode", "MENU_ASSIST_AIR_DASHES");
         public static readonly VanillaVariant Invincible = new VanillaVariant("Invincible", "MENU_ASSIST_INVINCIBLE");
+        public static readonly VanillaVariant DashAssist = new VanillaVariant("DashAssist", "MENU_ASSIST_DASH_ASSIST");
     }
 
     public class VariantRandomizer {
@@ -101,7 +103,8 @@ namespace Celeste.Mod.ExtendedVariants {
 
         private static readonly IEnumerable<VanillaVariant> allVanillaVariants = new List<VanillaVariant>() {
             VanillaVariant.GameSpeed, VanillaVariant.MirrorMode, VanillaVariant.ThreeSixtyDashing, VanillaVariant.InvisibleMotion, VanillaVariant.NoGrabbing,
-            VanillaVariant.LowFriction, VanillaVariant.SuperDashing, VanillaVariant.Hiccups, VanillaVariant.InfiniteStamina, VanillaVariant.DashMode, VanillaVariant.Invincible
+            VanillaVariant.LowFriction, VanillaVariant.SuperDashing, VanillaVariant.Hiccups, VanillaVariant.PlayAsBadeline, VanillaVariant.InfiniteStamina,
+            VanillaVariant.DashMode, VanillaVariant.Invincible, VanillaVariant.DashAssist
         };
 
         private static readonly IEnumerable<Variant> allExtendedVariants = new List<Variant>() {
@@ -193,6 +196,7 @@ namespace Celeste.Mod.ExtendedVariants {
             if (variant == VanillaVariant.DashMode) return SaveData.Instance.Assists.DashMode == Assists.DashModes.Normal;
             if (variant == VanillaVariant.GameSpeed) return SaveData.Instance.Assists.GameSpeed == 10;
             if (variant == VanillaVariant.Hiccups) return !SaveData.Instance.Assists.Hiccups;
+            if (variant == VanillaVariant.PlayAsBadeline) return !SaveData.Instance.Assists.PlayAsBadeline;
             if (variant == VanillaVariant.InfiniteStamina) return !SaveData.Instance.Assists.InfiniteStamina;
             if (variant == VanillaVariant.Invincible) return !SaveData.Instance.Assists.Invincible;
             if (variant == VanillaVariant.InvisibleMotion) return !SaveData.Instance.Assists.InvisibleMotion;
@@ -201,6 +205,7 @@ namespace Celeste.Mod.ExtendedVariants {
             if (variant == VanillaVariant.NoGrabbing) return !SaveData.Instance.Assists.NoGrabbing;
             if (variant == VanillaVariant.SuperDashing) return !SaveData.Instance.Assists.SuperDashing;
             if (variant == VanillaVariant.ThreeSixtyDashing) return !SaveData.Instance.Assists.ThreeSixtyDashing;
+            if (variant == VanillaVariant.DashAssist) return !SaveData.Instance.Assists.DashAssist;
 
             Logger.Log(LogLevel.Error, "ExtendedVariantMode/VariantRandomizer", $"Requesting default value check for non-existent vanilla variant {variant.Name}");
             return false;
@@ -278,6 +283,8 @@ namespace Celeste.Mod.ExtendedVariants {
             else if (variant == VanillaVariant.NoGrabbing) SaveData.Instance.Assists.NoGrabbing = enabled;
             else if (variant == VanillaVariant.SuperDashing) SaveData.Instance.Assists.SuperDashing = enabled;
             else if (variant == VanillaVariant.ThreeSixtyDashing) SaveData.Instance.Assists.ThreeSixtyDashing = enabled;
+            else if (variant == VanillaVariant.PlayAsBadeline) SaveData.Instance.Assists.PlayAsBadeline = enabled;
+            else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
         public void SpitOutEnabledVariantsInFile() {
