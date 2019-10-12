@@ -90,11 +90,18 @@ namespace Celeste.Mod.ExtendedVariants {
                     refreshOptionMenuEnabledStatus(items);
                 }));
 
-            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_REROLLMODE"), ExtendedVariantsModule.Settings.RerollMode)
-                .Change(newValue => ExtendedVariantsModule.Settings.RerollMode = newValue));
+            TextMenu.Option<int> maxEnabledVariants = new TextMenu.Slider(
+                Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS" + (ExtendedVariantsModule.Settings.RerollMode ? "_REROLL" : "")),
+                i => i.ToString(), 0, 41, ExtendedVariantsModule.Settings.MaxEnabledVariants)
+                .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue);
 
-            menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS"), i => i.ToString(), 0, 35, ExtendedVariantsModule.Settings.MaxEnabledVariants)
-                .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue));
+            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_REROLLMODE"), ExtendedVariantsModule.Settings.RerollMode)
+                .Change(newValue => {
+                    ExtendedVariantsModule.Settings.RerollMode = newValue;
+                    maxEnabledVariants.Label = Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS" + (newValue ? "_REROLL" : ""));
+                }));
+
+            menu.Add(maxEnabledVariants);
 
             menu.Add(items.VanillafyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VANILLAFY"), i => {
                 if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");

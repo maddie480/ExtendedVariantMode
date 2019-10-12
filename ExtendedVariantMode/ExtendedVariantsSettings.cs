@@ -208,7 +208,7 @@ namespace Celeste.Mod.ExtendedVariants {
         public bool RerollMode { get; set; } = false;
 
         [SettingIgnore]
-        public int MaxEnabledVariants { get; set; } = 35;
+        public int MaxEnabledVariants { get; set; } = 41;
 
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;
