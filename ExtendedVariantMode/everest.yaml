@@ -1,6 +1,6 @@
 ﻿- Name: ExtendedVariantMode
-  Version: 0.7.2
+  Version: 0.7.3
   DLL: ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
-      Version: 1.995.0
+      Version: 1.1057.0

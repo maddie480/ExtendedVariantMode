@@ -89,6 +89,7 @@
     <Compile Include="AutoDestroyingSeeker.cs" />
     <Compile Include="AutoDestroyingSnowball.cs" />
     <Compile Include="ExtendedVariantsModule.cs" />
+    <Compile Include="ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
     <Compile Include="OuiRandomizerOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

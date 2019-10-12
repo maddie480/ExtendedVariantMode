@@ -74,8 +74,8 @@ namespace Celeste.Mod.ExtendedVariants {
                 if (!ExtendedVariantsModule.OldVariantsInRoom.ContainsKey(variantChange)) {
                     ExtendedVariantsModule.OldVariantsInRoom[variantChange] = oldValue;
                 }
-                if (!ExtendedVariantsModule.OldVariantsInSession.ContainsKey(variantChange)) {
-                    ExtendedVariantsModule.OldVariantsInSession[variantChange] = oldValue;
+                if (!ExtendedVariantsModule.VariantValuesBeforeOverride.ContainsKey(variantChange)) {
+                    ExtendedVariantsModule.VariantValuesBeforeOverride[variantChange] = oldValue;
                 }
                 if (revertOnLeave) {
                     // save the value we will revert when leaving the trigger

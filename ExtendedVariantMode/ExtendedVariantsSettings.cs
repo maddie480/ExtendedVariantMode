@@ -94,10 +94,6 @@ namespace Celeste.Mod.ExtendedVariants {
 
         // ======================================
 
-        public Dictionary<int, Dictionary<Variant, int>> OverrideValuesInSave = new Dictionary<int, Dictionary<Variant, int>>();
-
-        // ======================================
-
         [SettingIgnore]
         public bool UpsideDown { get; set; } = false;
 

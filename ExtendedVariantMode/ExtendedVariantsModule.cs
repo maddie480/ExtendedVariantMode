@@ -17,11 +17,14 @@ namespace Celeste.Mod.ExtendedVariants {
         public static ExtendedVariantsModule Instance;
 
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
+        public override Type SessionType => typeof(ExtendedVariantsSession);
+
         public static ExtendedVariantsSettings Settings => (ExtendedVariantsSettings)Instance._Settings;
+        public static ExtendedVariantsSession Session => (ExtendedVariantsSession)Instance._Session;
 
         public static Dictionary<Variant, int> OverridenVariantsInRoom = new Dictionary<Variant, int>();
         public static Dictionary<Variant, int> OldVariantsInRoom = new Dictionary<Variant, int>();
-        public static Dictionary<Variant, int> OldVariantsInSession = new Dictionary<Variant, int>();
+        public static Dictionary<Variant, int> VariantValuesBeforeOverride = new Dictionary<Variant, int>();
 
         public static TextMenu.Option<bool> MasterSwitchOption;
         public static TextMenu.Option<int> GravityOption;
@@ -489,7 +492,6 @@ namespace Celeste.Mod.ExtendedVariants {
             Everest.Events.Level.OnTransitionTo += OnLevelTransitionTo;
             Everest.Events.Level.OnEnter += OnLevelEnter;
             Everest.Events.Level.OnExit += OnLevelExit;
-            On.Celeste.SaveData.TryDelete += OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += ModRespawnTrigger;
             IL.Celeste.Level.Render += ModLevelRender;
             IL.Celeste.Player.DashBegin += ModDashBegin;
@@ -548,7 +550,6 @@ namespace Celeste.Mod.ExtendedVariants {
             Everest.Events.Level.OnTransitionTo -= OnLevelTransitionTo;
             Everest.Events.Level.OnEnter -= OnLevelEnter;
             Everest.Events.Level.OnExit -= OnLevelExit;
-            On.Celeste.SaveData.TryDelete -= OnSaveDataDelete;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= ModRespawnTrigger;
             IL.Celeste.Level.Render -= ModLevelRender;
             IL.Celeste.Player.DashBegin -= ModDashBegin;
@@ -592,15 +593,10 @@ namespace Celeste.Mod.ExtendedVariants {
 
             Randomizer.SpitOutEnabledVariantsInFile();
 
-            int slot = SaveData.Instance.FileSlot;
-            if (fromSaveData && Settings.OverrideValuesInSave.ContainsKey(slot)) {
-                // reset all variants that got set in the room
-                Dictionary<Variant, int> values = Settings.OverrideValuesInSave[slot];
-                foreach (Variant v in values.Keys) {
-                    Logger.Log("ExtendedVariantsModule/OnLevelEnter", $"Loading save {slot}: restoring {v} to {values[v]}");
-                    int oldValue = ExtendedVariantTrigger.SetVariantValue(v, values[v]);
-                    OldVariantsInSession[v] = oldValue;
-                }
+            foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys) {
+                Logger.Log("ExtendedVariantsModule/OnLevelEnter", $"Loading save: restoring {v} to {Session.VariantsEnabledViaTrigger[v]}");
+                int oldValue = ExtendedVariantTrigger.SetVariantValue(v, Session.VariantsEnabledViaTrigger[v]);
+                VariantValuesBeforeOverride[v] = oldValue;
             }
         }
 
@@ -671,18 +667,10 @@ namespace Celeste.Mod.ExtendedVariants {
         /// </summary>
         public static void CommitVariantChanges() {
             if (OverridenVariantsInRoom.Count != 0) {
-                int fileSlot = SaveData.Instance.FileSlot;
-
-                // create slot if not present
-                if (!Settings.OverrideValuesInSave.ContainsKey(fileSlot)) {
-                    Logger.Log("ExtendedVariantsModule/CommitVariantChanges", $"Creating save slot {fileSlot}");
-                    Settings.OverrideValuesInSave[fileSlot] = new Dictionary<Variant, int>();
-                }
-
                 // "commit" variants set in the room to save slot
                 foreach (Variant v in OverridenVariantsInRoom.Keys) {
-                    Logger.Log("ExtendedVariantsModule/CommitVariantChanges", $"Committing variant change {v} to {OverridenVariantsInRoom[v]} in save file slot {fileSlot}");
-                    Settings.OverrideValuesInSave[fileSlot][v] = OverridenVariantsInRoom[v];
+                    Logger.Log("ExtendedVariantsModule/CommitVariantChanges", $"Committing variant change {v} to {OverridenVariantsInRoom[v]}");
+                    Session.VariantsEnabledViaTrigger[v] = OverridenVariantsInRoom[v];
                 }
 
                 // clear values
@@ -695,18 +683,11 @@ namespace Celeste.Mod.ExtendedVariants {
         public void OnLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             Randomizer.ClearFile();
 
-            int fileSlot = SaveData.Instance.FileSlot;
-            if (mode != LevelExit.Mode.SaveAndQuit && Settings.OverrideValuesInSave.ContainsKey(fileSlot)) {
-                // we definitely exited the level: reset the variants state
-                Logger.Log("ExtendedVariantsModule/OnLevelExit", $"Removing all variant changes in save file slot {fileSlot}");
-                Settings.OverrideValuesInSave.Remove(fileSlot);
-            }
-
-            if (OldVariantsInSession.Count != 0) {
+            if (VariantValuesBeforeOverride.Count != 0) {
                 // reset all variants that got set during the session
-                foreach (Variant v in OldVariantsInSession.Keys) {
-                    Logger.Log("ExtendedVariantsModule/OnLevelExit", $"Ending session: resetting {v} to {OldVariantsInSession[v]}");
-                    ExtendedVariantTrigger.SetVariantValue(v, OldVariantsInSession[v]);
+                foreach (Variant v in VariantValuesBeforeOverride.Keys) {
+                    Logger.Log("ExtendedVariantsModule/OnLevelExit", $"Ending session: resetting {v} to {VariantValuesBeforeOverride[v]}");
+                    ExtendedVariantTrigger.SetVariantValue(v, VariantValuesBeforeOverride[v]);
                 }
             }
 
@@ -714,35 +695,12 @@ namespace Celeste.Mod.ExtendedVariants {
             Logger.Log("ExtendedVariantsModule/OnLevelExit", "Room and session state reset");
             OverridenVariantsInRoom.Clear();
             OldVariantsInRoom.Clear();
-            OldVariantsInSession.Clear();
-
-            // make sure to save the settings
-            Logger.Log("ExtendedVariantsModule/OnLevelExit", "Saving variant module settings");
-            SaveSettings();
+            VariantValuesBeforeOverride.Clear();
 
             // reset the flags about stuff generated by EVM
             snowBackdropAddedByEVM = false;
             extendedPathfinder = false;
             BadelineBoosting = false;
-        }
-
-        /// <summary>
-        /// Wraps the TryDelete method in SaveData, in order to handle the corner case where a save data with a session containing extended variants is deleted.
-        /// (Pretty sure it will never happen, but still, this would cause weird behavior.)
-        /// </summary>
-        /// <param name="orig">The original TryDelete method</param>
-        /// <param name="slot">The slot being deleted</param>
-        /// <returns></returns>
-        public bool OnSaveDataDelete(On.Celeste.SaveData.orig_TryDelete orig, int slot) {
-            bool success = orig.Invoke(slot);
-
-            if(success && Settings.OverrideValuesInSave.ContainsKey(slot)) {
-                Logger.Log("ExtendedVariantsModule/OnSaveDataDelete", $"Removing all variant changes in save file slot {slot} since save file was just deleted");
-                Settings.OverrideValuesInSave.Remove(slot);
-                SaveSettings();
-            }
-
-            return success;
         }
 
         // ================ Stamp on Chapter Complete screen ================
