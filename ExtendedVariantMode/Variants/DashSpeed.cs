@@ -49,7 +49,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="self">A reference to the player</param>
         private void modifyDashSpeed(Player self) {
-            self.Speed *= Settings.DashSpeedFactor;
+            self.Speed *= Settings.DashSpeed / 10f;
         }
     }
 }

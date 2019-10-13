@@ -77,14 +77,14 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The idle animation threshold (minimum 25, gets higher as the friction factor is lower)</returns>
         private float getIdleAnimationThreshold() {
-            if(Settings.FrictionFactor >= 1f) {
+            if(Settings.Friction >= 10) {
                 // keep the default value
                 return 25f;
             }
 
             // shift the "stand still" threshold towards max walking speed, which is 90f
             // for example, it will give 83.5 when friction factor is 0.1, Madeline will appear to slip standing still.
-            return 25f + (90f * Settings.SpeedXFactor - 25f) * (1 - Settings.FrictionFactor);
+            return 25f + (90f * Settings.SpeedX / 10f - 25f) * (1 - determineFrictionFactor());
         }
 
         /// <summary>
@@ -92,7 +92,11 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The friction factor (1 = default friction)</returns>
         private float determineFrictionFactor() {
-            return Settings.FrictionFactor;
+            switch (Settings.Friction) {
+                case -1: return 0f;
+                case 0: return 0.05f;
+                default: return Settings.Friction / 10f;
+            }
         }
     }
 }

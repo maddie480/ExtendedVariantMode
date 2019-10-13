@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The wallbounce speed factor (1 = default wallbounce speed)</returns>
         private float determineWallBouncingSpeedFactor() {
-            return Settings.WallBouncingSpeedFactor;
+            return Settings.WallBouncingSpeed / 10f;
         }
     }
 }

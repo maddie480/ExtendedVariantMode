@@ -112,11 +112,11 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The fall speed factor (1 = default fall speed)</returns>
         private float determineFallSpeedFactor() {
-            return Settings.FallSpeedFactor;
+            return Settings.FallSpeed / 10f;
         }
 
         private float mixFallSpeedAndGravity() {
-            return Math.Min(Settings.FallSpeedFactor, Settings.GravityFactor);
+            return Math.Min(Settings.FallSpeed / 10f, Settings.Gravity / 10f);
         }
     }
 }

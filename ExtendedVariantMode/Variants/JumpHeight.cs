@@ -98,7 +98,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The jump height factor (1 = default jump height)</returns>
         private float determineJumpHeightFactor() {
-            return Settings.JumpHeightFactor;
+            return Settings.JumpHeight / 10f;
         }
     }
 }

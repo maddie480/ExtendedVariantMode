@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The gravity factor (1 = default gravity)</returns>
         private float determineGravityFactor() {
-            return Settings.GravityFactor;
+            return Settings.Gravity / 10f;
         }
 
         // NOTE: Gravity also comes in play in the UpdateSprite patch of FallSpeed.

@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The dash length factor (1 = default dash length)</returns>
         private float determineDashLengthFactor() {
-            return Settings.DashLengthFactor;
+            return Settings.DashLength / 10f;
         }
 
         private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
@@ -67,7 +67,7 @@ namespace ExtendedVariants.Variants {
                 if(o != null && o.GetType() == typeof(float)) {
                     float f = (float)o;
                     if (f == 0.15f || f == 0.3f) {
-                        f *= Settings.DashLengthFactor;
+                        f *= Settings.DashLength / 10f;
                         lastDashDuration = f;
                     }
                     yield return f;
@@ -98,10 +98,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modDashTrailCounter(int dashTrailCounter) {
-            if (Settings.DashLengthFactor != 1 && lastDashDuration != 0f) {
+            if (Settings.DashLength != 10 && lastDashDuration != 0f) {
                 float bakLastDashDuration = lastDashDuration;
                 lastDashDuration = 0f;
-                return (int)Math.Round(bakLastDashDuration * 10 * Settings.DashLengthFactor) - 1;
+                return (int)Math.Round(bakLastDashDuration * Settings.DashLength) - 1;
             }
             return dashTrailCounter;
         }

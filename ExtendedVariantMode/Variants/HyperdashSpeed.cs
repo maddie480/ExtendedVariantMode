@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
         private float determineHyperdashSpeedFactor() {
-            return Settings.HyperdashSpeedFactor;
+            return Settings.HyperdashSpeed / 10f;
         }
     }
 }

@@ -13,36 +13,20 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int Gravity { get; set; } = 10;
 
-        [YamlIgnore]
-        [SettingIgnore]
-        public float GravityFactor => Gravity / 10f;
-
         // ======================================
 
         [SettingIgnore]
         public int FallSpeed { get; set; } = 10;
-
-        [YamlIgnore]
-        [SettingIgnore]
-        public float FallSpeedFactor => FallSpeed / 10f;
 
         // ======================================
 
         [SettingIgnore]
         public int JumpHeight { get; set; } = 10;
 
-        [YamlIgnore]
-        [SettingIgnore]
-        public float JumpHeightFactor => JumpHeight / 10f;
-
         // ======================================
 
         [SettingIgnore]
         public int SpeedX { get; set; } = 10;
-
-        [YamlIgnore]
-        [SettingIgnore]
-        public float SpeedXFactor => SpeedX / 10f;
 
         // ======================================
 
@@ -53,11 +37,7 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public int DashSpeed { get; set; } = 10;
-
-        [YamlIgnore]
-        [SettingIgnore]
-        public float DashSpeedFactor => DashSpeed / 10f;
-
+        
         // ======================================
 
         [SettingIgnore]
@@ -67,18 +47,6 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public int Friction { get; set; } = 10;
-
-        [YamlIgnore]
-        [SettingIgnore]
-        public float FrictionFactor {
-            get {
-                switch (Friction) {
-                    case -1: return 0f;
-                    case 0: return 0.05f ;
-                    default: return Friction / 10f;
-                }
-            }
-        }
 
         // ======================================
 
@@ -103,27 +71,15 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int HyperdashSpeed { get; set; } = 10;
 
-        [YamlIgnore]
-        [SettingIgnore]
-        public float HyperdashSpeedFactor => HyperdashSpeed / 10f;
-
         // ======================================
 
         [SettingIgnore]
         public int WallBouncingSpeed { get; set; } = 10;
 
-        [YamlIgnore]
-        [SettingIgnore]
-        public float WallBouncingSpeedFactor => WallBouncingSpeed / 10f;
-
         // ======================================
 
         [SettingIgnore]
         public int DashLength { get; set; } = 10;
-
-        [YamlIgnore]
-        [SettingIgnore]
-        public float DashLengthFactor => DashLength / 10f;
 
         // ======================================
 

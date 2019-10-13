@@ -117,7 +117,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The speed factor (1 = default speed)</returns>
         private float determineSpeedXFactor() {
-            return Settings.SpeedXFactor;
+            return Settings.SpeedX / 10f;
         }
 
         // NOTE: X speed also comes in play for the UpdateSprite patch in Friction.
