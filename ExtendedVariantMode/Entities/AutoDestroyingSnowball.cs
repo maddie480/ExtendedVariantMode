@@ -1,14 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Celeste;
+using ExtendedVariants.Module;
 
-namespace Celeste.Mod.ExtendedVariants {
-    class AutoDestroyingSeeker : Seeker {
-        public AutoDestroyingSeeker(EntityData data, Vector2 offset) : base(data, offset) { }
+namespace ExtendedVariants.Entities {
+    class AutoDestroyingSnowball : Snowball {
+        public AutoDestroyingSnowball() : base() { }
 
         public override void Update() {
             base.Update();
 
             Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
             if (ExtendedVariantsModule.ShouldEntitiesAutoDestroy(player)) {
+                // kill the snowball no matter what
                 RemoveSelf();
             }
         }

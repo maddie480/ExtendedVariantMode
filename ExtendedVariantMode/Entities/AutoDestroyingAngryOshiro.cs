@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste;
+using ExtendedVariants.Module;
+using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.Entities {
     class AutoDestroyingAngryOshiro : AngryOshiro {
         public AutoDestroyingAngryOshiro(Vector2 position, bool fromCutscene): base(position, fromCutscene) { }
 

@@ -8,10 +8,14 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
-using On.Celeste;
 using Celeste.Mod.UI;
+using Celeste.Mod;
+using ExtendedVariants.UI;
+using Celeste;
+using TextMenuExt = ExtendedVariants.UI.TextMenuExt;
+using ExtendedVariants.Entities;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
 
         public static ExtendedVariantsModule Instance;

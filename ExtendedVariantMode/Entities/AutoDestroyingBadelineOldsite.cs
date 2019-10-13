@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste;
+using ExtendedVariants.Module;
+using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.Entities {
     class AutoDestroyingBadelineOldsite : BadelineOldsite {
         public AutoDestroyingBadelineOldsite(EntityData data, Vector2 position, int index) : base(data, position, index) { }
 

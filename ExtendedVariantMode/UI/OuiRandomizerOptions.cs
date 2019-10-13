@@ -1,11 +1,12 @@
-﻿using Celeste.Mod.UI;
+﻿using Celeste;
+using Celeste.Mod.UI;
+using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.UI {
     // That's just me trying to implement a mod options submenu. Don't mind me
     // Heavily based off the OuiModOptions from Everest: https://github.com/EverestAPI/Everest/blob/master/Celeste.Mod.mm/Mod/UI/OuiModOptions.cs
     class OuiRandomizerOptions : Oui {

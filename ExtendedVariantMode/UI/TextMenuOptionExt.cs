@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste;
+using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.UI {
     public class TextMenuOptionExt<T> : TextMenu.Option<T> {
 
         private int lastDir;

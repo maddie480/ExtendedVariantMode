@@ -1,11 +1,14 @@
-﻿using Monocle;
+﻿using Celeste;
+using Celeste.Mod;
+using ExtendedVariants.Module;
+using Monocle;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants {
     public class VanillaVariant {
         public string Name { get; private set; }
         public string Label { get; private set; }

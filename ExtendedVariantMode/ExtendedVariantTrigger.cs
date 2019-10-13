@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Celeste;
+using Celeste.Mod;
+using ExtendedVariants.Module;
+using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants {
     public class ExtendedVariantTrigger : Trigger {
         private Variant variantChange;
         private int newValue;

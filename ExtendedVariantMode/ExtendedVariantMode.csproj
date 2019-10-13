@@ -84,18 +84,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoDestroyingAngryOshiro.cs" />
-    <Compile Include="AutoDestroyingBadelineOldsite.cs" />
-    <Compile Include="AutoDestroyingSeeker.cs" />
-    <Compile Include="AutoDestroyingSnowball.cs" />
-    <Compile Include="ExtendedVariantsModule.cs" />
-    <Compile Include="ExtendedVariantsSession.cs" />
+    <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
+    <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
+    <Compile Include="Entities\AutoDestroyingSeeker.cs" />
+    <Compile Include="Entities\AutoDestroyingSnowball.cs" />
+    <Compile Include="Module\ExtendedVariantsModule.cs" />
+    <Compile Include="Module\ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
-    <Compile Include="OuiRandomizerOptions.cs" />
+    <Compile Include="UI\OuiRandomizerOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ExtendedVariantsSettings.cs" />
-    <Compile Include="TextMenuExt.cs" />
-    <Compile Include="TextMenuOptionExt.cs" />
+    <Compile Include="Module\ExtendedVariantsSettings.cs" />
+    <Compile Include="UI\TextMenuExt.cs" />
+    <Compile Include="UI\TextMenuOptionExt.cs" />
     <Compile Include="VariantRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>

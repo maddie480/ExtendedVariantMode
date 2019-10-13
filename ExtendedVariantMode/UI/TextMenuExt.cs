@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Celeste;
+using System;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.UI {
     /// <summary>
     /// This class recreates some of the options in vanilla Celeste, making them extend TextMenuOptionExt instead of TextMenu.Option.
     /// </summary>

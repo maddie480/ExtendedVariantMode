@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Celeste.Mod;
+using System;
 using System.Collections.Generic;
 using YamlDotNet.Serialization;
 
-namespace Celeste.Mod.ExtendedVariants {
+namespace ExtendedVariants.Module {
     public class ExtendedVariantsSettings : EverestModuleSettings {
 
         public bool MasterSwitch = false;
