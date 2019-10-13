@@ -78,6 +78,7 @@ namespace ExtendedVariants.Module {
 
         public override void Load() {
             // mod methods here
+            Logger.Log("ExtendedVariantsModule", $"Loading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
             Everest.Events.Level.OnExit += onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
@@ -87,23 +88,34 @@ namespace ExtendedVariants.Module {
                 ResetToDefaultSettings();
             }
 
+            Logger.Log("ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
+
+            Logger.Log("ExtendedVariantsModule", $"Loading variant trigger manager...");
             TriggerManager.Load();
-            foreach(AbstractExtendedVariant variant in VariantHandlers.Values) {
-                variant.Load();
+
+            foreach(Variant variant in VariantHandlers.Keys) {
+                Logger.Log("ExtendedVariantsModule", $"Loading variant {variant}...");
+                VariantHandlers[variant].Load();
             }
         }
 
         public override void Unload() {
             // unmod methods here
+            Logger.Log("ExtendedVariantsModule", $"Unloading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants -= modVersionNumberAndVariants;
             Everest.Events.Level.OnExit -= onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
 
+            Logger.Log("ExtendedVariantsModule", $"Unloading variant randomizer...");
             Randomizer.Unload();
+
+            Logger.Log("ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
-            foreach(AbstractExtendedVariant variant in VariantHandlers.Values) {
-                variant.Unload();
+            
+            foreach(Variant variant in VariantHandlers.Keys) {
+                Logger.Log("ExtendedVariantsModule", $"Unloading variant {variant}...");
+                VariantHandlers[variant].Unload();
             }
         }
         

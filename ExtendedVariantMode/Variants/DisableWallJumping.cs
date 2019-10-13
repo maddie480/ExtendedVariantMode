@@ -1,4 +1,8 @@
 ﻿using Celeste;
+using Celeste.Mod;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class DisableWallJumping : AbstractExtendedVariant {
@@ -15,12 +19,12 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            On.Celeste.Player.WallJump += modWallJump;
+            IL.Celeste.Player.WallJump += modWallJump;
             On.Celeste.Player.WallJumpCheck += modWallJumpCheck;
         }
 
         public override void Unload() {
-            On.Celeste.Player.WallJump -= modWallJump;
+            IL.Celeste.Player.WallJump -= modWallJump;
             On.Celeste.Player.WallJumpCheck -= modWallJumpCheck;
         }
         
@@ -30,10 +34,16 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">the original method</param>
         /// <param name="self">the player</param>
         /// <param name="dir">the wall jump direction</param>
-        private void modWallJump(On.Celeste.Player.orig_WallJump orig, Player self, int dir) {
-            if (!Settings.DisableWallJumping) {
-                orig(self, dir);
-            }
+        private void modWallJump(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            Instruction firstInstruction = cursor.Next;
+
+            Logger.Log("ExtendedVariantsModule", $"Injecting code to break method if wall jumping is disabled at {cursor.Index} in IL code for WallJump");
+
+            cursor.EmitDelegate<Func<bool>>(isWallJumpingDisabled);
+            cursor.Emit(OpCodes.Brfalse, firstInstruction);
+            cursor.Emit(OpCodes.Ret);
         }
 
         /// <summary>
@@ -48,6 +58,10 @@ namespace ExtendedVariants.Variants {
                 return false;
             }
             return orig(self, dir);
+        }
+
+        private bool isWallJumpingDisabled() {
+            return Settings.DisableWallJumping;
         }
     }
 }
