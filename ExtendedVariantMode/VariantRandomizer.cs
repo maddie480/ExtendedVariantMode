@@ -331,7 +331,18 @@ namespace ExtendedVariants {
             else if (variant == VanillaVariant.NoGrabbing) SaveData.Instance.Assists.NoGrabbing = enabled;
             else if (variant == VanillaVariant.SuperDashing) SaveData.Instance.Assists.SuperDashing = enabled;
             else if (variant == VanillaVariant.ThreeSixtyDashing) SaveData.Instance.Assists.ThreeSixtyDashing = enabled;
-            else if (variant == VanillaVariant.PlayAsBadeline) SaveData.Instance.Assists.PlayAsBadeline = enabled;
+            else if (variant == VanillaVariant.PlayAsBadeline) {
+                SaveData.Instance.Assists.PlayAsBadeline = enabled;
+                Player entity = Engine.Scene.Tracker.GetEntity<Player>();
+                if (entity != null) {
+                    PlayerSpriteMode mode = SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : entity.DefaultSpriteMode;
+                    if (entity.Active) {
+                        entity.ResetSpriteNextFrame(mode);
+                        return;
+                    }
+                    entity.ResetSprite(mode);
+                }
+            }
             else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
