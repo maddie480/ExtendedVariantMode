@@ -1,8 +1,11 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
+using ExtendedVariants.Variants;
+using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -55,6 +58,42 @@ namespace ExtendedVariants {
         private float variantChangeTimer = -1f;
         private float vanillafyTimer = -1f;
 
+        /// <summary>
+        /// List of options shown for multipliers.
+        /// </summary>
+        private static int[] multiplierScale = new int[] {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 250, 500, 1000
+        };
+
+        public void Load() {
+            Everest.Events.Level.OnEnter += onLevelEnter;
+            On.Celeste.Level.TransitionRoutine += onRoomChange;
+            On.Celeste.Player.Update += onUpdate;
+            Everest.Events.Level.OnExit += clearFile;
+            On.Celeste.Level.EndPauseEffects += modEndPauseEffects;
+        }
+
+        public void Unload() {
+            Everest.Events.Level.OnEnter -= onLevelEnter;
+            On.Celeste.Level.TransitionRoutine -= onRoomChange;
+            On.Celeste.Player.Update -= onUpdate;
+            Everest.Events.Level.OnExit -= clearFile;
+            On.Celeste.Level.EndPauseEffects -= modEndPauseEffects;
+        }
+
+        private void onLevelEnter(Session session, bool fromSaveData) {
+            UpdateCountersFromSettings();
+            spitOutEnabledVariantsInFile();
+        }
+
+        private void modEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
+            orig(self);
+
+            // rewrite the file in case the player changed anything in the pause menu
+            spitOutEnabledVariantsInFile();
+        }
+
         public void UpdateCountersFromSettings() {
             variantChangeTimer = ExtendedVariantsModule.Settings.ChangeVariantsInterval;
             vanillafyTimer = ExtendedVariantsModule.Settings.Vanillafy;
@@ -62,7 +101,7 @@ namespace ExtendedVariants {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Updated variables from settings: variantChangeTimer = {variantChangeTimer}, vanillafyTimer = {vanillafyTimer}");
         }
 
-        public void OnRoomChange() {
+        private IEnumerator onRoomChange(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval == 0) {
                     // variants should be changed on room transition => go go
@@ -75,9 +114,16 @@ namespace ExtendedVariants {
                     Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {vanillafyTimer}");
                 }
             }
+            
+            IEnumerator origEnum = orig(self, next, direction);
+            while (origEnum.MoveNext()) {
+                yield return origEnum.Current;
+            }
+
+            yield break;
         }
 
-        public void OnUpdate() {
+        private void onUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0) {
                     variantChangeTimer -= Engine.DeltaTime;
@@ -102,6 +148,8 @@ namespace ExtendedVariants {
                     }
                 }
             }
+
+            orig(self);
         }
 
         private static readonly IEnumerable<VanillaVariant> allVanillaVariants = new List<VanillaVariant>() {
@@ -110,29 +158,24 @@ namespace ExtendedVariants {
             VanillaVariant.DashMode, VanillaVariant.Invincible, VanillaVariant.DashAssist
         };
 
-        private static readonly IEnumerable<Variant> allExtendedVariants = new List<Variant>() {
-            Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.SpeedX, Variant.Stamina, Variant.DashSpeed, Variant.DashCount, Variant.Friction, Variant.DisableWallJumping,
-            Variant.JumpCount, Variant.UpsideDown, Variant.HyperdashSpeed, Variant.WallBouncingSpeed, Variant.DashLength, Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.DisableNeutralJumping,
-            Variant.BadelineChasersEverywhere, Variant.RegularHiccups, Variant.RoomLighting, Variant.OshiroEverywhere, Variant.WindEverywhere, Variant.SnowballsEverywhere, Variant.AddSeekers
-        };
-
         private void changeVariantNow(bool disableOnly = false) {
             // get filtered lists for changeable variants, and those which are enabled
             IEnumerable<VanillaVariant> changeableVanillaVariants = new List<VanillaVariant>();
             if(SaveData.Instance.VariantMode && ExtendedVariantsModule.Settings.VariantSet % 2 == 1)
                 changeableVanillaVariants = allVanillaVariants.Where(variant => ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(variant.Name, out bool enabled) ? enabled : true);
 
-            IEnumerable<Variant> changeableExtendedVariants = new List<Variant>();
+            IEnumerable<ExtendedVariantsModule.Variant> changeableExtendedVariants = new List<ExtendedVariantsModule.Variant>();
             if (ExtendedVariantsModule.Settings.VariantSet / 2 == 1)
-                changeableExtendedVariants = allExtendedVariants.Where(variant => ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(variant.ToString(), out bool enabled) ? enabled : true);
+                changeableExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys
+                    .Where(variant => ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(variant.ToString(), out bool enabled) ? enabled : true);
 
             IEnumerable<VanillaVariant> enabledVanillaVariants = changeableVanillaVariants.Where(variant => !isDefaultValue(variant));
-            IEnumerable<Variant> enabledExtendedVariants = changeableExtendedVariants.Where(variant => !isDefaultValue(variant));
+            IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = changeableExtendedVariants.Where(variant => !isDefaultValue(variant));
 
             if (!disableOnly && ExtendedVariantsModule.Settings.RerollMode) {
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Rerolling: disabling all variants");
                 foreach (VanillaVariant variant in enabledVanillaVariants) disableVariant(variant);
-                foreach (Variant variant in enabledExtendedVariants) disableVariant(variant);
+                foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants) disableVariant(variant);
 
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Rerolling: enabling {ExtendedVariantsModule.Settings.MaxEnabledVariants} variants");
 
@@ -149,7 +192,7 @@ namespace ExtendedVariants {
                 int index = 0;
                 foreach (VanillaVariant variant in changeableVanillaVariants)
                     if (variantNumbers.Contains(index++)) enableVariant(variant);
-                foreach (Variant variant in changeableExtendedVariants)
+                foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants)
                     if (variantNumbers.Contains(index++)) enableVariant(variant);
             } else {
                 // pick a random variant (if disableOnly or the max variant count has been reached, pick from the enabled ones)
@@ -166,7 +209,7 @@ namespace ExtendedVariants {
                     int drawnVariant = randomGenerator.Next(enabledVanillaVariants.Count() + enabledExtendedVariants.Count());
                     foreach (VanillaVariant variant in enabledVanillaVariants)
                         if (drawnVariant-- == 0) disableVariant(variant);
-                    foreach (Variant variant in enabledExtendedVariants)
+                    foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants)
                         if (drawnVariant-- == 0) disableVariant(variant);
                 } else {
                     Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Randomizing: picking a variant at random " +
@@ -184,7 +227,7 @@ namespace ExtendedVariants {
                             if (isDefaultValue(variant)) enableVariant(variant);
                             else disableVariant(variant);
                         }
-                    foreach (Variant variant in changeableExtendedVariants)
+                    foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants)
                         if (drawnVariant-- == 0) {
                             if (isDefaultValue(variant)) enableVariant(variant);
                             else disableVariant(variant);
@@ -192,7 +235,7 @@ namespace ExtendedVariants {
                 }
             }
 
-            SpitOutEnabledVariantsInFile();
+            spitOutEnabledVariantsInFile();
         }
 
         private bool isDefaultValue(VanillaVariant variant) {
@@ -214,8 +257,9 @@ namespace ExtendedVariants {
             return false;
         }
 
-        private bool isDefaultValue(Variant variant) {
-            return ExtendedVariantTrigger.SetVariantValue(variant, ExtendedVariantTrigger.NO_CHANGE) == ExtendedVariantTrigger.GetDefaultValueForVariant(variant);
+        private bool isDefaultValue(ExtendedVariantsModule.Variant variant) {
+            AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
+            return variantHandler.GetValue() == variantHandler.GetDefaultValue();
         }
 
         private void disableVariant(VanillaVariant variant) {
@@ -226,10 +270,11 @@ namespace ExtendedVariants {
             else toggleVanillaVariant(variant, false);
         }
 
-        private void disableVariant(Variant variant) {
+        private void disableVariant(ExtendedVariantsModule.Variant variant) {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.ToString()}");
 
-            ExtendedVariantTrigger.SetVariantValue(variant, ExtendedVariantTrigger.GetDefaultValueForVariant(variant));
+            AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
+            variantHandler.SetValue(variantHandler.GetDefaultValue());
         }
 
         private void enableVariant(VanillaVariant variant) {
@@ -240,36 +285,36 @@ namespace ExtendedVariants {
             else toggleVanillaVariant(variant, true);
         }
 
-        private void enableVariant(Variant variant) {
+        private void enableVariant(ExtendedVariantsModule.Variant variant) {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.ToString()}");
             
             // toggle-style variants (enable)
-            if (variant == Variant.DisableWallJumping) ExtendedVariantsModule.Settings.DisableWallJumping = true;
-            else if (variant == Variant.UpsideDown) ExtendedVariantsModule.Settings.UpsideDown = true;
-            else if (variant == Variant.ForceDuckOnGround) ExtendedVariantsModule.Settings.ForceDuckOnGround = true;
-            else if (variant == Variant.InvertDashes) ExtendedVariantsModule.Settings.InvertDashes = true;
-            else if (variant == Variant.DisableNeutralJumping) ExtendedVariantsModule.Settings.DisableNeutralJumping = true;
-            else if (variant == Variant.BadelineChasersEverywhere) ExtendedVariantsModule.Settings.BadelineChasersEverywhere = true;
-            else if (variant == Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
-            else if (variant == Variant.SnowballsEverywhere) ExtendedVariantsModule.Settings.SnowballsEverywhere = true;
+            if (variant == ExtendedVariantsModule.Variant.DisableWallJumping) ExtendedVariantsModule.Settings.DisableWallJumping = true;
+            else if (variant == ExtendedVariantsModule.Variant.UpsideDown) ExtendedVariantsModule.Settings.UpsideDown = true;
+            else if (variant == ExtendedVariantsModule.Variant.ForceDuckOnGround) ExtendedVariantsModule.Settings.ForceDuckOnGround = true;
+            else if (variant == ExtendedVariantsModule.Variant.InvertDashes) ExtendedVariantsModule.Settings.InvertDashes = true;
+            else if (variant == ExtendedVariantsModule.Variant.DisableNeutralJumping) ExtendedVariantsModule.Settings.DisableNeutralJumping = true;
+            else if (variant == ExtendedVariantsModule.Variant.BadelineChasersEverywhere) ExtendedVariantsModule.Settings.BadelineChasersEverywhere = true;
+            else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
+            else if (variant == ExtendedVariantsModule.Variant.SnowballsEverywhere) ExtendedVariantsModule.Settings.SnowballsEverywhere = true;
             // multiplier-style variants (random 0~3x)
-            else if (variant == Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.JumpHeight) ExtendedVariantsModule.Settings.JumpHeight = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.DashSpeed) ExtendedVariantsModule.Settings.DashSpeed = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.DashLength) ExtendedVariantsModule.Settings.DashLength = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.HyperdashSpeed) ExtendedVariantsModule.Settings.HyperdashSpeed = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
-            else if (variant == Variant.Friction) ExtendedVariantsModule.Settings.Friction = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.JumpHeight) ExtendedVariantsModule.Settings.JumpHeight = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.DashSpeed) ExtendedVariantsModule.Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.DashLength) ExtendedVariantsModule.Settings.DashLength = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.HyperdashSpeed) ExtendedVariantsModule.Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];
             // more specific variants
-            else if (variant == Variant.JumpCount) ExtendedVariantsModule.Settings.JumpCount = randomGenerator.Next(7); // random 0~infinite
-            else if (variant == Variant.DashCount) ExtendedVariantsModule.Settings.DashCount = randomGenerator.Next(6); // random 0~5
-            else if (variant == Variant.Stamina) ExtendedVariantsModule.Settings.Stamina = randomGenerator.Next(23); // random 0~220
-            else if (variant == Variant.RegularHiccups) ExtendedVariantsModule.Settings.RegularHiccups = ExtendedVariantsModule.MultiplierScale[randomGenerator.Next(13) + 10]; // random 1~3 seconds
-            else if (variant == Variant.RoomLighting) ExtendedVariantsModule.Settings.RoomLighting = randomGenerator.Next(11); // random 0~100%
-            else if (variant == Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
-            else if (variant == Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
+            else if (variant == ExtendedVariantsModule.Variant.JumpCount) ExtendedVariantsModule.Settings.JumpCount = randomGenerator.Next(7); // random 0~infinite
+            else if (variant == ExtendedVariantsModule.Variant.DashCount) ExtendedVariantsModule.Settings.DashCount = randomGenerator.Next(6); // random 0~5
+            else if (variant == ExtendedVariantsModule.Variant.Stamina) ExtendedVariantsModule.Settings.Stamina = randomGenerator.Next(23); // random 0~220
+            else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) ExtendedVariantsModule.Settings.RegularHiccups = multiplierScale[randomGenerator.Next(13) + 10]; // random 1~3 seconds
+            else if (variant == ExtendedVariantsModule.Variant.RoomLighting) ExtendedVariantsModule.Settings.RoomLighting = randomGenerator.Next(11); // random 0~100%
+            else if (variant == ExtendedVariantsModule.Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
+            else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {
@@ -290,14 +335,14 @@ namespace ExtendedVariants {
             else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
-        public void SpitOutEnabledVariantsInFile() {
+        private void spitOutEnabledVariantsInFile() {
             if(ExtendedVariantsModule.Settings.FileOutput) {
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Writing enabled variants to enabled-variants.txt");
 
                 using (Stream fileStream = new FileStream("enabled-variants.txt", File.Exists("enabled-variants.txt") ? FileMode.Truncate : FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
                 using (StreamWriter fileWriter = new StreamWriter(fileStream, new UTF8Encoding())) {
                     IEnumerable<VanillaVariant> enabledVanillaVariants = allVanillaVariants.Where(variant => !isDefaultValue(variant));
-                    IEnumerable<Variant> enabledExtendedVariants = allExtendedVariants.Where(variant => !isDefaultValue(variant));
+                    IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys.Where(variant => !isDefaultValue(variant));
 
                     foreach(VanillaVariant variant in enabledVanillaVariants) {
                         if (variant == VanillaVariant.DashMode) fileWriter.WriteLine($"{Dialog.Clean(variant.Label)}: " + Dialog.Clean($"MENU_ASSIST_AIR_DASHES_{SaveData.Instance.Assists.DashMode.ToString()}"));
@@ -306,34 +351,35 @@ namespace ExtendedVariants {
                         else fileWriter.WriteLine(Dialog.Clean(variant.Label));
                     }
 
-                    foreach(Variant variant in enabledExtendedVariants) {
+                    foreach(ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
                         string variantName = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant.ToString().ToUpperInvariant()}");
 
                         // "just print the raw value" variants
-                        if (variant == Variant.DashCount || variant == Variant.AddSeekers)
-                            fileWriter.WriteLine($"{variantName}: {ExtendedVariantTrigger.SetVariantValue(variant, ExtendedVariantTrigger.NO_CHANGE)}");
+                        if (variant == ExtendedVariantsModule.Variant.DashCount || variant == ExtendedVariantsModule.Variant.AddSeekers)
+                            fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue()}");
                         // variants that require a bit more formatting
-                        else if (variant == Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
-                        else if (variant == Variant.Friction) {
+                        else if (variant == ExtendedVariantsModule.Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
+                        else if (variant == ExtendedVariantsModule.Variant.Friction) {
                             if(ExtendedVariantsModule.Settings.Friction == 0) fileWriter.WriteLine($"{variantName}: 0.05x");
                             else if (ExtendedVariantsModule.Settings.Friction == -1) fileWriter.WriteLine($"{variantName}: 0x");
                             else fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.Friction)}");
                         }
-                        else if (variant == Variant.JumpCount)
+                        else if (variant == ExtendedVariantsModule.Variant.JumpCount)
                             fileWriter.WriteLine($"{variantName}: {(ExtendedVariantsModule.Settings.JumpCount == 6 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString())}");
-                        else if (variant == Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
-                        else if (variant == Variant.RegularHiccups) fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
-                        else if (variant == Variant.RoomLighting) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
+                        else if (variant == ExtendedVariantsModule.Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
+                        else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
+                        else if (variant == ExtendedVariantsModule.Variant.RoomLighting) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
                         // multiplier-style variants
-                        else if (ExtendedVariantTrigger.GetDefaultValueForVariant(variant) == 10)
-                            fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantTrigger.SetVariantValue(variant, ExtendedVariantTrigger.NO_CHANGE))}");
+                        else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
+                            fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
                         // toggle-style variants: print out the name
                         else fileWriter.WriteLine(variantName);
                     }
                 }
             }
         }
-        public void ClearFile() {
+
+        private void clearFile(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             if(ExtendedVariantsModule.Settings.FileOutput) {
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Clearing enabled-variants.txt");
 

@@ -6,7 +6,7 @@
     <ProjectGuid>{8CBA6958-CD94-44B4-970B-5FC3DBE6B019}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Celeste.Mod.ExtendedVariants</RootNamespace>
+    <RootNamespace>ExtendedVariants</RootNamespace>
     <AssemblyName>ExtendedVariantMode</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -88,15 +88,42 @@
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
+    <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
+    <Compile Include="UI\ModOptionsEntries.cs" />
     <Compile Include="UI\OuiRandomizerOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Module\ExtendedVariantsSettings.cs" />
     <Compile Include="UI\TextMenuExt.cs" />
     <Compile Include="UI\TextMenuOptionExt.cs" />
     <Compile Include="VariantRandomizer.cs" />
+    <Compile Include="Variants\AbstractExtendedVariant.cs" />
+    <Compile Include="Variants\BadelineChasersEverywhere.cs" />
+    <Compile Include="Variants\AddSeekers.cs" />
+    <Compile Include="Variants\DashCount.cs" />
+    <Compile Include="Variants\DashLength.cs" />
+    <Compile Include="Variants\DashSpeed.cs" />
+    <Compile Include="Variants\DisableNeutralJumping.cs" />
+    <Compile Include="Variants\DisableWallJumping.cs" />
+    <Compile Include="Variants\FallSpeed.cs" />
+    <Compile Include="Variants\ForceDuckOnGround.cs" />
+    <Compile Include="Variants\Friction.cs" />
+    <Compile Include="Variants\Gravity.cs" />
+    <Compile Include="Variants\HyperdashSpeed.cs" />
+    <Compile Include="Variants\InvertDashes.cs" />
+    <Compile Include="Variants\JumpCount.cs" />
+    <Compile Include="Variants\JumpHeight.cs" />
+    <Compile Include="Variants\OshiroEverywhere.cs" />
+    <Compile Include="Variants\RegularHiccups.cs" />
+    <Compile Include="Variants\RoomLighting.cs" />
+    <Compile Include="Variants\SnowballsEverywhere.cs" />
+    <Compile Include="Variants\Stamina.cs" />
+    <Compile Include="Variants\SpeedX.cs" />
+    <Compile Include="Variants\UpsideDown.cs" />
+    <Compile Include="Variants\WallbouncingSpeed.cs" />
+    <Compile Include="Variants\WindEverywhere.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Everest\Celeste.Mod.mm\Celeste.Mod.mm.csproj">

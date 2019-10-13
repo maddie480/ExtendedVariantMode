@@ -81,7 +81,7 @@ namespace ExtendedVariants.UI {
                 .Change(i => {
                     ExtendedVariantsModule.Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
                     refreshOptionMenuEnabledStatus(items);
-                    ExtendedVariantsModule.Randomizer.UpdateCountersFromSettings();
+                    ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
                 }));
 
             menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VARIANTSET"),
@@ -93,7 +93,7 @@ namespace ExtendedVariants.UI {
 
             TextMenu.Option<int> maxEnabledVariants = new TextMenu.Slider(
                 Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS" + (ExtendedVariantsModule.Settings.RerollMode ? "_REROLL" : "")),
-                i => i.ToString(), 0, 41, ExtendedVariantsModule.Settings.MaxEnabledVariants)
+                i => i.ToString(), 0, 37, ExtendedVariantsModule.Settings.MaxEnabledVariants)
                 .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue);
 
             menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_REROLLMODE"), ExtendedVariantsModule.Settings.RerollMode)
@@ -112,7 +112,7 @@ namespace ExtendedVariants.UI {
             }, 0, vanillafyScale.Length - 1, indexFromVanillafyScale(ExtendedVariantsModule.Settings.Vanillafy))
                 .Change(newValue => {
                     ExtendedVariantsModule.Settings.Vanillafy = vanillafyScale[newValue];
-                    ExtendedVariantsModule.Randomizer.UpdateCountersFromSettings();
+                    ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
                 }));
 
             menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_OUTPUT"), ExtendedVariantsModule.Settings.FileOutput)
@@ -138,30 +138,9 @@ namespace ExtendedVariants.UI {
 
             // and do the same with extended ones
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_EXTENDED")));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.Gravity));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.FallSpeed));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.JumpHeight));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.WallBouncingSpeed));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.DisableWallJumping));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.JumpCount));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.DashSpeed));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.DashLength));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.HyperdashSpeed));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.DashCount));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.SpeedX));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.Friction));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.BadelineChasersEverywhere));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.OshiroEverywhere));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.WindEverywhere));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.SnowballsEverywhere));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.AddSeekers));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.Stamina));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.UpsideDown));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.DisableNeutralJumping));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.RegularHiccups));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.RoomLighting));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.ForceDuckOnGround));
-            items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, Variant.InvertDashes));
+            foreach(ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Instance.VariantHandlers.Keys) {
+                items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, variant));
+            }
 
             refreshOptionMenuEnabledStatus(items);
 
@@ -186,7 +165,7 @@ namespace ExtendedVariants.UI {
             return addToggleOptionToMenu(menu, variant.Name, variant.Label);
         }
 
-        private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, Variant variant) {
+        private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, ExtendedVariantsModule.Variant variant) {
             return addToggleOptionToMenu(menu, variant.ToString(), "MODOPTIONS_EXTENDEDVARIANTS_" + variant.ToString().ToUpperInvariant());
         }
 
