@@ -21,6 +21,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> dashSpeedOption;
         private TextMenu.Option<int> dashCountOption;
         private TextMenu.Option<int> frictionOption;
+        private TextMenu.Option<int> airFrictionOption;
         private TextMenu.Option<bool> disableWallJumpingOption;
         private TextMenu.Option<int> jumpCountOption;
         private TextMenu.Option<bool> refillJumpsOnDashRefillOption;
@@ -110,6 +111,15 @@ namespace ExtendedVariants.UI {
                     }
                 }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction), indexFromMultiplier(10) + 1)
                 .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
+            airFrictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION"),
+                i => {
+                    switch (i) {
+                        case -1: return "0x";
+                        case 0: return "0.05x";
+                        default: return multiplierFormatter(i);
+                    }
+                }, -1, multiplierScale.Length - 1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction), indexFromMultiplier(10) + 1)
+                .Change(i => Settings.AirFriction = (i == -1 ? -1 : multiplierScale[i]));
             disableWallJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
                 .Change(b => Settings.DisableWallJumping = b);
             jumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
@@ -273,6 +283,7 @@ namespace ExtendedVariants.UI {
             addHeading(menu, "MOVING");
             menu.Add(speedXOption);
             menu.Add(frictionOption);
+            menu.Add(airFrictionOption);
 
             addHeading(menu, "CHASERS");
             menu.Add(badelineChasersEverywhereOption);
@@ -316,6 +327,7 @@ namespace ExtendedVariants.UI {
             setValue(dashSpeedOption, 0, indexFromMultiplier(Settings.DashSpeed));
             setValue(dashCountOption, -1, Settings.DashCount);
             setValue(frictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
+            setValue(airFrictionOption, -1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction));
             setValue(disableWallJumpingOption, Settings.DisableWallJumping);
             setValue(jumpCountOption, 0, Settings.JumpCount);
             setValue(refillJumpsOnDashRefillOption, Settings.RefillJumpsOnDashRefill);
@@ -349,6 +361,7 @@ namespace ExtendedVariants.UI {
             dashCountOption.Disabled = !Settings.MasterSwitch;
             dashSpeedOption.Disabled = !Settings.MasterSwitch;
             frictionOption.Disabled = !Settings.MasterSwitch;
+            airFrictionOption.Disabled = !Settings.MasterSwitch;
             disableWallJumpingOption.Disabled = !Settings.MasterSwitch;
             jumpCountOption.Disabled = !Settings.MasterSwitch;
             refillJumpsOnDashRefillOption.Disabled = !Settings.MasterSwitch || Settings.JumpCount < 2;

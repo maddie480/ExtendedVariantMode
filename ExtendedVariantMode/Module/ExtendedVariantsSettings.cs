@@ -51,6 +51,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int AirFriction { get; set; } = 10;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool DisableWallJumping { get; set; } = false;
 
         // ======================================
@@ -165,7 +170,7 @@ namespace ExtendedVariants.Module {
         public bool RerollMode { get; set; } = false;
 
         [SettingIgnore]
-        public int MaxEnabledVariants { get; set; } = 37;
+        public int MaxEnabledVariants { get; set; } = 38;
 
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;

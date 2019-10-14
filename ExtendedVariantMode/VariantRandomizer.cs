@@ -307,6 +307,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.AirFriction) ExtendedVariantsModule.Settings.AirFriction = multiplierScale[randomGenerator.Next(23)];
             // more specific variants
             else if (variant == ExtendedVariantsModule.Variant.JumpCount) ExtendedVariantsModule.Settings.JumpCount = randomGenerator.Next(7); // random 0~infinite
             else if (variant == ExtendedVariantsModule.Variant.DashCount) ExtendedVariantsModule.Settings.DashCount = randomGenerator.Next(6); // random 0~5
@@ -374,6 +375,11 @@ namespace ExtendedVariants {
                             if(ExtendedVariantsModule.Settings.Friction == 0) fileWriter.WriteLine($"{variantName}: 0.05x");
                             else if (ExtendedVariantsModule.Settings.Friction == -1) fileWriter.WriteLine($"{variantName}: 0x");
                             else fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.Friction)}");
+                        }
+                        else if (variant == ExtendedVariantsModule.Variant.AirFriction) {
+                            if(ExtendedVariantsModule.Settings.AirFriction == 0) fileWriter.WriteLine($"{variantName}: 0.05x");
+                            else if (ExtendedVariantsModule.Settings.AirFriction == -1) fileWriter.WriteLine($"{variantName}: 0x");
+                            else fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.AirFriction)}");
                         }
                         else if (variant == ExtendedVariantsModule.Variant.JumpCount)
                             fileWriter.WriteLine($"{variantName}: {(ExtendedVariantsModule.Settings.JumpCount == 6 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString())}");

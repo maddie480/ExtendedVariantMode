@@ -13,6 +13,7 @@ const variants = String[
 	"DashSpeed",
 	"DashCount",
 	"Friction",
+	"AirFriction",
 	"DisableWallJumping",
 	"JumpCount",
 	"UpsideDown",

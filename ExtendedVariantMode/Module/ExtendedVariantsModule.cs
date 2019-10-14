@@ -22,7 +22,7 @@ namespace ExtendedVariants.Module {
         public VariantRandomizer Randomizer;
 
         public enum Variant {
-            Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
+            Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, AirFriction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
             DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers, RegularHiccups,
             RefillJumpsOnDashRefill, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, BadelineLag
         }
@@ -47,6 +47,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
             VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
             VariantHandlers[Variant.Friction] = new Friction();
+            VariantHandlers[Variant.AirFriction] = new AirFriction();
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();
             VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount);
             VariantHandlers[Variant.UpsideDown] = new UpsideDown();
