@@ -113,6 +113,7 @@
     <Compile Include="Variants\Friction.cs" />
     <Compile Include="Variants\Gravity.cs" />
     <Compile Include="Variants\HyperdashSpeed.cs" />
+    <Compile Include="Variants\InfiniteDashes.cs" />
     <Compile Include="Variants\InvertDashes.cs" />
     <Compile Include="Variants\JumpCount.cs" />
     <Compile Include="Variants\JumpHeight.cs" />

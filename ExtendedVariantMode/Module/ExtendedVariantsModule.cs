@@ -22,9 +22,10 @@ namespace ExtendedVariants.Module {
         public VariantRandomizer Randomizer;
 
         public enum Variant {
-            Gravity, FallSpeed, JumpHeight, SpeedX, Stamina, DashSpeed, DashCount, Friction, AirFriction, DisableWallJumping, JumpCount, UpsideDown, HyperdashSpeed, WallBouncingSpeed,
-            DashLength, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers, RegularHiccups,
-            RefillJumpsOnDashRefill, RoomLighting, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, BadelineLag
+            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
+            HyperdashSpeed, DashCount, InfiniteDashes, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
+            BadelineLag, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, Stamina, UpsideDown, DisableNeutralJumping,
+            RegularHiccups, RoomLighting, ForceDuckOnGround, InvertDashes
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -46,6 +47,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.Stamina] = new Stamina();
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
             VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
+            VariantHandlers[Variant.InfiniteDashes] = new InfiniteDashes();
             VariantHandlers[Variant.Friction] = new Friction();
             VariantHandlers[Variant.AirFriction] = new AirFriction();
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();

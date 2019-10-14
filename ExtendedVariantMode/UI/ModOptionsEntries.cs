@@ -20,6 +20,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> staminaOption;
         private TextMenu.Option<int> dashSpeedOption;
         private TextMenu.Option<int> dashCountOption;
+        private TextMenu.Option<bool> infiniteDashesOption;
         private TextMenu.Option<int> frictionOption;
         private TextMenu.Option<int> airFrictionOption;
         private TextMenu.Option<bool> disableWallJumpingOption;
@@ -146,6 +147,8 @@ namespace ExtendedVariants.UI {
                 .Change(b => Settings.ForceDuckOnGround = b);
             invertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
                 .Change(b => Settings.InvertDashes = b);
+            infiniteDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITEDASHES"), Settings.InfiniteDashes, false)
+                .Change(b => Settings.InfiniteDashes = b);
             disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
                 .Change(b => Settings.DisableNeutralJumping = b);
             badelineChasersEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
@@ -279,6 +282,7 @@ namespace ExtendedVariants.UI {
             menu.Add(dashLengthOption);
             menu.Add(hyperdashSpeedOption);
             menu.Add(dashCountOption);
+            menu.Add(infiniteDashesOption);
 
             addHeading(menu, "MOVING");
             menu.Add(speedXOption);
@@ -337,6 +341,7 @@ namespace ExtendedVariants.UI {
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(forceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(invertDashesOption, Settings.InvertDashes);
+            setValue(infiniteDashesOption, Settings.InfiniteDashes);
             setValue(disableNeutralJumpingOption, Settings.DisableNeutralJumping);
             setValue(badelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);
             setValue(chaserCountOption, 1, Settings.ChaserCount);
@@ -372,6 +377,7 @@ namespace ExtendedVariants.UI {
             dashLengthOption.Disabled = !Settings.MasterSwitch;
             forceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
             invertDashesOption.Disabled = !Settings.MasterSwitch;
+            infiniteDashesOption.Disabled = !Settings.MasterSwitch;
             disableNeutralJumpingOption.Disabled = !Settings.MasterSwitch;
             badelineChasersEverywhereOption.Disabled = !Settings.MasterSwitch;
             chaserCountOption.Disabled = !Settings.MasterSwitch;

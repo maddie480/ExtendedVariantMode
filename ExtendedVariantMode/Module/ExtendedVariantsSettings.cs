@@ -151,6 +151,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int AddSeekers { get; set; } = 0;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool InfiniteDashes { get; set; } = false;
+
 
         // ======================================
 
@@ -170,7 +175,7 @@ namespace ExtendedVariants.Module {
         public bool RerollMode { get; set; } = false;
 
         [SettingIgnore]
-        public int MaxEnabledVariants { get; set; } = 38;
+        public int MaxEnabledVariants { get; set; } = 39;
 
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;

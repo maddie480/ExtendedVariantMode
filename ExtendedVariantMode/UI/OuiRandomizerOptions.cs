@@ -93,7 +93,7 @@ namespace ExtendedVariants.UI {
 
             TextMenu.Option<int> maxEnabledVariants = new TextMenu.Slider(
                 Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_MAXENABLEDVARIANTS" + (ExtendedVariantsModule.Settings.RerollMode ? "_REROLL" : "")),
-                i => i.ToString(), 0, 38, ExtendedVariantsModule.Settings.MaxEnabledVariants)
+                i => i.ToString(), 0, 39, ExtendedVariantsModule.Settings.MaxEnabledVariants)
                 .Change(newValue => ExtendedVariantsModule.Settings.MaxEnabledVariants = newValue);
 
             menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_REROLLMODE"), ExtendedVariantsModule.Settings.RerollMode)
