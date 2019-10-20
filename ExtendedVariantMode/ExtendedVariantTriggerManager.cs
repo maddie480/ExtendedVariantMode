@@ -56,6 +56,11 @@ namespace ExtendedVariants {
         /// <param name="session">unused</param>
         /// <param name="fromSaveData">true if loaded from save data, false otherwise</param>
         private void onLevelEnter(Session session, bool fromSaveData) {
+            // failsafe: if VariantsEnabledViaTrigger is null, initialize it. THIS SHOULD NEVER HAPPEN, but already happened in a case of a corrupted save.
+            if ((ExtendedVariantsModule.Session?.VariantsEnabledViaTrigger ?? null) == null) {
+                Logger.Log("ExtendedVariantsModule/OnLevelEnter", "WARNING: Session was null. This should not happen. Initializing it to an empty session.");
+                ExtendedVariantsModule.Instance._Session = new ExtendedVariantsSession();
+            }
             foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys) {
                 Logger.Log("ExtendedVariantsModule/OnLevelEnter", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
                 int oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]);
