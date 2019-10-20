@@ -152,9 +152,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\Dialog\French.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="README-Mappers.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
