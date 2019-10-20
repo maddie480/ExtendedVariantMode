@@ -1,12 +1,11 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
     public class OshiroEverywhere : AbstractExtendedVariant {
@@ -25,11 +24,13 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
+            IL.Celeste.AngryOshiro.Update += modAngryOshiroUpdate;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
+            IL.Celeste.AngryOshiro.Update -= modAngryOshiroUpdate;
         }
         
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -61,6 +62,30 @@ namespace ExtendedVariants.Variants {
 
                 level.Entities.UpdateLists();
             }
+        }
+
+        private void modAngryOshiroUpdate(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we want to add ourselves in here: entity != null && !entity.Dead && base.CenterX < entity.CenterX + 4f
+            // this is the condition used to apply slowdown
+            // we use entity.Dead since this is the only time it is used in the method
+            // (ps: I saw there was a StopControllingTime method, but it makes Oshiro stop controlling anxiety as well.)
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("get_Dead"))) {
+                // we're pointing at a branch instruction that checks that our thing is false, since this is !entity.Dead. Store it and step past it.
+                Instruction branchInstruction = cursor.Next;
+                cursor.Index++;
+
+                Logger.Log("ExtendedVariantsModule", $"Adding condition for time control at {cursor.Index} in CIL code for AngryOshiro.Update");
+
+                // inject !isOshiroSlowdownDisabled
+                cursor.EmitDelegate<Func<bool>>(isOshiroSlowdownDisabled);
+                cursor.Emit(branchInstruction.OpCode, branchInstruction.Operand);
+            }
+        }
+
+        private bool isOshiroSlowdownDisabled() {
+            return Settings.DisableOshiroSlowdown;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.RefillJumpsOnDashRefill: return 0;
                 case ExtendedVariantsModule.Variant.SnowballDelay: return 8;
                 case ExtendedVariantsModule.Variant.BadelineLag: return 0;
+                case ExtendedVariantsModule.Variant.DisableOshiroSlowdown: return 0;
 
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue();
             }

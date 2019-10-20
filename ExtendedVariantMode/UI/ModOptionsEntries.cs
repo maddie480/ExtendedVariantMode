@@ -41,6 +41,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
+        private TextMenu.Option<bool> disableOshiroSlowdownOption;
         private TextMenu.Option<int> windEverywhereOption;
         private TextMenu.Option<bool> snowballsEverywhereOption;
         private TextMenu.Option<int> snowballDelayOption;
@@ -185,6 +186,8 @@ namespace ExtendedVariants.UI {
                 });
             oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
                 .Change(b => Settings.OshiroEverywhere = b);
+            disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
+                .Change(b => Settings.DisableOshiroSlowdown = b);
             windEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
                 i => {
                     if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
@@ -300,6 +303,7 @@ namespace ExtendedVariants.UI {
 
             addHeading(menu, "EVERYWHERE");
             menu.Add(oshiroEverywhereOption);
+            menu.Add(disableOshiroSlowdownOption);
             menu.Add(windEverywhereOption);
             menu.Add(snowballsEverywhereOption);
             menu.Add(snowballDelayOption);
@@ -355,6 +359,7 @@ namespace ExtendedVariants.UI {
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
+            setValue(disableOshiroSlowdownOption, Settings.DisableOshiroSlowdown);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
             setValue(snowballsEverywhereOption, Settings.SnowballsEverywhere);
             setValue(snowballDelayOption, 0, Settings.SnowballDelay);
@@ -392,6 +397,7 @@ namespace ExtendedVariants.UI {
             hiccupStrengthOption.Disabled = !Settings.MasterSwitch;
             roomLightingOption.Disabled = !Settings.MasterSwitch;
             oshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
+            disableOshiroSlowdownOption.Disabled = !Settings.MasterSwitch;
             windEverywhereOption.Disabled = !Settings.MasterSwitch;
             snowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
             snowballDelayOption.Disabled = !Settings.MasterSwitch;

@@ -207,6 +207,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.BadelineLag;
                     ExtendedVariantsModule.Settings.BadelineLag = newValue;
                     break;
+                case ExtendedVariantsModule.Variant.DisableOshiroSlowdown:
+                    oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
+                    ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);
+                    break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();

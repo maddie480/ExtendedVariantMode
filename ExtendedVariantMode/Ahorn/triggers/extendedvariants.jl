@@ -31,6 +31,7 @@ const variants = String[
 	"RegularHiccups",
 	"HiccupStrength",
 	"OshiroEverywhere",
+	"DisableOshiroSlowdown",
 	"WindEverywhere",
 	"SnowballsEverywhere",
 	"SnowballDelay",
