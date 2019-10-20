@@ -38,6 +38,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> chaserCountOption;
         private TextMenu.Option<bool> affectExistingChasersOption;
         private TextMenu.Option<int> regularHiccupsOption;
+        private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
         private TextMenu.Option<int> windEverywhereOption;
@@ -168,6 +169,8 @@ namespace ExtendedVariants.UI {
                     Settings.RegularHiccups = multiplierScale[i];
                     (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
                 });
+            hiccupStrengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HiccupStrength), indexFromMultiplier(10)).Change(i => Settings.HiccupStrength = multiplierScale[i]);
             roomLightingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING"),
                 i => {
                     if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -307,6 +310,7 @@ namespace ExtendedVariants.UI {
             menu.Add(upsideDownOption);
             menu.Add(disableNeutralJumpingOption);
             menu.Add(regularHiccupsOption);
+            menu.Add(hiccupStrengthOption);
             menu.Add(roomLightingOption);
 
             addHeading(menu, "TROLL");
@@ -348,6 +352,7 @@ namespace ExtendedVariants.UI {
             setValue(affectExistingChasersOption, Settings.AffectExistingChasers);
             setValue(changeVariantsRandomlyOption, Settings.ChangeVariantsRandomly);
             setValue(regularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
+            setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
@@ -384,6 +389,7 @@ namespace ExtendedVariants.UI {
             affectExistingChasersOption.Disabled = !Settings.MasterSwitch;
             changeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
             regularHiccupsOption.Disabled = !Settings.MasterSwitch;
+            hiccupStrengthOption.Disabled = !Settings.MasterSwitch;
             roomLightingOption.Disabled = !Settings.MasterSwitch;
             oshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
             windEverywhereOption.Disabled = !Settings.MasterSwitch;

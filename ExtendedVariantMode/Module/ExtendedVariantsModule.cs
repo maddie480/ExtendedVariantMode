@@ -25,7 +25,7 @@ namespace ExtendedVariants.Module {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
             BadelineLag, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, Stamina, UpsideDown, DisableNeutralJumping,
-            RegularHiccups, RoomLighting, ForceDuckOnGround, InvertDashes
+            RegularHiccups, HiccupStrength, RoomLighting, ForceDuckOnGround, InvertDashes
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -63,6 +63,7 @@ namespace ExtendedVariants.Module {
             // ChaserCount is not a variant
             // AffectExistingChasers is not a variant
             VariantHandlers[Variant.RegularHiccups] = new RegularHiccups();
+            // HiccupStrength is not a variant
             // RefillJumpsOnDashRefill is not a variant
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
@@ -137,6 +138,7 @@ namespace ExtendedVariants.Module {
             // reset variant customization options as well
             Settings.ChaserCount = 1;
             Settings.AffectExistingChasers = false;
+            Settings.HiccupStrength = 10;
             Settings.RefillJumpsOnDashRefill = false;
             Settings.SnowballDelay = 8;
             Settings.BadelineLag = 0;

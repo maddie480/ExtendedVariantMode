@@ -120,6 +120,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int RegularHiccups { get; set; } = 0;
 
+        [SettingIgnore]
+        public int HiccupStrength { get; set; } = 10;
+
         // ======================================
 
         [SettingIgnore]

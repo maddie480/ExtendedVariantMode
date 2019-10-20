@@ -1,5 +1,9 @@
-﻿using Celeste;
+﻿using System;
+using Celeste;
+using Celeste.Mod;
+using Mono.Cecil.Cil;
 using Monocle;
+using MonoMod.Cil;
 
 namespace ExtendedVariants.Variants {
     public class RegularHiccups : AbstractExtendedVariant {
@@ -20,10 +24,12 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Player.Update += modUpdate;
+            IL.Celeste.Player.HiccupJump += modHiccupJump;
         }
 
         public override void Unload() {
             On.Celeste.Player.Update -= modUpdate;
+            IL.Celeste.Player.HiccupJump -= modHiccupJump;
         }
 
         public void UpdateTimerFromSettings() {
@@ -44,6 +50,21 @@ namespace ExtendedVariants.Variants {
                     self.HiccupJump();
                 }
             }
+        }
+
+        private void modHiccupJump(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-60f))) {
+                Logger.Log("ExtendedVariantMode", $"Modding hiccup size at {cursor.Index} in CIL code for HiccupJump");
+
+                cursor.EmitDelegate<Func<float>>(determineHiccupStrengthFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+
+        private float determineHiccupStrengthFactor() {
+            return Settings.HiccupStrength / 10f;
         }
     }
 }

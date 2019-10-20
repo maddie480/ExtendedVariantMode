@@ -195,6 +195,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
                     ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
                     break;
+                case ExtendedVariantsModule.Variant.HiccupStrength:
+                    oldValue = ExtendedVariantsModule.Settings.HiccupStrength;
+                    ExtendedVariantsModule.Settings.HiccupStrength = newValue;
+                    break;
                 case ExtendedVariantsModule.Variant.SnowballDelay:
                     oldValue = ExtendedVariantsModule.Settings.SnowballDelay;
                     ExtendedVariantsModule.Settings.SnowballDelay = newValue;

@@ -28,6 +28,7 @@ namespace ExtendedVariants {
             switch (variant) {
                 case ExtendedVariantsModule.Variant.ChaserCount: return 1;
                 case ExtendedVariantsModule.Variant.AffectExistingChasers: return 0;
+                case ExtendedVariantsModule.Variant.HiccupStrength: return 10;
                 case ExtendedVariantsModule.Variant.RefillJumpsOnDashRefill: return 0;
                 case ExtendedVariantsModule.Variant.SnowballDelay: return 8;
                 case ExtendedVariantsModule.Variant.BadelineLag: return 0;

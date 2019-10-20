@@ -29,6 +29,7 @@ const variants = String[
 	"ChaserCount",
 	"AffectExistingChasers",
 	"RegularHiccups",
+	"HiccupStrength",
 	"OshiroEverywhere",
 	"WindEverywhere",
 	"SnowballsEverywhere",
