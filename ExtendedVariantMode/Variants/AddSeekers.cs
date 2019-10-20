@@ -30,12 +30,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             IL.Celeste.Pathfinder.ctor += modPathfinderConstructor;
             Everest.Events.Level.OnExit += onLevelExit;
+            IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             IL.Celeste.Pathfinder.ctor -= modPathfinderConstructor;
             Everest.Events.Level.OnExit -= onLevelExit;
+            IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
         }
         
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -122,6 +124,24 @@ namespace ExtendedVariants.Variants {
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             extendedPathfinder = false;
+        }
+
+        private void onSeekerEffectsControllerUpdate(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // let's jump to Engine.TimeRate = Calc.Approach(Engine.TimeRate, target, 4f * Engine.DeltaTime);
+            if (cursor.TryGotoNext(instr => instr.MatchLdcR4(4f))) {
+                Logger.Log("ExtendedVariantsModule", $"Adding condition for time control at {cursor.Index} in CIL code for SeekerEffectsController.Update");
+
+                // by placing ourselves just in front of the 4f, we can turn this into 
+                // Engine.TimeRate = Calc.Approach(Engine.TimeRate, transformTimeRate(target), 4f * Engine.DeltaTime);
+                // by injecting a single delegate call
+                cursor.EmitDelegate<Func<float, float>>(transformTimeRate);
+            }
+        }
+
+        private float transformTimeRate(float vanillaTimeRate) {
+            return Settings.DisableSeekerSlowdown ? 1f : vanillaTimeRate;
         }
     }
 }

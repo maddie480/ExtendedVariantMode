@@ -24,8 +24,8 @@ namespace ExtendedVariants.Module {
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
-            BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, Stamina, UpsideDown,
-            DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, ForceDuckOnGround, InvertDashes
+            BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown,
+            Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, ForceDuckOnGround, InvertDashes
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -72,6 +72,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SnowballsEverywhere] = new SnowballsEverywhere();
             // SnowballDelay is not a variant
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
+            // DisableSeekerSlowdown is not a variant
             // BadelineLag is not a variant
         }
 
@@ -145,6 +146,7 @@ namespace ExtendedVariants.Module {
             Settings.BadelineLag = 0;
             Settings.ChangeVariantsRandomly = false;
             Settings.DisableOshiroSlowdown = false;
+            Settings.DisableSeekerSlowdown = false;
         }
         
         // ================ Stamp on Chapter Complete screen ================

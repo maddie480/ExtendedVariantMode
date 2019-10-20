@@ -157,6 +157,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int AddSeekers { get; set; } = 0;
 
+        [SettingIgnore]
+        public bool DisableSeekerSlowdown { get; set; } = false;
+
         // ======================================
 
         [SettingIgnore]

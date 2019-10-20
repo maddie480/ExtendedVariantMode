@@ -211,6 +211,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);
                     break;
+                case ExtendedVariantsModule.Variant.DisableSeekerSlowdown:
+                    oldValue = ExtendedVariantsModule.Settings.DisableSeekerSlowdown ? 1 : 0;
+                    ExtendedVariantsModule.Settings.DisableSeekerSlowdown = (newValue != 0);
+                    break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();

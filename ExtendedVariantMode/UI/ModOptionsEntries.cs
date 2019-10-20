@@ -46,6 +46,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> snowballsEverywhereOption;
         private TextMenu.Option<int> snowballDelayOption;
         private TextMenu.Option<int> addSeekersOption;
+        private TextMenu.Option<bool> disableSeekerSlowdownOption;
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -203,6 +204,8 @@ namespace ExtendedVariants.UI {
                 .Change(i => Settings.SnowballDelay = multiplierScale[i]);
             addSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
                 i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
+            disableSeekerSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
+                .Change(b => Settings.DisableSeekerSlowdown = b);
             badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
@@ -308,6 +311,7 @@ namespace ExtendedVariants.UI {
             menu.Add(snowballsEverywhereOption);
             menu.Add(snowballDelayOption);
             menu.Add(addSeekersOption);
+            menu.Add(disableSeekerSlowdownOption);
 
             addHeading(menu, "OTHER");
             menu.Add(staminaOption);
@@ -364,6 +368,7 @@ namespace ExtendedVariants.UI {
             setValue(snowballsEverywhereOption, Settings.SnowballsEverywhere);
             setValue(snowballDelayOption, 0, Settings.SnowballDelay);
             setValue(addSeekersOption, 0, Settings.AddSeekers);
+            setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
             setValue(badelineLagOption, 0, Settings.BadelineLag);
         }
 
@@ -402,6 +407,7 @@ namespace ExtendedVariants.UI {
             snowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
             snowballDelayOption.Disabled = !Settings.MasterSwitch;
             addSeekersOption.Disabled = !Settings.MasterSwitch;
+            disableSeekerSlowdownOption.Disabled = !Settings.MasterSwitch;
             badelineLagOption.Disabled = !Settings.MasterSwitch;
             randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
         }
