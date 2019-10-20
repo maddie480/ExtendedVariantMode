@@ -6,17 +6,17 @@ using System;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
-    class InfiniteDashes : AbstractExtendedVariant {
+    class HeldDash : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }
 
         public override int GetValue() {
-            return Settings.InfiniteDashes ? 1 : 0;
+            return Settings.HeldDash ? 1 : 0;
         }
 
         public override void SetValue(int value) {
-            Settings.InfiniteDashes = (value != 0);
+            Settings.HeldDash = (value != 0);
         }
 
         public override void Load() {
@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
                 object o = coroutine.Current;
                 if(o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while(Settings.InfiniteDashes && Input.Dash.Check) {
+                    while(Settings.HeldDash && Input.Dash.Check) {
                         yield return null;
                     }
                 } else {
@@ -67,7 +67,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modDashTrailCounter(int dashTrailCounter) {
-            if (Settings.InfiniteDashes) {
+            if (Settings.HeldDash) {
                 return 2; // lock the counter to 2 to have an infinite trail
             }
             return dashTrailCounter;

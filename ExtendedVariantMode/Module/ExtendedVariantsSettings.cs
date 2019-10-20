@@ -154,7 +154,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool InfiniteDashes { get; set; } = false;
+        public bool HeldDash { get; set; } = false;
 
 
         // ======================================

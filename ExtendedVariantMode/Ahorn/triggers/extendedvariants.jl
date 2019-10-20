@@ -34,7 +34,7 @@ const variants = String[
 	"SnowballsEverywhere",
 	"SnowballDelay",
 	"AddSeekers",
-	"InfiniteDashes"
+	"HeldDash"
 ]
 
 const placements = Ahorn.PlacementDict(

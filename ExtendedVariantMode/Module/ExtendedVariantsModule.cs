@@ -23,7 +23,7 @@ namespace ExtendedVariants.Module {
 
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
-            HyperdashSpeed, DashCount, InfiniteDashes, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
+            HyperdashSpeed, DashCount, HeldDash, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
             BadelineLag, OshiroEverywhere, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, RoomLighting, ForceDuckOnGround, InvertDashes
         }
@@ -47,7 +47,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.Stamina] = new Stamina();
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
             VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
-            VariantHandlers[Variant.InfiniteDashes] = new InfiniteDashes();
+            VariantHandlers[Variant.HeldDash] = new HeldDash();
             VariantHandlers[Variant.Friction] = new Friction();
             VariantHandlers[Variant.AirFriction] = new AirFriction();
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();
