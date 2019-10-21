@@ -37,6 +37,7 @@ const variants = String[
 	"SnowballDelay",
 	"AddSeekers",
 	"DisableSeekerSlowdown",
+	"TheoCrystalsEverywhere",
 	"HeldDash"
 ]
 

@@ -47,6 +47,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> snowballDelayOption;
         private TextMenu.Option<int> addSeekersOption;
         private TextMenu.Option<bool> disableSeekerSlowdownOption;
+        private TextMenu.Option<bool> theoCrystalsEverywhereOption;
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -206,6 +207,8 @@ namespace ExtendedVariants.UI {
                 i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
             disableSeekerSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
                 .Change(b => Settings.DisableSeekerSlowdown = b);
+            theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
+                .Change(b => Settings.TheoCrystalsEverywhere = b);
             badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
@@ -312,6 +315,7 @@ namespace ExtendedVariants.UI {
             menu.Add(snowballDelayOption);
             menu.Add(addSeekersOption);
             menu.Add(disableSeekerSlowdownOption);
+            menu.Add(theoCrystalsEverywhereOption);
 
             addHeading(menu, "OTHER");
             menu.Add(staminaOption);
@@ -369,6 +373,7 @@ namespace ExtendedVariants.UI {
             setValue(snowballDelayOption, 0, Settings.SnowballDelay);
             setValue(addSeekersOption, 0, Settings.AddSeekers);
             setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
+            setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
             setValue(badelineLagOption, 0, Settings.BadelineLag);
         }
 
@@ -408,6 +413,7 @@ namespace ExtendedVariants.UI {
             snowballDelayOption.Disabled = !Settings.MasterSwitch;
             addSeekersOption.Disabled = !Settings.MasterSwitch;
             disableSeekerSlowdownOption.Disabled = !Settings.MasterSwitch;
+            theoCrystalsEverywhereOption.Disabled = !Settings.MasterSwitch;
             badelineLagOption.Disabled = !Settings.MasterSwitch;
             randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
         }

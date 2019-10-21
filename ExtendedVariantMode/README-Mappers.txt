@@ -20,7 +20,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- JumpCount: the number of jumps you want, 6 is infinite (yep).
 	- ChaserCount: the number of chasers you want for the "BadelineChasersEverywhere" variant.
 	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers, 
-		RefillJumpsOnDashRefill, OshiroEverywhere, DisableOshiroSlowdown, DisableSeekerSlowdown, HeldDash: 1 to enable, 0 to disable.
+		RefillJumpsOnDashRefill, OshiroEverywhere, DisableOshiroSlowdown, DisableSeekerSlowdown, TheoCrystalsEverywhere, HeldDash: 1 to enable, 0 to disable.
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
 	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,

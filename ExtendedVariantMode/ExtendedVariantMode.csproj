@@ -88,6 +88,7 @@
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
+    <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Variants\SnowballsEverywhere.cs" />
     <Compile Include="Variants\Stamina.cs" />
     <Compile Include="Variants\SpeedX.cs" />
+    <Compile Include="Variants\TheoCrystalsEverywhere.cs" />
     <Compile Include="Variants\UpsideDown.cs" />
     <Compile Include="Variants\WallbouncingSpeed.cs" />
     <Compile Include="Variants\WindEverywhere.cs" />

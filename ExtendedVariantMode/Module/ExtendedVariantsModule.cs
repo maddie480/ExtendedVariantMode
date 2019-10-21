@@ -25,7 +25,7 @@ namespace ExtendedVariants.Module {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount, AffectExistingChasers,
             BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown,
-            Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, ForceDuckOnGround, InvertDashes
+            TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, ForceDuckOnGround, InvertDashes
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -73,6 +73,7 @@ namespace ExtendedVariants.Module {
             // SnowballDelay is not a variant
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
             // DisableSeekerSlowdown is not a variant
+            VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
             // BadelineLag is not a variant
         }
 

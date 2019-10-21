@@ -163,6 +163,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool TheoCrystalsEverywhere { get; set; } = true;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool HeldDash { get; set; } = false;
 
 
@@ -184,7 +189,7 @@ namespace ExtendedVariants.Module {
         public bool RerollMode { get; set; } = false;
 
         [SettingIgnore]
-        public int MaxEnabledVariants { get; set; } = 39;
+        public int MaxEnabledVariants { get; set; } = 40;
 
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;
