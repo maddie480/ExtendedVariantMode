@@ -89,6 +89,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
             Everest.Events.Level.OnExit += onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
+            On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
 
             // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
             if (!Settings.MasterSwitch) {
@@ -113,6 +114,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.AreaComplete.VersionNumberAndVariants -= modVersionNumberAndVariants;
             Everest.Events.Level.OnExit -= onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
+            On.Celeste.CS00_Ending.OnBegin -= onPrologueEndingCutsceneBegin;
 
             Logger.Log("ExtendedVariantsModule", $"Unloading variant randomizer...");
             Randomizer.Unload();
@@ -174,6 +176,7 @@ namespace ExtendedVariants.Module {
         // ================ Common methods for multiple variants ================
 
         private static bool badelineBoosting = false;
+        private static bool prologueEndingCutscene = false;
 
         public static bool ShouldIgnoreCustomDelaySettings() {
             if (Engine.Scene.GetType() == typeof(Level)) {
@@ -213,7 +216,8 @@ namespace ExtendedVariants.Module {
         }
 
         public static bool ShouldEntitiesAutoDestroy(Player player) {
-            return player != null && (player.StateMachine.State == 10 || player.StateMachine.State == 11) && !badelineBoosting;
+            return (player != null && (player.StateMachine.State == 10 || player.StateMachine.State == 11) && !badelineBoosting)
+                || prologueEndingCutscene; // this kills Oshiro, that prevents the Prologue ending cutscene from even triggering.
         }
 
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
@@ -227,6 +231,13 @@ namespace ExtendedVariants.Module {
         
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             badelineBoosting = false;
+            prologueEndingCutscene = false;
+        }
+
+        private void onPrologueEndingCutsceneBegin(On.Celeste.CS00_Ending.orig_OnBegin orig, CS00_Ending self, Level level) {
+            orig(self, level);
+
+            prologueEndingCutscene = true;
         }
     }
 }
