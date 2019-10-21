@@ -146,12 +146,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\Dialog\English.txt">
+    <None Include="Dialog\English.txt">
       <LogicalName>Content\Dialog\English.txt</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Content\Dialog\French.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Dialog\French.txt">
       <LogicalName>Content\Dialog\French.txt</LogicalName>
-    </EmbeddedResource>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="README-Mappers.txt">
