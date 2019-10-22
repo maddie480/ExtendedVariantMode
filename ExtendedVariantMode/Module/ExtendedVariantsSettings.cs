@@ -189,7 +189,7 @@ namespace ExtendedVariants.Module {
         public bool RerollMode { get; set; } = false;
 
         [SettingIgnore]
-        public int MaxEnabledVariants { get; set; } = 40;
+        public int MaxEnabledVariants { get; set; } = 10;
 
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;
