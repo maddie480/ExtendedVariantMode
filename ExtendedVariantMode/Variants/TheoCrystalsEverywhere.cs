@@ -50,7 +50,12 @@ namespace ExtendedVariants.Variants {
         }
 
         private void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
-            if(Settings.TheoCrystalsEverywhere && (player.Holding == null || !player.Holding.IsHeld) &&
+            if(Settings.TheoCrystalsEverywhere && 
+                // the player is holding nothing...
+                (player.Holding == null || player.Holding.Entity == null || !player.Holding.IsHeld ||
+                // or this thing is not a Theo crystal (f.e. jellyfish)
+                (player.Holding.Entity.GetType() != typeof(TheoCrystal) && player.Holding.Entity.GetType() != typeof(ExtendedVariantTheoCrystal))) &&
+                // but there is a Theo crystal on screen so the player has to grab it
                 self.Tracker.CountEntities<ExtendedVariantTheoCrystal>() != 0) {
 
                 // the player does not hold Theo, check if they try to leave the screen without him
@@ -71,7 +76,7 @@ namespace ExtendedVariants.Variants {
                     // kill the player if they try to go down
                     player.Die(Vector2.Zero);
                 } else {
-                    // no screen transition detected or everything in order => proceed to vanilla
+                    // no screen transition detected => proceed to vanilla
                     orig(self, player);
                 }
             } else {
