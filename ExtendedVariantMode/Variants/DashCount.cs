@@ -121,8 +121,13 @@ namespace ExtendedVariants.Variants {
 
             // apply the dash refill rules here (this does not call RefillDash)
             if(Settings.DashCount != -1) {
-                // an alarm set off in the coroutine will add one more dash in 0.15 seconds
-                player.Dashes = Settings.DashCount - 1;
+                // this will run in 0.15 seconds: if (player.Dashes < player.Inventory.Dashes) player.Dashes++;
+                // let's take that into account and deduce 1 from the dash count if required.
+                if (Settings.DashCount < player.Inventory.Dashes) {
+                    player.Dashes = Settings.DashCount - 1;
+                } else {
+                    player.Dashes = Settings.DashCount;
+                }
             }
 
             OnDashRefill?.Invoke();
