@@ -4,6 +4,7 @@ using ExtendedVariants.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
 
@@ -59,7 +60,12 @@ namespace ExtendedVariants.Variants {
                     level.Pathfinder = new Pathfinder(level);
                 }
 
-                for(int seekerCount = 0; seekerCount < Settings.AddSeekers; seekerCount++) {
+                // make the seeker barriers temporarily collidable so that they are taken in account in Solid collide checks
+                // and seekers can't spawn in them
+                // (... yes, this is also what vanilla does in the seekers' Update method.)
+                foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = true;
+
+                for (int seekerCount = 0; seekerCount < Settings.AddSeekers; seekerCount++) {
                     for (int i = 0; i < 100; i++) {
                         // roll a seeker position in the room
                         int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
@@ -80,6 +86,8 @@ namespace ExtendedVariants.Variants {
                         }
                     }
                 }
+
+                foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = false;
 
                 level.Entities.UpdateLists();
             } else if(Settings.AddSeekers == 0 && extendedPathfinder) {
