@@ -49,6 +49,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableSeekerSlowdownOption;
         private TextMenu.Option<bool> theoCrystalsEverywhereOption;
         private TextMenu.Option<int> badelineLagOption;
+        private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
         
@@ -212,6 +213,8 @@ namespace ExtendedVariants.UI {
             badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
+            allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
+                .Change(b => Settings.AllStrawberriesAreGoldens = b);
 
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -324,6 +327,7 @@ namespace ExtendedVariants.UI {
             menu.Add(regularHiccupsOption);
             menu.Add(hiccupStrengthOption);
             menu.Add(roomLightingOption);
+            menu.Add(allStrawberriesAreGoldensOption);
 
             addHeading(menu, "TROLL");
             menu.Add(forceDuckOnGroundOption);
@@ -375,6 +379,7 @@ namespace ExtendedVariants.UI {
             setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
             setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
             setValue(badelineLagOption, 0, Settings.BadelineLag);
+            setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
         }
 
         private void refreshOptionMenuEnabledStatus() {
@@ -415,6 +420,7 @@ namespace ExtendedVariants.UI {
             disableSeekerSlowdownOption.Disabled = !Settings.MasterSwitch;
             theoCrystalsEverywhereOption.Disabled = !Settings.MasterSwitch;
             badelineLagOption.Disabled = !Settings.MasterSwitch;
+            allStrawberriesAreGoldensOption.Disabled = !Settings.MasterSwitch;
             randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
         }
 

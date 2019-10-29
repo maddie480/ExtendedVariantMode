@@ -102,6 +102,7 @@
     <Compile Include="VariantRandomizer.cs" />
     <Compile Include="Variants\AbstractExtendedVariant.cs" />
     <Compile Include="Variants\AirFriction.cs" />
+    <Compile Include="Variants\AllStrawberriesAreGoldens.cs" />
     <Compile Include="Variants\BadelineChasersEverywhere.cs" />
     <Compile Include="Variants\AddSeekers.cs" />
     <Compile Include="Variants\DashCount.cs" />

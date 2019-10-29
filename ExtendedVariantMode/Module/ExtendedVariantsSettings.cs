@@ -163,12 +163,17 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool TheoCrystalsEverywhere { get; set; } = true;
+        public bool TheoCrystalsEverywhere { get; set; } = false;
 
         // ======================================
 
         [SettingIgnore]
         public bool HeldDash { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
+        public bool AllStrawberriesAreGoldens { get; set; } = false;
 
 
         // ======================================
