@@ -92,6 +92,14 @@ namespace ExtendedVariants.UI {
         }
 
         public void CreateAllOptions(TextMenu menu, bool inGame) {
+            // if variants are disabled, do not show the menu in-game.
+            if (inGame && !Settings.MasterSwitch) {
+                menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MOD_DISABLED")) {
+                    Disabled = true
+                });
+                return;
+            }
+
             gravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
             fallSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
@@ -243,6 +251,11 @@ namespace ExtendedVariants.UI {
                     }
 
                     refreshOptionMenuEnabledStatus();
+
+                    if(!inGame) { // playing with hooks in-game would cause some chaos.
+                        if (v) ExtendedVariantsModule.Instance.HookStuff();
+                        else ExtendedVariantsModule.Instance.UnhookStuff();
+                    }
                 });
 
             // Add a button to easily revert to default values

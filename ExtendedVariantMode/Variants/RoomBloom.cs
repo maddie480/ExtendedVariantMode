@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
 
         /// <summary>
         /// Locks the bloom to the value set by the user even when they hit a Bloom Fade Trigger.
-        /// (The Bloom Fade Trigger will still change update the BloomBaseAdd in the session, so we can use it to revert the changes if the variant is disabled.)
+        /// (The Bloom Fade Trigger will still update the BloomBaseAdd in the session, so we can use it to revert the changes if the variant is disabled.)
         /// </summary>
         /// <param name="orig">The original method</param>
         /// <param name="self">The trigger itself</param>

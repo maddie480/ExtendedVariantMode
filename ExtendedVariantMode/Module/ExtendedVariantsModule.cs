@@ -13,6 +13,8 @@ namespace ExtendedVariants.Module {
 
         public static ExtendedVariantsModule Instance;
 
+        private bool stuffIsHooked = false;
+
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
         public override Type SessionType => typeof(ExtendedVariantsSession);
 
@@ -88,6 +90,30 @@ namespace ExtendedVariants.Module {
         }
 
         public override void Load() {
+            Logger.Log("ExtendedVariantsModule", "Initializing Extended Variant Mode");
+
+            On.Celeste.LevelEnter.Go += checkForceEnableVariants;
+            On.Celeste.LevelExit.ctor += checkForceDisableVariants;
+
+            if (Settings.MasterSwitch) {
+                HookStuff();
+            }
+        }
+
+        public override void Unload() {
+            Logger.Log("ExtendedVariantsModule", "Unloading Extended Variant Mode");
+
+            On.Celeste.LevelEnter.Go -= checkForceEnableVariants;
+            On.Celeste.LevelExit.ctor -= checkForceDisableVariants;
+
+            if (stuffIsHooked) {
+                UnhookStuff();
+            }
+        }
+
+        public void HookStuff() {
+            if (stuffIsHooked) return;
+
             // mod methods here
             Logger.Log("ExtendedVariantsModule", $"Loading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
@@ -110,9 +136,15 @@ namespace ExtendedVariants.Module {
                 Logger.Log("ExtendedVariantsModule", $"Loading variant {variant}...");
                 VariantHandlers[variant].Load();
             }
+
+            Logger.Log("ExtendedVariantsModule", "Done hooking stuff.");
+
+            stuffIsHooked = true;
         }
 
-        public override void Unload() {
+        public void UnhookStuff() {
+            if (!stuffIsHooked) return;
+
             // unmod methods here
             Logger.Log("ExtendedVariantsModule", $"Unloading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants -= modVersionNumberAndVariants;
@@ -129,6 +161,32 @@ namespace ExtendedVariants.Module {
             foreach(Variant variant in VariantHandlers.Keys) {
                 Logger.Log("ExtendedVariantsModule", $"Unloading variant {variant}...");
                 VariantHandlers[variant].Unload();
+            }
+
+            Logger.Log("ExtendedVariantsModule", "Done unhooking stuff.");
+
+            stuffIsHooked = false;
+        }
+        
+        private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
+            if(!stuffIsHooked && session.LevelData.Triggers.Exists(entityData => entityData.Name == "ExtendedVariantTrigger")) {
+                // oops, stuff is not hooked and the level we're accessing has a trigger.
+                // let's hook them now.
+                Logger.Log("ExtendedVariantsModule", "Detected trigger in level: hooking methods");
+                HookStuff();
+            }
+
+            orig(session, fromSaveData);
+        }
+
+        private void checkForceDisableVariants(On.Celeste.LevelExit.orig_ctor orig, LevelExit self, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            orig(self, mode, session, snow);
+
+            if(stuffIsHooked && !Settings.MasterSwitch) {
+                // stuff is hooked but it shouldn't be: this is certainly because of checkForceEnableVariants.
+                // unhook them again.
+                Logger.Log("ExtendedVariantsModule", "Leaving level: unhooking methods");
+                UnhookStuff();
             }
         }
         
