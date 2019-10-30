@@ -167,7 +167,7 @@ namespace ExtendedVariants.Module {
         }
         
         private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
-            if(!stuffIsHooked && session.LevelData.Triggers.Exists(entityData => entityData.Name == "ExtendedVariantTrigger")) {
+            if(!stuffIsHooked && session.MapData.Levels.Exists(levelData => levelData.Triggers.Exists(entityData => entityData.Name == "ExtendedVariantTrigger"))) {
                 // oops, stuff is not hooked and the level we're accessing has a trigger.
                 // let's hook them now.
                 Logger.Log("ExtendedVariantsModule", "Detected trigger in level: hooking methods");
@@ -183,7 +183,7 @@ namespace ExtendedVariants.Module {
             if(stuffIsHooked && !Settings.MasterSwitch) {
                 // stuff is hooked but it shouldn't be: this is certainly because of checkForceEnableVariants.
                 // unhook them again.
-                Logger.Log("ExtendedVariantsModule", "Leaving level: unhooking methods");
+                Logger.Log("ExtendedVariantsModule", "Leaving level with variants disabled: unhooking methods");
                 UnhookStuff();
             }
         }
