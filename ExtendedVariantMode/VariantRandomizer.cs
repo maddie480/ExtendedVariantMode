@@ -300,6 +300,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.TheoCrystalsEverywhere) ExtendedVariantsModule.Settings.TheoCrystalsEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.HeldDash) ExtendedVariantsModule.Settings.HeldDash = true;
             else if (variant == ExtendedVariantsModule.Variant.AllStrawberriesAreGoldens) ExtendedVariantsModule.Settings.AllStrawberriesAreGoldens = true;
+            else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DontRefillDashOnGround = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];

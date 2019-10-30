@@ -50,6 +50,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> theoCrystalsEverywhereOption;
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
+        private TextMenu.Option<bool> dontRefillDashOnGroundOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
         
@@ -215,6 +216,8 @@ namespace ExtendedVariants.UI {
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
             allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
                 .Change(b => Settings.AllStrawberriesAreGoldens = b);
+            dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
+                .Change(b => Settings.DontRefillDashOnGround = b);
 
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -298,6 +301,7 @@ namespace ExtendedVariants.UI {
             menu.Add(hyperdashSpeedOption);
             menu.Add(dashCountOption);
             menu.Add(heldDashOption);
+            menu.Add(dontRefillDashOnGroundOption);
 
             addHeading(menu, "MOVING");
             menu.Add(speedXOption);
@@ -380,6 +384,7 @@ namespace ExtendedVariants.UI {
             setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
             setValue(badelineLagOption, 0, Settings.BadelineLag);
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
+            setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
         }
 
         private void refreshOptionMenuEnabledStatus() {
@@ -421,6 +426,7 @@ namespace ExtendedVariants.UI {
             theoCrystalsEverywhereOption.Disabled = !Settings.MasterSwitch;
             badelineLagOption.Disabled = !Settings.MasterSwitch;
             allStrawberriesAreGoldensOption.Disabled = !Settings.MasterSwitch;
+            dontRefillDashOnGroundOption.Disabled = !Settings.MasterSwitch;
             randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
         }
 

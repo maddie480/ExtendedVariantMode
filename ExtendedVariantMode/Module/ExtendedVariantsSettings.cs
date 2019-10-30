@@ -175,6 +175,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool AllStrawberriesAreGoldens { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool DontRefillDashOnGround { get; set; } = false;
+
 
         // ======================================
 
