@@ -122,6 +122,7 @@
     <Compile Include="Variants\JumpHeight.cs" />
     <Compile Include="Variants\OshiroEverywhere.cs" />
     <Compile Include="Variants\RegularHiccups.cs" />
+    <Compile Include="Variants\RoomBloom.cs" />
     <Compile Include="Variants\RoomLighting.cs" />
     <Compile Include="Variants\SnowballsEverywhere.cs" />
     <Compile Include="Variants\Stamina.cs" />

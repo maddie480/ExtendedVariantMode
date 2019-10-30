@@ -23,7 +23,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 		RefillJumpsOnDashRefill, OshiroEverywhere, DisableOshiroSlowdown, DisableSeekerSlowdown, TheoCrystalsEverywhere, HeldDash, 
 		AllStrawberriesAreGoldens, DontRefillDashOnGround: 1 to enable, 0 to disable.
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
-	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
+	- RoomLighting, RoomBloom: the room's lighting or bloom in % divided by 10 (9 => 90%), -1 to disable
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).

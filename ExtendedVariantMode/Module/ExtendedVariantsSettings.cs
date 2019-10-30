@@ -131,6 +131,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int RoomBloom { get; set; } = -1;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool OshiroEverywhere { get; set; } = false;
 
         [SettingIgnore]

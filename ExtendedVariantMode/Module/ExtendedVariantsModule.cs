@@ -26,7 +26,7 @@ namespace ExtendedVariants.Module {
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers,
             DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting,
-            ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens
+            RoomBloom, ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -67,6 +67,7 @@ namespace ExtendedVariants.Module {
             // HiccupStrength is not a variant
             // RefillJumpsOnDashRefill is not a variant
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
+            VariantHandlers[Variant.RoomBloom] = new RoomBloom();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
             // DisableOshiroSlowdown is not a variant
             VariantHandlers[Variant.WindEverywhere] = new WindEverywhere();
@@ -136,6 +137,11 @@ namespace ExtendedVariants.Module {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
+            }
+            if(Settings.RoomBloom != -1 && Engine.Scene.GetType() == typeof(Level)) {
+                // currently in level, change bloom right away
+                Level lvl = (Engine.Scene as Level);
+                lvl.Bloom.Base = AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd;
             }
             
             // reset all proper variants to their default values

@@ -40,6 +40,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> regularHiccupsOption;
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
+        private TextMenu.Option<int> roomBloomOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
         private TextMenu.Option<bool> disableOshiroSlowdownOption;
         private TextMenu.Option<int> windEverywhereOption;
@@ -188,6 +189,18 @@ namespace ExtendedVariants.UI {
                         lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
                     }
                 });
+            roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
+                i => {
+                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                    return $"{i * 10}%";
+                }, -1, 10, Settings.RoomBloom, 0).Change(i => {
+                    Settings.RoomBloom = i;
+                    if(Engine.Scene.GetType() == typeof(Level)) {
+                        // currently in level, change bloom right away
+                        Level lvl = (Engine.Scene as Level);
+                        lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
+                    }
+                });
             oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
                 .Change(b => Settings.OshiroEverywhere = b);
             disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
@@ -331,6 +344,7 @@ namespace ExtendedVariants.UI {
             menu.Add(regularHiccupsOption);
             menu.Add(hiccupStrengthOption);
             menu.Add(roomLightingOption);
+            menu.Add(roomBloomOption);
             menu.Add(allStrawberriesAreGoldensOption);
 
             addHeading(menu, "TROLL");
@@ -374,6 +388,7 @@ namespace ExtendedVariants.UI {
             setValue(regularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
+            setValue(roomBloomOption, -1, Settings.RoomBloom);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
             setValue(disableOshiroSlowdownOption, Settings.DisableOshiroSlowdown);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
@@ -416,6 +431,7 @@ namespace ExtendedVariants.UI {
             regularHiccupsOption.Disabled = !Settings.MasterSwitch;
             hiccupStrengthOption.Disabled = !Settings.MasterSwitch;
             roomLightingOption.Disabled = !Settings.MasterSwitch;
+            roomBloomOption.Disabled = !Settings.MasterSwitch;
             oshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
             disableOshiroSlowdownOption.Disabled = !Settings.MasterSwitch;
             windEverywhereOption.Disabled = !Settings.MasterSwitch;
