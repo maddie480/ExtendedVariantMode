@@ -97,6 +97,9 @@ namespace ExtendedVariants.Module {
 
             if (Settings.MasterSwitch) {
                 HookStuff();
+            } else {
+                // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
+                ResetToDefaultSettings();
             }
         }
 
@@ -120,11 +123,6 @@ namespace ExtendedVariants.Module {
             Everest.Events.Level.OnExit += onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
-
-            // if master switch is disabled, ensure all values are the default ones. (variants are disabled even if the yml file has been edited.)
-            if (!Settings.MasterSwitch) {
-                ResetToDefaultSettings();
-            }
 
             Logger.Log("ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
