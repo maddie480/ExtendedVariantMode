@@ -91,9 +91,9 @@ namespace ExtendedVariants.UI {
             return multiplierScale.Length - 1;
         }
 
-        public void CreateAllOptions(TextMenu menu, bool inGame) {
+        public void CreateAllOptions(TextMenu menu, bool inGame, bool stuffIsHooked) {
             // if variants are disabled, do not show the menu in-game.
-            if (inGame && !Settings.MasterSwitch) {
+            if (inGame && !stuffIsHooked) {
                 menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MOD_DISABLED")) {
                     Disabled = true
                 });

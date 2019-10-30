@@ -86,7 +86,7 @@ namespace ExtendedVariants.Module {
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
-            new ModOptionsEntries().CreateAllOptions(menu, inGame);
+            new ModOptionsEntries().CreateAllOptions(menu, inGame, stuffIsHooked);
         }
 
         public override void Load() {
