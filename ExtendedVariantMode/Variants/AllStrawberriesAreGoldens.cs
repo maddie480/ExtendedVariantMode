@@ -2,7 +2,6 @@
 using Celeste;
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 
@@ -23,13 +22,11 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Player.Die += onPlayerDie;
             IL.Celeste.Strawberry.Update += onStrawberryUpdate;
-            IL.Celeste.Strawberry.Added += onStrawberryAdded;
         }
 
         public override void Unload() {
             On.Celeste.Player.Die -= onPlayerDie;
             IL.Celeste.Strawberry.Update -= onStrawberryUpdate;
-            IL.Celeste.Strawberry.Added -= onStrawberryAdded;
         }
 
         private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
@@ -82,30 +79,6 @@ namespace ExtendedVariants.Variants {
 
         private bool strawberryHasGoldenCollectBehavior(Strawberry berry) {
             return berry.Golden || Settings.AllStrawberriesAreGoldens;
-        }
-        
-
-        private void onStrawberryAdded(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-
-            if (cursor.TryGotoNext(instr => instr.MatchStfld<Strawberry>("light"))
-                && cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Entity>("Add"))) {
-
-                Logger.Log("ExtendedVariantMode", $"Injecting strawberry light killing code at {cursor.Index} in IL code for Strawberry.Added");
-
-                // just after adding the light entity, inject a call removing it if AllStrawberriesAreGoldens is enabled.
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.Emit(OpCodes.Ldfld, typeof(Strawberry).GetField("light", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance));
-                cursor.EmitDelegate<Action<VertexLight>>(killStrawberryLight);
-            }
-        }
-
-        private void killStrawberryLight(VertexLight berryLight) {
-            // we want to kill the berries' light sources, because it's known to cause crashes if there are too many on screen.
-            if(Settings.AllStrawberriesAreGoldens) {
-                Logger.Log("EVM", "Killing light");
-                berryLight.RemoveSelf();
-            }
         }
     }
 }
