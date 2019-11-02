@@ -391,6 +391,7 @@ namespace ExtendedVariants {
                         else if (variant == ExtendedVariantsModule.Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
                         else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
                         else if (variant == ExtendedVariantsModule.Variant.RoomLighting) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
+                        else if (variant == ExtendedVariantsModule.Variant.RoomBloom) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
                         // multiplier-style variants
                         else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
                             fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
