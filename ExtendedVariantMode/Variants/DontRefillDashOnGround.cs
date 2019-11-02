@@ -23,7 +23,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.Bounce += patchNoRefills;
             IL.Celeste.Player.SuperBounce += patchNoRefills;
             IL.Celeste.Player.SideBounce += patchNoRefills;
-            IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool += patchNoRefills;
+            // IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool += patchNoRefills;
             IL.Celeste.Player.DreamDashEnd += patchNoRefills;
 
             On.Celeste.Player.Update += patchUpdate;
@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.Bounce -= patchNoRefills;
             IL.Celeste.Player.SuperBounce -= patchNoRefills;
             IL.Celeste.Player.SideBounce -= patchNoRefills;
-            IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool -= patchNoRefills;
+            // IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool -= patchNoRefills;
             IL.Celeste.Player.DreamDashEnd -= patchNoRefills;
 
             On.Celeste.Player.Update -= patchUpdate;
