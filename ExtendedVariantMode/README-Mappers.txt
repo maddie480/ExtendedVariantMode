@@ -13,7 +13,8 @@ First, add the dependency to your map. For example, everest.yaml will look like 
 To enable a variant in a map, you can place an "Extended Variant Trigger" in Ahorn. These have 3 options:
 - Variant: pick the variant you want to change
 - New Value: pick the value you want to set the variant to. Those are the internal values used by the mod:
-	- Gravity, FallSpeed, JumpHeight, SpeedX, DashSpeed, Friction, HyperdashSpeed, WallBouncingSpeed, DashLength, HiccupStrength: the value is the multiplier * 10 (for example, "12" will set the option to 1.2x).
+	- Gravity, FallSpeed, JumpHeight, SpeedX, DashSpeed, Friction, HyperdashSpeed, WallBouncingSpeed, DashLength, 
+		HiccupStrength, GameSpeed: the value is the multiplier * 10 (for example, "12" will set the option to 1.2x).
 		- The only exception is Friction (ground friction) and AirFriction, where 0 is actually 0.05x and -1 is 0x.
 	- Stamina: the value is the max stamina / 10 (for example, "20" will set max stamina to 200, the default value being 110).
 	- DashCount: the value is simply the dash count you want, -1 being the default behavior (depending on the inventory).

@@ -110,6 +110,7 @@
     <Compile Include="Variants\FallSpeed.cs" />
     <Compile Include="Variants\ForceDuckOnGround.cs" />
     <Compile Include="Variants\Friction.cs" />
+    <Compile Include="Variants\GameSpeed.cs" />
     <Compile Include="Variants\Gravity.cs" />
     <Compile Include="Variants\HyperdashSpeed.cs" />
     <Compile Include="Variants\HeldDash.cs" />

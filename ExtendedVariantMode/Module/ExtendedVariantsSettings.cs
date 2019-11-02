@@ -185,6 +185,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool DontRefillDashOnGround { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public int GameSpeed { get; set; } = 10;
+
 
         // ======================================
 

@@ -28,7 +28,7 @@ namespace ExtendedVariants.Module {
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers,
             DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting,
-            RoomBloom, ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens
+            RoomBloom, ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens, GameSpeed
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -81,6 +81,7 @@ namespace ExtendedVariants.Module {
             // BadelineLag is not a variant
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
+            VariantHandlers[Variant.GameSpeed] = new GameSpeed();
         }
 
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {

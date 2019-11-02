@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
         private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
-            if(Settings.RegularHiccups != 0 && !SaveData.Instance.Assists.Hiccups) {
+            if(Settings.RegularHiccups != 0) {
                 regularHiccupTimer -= Engine.DeltaTime;
 
                 if (regularHiccupTimer > Settings.RegularHiccups / 10f) {

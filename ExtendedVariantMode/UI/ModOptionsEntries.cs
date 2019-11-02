@@ -52,6 +52,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
         private TextMenu.Option<bool> dontRefillDashOnGroundOption;
+        private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
         
@@ -239,6 +240,8 @@ namespace ExtendedVariants.UI {
                 .Change(b => Settings.AllStrawberriesAreGoldens = b);
             dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
                 .Change(b => Settings.DontRefillDashOnGround = b);
+            gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
+                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
@@ -350,14 +353,17 @@ namespace ExtendedVariants.UI {
             menu.Add(disableSeekerSlowdownOption);
             menu.Add(theoCrystalsEverywhereOption);
 
+            addHeading(menu, "GLOBAL");
+            menu.Add(gameSpeedOption);
+            menu.Add(upsideDownOption);
+            menu.Add(roomLightingOption);
+            menu.Add(roomBloomOption);
+
             addHeading(menu, "OTHER");
             menu.Add(staminaOption);
-            menu.Add(upsideDownOption);
             menu.Add(disableNeutralJumpingOption);
             menu.Add(regularHiccupsOption);
             menu.Add(hiccupStrengthOption);
-            menu.Add(roomLightingOption);
-            menu.Add(roomBloomOption);
             menu.Add(allStrawberriesAreGoldensOption);
 
             addHeading(menu, "TROLL");
@@ -413,6 +419,7 @@ namespace ExtendedVariants.UI {
             setValue(badelineLagOption, 0, Settings.BadelineLag);
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
             setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
+            setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
         }
 
         private void refreshOptionMenuEnabledStatus() {
@@ -457,6 +464,7 @@ namespace ExtendedVariants.UI {
             allStrawberriesAreGoldensOption.Disabled = !Settings.MasterSwitch;
             dontRefillDashOnGroundOption.Disabled = !Settings.MasterSwitch;
             randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
+            gameSpeedOption.Disabled = !Settings.MasterSwitch;
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {
