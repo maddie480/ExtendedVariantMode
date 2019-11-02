@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using System.Collections;
 
 namespace ExtendedVariants.Variants {
     class DontRefillDashOnGround : AbstractExtendedVariant {
@@ -23,8 +24,14 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.Bounce += patchNoRefills;
             IL.Celeste.Player.SuperBounce += patchNoRefills;
             IL.Celeste.Player.SideBounce += patchNoRefills;
-            // IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool += patchNoRefills;
             IL.Celeste.Player.DreamDashEnd += patchNoRefills;
+
+            // for some reason, hooking ExplodeLaunch makes the game explode on launching the method (... yeah)
+            // so, hook usages of ExplodeLaunch instead and kill RefillDash while they run.
+            On.Celeste.Bumper.OnPlayer += patchBumperOnPlayer;
+            On.Celeste.Puffer.Explode += patchPufferExplode;
+            On.Celeste.TempleBigEyeball.OnPlayer += patchTempleBigEyeballOnPlayer;
+            On.Celeste.Seeker.RegenerateCoroutine += patchSeekerRegenerateCoroutine;
 
             On.Celeste.Player.Update += patchUpdate;
             On.Celeste.Player.RefillDash += killRefillDashIfNeeded;
@@ -34,8 +41,12 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.Bounce -= patchNoRefills;
             IL.Celeste.Player.SuperBounce -= patchNoRefills;
             IL.Celeste.Player.SideBounce -= patchNoRefills;
-            // IL.Celeste.Player.ExplodeLaunch_Vector2_bool_bool -= patchNoRefills;
             IL.Celeste.Player.DreamDashEnd -= patchNoRefills;
+
+            On.Celeste.Bumper.OnPlayer -= patchBumperOnPlayer;
+            On.Celeste.Puffer.Explode -= patchPufferExplode;
+            On.Celeste.TempleBigEyeball.OnPlayer -= patchTempleBigEyeballOnPlayer;
+            On.Celeste.Seeker.RegenerateCoroutine -= patchSeekerRegenerateCoroutine;
 
             On.Celeste.Player.Update -= patchUpdate;
             On.Celeste.Player.RefillDash -= killRefillDashIfNeeded;
@@ -78,6 +89,38 @@ namespace ExtendedVariants.Variants {
 
         private bool areRefillsOnGroundDisabled() {
             return Settings.DontRefillDashOnGround;
+        }
+        
+
+        private void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
+            killDashRefills = true;
+            orig(self, player);
+            killDashRefills = false;
+        }
+
+        private void patchPufferExplode(On.Celeste.Puffer.orig_Explode orig, Puffer self) {
+            killDashRefills = true;
+            orig(self);
+            killDashRefills = false;
+        }
+
+        private void patchTempleBigEyeballOnPlayer(On.Celeste.TempleBigEyeball.orig_OnPlayer orig, TempleBigEyeball self, Player player) {
+            killDashRefills = true;
+            orig(self, player);
+            killDashRefills = false;
+        }
+
+        private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
+            IEnumerator original = orig(self);
+
+            while(original.MoveNext()) {
+                yield return original.Current;
+                if(original.Current != null && original.Current.GetType() == typeof(float) && (float)original.Current == 0.15f) {
+                    // kill dash refills between the last "yield return" and the end of the method.
+                    killDashRefills = true;
+                }
+            }
+            killDashRefills = false;
         }
     }
 }
