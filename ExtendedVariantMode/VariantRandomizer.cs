@@ -72,6 +72,11 @@ namespace ExtendedVariants {
             On.Celeste.Player.Update += onUpdate;
             Everest.Events.Level.OnExit += clearFile;
             On.Celeste.Level.EndPauseEffects += modEndPauseEffects;
+
+            if(Engine.Scene != null && Engine.Scene.GetType() == typeof(Level)) {
+                // we're late, catch up!
+                onLevelEnter();
+            }
         }
 
         public void Unload() {
@@ -80,9 +85,16 @@ namespace ExtendedVariants {
             On.Celeste.Player.Update -= onUpdate;
             Everest.Events.Level.OnExit -= clearFile;
             On.Celeste.Level.EndPauseEffects -= modEndPauseEffects;
+
+            // clear file right away, since Extended Variants are no more.
+            clearFile();
         }
 
         private void onLevelEnter(Session session, bool fromSaveData) {
+            onLevelEnter();
+        }
+
+        private void onLevelEnter() {
             UpdateCountersFromSettings();
             spitOutEnabledVariantsInFile();
         }
@@ -404,6 +416,10 @@ namespace ExtendedVariants {
         }
 
         private void clearFile(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            clearFile();
+        }
+
+        private void clearFile() {
             if(ExtendedVariantsModule.Settings.FileOutput) {
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Clearing enabled-variants.txt");
 

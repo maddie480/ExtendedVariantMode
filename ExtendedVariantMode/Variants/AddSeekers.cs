@@ -39,6 +39,14 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Pathfinder.ctor -= modPathfinderConstructor;
             Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
+
+            // if disabled during a level, we have to plug out the extended pathfinder right away.
+            if(extendedPathfinder && Engine.Scene.GetType() == typeof(Level)) {
+                Level level = Engine.Scene as Level;
+
+                extendedPathfinder = false;
+                level.Pathfinder = new Pathfinder(level);
+            }
         }
         
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {

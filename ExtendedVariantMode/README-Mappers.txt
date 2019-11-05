@@ -33,6 +33,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 
+After you placed your first trigger, be sure to exit out of the level and to start it again. Trigger stuff is only initialized when you enter a level with an extended variant trigger in it.
+
 Please note that changes in variants become permanent only when the player goes to a new screen or hits a Change Respawn Trigger. If the player dies in the same screen, values will get reset.
 This rule allows keeping gameplay consistent if an Extended Variant Trigger is set in the middle of a long screen: the first part should be played without the change, and the second part with it.
 

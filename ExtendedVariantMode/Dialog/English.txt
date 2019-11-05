@@ -20,7 +20,7 @@
 
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Extended Variant Mode
 
-MODOPTIONS_EXTENDEDVARIANTS_MOD_DISABLED=	Extended Variants are disabled
+POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	You are entering a map using {# 9B3FB5}Extended Variant Mode{#}.{n}{n}For this map to work, {# 9B3FB5}Extended Variants{#} have been enabled and reset to their default values.
 
 MODOPTIONS_EXTENDEDVARIANTS_HEADING=	Variants
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_DASHING=	Dashing

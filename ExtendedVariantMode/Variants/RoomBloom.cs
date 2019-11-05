@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Monocle;
 
 namespace ExtendedVariants.Variants {
     public class RoomBloom : AbstractExtendedVariant {
@@ -28,6 +29,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.BloomFadeTrigger.OnStay -= modBloomFadeTriggerOnStay;
             Everest.Events.Level.OnExit -= onLevelExit;
+
+            // if we disable variants during a level, we have to un-mod bloom right away.
+            if(Engine.Scene.GetType() == typeof(Level)) {
+                Level level = Engine.Scene as Level;
+
+                moddedRoomBloom = false;
+                level.Bloom.Base = AreaData.Get(level).BloomBase + level.Session.BloomBaseAdd;
+            }
         }
 
         /// <summary>

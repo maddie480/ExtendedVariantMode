@@ -92,14 +92,7 @@ namespace ExtendedVariants.UI {
             return multiplierScale.Length - 1;
         }
 
-        public void CreateAllOptions(TextMenu menu, bool inGame, bool stuffIsHooked) {
-            // if variants are disabled, do not show the menu in-game.
-            if (inGame && !stuffIsHooked) {
-                menu.Add(new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MOD_DISABLED")) {
-                    Disabled = true
-                });
-                return;
-            }
+        public void CreateAllOptions(TextMenu menu, bool inGame, bool forceEnabled) {
 
             gravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
@@ -244,21 +237,16 @@ namespace ExtendedVariants.UI {
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
 
             // create the "master switch" option with specific enable/disable handling.
-            masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch)
+            masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
+                Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
+            }
                 .Change(v => {
                     Settings.MasterSwitch = v;
-                    if (!v) {
-                        // We are disabling extended variants: reset values to their defaults.
-                        ExtendedVariantsModule.Instance.ResetToDefaultSettings();
-                        refreshOptionMenuValues();
-                    }
-
                     refreshOptionMenuEnabledStatus();
 
-                    if(!inGame) { // playing with hooks in-game would cause some chaos.
-                        if (v) ExtendedVariantsModule.Instance.HookStuff();
-                        else ExtendedVariantsModule.Instance.UnhookStuff();
-                    }
+                    // (de)activate all hooks!
+                    if (v) ExtendedVariantsModule.Instance.HookStuff();
+                    else ExtendedVariantsModule.Instance.UnhookStuff();
                 });
 
             // Add a button to easily revert to default values

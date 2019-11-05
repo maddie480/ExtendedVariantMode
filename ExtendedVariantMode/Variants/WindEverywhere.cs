@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
+using Monocle;
 using System;
 using System.Collections;
 
@@ -39,6 +40,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             Everest.Events.Level.OnExit -= onLevelExit;
+
+            // if we are in a level and extended variants added a wind backdrop, clean it up.
+            if(snowBackdropAddedByEVM && Engine.Scene.GetType() == typeof(Level)) {
+                Level level = Engine.Scene as Level;
+
+                snowBackdropAddedByEVM = false;
+                level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(WindSnowFG));
+            }
         }
         
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {

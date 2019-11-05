@@ -20,7 +20,7 @@
 
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Mode Variante étendu
 
-MODOPTIONS_EXTENDEDVARIANTS_MOD_DISABLED=	Les variantes étendues sont désactivées
+POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	Tu entres dans une map qui utilise le {# 9B3FB5}Mode Variante étendu{#}.{n}{n}Pour que cette map fonctionne, les {# 9B3FB5}variantes étendues{#} ont été activées et remises à zéro à leurs valeurs par défaut.
 
 MODOPTIONS_EXTENDEDVARIANTS_HEADING=	Variantes
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_DASHING=	Dashes

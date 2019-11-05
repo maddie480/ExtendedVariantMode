@@ -28,6 +28,9 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
+
+            // be sure the controls are not upside down anymore
+            Input.Aim.InvertedY = (Input.MoveY.Inverted = false);
         }
         
         /// <summary>
