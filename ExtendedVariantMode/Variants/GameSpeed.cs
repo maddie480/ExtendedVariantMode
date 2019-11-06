@@ -2,6 +2,7 @@
 using System;
 using Celeste;
 using Celeste.Mod;
+using Monocle;
 using MonoMod.Cil;
 
 namespace ExtendedVariants.Variants {
@@ -20,10 +21,12 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             IL.Celeste.Level.Update += modLevelUpdate;
+            IL.Monocle.VirtualButton.Update += modVirtualButtonUpdate;
         }
 
         public override void Unload() {
             IL.Celeste.Level.Update -= modLevelUpdate;
+            IL.Monocle.VirtualButton.Update -= modVirtualButtonUpdate;
         }
 
         private void modLevelUpdate(ILContext il) {
@@ -52,6 +55,41 @@ namespace ExtendedVariants.Variants {
             else if (originalSnapshot <= 13) return 12; // 11~13 => 12
             else if (originalSnapshot <= 15) return 14; // 14 or 15 => 14
             else return 16; // 16 or higher => 16
+        }
+
+        private void modVirtualButtonUpdate(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // the goal is to jump at this.repeatCounter -= Engine.DeltaTime;
+            // we want to mod the repeat timer to make menus more usable at very high or low speeds.
+            if (cursor.TryGotoNext(MoveType.After,
+                instr => instr.MatchLdfld<VirtualButton>("repeatCounter"),
+                instr => instr.MatchCall<Engine>("get_DeltaTime"))) {
+
+                cursor.Index--;
+
+                Logger.Log("ExtendedVariantMode", $"Modding DeltaTime at {cursor.Index} in IL code for VirtualButton.Update");
+
+                cursor.Remove();
+                cursor.EmitDelegate<Func<float>>(getRepeatTimerDeltaTime);
+
+                // what we have now is this.repeatCounter -= getRepeatTimerDeltaTime();
+            }
+        }
+
+        private float getRepeatTimerDeltaTime() {
+            // the delta time is Engine.RawDeltaTime * TimeRate * TimeRateB
+            // we want to bound TimeRate * TimeRateB between 0.5 and 1.6
+            // (this is the span of the vanilla Game Speed variant)
+            float timeRate = Engine.TimeRate * Engine.TimeRateB;
+
+            if(timeRate < 0.5f) {
+                return Engine.RawDeltaTime * 0.5f;
+            } else if(timeRate > 1.6f) {
+                return Engine.RawDeltaTime * 1.6f;
+            }
+            // return the original value
+            return Engine.DeltaTime;
         }
     }
 }
