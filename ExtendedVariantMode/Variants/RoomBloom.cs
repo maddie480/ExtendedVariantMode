@@ -23,6 +23,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.BloomFadeTrigger.OnStay += modBloomFadeTriggerOnStay;
             Everest.Events.Level.OnExit += onLevelExit;
+
+            // If we enable variants during a level, apply bloom right away.
+            if (Engine.Scene != null && Engine.Scene.GetType() == typeof(Level) && Settings.RoomBloom != -1) {
+                Level level = Engine.Scene as Level;
+
+                level.Bloom.Base = Settings.RoomBloom / 10f;
+                moddedRoomBloom = true;
+            }
         }
 
         public override void Unload() {

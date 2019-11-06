@@ -85,6 +85,7 @@
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
+    <Compile Include="Entities\ExtendedVariantWindSnowFG.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />

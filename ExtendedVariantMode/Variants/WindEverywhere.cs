@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
@@ -46,7 +47,7 @@ namespace ExtendedVariants.Variants {
                 Level level = Engine.Scene as Level;
 
                 snowBackdropAddedByEVM = false;
-                level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(WindSnowFG));
+                level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(ExtendedVariantWindSnowFG));
             }
         }
         
@@ -72,11 +73,10 @@ namespace ExtendedVariants.Variants {
 
         private void applyWind(Level level) {
             if (Settings.WindEverywhere != 0) {
-                if(level.Foreground.Backdrops.Find(backdrop => backdrop.GetType() == typeof(WindSnowFG)) == null) {
-                    // add the styleground / backdrop used in Golden Ridge to make wind actually visible
-                    level.Foreground.Backdrops.Add(new WindSnowFG());
-                    snowBackdropAddedByEVM = true;
-                }
+                // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
+                // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
+                level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
+                snowBackdropAddedByEVM = true;
 
                 // also switch the audio ambience so that wind can actually be heard too
                 // (that's done by switching to the ch4 audio ambience. yep)
@@ -103,7 +103,7 @@ namespace ExtendedVariants.Variants {
                 }
             } else if (snowBackdropAddedByEVM) {
                 // remove the backdrop
-                level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(WindSnowFG));
+                level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(ExtendedVariantWindSnowFG));
                 snowBackdropAddedByEVM = false;
             }
         }
