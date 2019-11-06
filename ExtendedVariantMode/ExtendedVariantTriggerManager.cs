@@ -147,6 +147,8 @@ namespace ExtendedVariants {
             overridenVariantsInRoom.Clear();
             oldVariantsInRoom.Clear();
             variantValuesBeforeOverride.Clear();
+
+            ExtendedVariantsModule.Instance.SaveSettings();
         }
         
         public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave) {
