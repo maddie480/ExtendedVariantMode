@@ -73,10 +73,12 @@ namespace ExtendedVariants.Variants {
 
         private void applyWind(Level level) {
             if (Settings.WindEverywhere != 0) {
-                // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
-                // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
-                level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
-                snowBackdropAddedByEVM = true;
+                if(!snowBackdropAddedByEVM) {
+                    // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
+                    // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
+                    level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
+                    snowBackdropAddedByEVM = true;
+                }
 
                 // also switch the audio ambience so that wind can actually be heard too
                 // (that's done by switching to the ch4 audio ambience. yep)
