@@ -73,8 +73,14 @@ namespace ExtendedVariants.Variants {
                     player.Top = bounds.Top;
                     player.OnBoundsV();
                 } else if(player.Bottom > bounds.Bottom) {
-                    // kill the player if they try to go down
-                    player.Die(Vector2.Zero);
+                    if(SaveData.Instance.Assists.Invincible) {
+                        // bounce the player off the bottom of the screen (= falling into a pit with invincibility on)
+                        player.Play("event:/game/general/assist_screenbottom");
+                        player.Bounce(bounds.Bottom);
+                    } else {
+                        // kill the player if they try to go down
+                        player.Die(Vector2.Zero);
+                    }
                 } else {
                     // no screen transition detected => proceed to vanilla
                     orig(self, player);
