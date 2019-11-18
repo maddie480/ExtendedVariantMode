@@ -188,6 +188,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool EverythingIsUnderwater { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public int GameSpeed { get; set; } = 10;
 
 

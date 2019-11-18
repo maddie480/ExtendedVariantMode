@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
 
             cursor.Index = 0;
 
-            // let's jump to if (this.Speed.Y < 0f) => "is the player going up? if not, they can't grab!"
+            // let's jump to if (this.Speed.Y < 0f) => "is the player going up? if so, they can't grab!"
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Grab")) &&
                 cursor.TryGotoNext(MoveType.After,
                 instr => instr.MatchLdarg(0), // this

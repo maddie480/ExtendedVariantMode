@@ -43,7 +43,8 @@ const variants = String[
 	"DontRefillDashOnGround",
 	"RoomLighting",
 	"RoomBloom",
-	"GameSpeed"
+	"GameSpeed",
+	"EverythingIsUnderwater"
 ]
 
 const placements = Ahorn.PlacementDict(

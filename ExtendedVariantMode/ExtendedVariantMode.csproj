@@ -108,6 +108,7 @@
     <Compile Include="Variants\DisableNeutralJumping.cs" />
     <Compile Include="Variants\DisableWallJumping.cs" />
     <Compile Include="Variants\DontRefillDashOnGround.cs" />
+    <Compile Include="Variants\EverythingIsUnderwater.cs" />
     <Compile Include="Variants\FallSpeed.cs" />
     <Compile Include="Variants\ForceDuckOnGround.cs" />
     <Compile Include="Variants\Friction.cs" />

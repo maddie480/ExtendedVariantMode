@@ -31,7 +31,7 @@ namespace ExtendedVariants.Module {
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineLag, OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers,
             DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting,
-            RoomBloom, ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens, GameSpeed
+            RoomBloom, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, AllStrawberriesAreGoldens, GameSpeed
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -73,6 +73,7 @@ namespace ExtendedVariants.Module {
             // RefillJumpsOnDashRefill is not a variant
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.RoomBloom] = new RoomBloom();
+            VariantHandlers[Variant.EverythingIsUnderwater] = new EverythingIsUnderwater();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
             // DisableOshiroSlowdown is not a variant
             VariantHandlers[Variant.WindEverywhere] = new WindEverywhere();

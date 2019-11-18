@@ -41,6 +41,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
         private TextMenu.Option<int> roomBloomOption;
+        private TextMenu.Option<bool> everythingIsUnderwaterOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
         private TextMenu.Option<bool> disableOshiroSlowdownOption;
         private TextMenu.Option<int> windEverywhereOption;
@@ -205,6 +206,8 @@ namespace ExtendedVariants.UI {
                         lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
                     }
                 });
+            everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
+                .Change(b => Settings.EverythingIsUnderwater = b);
             oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
                 .Change(b => Settings.OshiroEverywhere = b);
             disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
@@ -316,9 +319,9 @@ namespace ExtendedVariants.UI {
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
-                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, disableOshiroSlowdownOption,
-                windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption,
-                allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions };
+                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, everythingIsUnderwaterOption,
+                disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
+                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions };
 
             refreshOptionMenuEnabledStatus();
 
@@ -370,6 +373,7 @@ namespace ExtendedVariants.UI {
             menu.Add(upsideDownOption);
             menu.Add(roomLightingOption);
             menu.Add(roomBloomOption);
+            menu.Add(everythingIsUnderwaterOption);
 
             menu.Add(otherTitle);
             menu.Add(staminaOption);
@@ -420,6 +424,7 @@ namespace ExtendedVariants.UI {
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(roomBloomOption, -1, Settings.RoomBloom);
+            setValue(everythingIsUnderwaterOption, Settings.EverythingIsUnderwater);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
             setValue(disableOshiroSlowdownOption, Settings.DisableOshiroSlowdown);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
