@@ -219,6 +219,14 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.DisableSeekerSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableSeekerSlowdown = (newValue != 0);
                     break;
+                case ExtendedVariantsModule.Variant.BadelineAttackPattern:
+                    oldValue = ExtendedVariantsModule.Settings.BadelineAttackPattern;
+                    ExtendedVariantsModule.Settings.BadelineAttackPattern = newValue;
+                    break;
+                case ExtendedVariantsModule.Variant.ChangePatternsOfExistingBosses:
+                    oldValue = ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses ? 1 : 0;
+                    ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses = (newValue != 0);
+                    break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();

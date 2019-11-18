@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Celeste;
+﻿using Celeste;
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Variants {
@@ -25,7 +20,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Unload() {
-            throw new NotImplementedException();
+            On.Celeste.Level.LoadLevel -= onLoadLevel;
         }
 
         private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {

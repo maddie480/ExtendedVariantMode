@@ -34,6 +34,8 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.BadelineLag: return 0;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown: return 0;
                 case ExtendedVariantsModule.Variant.DisableSeekerSlowdown: return 0;
+                case ExtendedVariantsModule.Variant.BadelineAttackPattern: return 0;
+                case ExtendedVariantsModule.Variant.ChangePatternsOfExistingBosses: return 0;
 
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue();
             }

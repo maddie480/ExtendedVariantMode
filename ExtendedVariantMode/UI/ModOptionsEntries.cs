@@ -37,6 +37,9 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> badelineChasersEverywhereOption;
         private TextMenu.Option<int> chaserCountOption;
         private TextMenu.Option<bool> affectExistingChasersOption;
+        private TextMenu.Option<bool> badelineBossesEverywhereOption;
+        private TextMenu.Option<int> badelineAttackPatternOption;
+        private TextMenu.Option<bool> changePatternOfExistingBossesOption;
         private TextMenu.Option<int> regularHiccupsOption;
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
@@ -58,6 +61,35 @@ namespace ExtendedVariants.UI {
         private TextMenu.Item randomizerOptions;
 
         private List<TextMenu.Item> allOptions;
+
+        private static int[] badelineBossesPatternsOptions = {
+            0, // random (technical option)
+            1, // slow shots
+            2, // beam => shot
+            3, // 5 fast double shots
+            4, // 5 fast double shots => beam
+            5, // beam => 3 fast double shots
+            // 6 is beam w/ 0.7s pause
+            // 7 is like 1 except it shoots every 1.6s instead of 1.95s...
+            // 8 are beams w/ 0.9s pause
+            9, // double shots
+            10, // this is literally nothing, but hey, this is an option after all
+            // 11 are really slow shots (every 2.5s)
+            // 12 doesn't actually exist
+            // 13 is like 1 but only from the 2nd node, and we only have 1 anyway
+            14, // beams w/ 0.5s pause
+            15 // beams w/ 1.4s pause
+        };
+
+        private int indexFromPatternValue(int option) {
+            for (int index = 0; index < badelineBossesPatternsOptions.Length - 1; index++) {
+                if (badelineBossesPatternsOptions[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return badelineBossesPatternsOptions.Length - 1;
+        }
         
         /// <summary>
         /// List of options shown for multipliers.
@@ -169,6 +201,18 @@ namespace ExtendedVariants.UI {
                 .Change(b => Settings.AffectExistingChasers = b);
             chaserCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
                 i => i.ToString(), 1, 10, Settings.ChaserCount, 0).Change(i => Settings.ChaserCount = i);
+            badelineBossesEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
+                .Change(b => Settings.BadelineBossesEverywhere = b);
+
+            badelineAttackPatternOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEATTACKPATTERN"),
+                i => {
+                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
+                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_BADELINEPATTERN_{badelineBossesPatternsOptions[i]}");
+                }, 0, badelineBossesPatternsOptions.Length - 1, indexFromPatternValue(Settings.BadelineAttackPattern), 0)
+                .Change(i => Settings.BadelineAttackPattern = badelineBossesPatternsOptions[i]);
+
+            changePatternOfExistingBossesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEPATTERNSOFEXISTINGBOSSES"), Settings.ChangePatternsOfExistingBosses, false)
+                .Change(b => Settings.ChangePatternsOfExistingBosses = b);
             changeVariantsRandomlyOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false)
                 .Change(b => {
                     Settings.ChangeVariantsRandomly = b;
@@ -306,6 +350,7 @@ namespace ExtendedVariants.UI {
             TextMenu.SubHeader dashingTitle = buildHeading(menu, "DASHING");
             TextMenu.SubHeader movingTitle = buildHeading(menu, "MOVING");
             TextMenu.SubHeader chasersTitle = buildHeading(menu, "CHASERS");
+            TextMenu.SubHeader bossesTitle = buildHeading(menu, "BOSSES");
             TextMenu.SubHeader everywhereTitle = buildHeading(menu, "EVERYWHERE");
             TextMenu.SubHeader globalTitle = buildHeading(menu, "GLOBAL");
             TextMenu.SubHeader otherTitle = buildHeading(menu, "OTHER");
@@ -314,14 +359,15 @@ namespace ExtendedVariants.UI {
 
             allOptions = new List<TextMenu.Item>() {
                 // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle,
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle,
                 // all options excluding the master switch
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
-                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions };
+                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions,
+                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -357,6 +403,11 @@ namespace ExtendedVariants.UI {
             menu.Add(chaserCountOption);
             menu.Add(affectExistingChasersOption);
             menu.Add(badelineLagOption);
+
+            menu.Add(bossesTitle);
+            menu.Add(badelineBossesEverywhereOption);
+            menu.Add(badelineAttackPatternOption);
+            menu.Add(changePatternOfExistingBossesOption);
 
             menu.Add(everywhereTitle);
             menu.Add(oshiroEverywhereOption);
@@ -419,6 +470,9 @@ namespace ExtendedVariants.UI {
             setValue(badelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);
             setValue(chaserCountOption, 1, Settings.ChaserCount);
             setValue(affectExistingChasersOption, Settings.AffectExistingChasers);
+            setValue(badelineBossesEverywhereOption, Settings.BadelineBossesEverywhere);
+            setValue(badelineAttackPatternOption, 0, Settings.BadelineAttackPattern);
+            setValue(changePatternOfExistingBossesOption, Settings.ChangePatternsOfExistingBosses);
             setValue(changeVariantsRandomlyOption, Settings.ChangeVariantsRandomly);
             setValue(regularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));

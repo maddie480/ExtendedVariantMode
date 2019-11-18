@@ -44,7 +44,10 @@ const variants = String[
 	"RoomLighting",
 	"RoomBloom",
 	"GameSpeed",
-	"EverythingIsUnderwater"
+	"EverythingIsUnderwater",
+	"BadelineBossesEverywhere",
+	"BadelineAttackPattern",
+	"ChangePatternsOfExistingBosses"
 ]
 
 const placements = Ahorn.PlacementDict(

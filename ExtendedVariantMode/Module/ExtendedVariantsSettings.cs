@@ -193,6 +193,17 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool BadelineBossesEverywhere { get; set; } = false;
+
+        [SettingIgnore]
+        public int BadelineAttackPattern { get; set; } = 0;
+
+        [SettingIgnore]
+        public bool ChangePatternsOfExistingBosses { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public int GameSpeed { get; set; } = 10;
 
 
