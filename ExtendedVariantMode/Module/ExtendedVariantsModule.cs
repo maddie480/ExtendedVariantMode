@@ -105,6 +105,7 @@ namespace ExtendedVariants.Module {
 
             On.Celeste.LevelEnter.Go += checkForceEnableVariants;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
+            On.Celeste.TextMenu.GetYOffsetOf += fixYOffsetOfMenuOptions;
 
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
@@ -117,6 +118,7 @@ namespace ExtendedVariants.Module {
 
             On.Celeste.LevelEnter.Go -= checkForceEnableVariants;
             On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
+            On.Celeste.TextMenu.GetYOffsetOf -= fixYOffsetOfMenuOptions;
 
             if (stuffIsHooked) {
                 UnhookStuff();
@@ -276,7 +278,23 @@ namespace ExtendedVariants.Module {
             Settings.BadelineAttackPattern = 0;
             Settings.ChangePatternsOfExistingBosses = false;
         }
-        
+
+        // ================ Fix for TextMenu Y offset of options ================
+
+        private float fixYOffsetOfMenuOptions(On.Celeste.TextMenu.orig_GetYOffsetOf orig, TextMenu self, TextMenu.Item itemToGetOffsetFor) {
+            if (itemToGetOffsetFor == null) return 0f;
+
+            float offset = 0f;
+            foreach (TextMenu.Item itemFromList in self.GetItems()) {
+                if (itemFromList.Visible) // this is itemToGetOffsetFor in vanilla, which is plain broken
+                    offset += itemFromList.Height() + self.ItemSpacing;
+                if (itemFromList == itemToGetOffsetFor)
+                    break;
+            }
+
+            return offset - itemToGetOffsetFor.Height() * 0.5f - self.ItemSpacing;
+        }
+
         // ================ Stamp on Chapter Complete screen ================
 
         /// <summary>
