@@ -55,6 +55,8 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
+
+        private List<TextMenu.Item> allOptions;
         
         /// <summary>
         /// List of options shown for multipliers.
@@ -296,23 +298,45 @@ namespace ExtendedVariants.UI {
                 });
             }
 
+            TextMenu.SubHeader verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
+            TextMenu.SubHeader jumpingTitle = buildHeading(menu, "JUMPING");
+            TextMenu.SubHeader dashingTitle = buildHeading(menu, "DASHING");
+            TextMenu.SubHeader movingTitle = buildHeading(menu, "MOVING");
+            TextMenu.SubHeader chasersTitle = buildHeading(menu, "CHASERS");
+            TextMenu.SubHeader everywhereTitle = buildHeading(menu, "EVERYWHERE");
+            TextMenu.SubHeader globalTitle = buildHeading(menu, "GLOBAL");
+            TextMenu.SubHeader otherTitle = buildHeading(menu, "OTHER");
+            TextMenu.SubHeader trollTitle = buildHeading(menu, "TROLL");
+            TextMenu.SubHeader randomizerTitle = buildHeading(menu, "RANDOMIZER");
+
+            allOptions = new List<TextMenu.Item>() {
+                // all sub-headers
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle,
+                // all options excluding the master switch
+                gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
+                heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
+                wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
+                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, disableOshiroSlowdownOption,
+                windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption,
+                allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions };
+
             refreshOptionMenuEnabledStatus();
 
             menu.Add(masterSwitchOption);
             menu.Add(resetToDefaultOption);
 
-            addHeading(menu, "VERTICALSPEED");
+            menu.Add(verticalSpeedTitle);
             menu.Add(gravityOption);
             menu.Add(fallSpeedOption);
 
-            addHeading(menu, "JUMPING");
+            menu.Add(jumpingTitle);
             menu.Add(jumpHeightOption);
             menu.Add(wallBouncingSpeedOption);
             menu.Add(disableWallJumpingOption);
             menu.Add(jumpCountOption);
             menu.Add(refillJumpsOnDashRefillOption);
 
-            addHeading(menu, "DASHING");
+            menu.Add(dashingTitle);
             menu.Add(dashSpeedOption);
             menu.Add(dashLengthOption);
             menu.Add(hyperdashSpeedOption);
@@ -320,18 +344,18 @@ namespace ExtendedVariants.UI {
             menu.Add(heldDashOption);
             menu.Add(dontRefillDashOnGroundOption);
 
-            addHeading(menu, "MOVING");
+            menu.Add(movingTitle);
             menu.Add(speedXOption);
             menu.Add(frictionOption);
             menu.Add(airFrictionOption);
 
-            addHeading(menu, "CHASERS");
+            menu.Add(chasersTitle);
             menu.Add(badelineChasersEverywhereOption);
             menu.Add(chaserCountOption);
             menu.Add(affectExistingChasersOption);
             menu.Add(badelineLagOption);
 
-            addHeading(menu, "EVERYWHERE");
+            menu.Add(everywhereTitle);
             menu.Add(oshiroEverywhereOption);
             menu.Add(disableOshiroSlowdownOption);
             menu.Add(windEverywhereOption);
@@ -341,30 +365,30 @@ namespace ExtendedVariants.UI {
             menu.Add(disableSeekerSlowdownOption);
             menu.Add(theoCrystalsEverywhereOption);
 
-            addHeading(menu, "GLOBAL");
+            menu.Add(globalTitle);
             menu.Add(gameSpeedOption);
             menu.Add(upsideDownOption);
             menu.Add(roomLightingOption);
             menu.Add(roomBloomOption);
 
-            addHeading(menu, "OTHER");
+            menu.Add(otherTitle);
             menu.Add(staminaOption);
             menu.Add(disableNeutralJumpingOption);
             menu.Add(regularHiccupsOption);
             menu.Add(hiccupStrengthOption);
             menu.Add(allStrawberriesAreGoldensOption);
 
-            addHeading(menu, "TROLL");
+            menu.Add(trollTitle);
             menu.Add(forceDuckOnGroundOption);
             menu.Add(invertDashesOption);
 
-            addHeading(menu, "RANDOMIZER");
+            menu.Add(randomizerTitle);
             menu.Add(changeVariantsRandomlyOption);
             menu.Add(randomizerOptions);
         }
 
-        private void addHeading(TextMenu menu, String headingNameResource) {
-            menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING") + " - " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING_" + headingNameResource)));
+        private TextMenu.SubHeader buildHeading(TextMenu menu, string headingNameResource) {
+            return new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING") + " - " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING_" + headingNameResource));
         }
 
         private void refreshOptionMenuValues() {
@@ -411,48 +435,14 @@ namespace ExtendedVariants.UI {
         }
 
         private void refreshOptionMenuEnabledStatus() {
-            gravityOption.Disabled = !Settings.MasterSwitch;
-            fallSpeedOption.Disabled = !Settings.MasterSwitch;
-            jumpHeightOption.Disabled = !Settings.MasterSwitch;
-            speedXOption.Disabled = !Settings.MasterSwitch;
-            staminaOption.Disabled = !Settings.MasterSwitch;
-            dashCountOption.Disabled = !Settings.MasterSwitch;
-            dashSpeedOption.Disabled = !Settings.MasterSwitch;
-            frictionOption.Disabled = !Settings.MasterSwitch;
-            airFrictionOption.Disabled = !Settings.MasterSwitch;
-            disableWallJumpingOption.Disabled = !Settings.MasterSwitch;
-            jumpCountOption.Disabled = !Settings.MasterSwitch;
-            refillJumpsOnDashRefillOption.Disabled = !Settings.MasterSwitch || Settings.JumpCount < 2;
-            resetToDefaultOption.Disabled = !Settings.MasterSwitch;
-            upsideDownOption.Disabled = !Settings.MasterSwitch;
-            hyperdashSpeedOption.Disabled = !Settings.MasterSwitch;
-            wallBouncingSpeedOption.Disabled = !Settings.MasterSwitch;
-            dashLengthOption.Disabled = !Settings.MasterSwitch;
-            forceDuckOnGroundOption.Disabled = !Settings.MasterSwitch;
-            invertDashesOption.Disabled = !Settings.MasterSwitch;
-            heldDashOption.Disabled = !Settings.MasterSwitch;
-            disableNeutralJumpingOption.Disabled = !Settings.MasterSwitch;
-            badelineChasersEverywhereOption.Disabled = !Settings.MasterSwitch;
-            chaserCountOption.Disabled = !Settings.MasterSwitch;
-            affectExistingChasersOption.Disabled = !Settings.MasterSwitch;
-            changeVariantsRandomlyOption.Disabled = !Settings.MasterSwitch;
-            regularHiccupsOption.Disabled = !Settings.MasterSwitch;
-            hiccupStrengthOption.Disabled = !Settings.MasterSwitch;
-            roomLightingOption.Disabled = !Settings.MasterSwitch;
-            roomBloomOption.Disabled = !Settings.MasterSwitch;
-            oshiroEverywhereOption.Disabled = !Settings.MasterSwitch;
-            disableOshiroSlowdownOption.Disabled = !Settings.MasterSwitch;
-            windEverywhereOption.Disabled = !Settings.MasterSwitch;
-            snowballsEverywhereOption.Disabled = !Settings.MasterSwitch;
-            snowballDelayOption.Disabled = !Settings.MasterSwitch;
-            addSeekersOption.Disabled = !Settings.MasterSwitch;
-            disableSeekerSlowdownOption.Disabled = !Settings.MasterSwitch;
-            theoCrystalsEverywhereOption.Disabled = !Settings.MasterSwitch;
-            badelineLagOption.Disabled = !Settings.MasterSwitch;
-            allStrawberriesAreGoldensOption.Disabled = !Settings.MasterSwitch;
-            dontRefillDashOnGroundOption.Disabled = !Settings.MasterSwitch;
-            randomizerOptions.Disabled = !Settings.MasterSwitch || !Settings.ChangeVariantsRandomly;
-            gameSpeedOption.Disabled = !Settings.MasterSwitch;
+            // hide everything if the master switch is off, show everything if it is on.
+            foreach (TextMenu.Item item in allOptions) {
+                item.Visible = Settings.MasterSwitch;
+            }
+
+            // special graying-out rules for some variant options
+            refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
+            randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {
