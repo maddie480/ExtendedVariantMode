@@ -1,4 +1,6 @@
-﻿using Celeste.Mod;
+﻿using Celeste;
+using Celeste.Mod;
+using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
@@ -40,6 +42,31 @@ namespace ExtendedVariants.Variants {
                 cursor.EmitDelegate<Func<float>>(determineGravityFactor);
                 cursor.Emit(OpCodes.Mul);
             }
+
+            cursor.Index = 0;
+
+            // let's jump to if (this.Speed.Y < 0f) => "is the player going up? if not, they can't grab!"
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Grab")) &&
+                cursor.TryGotoNext(MoveType.After,
+                instr => instr.MatchLdarg(0), // this
+                instr => instr.MatchLdflda<Player>("Speed"),
+                instr => instr.MatchLdfld<Vector2>("Y"),
+                instr => instr.MatchLdcR4(0f),
+                instr => instr.OpCode == OpCodes.Blt_Un || instr.OpCode == OpCodes.Blt_Un_S)) {
+
+                Instruction afterCheck = cursor.Next;
+
+                // step back before the "Speed.Y < 0f" check (more specifically, inside it. it would be skipped otherwise)
+                cursor.Index -= 4;
+
+                Logger.Log("ExtendedVariantsModule", $"Injecting code to be able to grab when going up on 0-gravity at {cursor.Index} in IL code for Player.NormalUpdate");
+
+                // pop this, inject ourselves to jump over the "Speed.Y < 0f" check, and put this back
+                cursor.Emit(OpCodes.Pop);
+                cursor.EmitDelegate<Func<bool>>(canGrabEvenWhenGoingUp);
+                cursor.Emit(OpCodes.Brtrue, afterCheck);
+                cursor.Emit(OpCodes.Ldarg_0);
+            }
         }
 
         /// <summary>
@@ -48,6 +75,10 @@ namespace ExtendedVariants.Variants {
         /// <returns>The gravity factor (1 = default gravity)</returns>
         private float determineGravityFactor() {
             return Settings.Gravity / 10f;
+        }
+
+        private bool canGrabEvenWhenGoingUp() {
+            return Settings.Gravity == 0;
         }
 
         // NOTE: Gravity also comes in play in the UpdateSprite patch of FallSpeed.
