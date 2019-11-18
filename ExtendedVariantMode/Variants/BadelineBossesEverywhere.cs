@@ -30,6 +30,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
             IL.Celeste.FinalBoss.ctor_Vector2_Vector2Array_int_float_bool_bool_bool += modBadelineBossConstructor;
+            On.Celeste.Player.WindMove += modPlayerWindMove;
         }
 
         public override void Unload() {
@@ -37,6 +38,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             IL.Celeste.FinalBoss.ctor_Vector2_Vector2Array_int_float_bool_bool_bool -= modBadelineBossConstructor;
+            On.Celeste.Player.WindMove -= modPlayerWindMove;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -149,6 +151,15 @@ namespace ExtendedVariants.Variants {
                 return Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
             }
             return vanillaPattern;
+        }
+
+        private void modPlayerWindMove(On.Celeste.Player.orig_WindMove orig, Player self, Vector2 move) {
+            // the Attract state doesn't cope well with wind **at all**.
+            // that creates a softlock when the player gets pushed away from the attract target indefinitely.
+            // so, just don't apply wind when in the Attract state.
+            if (self.StateMachine.State != 22) {
+                orig(self, move);
+            }
         }
     }
 }
