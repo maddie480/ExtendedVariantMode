@@ -7,6 +7,9 @@ using Celeste.Mod;
 using ExtendedVariants.UI;
 using Celeste;
 using ExtendedVariants.Variants;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using System.Xml;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -106,6 +109,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelEnter.Go += checkForceEnableVariants;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
             On.Celeste.TextMenu.GetYOffsetOf += fixYOffsetOfMenuOptions;
+            IL.Celeste.Fonts.Prepare += registerExtendedKoreanFont;
+            On.Monocle.PixelFont.AddFontSize_string_XmlElement_Atlas_bool += loadOrMergeExtendedFont;
 
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
@@ -119,6 +124,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelEnter.Go -= checkForceEnableVariants;
             On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
             On.Celeste.TextMenu.GetYOffsetOf -= fixYOffsetOfMenuOptions;
+            IL.Celeste.Fonts.Prepare -= registerExtendedKoreanFont;
+            On.Monocle.PixelFont.AddFontSize_string_XmlElement_Atlas_bool -= loadOrMergeExtendedFont;
 
             if (stuffIsHooked) {
                 UnhookStuff();
@@ -293,6 +300,59 @@ namespace ExtendedVariants.Module {
             }
 
             return offset - itemToGetOffsetFor.Height() * 0.5f - self.ItemSpacing;
+        }
+
+        // ================ Font support for missing Korean characters ================
+
+        private void registerExtendedKoreanFont(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // go to the end of the method
+            if (cursor.TryGotoNext(instr => instr.MatchRet())) {
+                Logger.Log("ExtendedVariantsModule", $"Injecting font loading code at {cursor.Index} in IL code for Fonts.Prepare");
+
+                // we just want to inject ourselves into the "paths" variable, listing all available fonts.
+                cursor.Emit(OpCodes.Ldsfld, typeof(Fonts).GetField("paths", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
+                cursor.EmitDelegate<Action<Dictionary<string, List<string>>>>(injectExtendedFont);
+            }
+        }
+
+        private void injectExtendedFont(Dictionary<string, List<string>> paths) {
+            string fontName = "Noto Sans CJK KR Medium";
+
+            // add the font if not loaded yet (it should be though)
+            if (!paths.TryGetValue(fontName, out List<string> pathList)) {
+                paths.Add(fontName, pathList = new List<string>());
+            }
+
+            // add our extended language xml afterwards, so the game will pick it up when loading the Korean font.
+            // Everest manages the "loading from zip / mod directory" part already.
+            pathList.Add("Dialog/Fonts/max480_extendedvariants_extendedkorean.xml");
+        }
+
+        private PixelFontSize loadOrMergeExtendedFont(On.Monocle.PixelFont.orig_AddFontSize_string_XmlElement_Atlas_bool orig, PixelFont self, 
+            string path, XmlElement data, Atlas atlas, bool outline) {
+
+            PixelFontSize loadedFontSize = orig(self, path, data, atlas, outline);
+
+            if(path == "Dialog/Fonts/max480_extendedvariants_extendedkorean.xml") {
+                // we just loaded our extended font, we shall merge it with the original font.
+                // (a size of 63 has been set in purpose so that Celeste will load it as a different size.)
+                foreach (PixelFontSize originalFontSize in self.Sizes) {
+                    if (originalFontSize.Size == 64) {
+                        Logger.Log("ExtendedVariantsModule", $"Adding {loadedFontSize.Characters.Count} extra characters into the Korean font.");
+
+                        foreach (int character in loadedFontSize.Characters.Keys) originalFontSize.Characters[character] = loadedFontSize.Characters[character];
+                        originalFontSize.Textures.AddRange(loadedFontSize.Textures);
+
+                        self.Sizes.Remove(loadedFontSize);
+
+                        return originalFontSize;
+                    }
+                }
+            }
+
+            return loadedFontSize;
         }
 
         // ================ Stamp on Chapter Complete screen ================

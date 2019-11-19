@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"?>
+<font>
+  <info face="Noto Sans CJK KR Medium" size="63" bold="0" italic="0" charset="" unicode="1" stretchH="100" smooth="1" aa="4" padding="0,0,0,0" spacing="1,1" outline="0"/>
+  <common lineHeight="64" base="51" scaleW="2048" scaleH="1024" pages="1" packed="0" alphaChnl="0" redChnl="4" greenChnl="4" blueChnl="4"/>
+  <pages>
+    <page id="0" file="max480_extendedvariants_extendedkorean.png" />
+  </pages>
+  <!-- the 9 missing characters are: 커 밝 켤 굼 덩 턴 혐 빔 샷 -->
+  <chars count="3">
+    <char id="52964" x="0" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" /> 
+    <char id="48157" x="41" y="0" width="36" height="40" xoffset="1" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="53028" x="79" y="0" width="35" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="44412" x="115" y="0" width="37" height="40" xoffset="1" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="45929" x="156" y="0" width="33" height="40" xoffset="3" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="53556" x="195" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="54800" x="233" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="48724" x="268" y="0" width="32" height="40" xoffset="3" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="49399" x="305" y="0" width="38" height="40" xoffset="0" yoffset="14" xadvance="39" page="0" chnl="15" />
+  </chars>
+</font>
