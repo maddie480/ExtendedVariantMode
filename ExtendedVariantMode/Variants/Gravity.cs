@@ -2,11 +2,15 @@
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
     public class Gravity : AbstractExtendedVariant {
+
+        private float climbJumpGrabCooldown = -1f;
+
         public override int GetDefaultValue() {
             return 10;
         }
@@ -21,10 +25,21 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             IL.Celeste.Player.NormalUpdate += modNormalUpdate;
+
+            On.Celeste.Player.Update += modUpdate;
+            On.Celeste.Player.ClimbJump += modClimbJump;
+            Everest.Events.Level.OnExit += onLevelExit;
         }
 
         public override void Unload() {
             IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
+
+            On.Celeste.Player.Update -= modUpdate;
+            On.Celeste.Player.ClimbJump -= modClimbJump;
+            Everest.Events.Level.OnExit -= onLevelExit;
+
+            // reset the cooldown as the OnExit hook would.
+            climbJumpGrabCooldown = -1f;
         }
 
         /// <summary>
@@ -77,8 +92,28 @@ namespace ExtendedVariants.Variants {
             return Settings.Gravity / 10f;
         }
 
+        private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
+            orig(self);
+
+            // trigger the cooldown
+            climbJumpGrabCooldown = 0.25f;
+        }
+
+        private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+            orig(self);
+
+            // deplete the cooldown
+            if(climbJumpGrabCooldown >= 0f)
+                climbJumpGrabCooldown -= Engine.DeltaTime;
+        }
+
+        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            // reset the cooldown
+            climbJumpGrabCooldown = -1f;
+        }
+
         private bool canGrabEvenWhenGoingUp() {
-            return Settings.Gravity == 0;
+            return Settings.Gravity == 0 && climbJumpGrabCooldown <= 0f;
         }
 
         // NOTE: Gravity also comes in play in the UpdateSprite patch of FallSpeed.
