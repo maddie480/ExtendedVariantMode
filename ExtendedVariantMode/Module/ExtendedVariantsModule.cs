@@ -249,7 +249,14 @@ namespace ExtendedVariants.Module {
         private void checkForTriggerUnhooking(On.Celeste.LevelExit.orig_ctor orig, LevelExit self, LevelExit.Mode mode, Session session, HiresSnow snow) {
             orig(self, mode, session, snow);
 
-            if (triggerIsHooked) {
+            // SaveAndQuit => leaving
+            // GiveUp => leaving
+            // Restart => restarting
+            // GoldenBerryRestart => restarting
+            // Completed => leaving
+            // CompletedInterlude => leaving
+            // we want to unhook the trigger if and only if we are actually leaving the level.
+            if (triggerIsHooked && mode != LevelExit.Mode.Restart && mode != LevelExit.Mode.GoldenBerryRestart) {
                 // we want to get rid of the trigger now.
                 unhookTrigger();
             }
