@@ -206,6 +206,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int GameSpeed { get; set; } = 10;
 
+        // ======================================
+
+        [SettingIgnore]
+        public int ColorGrading { get; set; } = -1;
+
 
         // ======================================
 

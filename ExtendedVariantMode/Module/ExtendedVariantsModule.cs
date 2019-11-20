@@ -35,7 +35,7 @@ namespace ExtendedVariants.Module {
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, BadelineLag, OshiroEverywhere,
             DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina,
             UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater, ForceDuckOnGround,
-            InvertDashes, AllStrawberriesAreGoldens, GameSpeed
+            InvertDashes, AllStrawberriesAreGoldens, GameSpeed, ColorGrading
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -93,6 +93,14 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
             VariantHandlers[Variant.GameSpeed] = new GameSpeed();
+            VariantHandlers[Variant.ColorGrading] = new ColorGrading();
+        }
+
+        public override void Initialize() {
+            base.Initialize();
+
+            // call the Initialize method for variants that require it.
+            (VariantHandlers[Variant.ColorGrading] as ColorGrading).Initialize();
         }
 
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {

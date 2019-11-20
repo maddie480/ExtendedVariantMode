@@ -57,6 +57,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
         private TextMenu.Option<bool> dontRefillDashOnGroundOption;
         private TextMenu.Option<int> gameSpeedOption;
+        private TextMenu.Option<int> colorGradingOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -285,6 +286,19 @@ namespace ExtendedVariants.UI {
             gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
                 multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
 
+            colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
+                i => {
+                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+
+                    // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
+                    // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
+                    string resourceName = ColorGrading.ExistingColorGrades[i];
+                    if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
+                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+
+                }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
+                .Change(i => Settings.ColorGrading = i);
+
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
                 Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
@@ -366,7 +380,7 @@ namespace ExtendedVariants.UI {
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
-                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, resetToDefaultOption, randomizerOptions,
+                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
                 badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption };
 
             refreshOptionMenuEnabledStatus();
@@ -425,6 +439,7 @@ namespace ExtendedVariants.UI {
             menu.Add(roomLightingOption);
             menu.Add(roomBloomOption);
             menu.Add(everythingIsUnderwaterOption);
+            menu.Add(colorGradingOption);
 
             menu.Add(otherTitle);
             menu.Add(staminaOption);
@@ -491,6 +506,7 @@ namespace ExtendedVariants.UI {
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
             setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
+            setValue(colorGradingOption, -1, Settings.ColorGrading);
         }
 
         private void refreshOptionMenuEnabledStatus() {

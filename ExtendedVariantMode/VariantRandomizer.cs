@@ -336,6 +336,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.RoomBloom) ExtendedVariantsModule.Settings.RoomBloom = randomGenerator.Next(11); // random 0~100%
             else if (variant == ExtendedVariantsModule.Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
             else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
+            else if (variant == ExtendedVariantsModule.Variant.ColorGrading) ExtendedVariantsModule.Settings.ColorGrading = randomGenerator.Next(ColorGrading.ExistingColorGrades.Count); // random color grade
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {
@@ -407,6 +408,13 @@ namespace ExtendedVariants {
                         else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
                         else if (variant == ExtendedVariantsModule.Variant.RoomLighting) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
                         else if (variant == ExtendedVariantsModule.Variant.RoomBloom) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
+                        else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
+                            string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
+                            if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
+                            string formattedValue =  Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+
+                            fileWriter.WriteLine($"{variantName}: {formattedValue}");
+                        }
                         // multiplier-style variants
                         else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
                             fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");

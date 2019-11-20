@@ -104,6 +104,7 @@
     <Compile Include="Variants\BadelineBossesEverywhere.cs" />
     <Compile Include="Variants\BadelineChasersEverywhere.cs" />
     <Compile Include="Variants\AddSeekers.cs" />
+    <Compile Include="Variants\ColorGrading.cs" />
     <Compile Include="Variants\DashCount.cs" />
     <Compile Include="Variants\DashLength.cs" />
     <Compile Include="Variants\DashSpeed.cs" />
@@ -176,6 +177,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Dialog\Spanish.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\greyscale.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\inverted.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\rgbshift1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\rgbshift2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\sepia.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README-Mappers.txt">
