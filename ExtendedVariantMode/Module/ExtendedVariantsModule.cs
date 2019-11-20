@@ -96,13 +96,6 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
         }
 
-        public override void Initialize() {
-            base.Initialize();
-
-            // call the Initialize method for variants that require it.
-            (VariantHandlers[Variant.ColorGrading] as ColorGrading).Initialize();
-        }
-
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 

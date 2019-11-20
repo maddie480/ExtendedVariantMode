@@ -9,6 +9,7 @@ namespace ExtendedVariants.Variants {
 
         public static List<string> ExistingColorGrades = new List<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
+            "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
             "max480/extendedvariants/greyscale", "max480/extendedvariants/sepia", "max480/extendedvariants/inverted",
             "max480/extendedvariants/rgbshift1", "max480/extendedvariants/rgbshift2"
         };
@@ -39,22 +40,6 @@ namespace ExtendedVariants.Variants {
         }
 
         private void doNothing(ILContext il) {}
-
-        public void Initialize() {
-            // called if Celsius (a map by 0x0ade featuring a Tetris-style color-grade) is installed.
-            // if so, we should find this color grade.
-            if (GFX.ColorGrades.Has("celsius/tetris")) {
-                // insert it right after the vanilla ones.
-                Logger.Log("ExtendedVariantMode/ColorGrading", "Celsius was detected, registering Tetris color grade");
-                ExistingColorGrades.Insert(10, "celsius/tetris");
-            }
-
-            // check if the setting value is in bounds (this can get out of bounds if Celsius is uninstalled and the Celsius color grade is selected).
-            if(Settings.ColorGrading >= ExistingColorGrades.Count) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ColorGrading", $"ColorGrading setting was out of bounds, disabled it.");
-                Settings.ColorGrading = -1;
-            }
-        }
 
         private void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
