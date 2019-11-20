@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
 
                 // we jump before the next ldflda, which is between the "if (this.level.InSpace)" and the next one
                 if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldflda)) {
-                    Logger.Log("ExtendedVariantsModule", $"Applying X speed modding to variable {variable.ToString()} at {cursor.Index} in CIL code for NormalUpdate");
+                    Logger.Log("ExtendedVariantMode/SpeedX", $"Applying X speed modding to variable {variable.ToString()} at {cursor.Index} in CIL code for NormalUpdate");
 
                     // pop ldarg.0
                     cursor.Emit(OpCodes.Pop);
@@ -76,7 +76,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to multiply 260f (speed given by a superdash) with the X speed factor
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(260f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
+                Logger.Log("ExtendedVariantMode/SpeedX", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperJump");
                 cursor.EmitDelegate<Func<float>>(determineSpeedXFactor);
                 cursor.Emit(OpCodes.Mul);
             }
@@ -91,7 +91,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to multiply 170f (X speed given by a superdash) with the X speed factor
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(170f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperWallJump");
+                Logger.Log("ExtendedVariantMode/SpeedX", $"Applying X speed to constant at {cursor.Index} in CIL code for SuperWallJump");
                 cursor.EmitDelegate<Func<float>>(determineSpeedXFactor);
                 cursor.Emit(OpCodes.Mul);
             }
@@ -106,7 +106,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to multiply 130f (X speed given by a walljump) with the X speed factor
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(130f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying X speed to constant at {cursor.Index} in CIL code for WallJump");
+                Logger.Log("ExtendedVariantMode/SpeedX", $"Applying X speed to constant at {cursor.Index} in CIL code for WallJump");
                 cursor.EmitDelegate<Func<float>>(determineSpeedXFactor);
                 cursor.Emit(OpCodes.Mul);
             }

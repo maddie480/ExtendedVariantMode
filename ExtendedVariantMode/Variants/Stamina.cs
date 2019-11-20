@@ -48,7 +48,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
             // now, patch everything stamina-related (every instance of 110)
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(110f))) {
-                Logger.Log("ExtendedVariantsModule", $"Patching stamina at index {cursor.Index} in CIL code");
+                Logger.Log("ExtendedVariantMode/Stamina", $"Patching stamina at index {cursor.Index} in CIL code");
 
                 // pop the 110 and call our method instead
                 cursor.Emit(OpCodes.Pop);

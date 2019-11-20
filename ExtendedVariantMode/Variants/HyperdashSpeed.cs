@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to multiply 260f (speed given by a superdash) with the hyperdash speed factor
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(260f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying hyperdash speed to constant at {cursor.Index} in CIL code for SuperJump");
+                Logger.Log("ExtendedVariantMode/HyperdashSpeed", $"Applying hyperdash speed to constant at {cursor.Index} in CIL code for SuperJump");
                 cursor.EmitDelegate<Func<float>>(determineHyperdashSpeedFactor);
                 cursor.Emit(OpCodes.Mul);
             }

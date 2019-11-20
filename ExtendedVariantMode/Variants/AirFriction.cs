@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
 
             // jump to "float num = this.onGround ? 1f : 0.65f;"
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.65f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying friction to constant at {cursor.Index} (friction factor in air) in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/AirFriction", $"Applying friction to constant at {cursor.Index} (friction factor in air) in CIL code for NormalUpdate");
 
                 // 0.65f is the acceleration when in air. Apply the friction factor to it.
                 cursor.EmitDelegate<Func<float>>(determineFrictionFactor);

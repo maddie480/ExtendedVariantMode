@@ -43,7 +43,7 @@ namespace ExtendedVariants.Variants {
 
             // jump where 0.3 is loaded (0.3 is the dash timer)
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 0.3f)) {
-                Logger.Log("ExtendedVariantsModule", $"Applying dash length to constant at {cursor.Index} in CIL code for DashBegin");
+                Logger.Log("ExtendedVariantMode/DashLength", $"Applying dash length to constant at {cursor.Index} in CIL code for DashBegin");
 
                 cursor.EmitDelegate<Func<float>>(determineDashLengthFactor);
                 cursor.Emit(OpCodes.Mul);
@@ -86,7 +86,7 @@ namespace ExtendedVariants.Variants {
         private void modDashUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            Logger.Log("ExtendedVariantsModule", $"Patching dashTrailCounter to fix animation with long dashes at {cursor.Index} in CIL code for DashUpdate");
+            Logger.Log("ExtendedVariantMode/DashLength", $"Patching dashTrailCounter to fix animation with long dashes at {cursor.Index} in CIL code for DashUpdate");
 
             // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
             // so that we add more trails if the dash is made longer than usual

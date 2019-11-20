@@ -120,7 +120,7 @@ namespace ExtendedVariants.Variants {
 
             // go right after the equality check that compares the level set name with "Celeste"
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<string>("op_Equality"))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from FinalBoss");
+                Logger.Log("ExtendedVariantMode/BadelineBossesEverywhere", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from FinalBoss");
 
                 // mod the result of that check to always use modded value, even in vanilla levels, on A-sides
                 cursor.EmitDelegate<Func<bool, bool>>(modVanillaBehaviorCheckForMusic);
@@ -140,7 +140,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             if(cursor.TryGotoNext(instr => instr.MatchStfld<FinalBoss>("patternIndex"))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding Badeline Boss patterns at {cursor.Index} in IL code for the FinalBoss constructor");
+                Logger.Log("ExtendedVariantMode/BadelineBossesEverywhere", $"Modding Badeline Boss patterns at {cursor.Index} in IL code for the FinalBoss constructor");
 
                 cursor.EmitDelegate<Func<int, int>>(modAttackPattern);
             }

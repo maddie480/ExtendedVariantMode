@@ -58,7 +58,7 @@ namespace ExtendedVariants.Variants {
             if(player != null && Settings.AddSeekers != 0) {
                 // first of all, ensure that the size is within the limits of the pathfinder
                 if (level.Bounds.Width / 8 > 768 || level.Bounds.Height / 8 > 578) {
-                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode", $"Not spawning seekers since room exceeds max size of 659x407 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
+                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AddSeekers", $"Not spawning seekers since room exceeds max size of 659x407 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
                     return;
                 }
 
@@ -112,7 +112,7 @@ namespace ExtendedVariants.Variants {
                 instr => instr.MatchLdcI4(200),
                 instr => instr.MatchLdcI4(200))) {
 
-                Logger.Log("ExtendedVariantsModule", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
+                Logger.Log("ExtendedVariantMode/AddSeekers", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
 
                 // we will resize the pathfinder (provided that the seekers everywhere variant is enabled) to fit all rooms in vanilla Celeste
                 cursor.Emit(OpCodes.Pop);
@@ -147,7 +147,7 @@ namespace ExtendedVariants.Variants {
 
             // let's jump to Engine.TimeRate = Calc.Approach(Engine.TimeRate, target, 4f * Engine.DeltaTime);
             if (cursor.TryGotoNext(instr => instr.MatchLdcR4(4f))) {
-                Logger.Log("ExtendedVariantsModule", $"Adding condition for time control at {cursor.Index} in CIL code for SeekerEffectsController.Update");
+                Logger.Log("ExtendedVariantMode/AddSeekers", $"Adding condition for time control at {cursor.Index} in CIL code for SeekerEffectsController.Update");
 
                 // by placing ourselves just in front of the 4f, we can turn this into 
                 // Engine.TimeRate = Calc.Approach(Engine.TimeRate, transformTimeRate(target), 4f * Engine.DeltaTime);

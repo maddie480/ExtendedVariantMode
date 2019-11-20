@@ -70,7 +70,7 @@ namespace ExtendedVariants.Variants {
             // jump to the first Golden flag usage: this is the one which decides how the berry gets collected
             if(cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
                 // replace it with our own call: this will give regular berries the same collect behavior as golden ones
-                Logger.Log("ExtendedVariantMode", $"Patching strawberry collecting behavior at {cursor.Index} in IL code for Strawberry.Update");
+                Logger.Log("ExtendedVariantMode/AllStrawberriesAreGoldens", $"Patching strawberry collecting behavior at {cursor.Index} in IL code for Strawberry.Update");
 
                 cursor.Remove();
                 cursor.EmitDelegate<Func<Strawberry, bool>>(strawberryHasGoldenCollectBehavior);

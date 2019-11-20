@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
 
             // find out where the constant 900 (downward acceleration) is loaded into the stack
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(900f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/Gravity", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                 // add two instructions to multiply those constants with the "gravity factor"
                 cursor.EmitDelegate<Func<float>>(determineGravityFactor);
@@ -74,7 +74,7 @@ namespace ExtendedVariants.Variants {
                 // step back before the "Speed.Y < 0f" check (more specifically, inside it. it would be skipped otherwise)
                 cursor.Index -= 4;
 
-                Logger.Log("ExtendedVariantsModule", $"Injecting code to be able to grab when going up on 0-gravity at {cursor.Index} in IL code for Player.NormalUpdate");
+                Logger.Log("ExtendedVariantMode/Gravity", $"Injecting code to be able to grab when going up on 0-gravity at {cursor.Index} in IL code for Player.NormalUpdate");
 
                 // pop this, inject ourselves to jump over the "Speed.Y < 0f" check, and put this back
                 cursor.Emit(OpCodes.Pop);

@@ -71,7 +71,7 @@ namespace ExtendedVariants.Variants {
 
             // go everywhere where the 0.8 second delay is defined
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.8f))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding delay between snowballs at {cursor.Index} in CIL code for Update in Snowball");
+                Logger.Log("ExtendedVariantMode/SnowballsEverywhere", $"Modding delay between snowballs at {cursor.Index} in CIL code for Update in Snowball");
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);

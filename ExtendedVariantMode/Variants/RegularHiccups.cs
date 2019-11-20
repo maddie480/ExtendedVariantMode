@@ -56,7 +56,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-60f))) {
-                Logger.Log("ExtendedVariantMode", $"Modding hiccup size at {cursor.Index} in CIL code for HiccupJump");
+                Logger.Log("ExtendedVariantMode/RegularHiccups", $"Modding hiccup size at {cursor.Index} in CIL code for HiccupJump");
 
                 cursor.EmitDelegate<Func<float>>(determineHiccupStrengthFactor);
                 cursor.Emit(OpCodes.Mul);

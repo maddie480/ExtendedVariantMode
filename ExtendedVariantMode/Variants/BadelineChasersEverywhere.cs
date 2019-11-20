@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
 
             // go everywhere where the 1.55 second delay is defined
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(1.55f))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding Badeline lag at {cursor.Index} in CIL code for BadelineOldsite constructor");
+                Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding Badeline lag at {cursor.Index} in CIL code for BadelineOldsite constructor");
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);
@@ -115,7 +115,7 @@ namespace ExtendedVariants.Variants {
 
             // go right after the equality check that compares the level set name with "Celeste"
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
+                Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
 
                 // mod the result of that check to prevent the chasers we will spawn from... committing suicide
                 cursor.Emit(OpCodes.Ldarg_1);
@@ -132,7 +132,7 @@ namespace ExtendedVariants.Variants {
 
             // go right after the equality check that compares the level set name with "Celeste"
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
+                Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
 
                 // mod the result of that check to always use modded value, even in vanilla levels
                 cursor.EmitDelegate<Func<bool, bool>>(modVanillaBehaviorCheckForMusic);
@@ -227,7 +227,7 @@ namespace ExtendedVariants.Variants {
 
             // go where the "4" is
             while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdcR4(4f))) {
-                Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
+                Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
 
                 // and replace it with a "5.5" in order to support up to 10 chasers
                 cursor.Next.Operand = 5.5f;

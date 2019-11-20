@@ -40,7 +40,7 @@ namespace ExtendedVariants.Variants {
             // enter the if in the method (the "if" checks if dash events were already called) and inject ourselves in there
             // (those are actually brtrue in the XNA version and brfalse in the FNA version. Seriously?)
             if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse))) {
-                Logger.Log("ExtendedVariantsModule", $"Adding code to apply Invert Dashes at index {cursor.Index} in CIL code for CallDashEvents");
+                Logger.Log("ExtendedVariantMode/InvertDashes", $"Adding code to apply Invert Dashes at index {cursor.Index} in CIL code for CallDashEvents");
 
                 // just add a call to ModifyDashSpeed (arg 0 = this)
                 cursor.Emit(OpCodes.Ldarg_0);

@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to multiply -160f (height given by a superdash) with the jump height factor
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-160f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying wallbouncing speed to constant at {cursor.Index} in CIL code for SuperWallJump");
+                Logger.Log("ExtendedVariantMode/WallbouncingSpeed", $"Applying wallbouncing speed to constant at {cursor.Index} in CIL code for SuperWallJump");
                 cursor.EmitDelegate<Func<float>>(determineWallBouncingSpeedFactor);
                 cursor.Emit(OpCodes.Mul);
             }

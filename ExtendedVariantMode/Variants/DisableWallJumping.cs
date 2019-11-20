@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
 
             Instruction firstInstruction = cursor.Next;
 
-            Logger.Log("ExtendedVariantsModule", $"Injecting code to break method if wall jumping is disabled at {cursor.Index} in IL code for WallJump");
+            Logger.Log("ExtendedVariantMode/DisableWallJumping", $"Injecting code to break method if wall jumping is disabled at {cursor.Index} in IL code for WallJump");
 
             cursor.EmitDelegate<Func<bool>>(isWallJumpingDisabled);
             cursor.Emit(OpCodes.Brfalse, firstInstruction);

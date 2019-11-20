@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
 
             // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
-                Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
+                Logger.Log("ExtendedVariantMode/FallSpeed", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
 
                 // add two instructions to multiply those constants with the "fall speed factor"
                 cursor.EmitDelegate<Func<float>>(determineFallSpeedFactor);
@@ -60,7 +60,7 @@ namespace ExtendedVariants.Variants {
 
             // find out where those constants are loaded into the stack
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && ((float)instr.Operand == 160f || (float)instr.Operand == 240f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/FallSpeed", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                 // add two instructions to multiply those constants with the "fall speed factor"
                 cursor.EmitDelegate<Func<float>>(determineFallSpeedFactor);
@@ -73,7 +73,7 @@ namespace ExtendedVariants.Variants {
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f))
                 && cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "MoveY"))
                 && cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Brfalse)) {
-                Logger.Log("ExtendedVariantsModule", $"Injecting code to fix animation with 0 fall speed at {cursor.Index} in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/FallSpeed", $"Injecting code to fix animation with 0 fall speed at {cursor.Index} in CIL code for NormalUpdate");
 
                 // save the target of this branch
                 object label = cursor.Prev.Operand;
@@ -96,7 +96,7 @@ namespace ExtendedVariants.Variants {
             // the goal is to multiply 160 (max falling speed) with the fall speed factor to fix the falling animation
             // let's search for all 160 occurrences in the IL code
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(160f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying fall speed and gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
+                Logger.Log("ExtendedVariantMode/FallSpeed", $"Applying fall speed and gravity to constant at {cursor.Index} in CIL code for UpdateSprite to fix animation");
 
                 // add two instructions to multiply those constants with a mix between fall speed and gravity
                 cursor.EmitDelegate<Func<float>>(mixFallSpeedAndGravity);

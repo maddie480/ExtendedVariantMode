@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
                     cursor.Index += 2;
                 }
 
-                Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/ForceDuckOnGround", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
                 ILLabel target = (ILLabel)cursor.Prev.Operand;
 
@@ -63,7 +63,7 @@ namespace ExtendedVariants.Variants {
                     ILCursor cursorAfterCondition = cursor.Clone();
 
                     if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Bne_Un_S))) {
-                        Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
+                        Logger.Log("ExtendedVariantMode/ForceDuckOnGround", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
                         // so this is basically "if (this.onGround && (Settings.ForceDuckOnGround || Input.MoveY == 1) && this.Speed.Y >= 0f)"
                         // by telling IL "if Settings.ForceDuckOnGround is true, jump over the Input.MoveY check"

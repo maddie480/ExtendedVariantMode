@@ -68,7 +68,7 @@ namespace ExtendedVariants.Variants {
 
             // we want to insert ourselves just before the first stloc.0
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_0)) {
-                Logger.Log("ExtendedVariantsModule", $"Modding dash count given by refills at {cursor.Index} in CIL code for UseRefill");
+                Logger.Log("ExtendedVariantMode/DashCount", $"Modding dash count given by refills at {cursor.Index} in CIL code for UseRefill");
 
                 // call our method just before storing the result from get_MaxDashes in local variable 0
                 cursor.EmitDelegate<Func<int, int>>(determineDashCount);
@@ -87,7 +87,7 @@ namespace ExtendedVariants.Variants {
             // and be more consistent with the behaviour of the "Infinite Dashes" variant.
             // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && (instr.Next.OpCode == OpCodes.Bne_Un_S || instr.Next.OpCode == OpCodes.Ceq))) {
-                Logger.Log("ExtendedVariantsModule", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
+                Logger.Log("ExtendedVariantMode/DashCount", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
 
                 if (cursor.Next.OpCode == OpCodes.Bne_Un_S) {
                     // XNA version: this is a branch

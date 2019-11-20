@@ -76,7 +76,7 @@ namespace ExtendedVariants.Variants {
                 Instruction branchInstruction = cursor.Next;
                 cursor.Index++;
 
-                Logger.Log("ExtendedVariantsModule", $"Adding condition for time control at {cursor.Index} in CIL code for AngryOshiro.Update");
+                Logger.Log("ExtendedVariantMode/OshiroEverywhere", $"Adding condition for time control at {cursor.Index} in CIL code for AngryOshiro.Update");
 
                 // inject !isOshiroSlowdownDisabled
                 cursor.EmitDelegate<Func<bool>>(isOshiroSlowdownDisabled);

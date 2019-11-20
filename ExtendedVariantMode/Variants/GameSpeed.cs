@@ -33,11 +33,11 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Assists>("GameSpeed"))) {
-                Logger.Log("ExtendedVariantMode", $"Injecting own game speed at {cursor.Index} in IL code for Level.Update");
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Injecting own game speed at {cursor.Index} in IL code for Level.Update");
                 cursor.EmitDelegate<Func<int, int>>(modGameSpeed);
 
                 if(cursor.TryGotoNext(instr => instr.MatchStsfld<Level>("AssistSpeedSnapshotValue"))) {
-                    Logger.Log("ExtendedVariantMode", $"Modding speed sound snapshot at {cursor.Index} in IL code for Level.Update");
+                    Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding speed sound snapshot at {cursor.Index} in IL code for Level.Update");
                     cursor.EmitDelegate<Func<int, int>>(modSpeedSoundSnapshot);
                 }
             }
@@ -68,7 +68,7 @@ namespace ExtendedVariants.Variants {
 
                 cursor.Index--;
 
-                Logger.Log("ExtendedVariantMode", $"Modding DeltaTime at {cursor.Index} in IL code for VirtualButton.Update");
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding DeltaTime at {cursor.Index} in IL code for VirtualButton.Update");
 
                 cursor.Remove();
                 cursor.EmitDelegate<Func<float>>(getRepeatTimerDeltaTime);

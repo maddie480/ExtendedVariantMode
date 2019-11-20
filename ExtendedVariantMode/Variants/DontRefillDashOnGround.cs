@@ -57,7 +57,7 @@ namespace ExtendedVariants.Variants {
 
             // jump to if(!Inventory.NoRefills)
             while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("NoRefills"))) {
-                Logger.Log("ExtendedVariantMode", $"Patching no refill condition at {cursor.Index} in IL code for Player.{il.Method.Name}");
+                Logger.Log("ExtendedVariantMode/DontRefillDashOnGround", $"Patching no refill condition at {cursor.Index} in IL code for Player.{il.Method.Name}");
 
                 // turn it into if(!(Inventory.NoRefills || Settings.DontRefillDashOnGround))
                 // => if(!Inventory.NoRefills && !Settings.DontRefillDashOnGround)

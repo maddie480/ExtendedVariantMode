@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
 
             // jump to the 500 in "this.Speed.X = Calc.Approach(this.Speed.X, 0f, 500f * Engine.DeltaTime);"
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(500f))) {
-                Logger.Log("ExtendedVariantsModule", $"Applying friction to constant at {cursor.Index} (ducking stop speed on ground) in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/Friction", $"Applying friction to constant at {cursor.Index} (ducking stop speed on ground) in CIL code for NormalUpdate");
 
                 cursor.EmitDelegate<Func<float>>(determineFrictionFactor);
                 cursor.Emit(OpCodes.Mul);
@@ -46,7 +46,7 @@ namespace ExtendedVariants.Variants {
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.65f))
                 && cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(1f))) {
 
-                Logger.Log("ExtendedVariantsModule", $"Applying friction to constant at {cursor.Index} (friction factor on ground) in CIL code for NormalUpdate");
+                Logger.Log("ExtendedVariantMode/Friction", $"Applying friction to constant at {cursor.Index} (friction factor on ground) in CIL code for NormalUpdate");
 
                 // 1 is the acceleration when on the ground. Apply the friction factor to it.
                 cursor.EmitDelegate<Func<float>>(determineFrictionFactor);
@@ -63,7 +63,7 @@ namespace ExtendedVariants.Variants {
 
             // we're jumping to this line: "if (Math.Abs(this.Speed.X) <= 25f && this.moveX == 0)"
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 25f)) {
-                Logger.Log("ExtendedVariantsModule", $"Modding constant at {cursor.Index} in CIL code for UpdateSprite to fix animation with friction");
+                Logger.Log("ExtendedVariantMode/Friction", $"Modding constant at {cursor.Index} in CIL code for UpdateSprite to fix animation with friction");
 
                 // call our method which will essentially replace the 25 with whatever value we want
                 cursor.Emit(OpCodes.Pop);

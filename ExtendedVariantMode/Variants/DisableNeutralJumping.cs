@@ -41,7 +41,7 @@ namespace ExtendedVariants.Variants {
                 ILCursor cursorAfterBranch = cursor.Clone();
                 if(cursorAfterBranch.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brfalse_S)) {
 
-                    Logger.Log("ExtendedVariantsModule", $"Inserting condition to enforce Disable Neutral Jumping at {cursor.Index} in CIL code for WallJump");
+                    Logger.Log("ExtendedVariantMode/DisableNeutralJumping", $"Inserting condition to enforce Disable Neutral Jumping at {cursor.Index} in CIL code for WallJump");
 
                     // pop the ldarg.0
                     cursor.Emit(OpCodes.Pop);

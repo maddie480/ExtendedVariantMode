@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
 
                 if(positionVector != null && paddingVector != null) {
                     // insert our delegates to do about the same thing as vanilla Celeste at about the same time
-                    Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
+                    Logger.Log("ExtendedVariantMode/UpsideDown", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
 
                     cursor.Emit(OpCodes.Ldloca_S, paddingVector);
                     cursor.Emit(OpCodes.Ldloca_S, positionVector);
@@ -71,7 +71,7 @@ namespace ExtendedVariants.Variants {
                 // jump back 2 steps
                 cursor.Index -= 2;
 
-                Logger.Log("ExtendedVariantsModule", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender for sprite effects");
+                Logger.Log("ExtendedVariantMode/UpsideDown", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender for sprite effects");
 
                 // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
                 // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it

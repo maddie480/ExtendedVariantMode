@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
         private void modDashUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            Logger.Log("ExtendedVariantsModule", $"Patching dashTrailCounter to fix animation with infinite dashes at {cursor.Index} in CIL code for DashUpdate");
+            Logger.Log("ExtendedVariantMode/HeldDash", $"Patching dashTrailCounter to fix animation with infinite dashes at {cursor.Index} in CIL code for DashUpdate");
 
             // add a delegate call to modify dashTrailCounter (private variable set in DashCoroutine we can't mod with IL)
             // so that we add more trails if the dash is made longer than usual

@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
 
             // jump to whenever jumpGraceTimer is retrieved
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("jumpGraceTimer"))) {
-                Logger.Log("ExtendedVariantsModule", $"Patching jump count in at {cursor.Index} in CIL code");
+                Logger.Log("ExtendedVariantMode/JumpCount", $"Patching jump count in at {cursor.Index} in CIL code");
 
                 // store a reference to it
                 FieldReference refToJumpGraceTimer = ((FieldReference)cursor.Prev.Operand);

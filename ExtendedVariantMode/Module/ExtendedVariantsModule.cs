@@ -104,7 +104,7 @@ namespace ExtendedVariants.Module {
         // ================ Variants hooking / unhooking ================
 
         public override void Load() {
-            Logger.Log("ExtendedVariantsModule", "Initializing Extended Variant Mode");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
             On.Celeste.LevelEnter.Go += checkForceEnableVariants;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
@@ -119,7 +119,7 @@ namespace ExtendedVariants.Module {
         }
 
         public override void Unload() {
-            Logger.Log("ExtendedVariantsModule", "Unloading Extended Variant Mode");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Unloading Extended Variant Mode");
 
             On.Celeste.LevelEnter.Go -= checkForceEnableVariants;
             On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
@@ -135,21 +135,21 @@ namespace ExtendedVariants.Module {
         public void HookStuff() {
             if (stuffIsHooked) return;
 
-            Logger.Log("ExtendedVariantsModule", $"Loading variant common methods...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
             Everest.Events.Level.OnExit += onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
 
-            Logger.Log("ExtendedVariantsModule", $"Loading variant randomizer...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
 
             foreach(Variant variant in VariantHandlers.Keys) {
-                Logger.Log("ExtendedVariantsModule", $"Loading variant {variant}...");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant {variant}...");
                 VariantHandlers[variant].Load();
             }
 
-            Logger.Log("ExtendedVariantsModule", "Done hooking stuff.");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
             stuffIsHooked = true;
         }
@@ -157,7 +157,7 @@ namespace ExtendedVariants.Module {
         public void UnhookStuff() {
             if (!stuffIsHooked) return;
 
-            Logger.Log("ExtendedVariantsModule", $"Unloading variant common methods...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants -= modVersionNumberAndVariants;
             Everest.Events.Level.OnExit -= onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
@@ -166,15 +166,15 @@ namespace ExtendedVariants.Module {
             // unset flags
             onLevelExit();
 
-            Logger.Log("ExtendedVariantsModule", $"Unloading variant randomizer...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant randomizer...");
             Randomizer.Unload();
             
             foreach(Variant variant in VariantHandlers.Keys) {
-                Logger.Log("ExtendedVariantsModule", $"Unloading variant {variant}...");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant {variant}...");
                 VariantHandlers[variant].Unload();
             }
 
-            Logger.Log("ExtendedVariantsModule", "Done unhooking stuff.");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
 
             stuffIsHooked = false;
         }
@@ -182,13 +182,13 @@ namespace ExtendedVariants.Module {
         private void hookTrigger() {
             if (triggerIsHooked) return;
 
-            Logger.Log("ExtendedVariantsModule", $"Loading variant trigger manager...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant trigger manager...");
             TriggerManager.Load();
 
             On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;
 
-            Logger.Log("ExtendedVariantsModule", $"Done loading variant trigger manager.");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Done loading variant trigger manager.");
 
             triggerIsHooked = true;
         }
@@ -196,13 +196,13 @@ namespace ExtendedVariants.Module {
         private void unhookTrigger() {
             if (!triggerIsHooked) return;
 
-            Logger.Log("ExtendedVariantsModule", $"Unloading variant trigger manager...");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
 
             On.Celeste.LevelEnter.Routine -= addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender -= addForceEnabledVariantsPostcardRendering;
 
-            Logger.Log("ExtendedVariantsModule", $"Done unloading variant trigger manager.");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Done unloading variant trigger manager.");
 
             triggerIsHooked = false;
         }
@@ -316,7 +316,7 @@ namespace ExtendedVariants.Module {
 
             // go to the end of the method
             if (cursor.TryGotoNext(instr => instr.MatchRet())) {
-                Logger.Log("ExtendedVariantsModule", $"Injecting font loading code at {cursor.Index} in IL code for Fonts.Prepare");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Injecting font loading code at {cursor.Index} in IL code for Fonts.Prepare");
 
                 // we just want to inject ourselves into the "paths" variable, listing all available fonts.
                 cursor.Emit(OpCodes.Ldsfld, typeof(Fonts).GetField("paths", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
@@ -347,7 +347,7 @@ namespace ExtendedVariants.Module {
                 // (a size of 63 has been set in purpose so that Celeste will load it as a different size.)
                 foreach (PixelFontSize originalFontSize in self.Sizes) {
                     if (originalFontSize.Size == 64) {
-                        Logger.Log("ExtendedVariantsModule", $"Adding {loadedFontSize.Characters.Count} extra characters into the Korean font.");
+                        Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Adding {loadedFontSize.Characters.Count} extra characters into the Korean font.");
 
                         foreach (int character in loadedFontSize.Characters.Keys) originalFontSize.Characters[character] = loadedFontSize.Characters[character];
                         originalFontSize.Textures.AddRange(loadedFontSize.Textures);
