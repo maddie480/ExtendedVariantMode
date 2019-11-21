@@ -5,7 +5,7 @@
   <pages>
     <page id="0" file="max480_extendedvariants_extendedkorean.png" />
   </pages>
-  <!-- the 9 missing characters are: 커 밝 켤 굼 덩 턴 혐 빔 샷 -->
+  <!-- the 14 missing characters are: 커 밝 켤 굼 덩 턴 혐 빔 샷 닉 딧 딩 엔 흑 -->
   <chars count="3">
     <char id="52964" x="0" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" /> 
     <char id="48157" x="41" y="0" width="36" height="40" xoffset="1" yoffset="14" xadvance="39" page="0" chnl="15" />
@@ -16,5 +16,10 @@
     <char id="54800" x="233" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" />
     <char id="48724" x="268" y="0" width="32" height="40" xoffset="3" yoffset="14" xadvance="39" page="0" chnl="15" />
     <char id="49399" x="305" y="0" width="38" height="40" xoffset="0" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="45769" x="345" y="0" width="32" height="40" xoffset="3" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="46375" x="384" y="0" width="34" height="40" xoffset="2" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="46377" x="424" y="0" width="32" height="40" xoffset="3" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="50644" x="461" y="0" width="36" height="40" xoffset="1" yoffset="14" xadvance="39" page="0" chnl="15" />
+    <char id="55121" x="500" y="0" width="37" height="40" xoffset="1" yoffset="14" xadvance="39" page="0" chnl="15" />
   </chars>
 </font>
