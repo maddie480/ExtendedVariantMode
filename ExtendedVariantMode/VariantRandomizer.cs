@@ -305,6 +305,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.UpsideDown) ExtendedVariantsModule.Settings.UpsideDown = true;
             else if (variant == ExtendedVariantsModule.Variant.ForceDuckOnGround) ExtendedVariantsModule.Settings.ForceDuckOnGround = true;
             else if (variant == ExtendedVariantsModule.Variant.InvertDashes) ExtendedVariantsModule.Settings.InvertDashes = true;
+            else if (variant == ExtendedVariantsModule.Variant.InvertGrab) ExtendedVariantsModule.Settings.InvertGrab = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableNeutralJumping) ExtendedVariantsModule.Settings.DisableNeutralJumping = true;
             else if (variant == ExtendedVariantsModule.Variant.BadelineChasersEverywhere) ExtendedVariantsModule.Settings.BadelineChasersEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;

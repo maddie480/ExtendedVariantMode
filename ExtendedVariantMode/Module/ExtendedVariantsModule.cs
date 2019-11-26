@@ -35,7 +35,7 @@ namespace ExtendedVariants.Module {
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, BadelineLag, OshiroEverywhere,
             DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina,
             UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater, ForceDuckOnGround,
-            InvertDashes, AllStrawberriesAreGoldens, GameSpeed, ColorGrading
+            InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -68,6 +68,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DashLength] = new DashLength();
             VariantHandlers[Variant.ForceDuckOnGround] = new ForceDuckOnGround();
             VariantHandlers[Variant.InvertDashes] = new InvertDashes();
+            VariantHandlers[Variant.InvertGrab] = new InvertGrab();
             VariantHandlers[Variant.DisableNeutralJumping] = new DisableNeutralJumping();
             VariantHandlers[Variant.BadelineChasersEverywhere] = new BadelineChasersEverywhere();
             // ChaserCount is not a variant

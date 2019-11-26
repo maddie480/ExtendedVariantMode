@@ -99,6 +99,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool InvertGrab { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool DisableNeutralJumping { get; set; } = false;
 
         // ======================================
