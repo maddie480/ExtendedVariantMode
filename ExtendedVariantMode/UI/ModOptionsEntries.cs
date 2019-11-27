@@ -32,6 +32,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> dashLengthOption;
         private TextMenu.Option<bool> forceDuckOnGroundOption;
         private TextMenu.Option<bool> invertDashesOption;
+        private TextMenu.Option<bool> invertGrabOption;
         private TextMenu.Option<bool> disableNeutralJumpingOption;
         private TextMenu.Option<bool> changeVariantsRandomlyOption;
         private TextMenu.Option<bool> badelineChasersEverywhereOption;
@@ -192,6 +193,8 @@ namespace ExtendedVariants.UI {
                 .Change(b => Settings.ForceDuckOnGround = b);
             invertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
                 .Change(b => Settings.InvertDashes = b);
+            invertGrabOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTGRAB"), Settings.InvertGrab, false)
+                .Change(b => Settings.InvertGrab = b);
             heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
                 .Change(b => Settings.HeldDash = b);
             disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
@@ -377,7 +380,7 @@ namespace ExtendedVariants.UI {
                 // all options excluding the master switch
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
-                wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
+                wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
@@ -451,6 +454,8 @@ namespace ExtendedVariants.UI {
             menu.Add(trollTitle);
             menu.Add(forceDuckOnGroundOption);
             menu.Add(invertDashesOption);
+            menu.Add(invertGrabOption);
+
 
             menu.Add(randomizerTitle);
             menu.Add(changeVariantsRandomlyOption);
@@ -480,6 +485,7 @@ namespace ExtendedVariants.UI {
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(forceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(invertDashesOption, Settings.InvertDashes);
+            setValue(invertGrabOption, Settings.InvertGrab);
             setValue(heldDashOption, Settings.HeldDash);
             setValue(disableNeutralJumpingOption, Settings.DisableNeutralJumping);
             setValue(badelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);
