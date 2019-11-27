@@ -1,12 +1,17 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class Stamina : AbstractExtendedVariant {
+
+        private ILHook summitGemSmashRoutineHook;
+
         public override int GetDefaultValue() {
             return 11;
         }
@@ -26,7 +31,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ctor += patchOutStamina;
             On.Celeste.Player.RefillStamina += modRefillStamina;
             On.Celeste.Player.Update += modUpdate;
-            On.Celeste.SummitGem.SmashRoutine += modSummitGemSmash;
+
+            summitGemSmashRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.SummitGem", "SmashRoutine", patchOutStamina);
         }
 
         public override void Unload() {
@@ -36,7 +42,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ctor -= patchOutStamina;
             On.Celeste.Player.RefillStamina -= modRefillStamina;
             On.Celeste.Player.Update -= modUpdate;
-            On.Celeste.SummitGem.SmashRoutine -= modSummitGemSmash;
+
+            if (summitGemSmashRoutineHook != null) summitGemSmashRoutineHook.Dispose();
         }
         
 
@@ -84,30 +91,6 @@ namespace ExtendedVariants.Variants {
                 // reset it to the value we chose instead of 110
                 self.Stamina = determineBaseStamina();
             }
-        }
-
-        /// <summary>
-        /// Mods the SmashRoutine in SummitGem.
-        /// </summary>
-        /// <param name="orig">The original method</param>
-        /// <param name="self">The SummitGem instance</param>
-        /// <param name="player">The player</param>
-        /// <param name="level">(unused)</param>
-        /// <returns></returns>
-        private IEnumerator modSummitGemSmash(On.Celeste.SummitGem.orig_SmashRoutine orig, SummitGem self, Player player, Level level) {
-            IEnumerator coroutine = orig.Invoke(self, player, level);
-
-            // get the first value, this includes the code setting stamina back to 110f
-            coroutine.MoveNext();
-            yield return coroutine.Current;
-
-            player.Stamina = determineBaseStamina();
-
-            // leave the rest of the coroutine intact
-            while (coroutine.MoveNext()) {
-                yield return coroutine.Current;
-            }
-            yield break;
         }
 
         /// <summary>

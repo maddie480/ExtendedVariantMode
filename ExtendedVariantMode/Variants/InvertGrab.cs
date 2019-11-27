@@ -6,10 +6,13 @@ using System.Collections;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using Monocle;
+using ExtendedVariants.Module;
+using MonoMod.RuntimeDetour;
 
 namespace ExtendedVariants.Variants {
     public class InvertGrab : AbstractExtendedVariant {
-        private bool stopHookCheckKey = true;
+
+        private ILHook dashCoroutineHook;
 
         public override int GetDefaultValue() {
             return 0;
@@ -33,9 +36,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.HitSquashUpdate += modInputGrabCheck;
             IL.Celeste.Player.LaunchUpdate += modInputGrabCheck;
             IL.Celeste.Player.StarFlyUpdate += modInputGrabCheck;
-            On.Monocle.MInput.KeyboardData.Check_Keys += modCheckKeys;
-            On.Monocle.MInput.GamePadData.Check_Buttons += modCheckButtons;
-            On.Celeste.Player.DashCoroutine += modDashCoroutine;
+
+            dashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modInputGrabCheck);
         }
 
         public override void Unload() {
@@ -48,9 +50,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.HitSquashUpdate -= modInputGrabCheck;
             IL.Celeste.Player.LaunchUpdate -= modInputGrabCheck;
             IL.Celeste.Player.StarFlyUpdate -= modInputGrabCheck;
-            On.Monocle.MInput.KeyboardData.Check_Keys -= modCheckKeys;
-            On.Monocle.MInput.GamePadData.Check_Buttons -= modCheckButtons;
-            On.Celeste.Player.DashCoroutine -= modDashCoroutine;
+
+            if (dashCoroutineHook != null) dashCoroutineHook.Dispose();
         }
 
         private void modInputGrabCheck(ILContext il) {
@@ -68,70 +69,6 @@ namespace ExtendedVariants.Variants {
 
         private bool invertButtonCheck(VirtualButton button) {
             return Settings.InvertGrab ? !button.Check : button.Check;
-        }
-
-        // Because we could not mod Input.Grab.Check in DashCoroutine with IL
-        // So I finally chose hook these low level method to achieve the purpose.
-        private bool modCheckKeys(On.Monocle.MInput.KeyboardData.orig_Check_Keys orig, MInput.KeyboardData self,
-            Keys key) {
-            bool result = orig(self, key);
-            if (stopHookCheckKey || !Settings.InvertGrab) {
-                return result;
-            }
-
-            if (!(Engine.Scene is Level level) || !level.CanPause || level.InCutscene) {
-                return result;
-            }
-
-            if (Input.Grab.Nodes.Where(node => node is VirtualButton.KeyboardKey).Cast<VirtualButton.KeyboardKey>()
-                .Select(keyboardKey => keyboardKey.Key).Contains(key)) {
-                stopHookCheckKey = true;
-                result = !Input.Grab.Check;
-                stopHookCheckKey = false;
-            }
-
-            return result;
-        }
-
-        private bool modCheckButtons(On.Monocle.MInput.GamePadData.orig_Check_Buttons orig, MInput.GamePadData self,
-            Buttons button) {
-            bool result = orig(self, button);
-            if (stopHookCheckKey || !Settings.InvertGrab) {
-                return result;
-            }
-
-            if (!(Engine.Scene is Level level) || !level.CanPause || level.InCutscene) {
-                return result;
-            }
-
-            if (Input.Grab.Nodes.Where(node => node is VirtualButton.PadButton).Cast<VirtualButton.PadButton>()
-                .Select(padButton => padButton.Button).Contains(button)) {
-                stopHookCheckKey = true;
-                result = !Input.Grab.Check;
-                stopHookCheckKey = false;
-            }
-
-            return result;
-        }
-
-        // only hook checkKey method include Input.Grab.Check part.
-        private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
-            IEnumerator coroutine = orig.Invoke(self);
-
-            while (coroutine.MoveNext()) {
-                object o = coroutine.Current;
-   
-                if (o is float && Settings.InvertGrab) {
-                    stopHookCheckKey = true;
-                }
-
-                yield return o;
-
-                if (o == null && Settings.InvertGrab) {
-                    stopHookCheckKey = false;
-                }
-            }
-            stopHookCheckKey = true;
         }
     }
 }

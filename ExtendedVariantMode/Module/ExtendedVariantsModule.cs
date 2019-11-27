@@ -10,6 +10,10 @@ using ExtendedVariants.Variants;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using System.Xml;
+using MonoMod.RuntimeDetour;
+using Mono.Cecil;
+using MonoMod.Utils;
+using System.Reflection;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -389,6 +393,48 @@ namespace ExtendedVariants.Module {
 
         private static bool badelineBoosting = false;
         private static bool prologueEndingCutscene = false;
+
+        /// <summary>
+        /// Utility method to patch "coroutine" kinds of methods with IL.
+        /// Those methods' code reside in a compiler-generated method, and IL.Celeste.* do not allow manipulating them directly.
+        /// </summary>
+        /// <param name="manipulator">Method taking care of the patching</param>
+        /// <returns>The IL hook if the actual code was found, null otherwise</returns>
+        public static ILHook HookCoroutine(string typeName, string methodName, ILContext.Manipulator manipulator) {
+            // get the Celeste.exe module definition Everest loaded for us
+            ModuleDefinition celeste = Everest.Relinker.SharedRelinkModuleMap["Celeste.Mod.mm"];
+
+            // get the type
+            TypeDefinition type = celeste.GetType(typeName);
+            if (type == null) return null;
+
+            // then get the method
+            MethodDefinition method = null;
+            foreach(MethodDefinition definition in type.Methods) {
+                if(definition.Name == methodName) {
+                    method = definition;
+                    break;
+                }
+            }
+            if (method == null) return null;
+
+            // Look for the compiler-generated method in it.
+            foreach (TypeDefinition nest in method.DeclaringType.NestedTypes) {
+                if (nest.Name.StartsWith("<" + method.Name + ">d__")) {
+                    method = nest.FindMethod("System.Boolean MoveNext()");
+                    if (method == null) return null;
+
+                    // we found it! let's convert it into basic System.Reflection stuff and hook it.
+                    Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Building IL hook for method {method.FullName} in order to mod {typeName}.{methodName}()");
+                    Type reflectionType = typeof(Player).Assembly.GetType(typeName);
+                    Type reflectionNestedType = reflectionType.GetNestedType(nest.Name, BindingFlags.NonPublic);
+                    MethodBase moveNextMethod = reflectionNestedType.GetMethod("MoveNext", BindingFlags.NonPublic | BindingFlags.Instance);
+                    return new ILHook(moveNextMethod, manipulator);
+                }
+            }
+
+            return null;
+        }
 
         public static bool ShouldIgnoreCustomDelaySettings() {
             if (Engine.Scene.GetType() == typeof(Level)) {

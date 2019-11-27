@@ -30,8 +30,8 @@ namespace ExtendedVariants.Variants {
         }
         
         private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
-            // let's try and intercept whenever the DashCoroutine sends out 0.3f or 0.15f
-            // because we should mod that
+            // intercept the moment where the dash coroutine sends out the dash time
+            // so that we can extend it as long as Dash is pressed.
             IEnumerator coroutine = orig.Invoke(self);
             while(coroutine.MoveNext()) {
                 object o = coroutine.Current;
