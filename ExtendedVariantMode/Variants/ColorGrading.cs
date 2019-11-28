@@ -32,14 +32,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
-
-            // yes, this is apparently necessary
-            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ColorGrading", "Unhook workaround trick for Level.Render!");
-            IL.Celeste.Level.Render += doNothing;
-            IL.Celeste.Level.Render -= doNothing;
         }
-
-        private void doNothing(ILContext il) { }
 
         private void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
