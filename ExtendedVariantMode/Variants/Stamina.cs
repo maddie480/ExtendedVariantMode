@@ -5,11 +5,11 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class Stamina : AbstractExtendedVariant {
 
+        private ILHook playerUpdateHook;
         private ILHook summitGemSmashRoutineHook;
 
         public override int GetDefaultValue() {
@@ -30,8 +30,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DreamDashBegin += patchOutStamina;
             IL.Celeste.Player.ctor += patchOutStamina;
             On.Celeste.Player.RefillStamina += modRefillStamina;
-            On.Celeste.Player.Update += modUpdate;
 
+            playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), patchOutStamina);
             summitGemSmashRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.SummitGem", "SmashRoutine", patchOutStamina);
         }
 
@@ -41,8 +41,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DreamDashBegin -= patchOutStamina;
             IL.Celeste.Player.ctor -= patchOutStamina;
             On.Celeste.Player.RefillStamina -= modRefillStamina;
-            On.Celeste.Player.Update -= modUpdate;
 
+            if (playerUpdateHook != null) playerUpdateHook.Dispose();
             if (summitGemSmashRoutineHook != null) summitGemSmashRoutineHook.Dispose();
         }
         
@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
             // now, patch everything stamina-related (every instance of 110)
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(110f))) {
-                Logger.Log("ExtendedVariantMode/Stamina", $"Patching stamina at index {cursor.Index} in CIL code");
+                Logger.Log("ExtendedVariantMode/Stamina", $"Patching stamina at index {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
                 // pop the 110 and call our method instead
                 cursor.Emit(OpCodes.Pop);
@@ -73,22 +73,6 @@ namespace ExtendedVariants.Variants {
             orig.Invoke(self);
 
             if (Settings.Stamina != 11) {
-                self.Stamina = determineBaseStamina();
-            }
-        }
-
-        /// <summary>
-        /// Wraps the Update method in the base game (used to refresh the player state).
-        /// </summary>
-        /// <param name="orig">The original Update method</param>
-        /// <param name="self">The Player instance</param>
-        private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
-            // since we cannot patch IL in orig_Update, we will wrap it and try to guess if the stamina was reset
-            // this is **certainly** the case if the stamina changed and is now 110
-            float staminaBeforeCall = self.Stamina;
-            orig.Invoke(self);
-            if (self.Stamina == 110f && staminaBeforeCall != 110f) {
-                // reset it to the value we chose instead of 110
                 self.Stamina = determineBaseStamina();
             }
         }
