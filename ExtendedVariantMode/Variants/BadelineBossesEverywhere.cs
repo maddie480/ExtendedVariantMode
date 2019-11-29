@@ -153,6 +153,7 @@ namespace ExtendedVariants.Variants {
             return vanillaPattern;
         }
 
+        // TODO DELETE ON NEXT EVEREST STABLE: ships with Everest 1145+
         private void modPlayerWindMove(On.Celeste.Player.orig_WindMove orig, Player self, Vector2 move) {
             // the Attract state doesn't cope well with wind **at all**.
             // that creates a softlock when the player gets pushed away from the attract target indefinitely.
