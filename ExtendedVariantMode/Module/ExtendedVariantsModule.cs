@@ -408,20 +408,13 @@ namespace ExtendedVariants.Module {
             TypeDefinition type = celeste.GetType(typeName);
             if (type == null) return null;
 
-            // then get the method
-            MethodDefinition method = null;
-            foreach(MethodDefinition definition in type.Methods) {
-                if(definition.Name == methodName) {
-                    method = definition;
-                    break;
-                }
-            }
-            if (method == null) return null;
-
-            // Look for the compiler-generated method in it.
-            foreach (TypeDefinition nest in method.DeclaringType.NestedTypes) {
-                if (nest.Name.StartsWith("<" + method.Name + ">d__")) {
-                    method = nest.FindMethod("System.Boolean MoveNext()");
+            // the "coroutine" method is actually a nested type tracking the coroutine's state
+            // (to make it restart from where it stopped when MoveNext() is called).
+            // what we see in ILSpy and what we want to hook is actually the MoveNext() method in this nested type.
+            foreach (TypeDefinition nest in type.NestedTypes) {
+                if (nest.Name.StartsWith("<" + methodName + ">d__")) {
+                    // check that this nested type contains a MoveNext() method
+                    MethodDefinition method = nest.FindMethod("System.Boolean MoveNext()");
                     if (method == null) return null;
 
                     // we found it! let's convert it into basic System.Reflection stuff and hook it.
