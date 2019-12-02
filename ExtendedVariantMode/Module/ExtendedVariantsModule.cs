@@ -303,6 +303,7 @@ namespace ExtendedVariants.Module {
 
         // ================ Fix for TextMenu Y offset of options ================
 
+        // TODO REMOVE ON NEXT EVEREST STABLE: ships with Everest 1148+
         private float fixYOffsetOfMenuOptions(On.Celeste.TextMenu.orig_GetYOffsetOf orig, TextMenu self, TextMenu.Item itemToGetOffsetFor) {
             if (itemToGetOffsetFor == null) return 0f;
 
