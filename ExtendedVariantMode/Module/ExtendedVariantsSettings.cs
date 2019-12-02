@@ -120,6 +120,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int BadelineLag { get; set; } = 0;
 
+        [SettingIgnore]
+        public int DelayBetweenBadelines { get; set; } = 4;
+
         // ======================================
 
         [SettingIgnore]

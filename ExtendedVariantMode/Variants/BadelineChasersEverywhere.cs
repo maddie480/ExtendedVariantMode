@@ -56,10 +56,25 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Pop);
                 cursor.EmitDelegate<Func<float>>(determineBadelineLag);
             }
+
+            cursor.Index = 0;
+
+            // go everywhere where the 0.4 second delay between Badelines is defined
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.4f))) {
+                Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding delay between Badelines at {cursor.Index} in CIL code for BadelineOldsite constructor");
+
+                // and substitute it with our own value
+                cursor.Emit(OpCodes.Pop);
+                cursor.EmitDelegate<Func<float>>(determineDelayBetweenBadelines);
+            }
         }
 
         private float determineBadelineLag() {
             return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() || Settings.BadelineLag == 0 ? 1.55f : Settings.BadelineLag / 10f;
+        }
+
+        private float determineDelayBetweenBadelines() {
+            return Settings.DelayBetweenBadelines / 10f;
         }
 
         /// <summary>
@@ -229,8 +244,8 @@ namespace ExtendedVariants.Variants {
             while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdcR4(4f))) {
                 Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
 
-                // and replace it with a "5.5" in order to support up to 10 chasers
-                cursor.Next.Operand = 5.5f;
+                // and replace it with a 10f to have better support for custom settings (f.e. 10 chasers 1 second apart from each other).
+                cursor.Next.Operand = 10f;
             }
         }
 

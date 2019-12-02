@@ -29,6 +29,8 @@ const variants = String[
 	"BadelineChasersEverywhere",
 	"ChaserCount",
 	"AffectExistingChasers",
+	"BadelineLag",
+	"DelayBetweenBadelines",
 	"RegularHiccups",
 	"HiccupStrength",
 	"OshiroEverywhere",

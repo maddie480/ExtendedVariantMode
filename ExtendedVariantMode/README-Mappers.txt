@@ -29,7 +29,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).
-	- BadelineLag: The delay between the player and the first Badeline, multiplied by 10, default is 0.
+	- BadelineLag: The delay between the player and the first Badeline, multiplied by 10, default is 0 (actually 1.55s).
+	- DelayBetweenBadelines: The delay between two Badelines, multiplied by 10, default is 4 (0.4s).
 	- AddSeekers: The number of seekers to add.
 	- ColorGrading: -1 to disable. 0 = "none", 1 = "oldsite", 2 = "panicattack", 3 = "templevoid", 4 = "reflection", 5 = "credits", 6 = "cold", 7 = "hot", 8 = "feelingdown", 9 = "golden".
 		10 = "tetris" (from Celsius), 11 = "greyscale", 12 = "sepia", 13 = "inverted", 14 = "rgbshift1", 15 = "rgbshift2"

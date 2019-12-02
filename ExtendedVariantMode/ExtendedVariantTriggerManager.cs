@@ -211,6 +211,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.BadelineLag;
                     ExtendedVariantsModule.Settings.BadelineLag = newValue;
                     break;
+                case ExtendedVariantsModule.Variant.DelayBetweenBadelines:
+                    oldValue = ExtendedVariantsModule.Settings.DelayBetweenBadelines;
+                    ExtendedVariantsModule.Settings.DelayBetweenBadelines = newValue;
+                    break;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown:
                     oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);

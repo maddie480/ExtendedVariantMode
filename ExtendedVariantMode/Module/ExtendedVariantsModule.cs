@@ -36,9 +36,9 @@ namespace ExtendedVariants.Module {
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
-            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, BadelineLag, OshiroEverywhere,
-            DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina,
-            UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater, ForceDuckOnGround,
+            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, BadelineLag, DelayBetweenBadelines,
+            OshiroEverywhere, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, 
+            Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater, ForceDuckOnGround,
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading
         }
 
@@ -95,6 +95,7 @@ namespace ExtendedVariants.Module {
             // DisableSeekerSlowdown is not a variant
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
             // BadelineLag is not a variant
+            // DelayBetweenBadelines is not a variant
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
             VariantHandlers[Variant.GameSpeed] = new GameSpeed();
@@ -292,6 +293,7 @@ namespace ExtendedVariants.Module {
             Settings.RefillJumpsOnDashRefill = false;
             Settings.SnowballDelay = 8;
             Settings.BadelineLag = 0;
+            Settings.DelayBetweenBadelines = 4;
             Settings.ChangeVariantsRandomly = false;
             Settings.DisableOshiroSlowdown = false;
             Settings.DisableSeekerSlowdown = false;

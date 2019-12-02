@@ -55,6 +55,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableSeekerSlowdownOption;
         private TextMenu.Option<bool> theoCrystalsEverywhereOption;
         private TextMenu.Option<int> badelineLagOption;
+        private TextMenu.Option<int> delayBetweenBadelinesOption;
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
         private TextMenu.Option<bool> dontRefillDashOnGroundOption;
         private TextMenu.Option<int> gameSpeedOption;
@@ -282,6 +283,9 @@ namespace ExtendedVariants.UI {
             badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
                 i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
                 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
+            delayBetweenBadelinesOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES"),
+                i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DelayBetweenBadelines), 4)
+                .Change(i => Settings.DelayBetweenBadelines = multiplierScale[i]);
             allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
                 .Change(b => Settings.AllStrawberriesAreGoldens = b);
             dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
@@ -383,7 +387,7 @@ namespace ExtendedVariants.UI {
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
-                badelineLagOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
+                badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
                 badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption };
 
             refreshOptionMenuEnabledStatus();
@@ -420,6 +424,7 @@ namespace ExtendedVariants.UI {
             menu.Add(chaserCountOption);
             menu.Add(affectExistingChasersOption);
             menu.Add(badelineLagOption);
+            menu.Add(delayBetweenBadelinesOption);
 
             menu.Add(bossesTitle);
             menu.Add(badelineBossesEverywhereOption);
@@ -509,6 +514,7 @@ namespace ExtendedVariants.UI {
             setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
             setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
             setValue(badelineLagOption, 0, Settings.BadelineLag);
+            setValue(delayBetweenBadelinesOption, 0, Settings.DelayBetweenBadelines);
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
             setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
