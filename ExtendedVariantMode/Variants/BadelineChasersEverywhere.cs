@@ -13,6 +13,9 @@ using System.Collections.Generic;
 
 namespace ExtendedVariants.Variants {
     public class BadelineChasersEverywhere : AbstractExtendedVariant {
+
+        private float lastChaserLag = 0f;
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -43,6 +46,9 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.BadelineOldsite.CanChangeMusic -= modBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.IsChaseEnd -= modBadelineOldsiteIsChaseEnd;
             IL.Celeste.Player.UpdateChaserStates -= modUpdateChaserStates;
+
+            // this is reset on every room enter. reset that in case we enable variants again mid-level
+            lastChaserLag = 0f;
         }
 
         private void modBadelineOldsiteConstructor(ILContext il) {
@@ -94,8 +100,11 @@ namespace ExtendedVariants.Variants {
                 if (player != null) player.JustRespawned = true;
             }
 
-            if((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers) && playerIntro != Player.IntroTypes.Transition) {
-                injectBadelineChasers(self);
+            if(playerIntro != Player.IntroTypes.Transition) {
+                if((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers)) {
+                    injectBadelineChasers(self);
+                }
+                updateLastChaserLag(self);
             }
         }
 
@@ -117,6 +126,7 @@ namespace ExtendedVariants.Variants {
 
             // then decide whether to add Badeline or not
             injectBadelineChasers(self);
+            updateLastChaserLag(self);
 
             yield break;
         }
@@ -240,14 +250,26 @@ namespace ExtendedVariants.Variants {
         private void modUpdateChaserStates(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            // go where the "4" is
+            // go where the "4" is (this is the amount of player history vanilla is keeping)
             while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdcR4(4f))) {
                 Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
 
-                // and replace it with a 10f to have better support for custom settings (f.e. 10 chasers 1 second apart from each other).
-                cursor.Next.Operand = 10f;
+                // call a method that will compute the right delay instead
+                cursor.Remove();
+                cursor.EmitDelegate<Func<float>>(determineHistoryAmountToKeep);
             }
         }
 
+        private float determineHistoryAmountToKeep() {
+            // return the amount of lag the farthest Badeline has (with a 0.1s margin), but make it 4 seconds minimum (= vanilla value).
+            return Math.Max(lastChaserLag + 0.1f, 4f);
+        }
+
+        private void updateLastChaserLag(Level self) {
+            // called just after the extended Badelines are injected (if required).
+            // we can count how many vanilla + extended Badelines we have on-screen.
+            int badelineCount = self.Entities.AmountOf<BadelineOldsite>();
+            lastChaserLag = determineBadelineLag() + (badelineCount - 1) * determineDelayBetweenBadelines();
+        }
     }
 }
