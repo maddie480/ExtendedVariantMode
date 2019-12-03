@@ -1,10 +1,52 @@
 ﻿using Celeste;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
+using Monocle;
+using System.Reflection;
 
 namespace ExtendedVariants.Entities {
     class AutoDestroyingAngryOshiro : AngryOshiro {
-        public AutoDestroyingAngryOshiro(Vector2 position, bool fromCutscene): base(position, fromCutscene) { }
+        // cached accessor for AngryOshiro's "state" private field.
+        private static FieldInfo stateMachine = typeof(AngryOshiro).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        private const int StWaitingOffset = 9;
+
+        private Level level;
+        private StateMachine state;
+        private float waitTimer;
+        private bool playerMoved = false;
+
+        public AutoDestroyingAngryOshiro(Vector2 position, bool fromCutscene, float offsetTime): base(position, fromCutscene) {
+            state = (StateMachine) stateMachine.GetValue(this);
+            waitTimer = offsetTime;
+
+            state.SetCallbacks(StWaitingOffset, WaitingOffsetUpdate);
+        }
+
+        public override void Added(Scene scene) {
+            base.Added(scene);
+
+            level = (Level) scene;
+
+            // if the state is Waiting and Oshiro has an offset, hijack the state to take our own instead.
+            if (state.State == 4 && waitTimer > 0f)
+                state.State = StWaitingOffset;
+        }
+
+        private int WaitingOffsetUpdate() {
+            Player player = Scene.Tracker.GetEntity<Player>();
+            if (player != null && player.Speed != Vector2.Zero) playerMoved = true;
+
+            if (player != null && playerMoved && player.X > level.Bounds.Left + 48) {
+                // vanilla Oshiro would charge. we want to wait for waitTimer to deplete first.
+                waitTimer -= Engine.DeltaTime;
+                if(waitTimer <= 0f) {
+                    // timer depleted, proceed to Chase state
+                    return 0;
+                }
+            }
+            return StWaitingOffset;
+        }
 
         public override void Update() {
             base.Update();

@@ -14,11 +14,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override int GetValue() {
-            return Settings.OshiroEverywhere ? 1 : 0;
+            return Settings.OshiroEverywhere;
         }
 
         public override void SetValue(int value) {
-            Settings.OshiroEverywhere = (value != 0);
+            Settings.OshiroEverywhere = value;
         }
 
         public override void Load() {
@@ -54,14 +54,17 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addOshiroToLevel(Level level) {
-            // if no Oshiro is present...
-            if(Settings.OshiroEverywhere && level.Tracker.CountEntities<AngryOshiro>() == 0) {
+            bool oshiroAdded = false;
+
+            for (int i = level.Tracker.CountEntities<AngryOshiro>(); i < Settings.OshiroEverywhere; i++) {
                 // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                 Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
-                level.Add(new AutoDestroyingAngryOshiro(position, false));
-
-                level.Entities.UpdateLists();
+                level.Add(new AutoDestroyingAngryOshiro(position, false, i * 0.5f));
+                oshiroAdded = true;
             }
+
+            if(oshiroAdded)
+                level.Entities.UpdateLists();
         }
 
         private void modAngryOshiroUpdate(ILContext il) {

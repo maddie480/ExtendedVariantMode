@@ -144,7 +144,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool OshiroEverywhere { get; set; } = false;
+        public int OshiroEverywhere { get; set; } = 0;
 
         [SettingIgnore]
         public bool DisableOshiroSlowdown { get; set; } = false;

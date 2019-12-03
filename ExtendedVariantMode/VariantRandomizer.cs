@@ -308,7 +308,6 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.InvertGrab) ExtendedVariantsModule.Settings.InvertGrab = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableNeutralJumping) ExtendedVariantsModule.Settings.DisableNeutralJumping = true;
             else if (variant == ExtendedVariantsModule.Variant.BadelineChasersEverywhere) ExtendedVariantsModule.Settings.BadelineChasersEverywhere = true;
-            else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.SnowballsEverywhere) ExtendedVariantsModule.Settings.SnowballsEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.TheoCrystalsEverywhere) ExtendedVariantsModule.Settings.TheoCrystalsEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.HeldDash) ExtendedVariantsModule.Settings.HeldDash = true;
@@ -338,6 +337,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
             else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
             else if (variant == ExtendedVariantsModule.Variant.ColorGrading) ExtendedVariantsModule.Settings.ColorGrading = randomGenerator.Next(ColorGrading.ExistingColorGrades.Count); // random color grade
+            else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = 1; // only a single Oshiro
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {

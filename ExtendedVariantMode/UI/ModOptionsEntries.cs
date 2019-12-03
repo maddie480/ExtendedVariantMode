@@ -46,7 +46,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> roomLightingOption;
         private TextMenu.Option<int> roomBloomOption;
         private TextMenu.Option<bool> everythingIsUnderwaterOption;
-        private TextMenu.Option<bool> oshiroEverywhereOption;
+        private TextMenu.Option<int> oshiroEverywhereOption;
         private TextMenu.Option<bool> disableOshiroSlowdownOption;
         private TextMenu.Option<int> windEverywhereOption;
         private TextMenu.Option<bool> snowballsEverywhereOption;
@@ -257,8 +257,10 @@ namespace ExtendedVariants.UI {
                 });
             everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
                 .Change(b => Settings.EverythingIsUnderwater = b);
-            oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
-                .Change(b => Settings.OshiroEverywhere = b);
+            oshiroEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), 
+                i => (i == 0 ? Dialog.Clean("OPTIONS_OFF") : (i == 1 ? Dialog.Clean("OPTIONS_ON") : i + " " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MULTIPLEOSHIROS"))),
+                0, 5, Settings.OshiroEverywhere, 0)
+                .Change(i => Settings.OshiroEverywhere = i);
             disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
                 .Change(b => Settings.DisableOshiroSlowdown = b);
             windEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
@@ -505,7 +507,7 @@ namespace ExtendedVariants.UI {
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(roomBloomOption, -1, Settings.RoomBloom);
             setValue(everythingIsUnderwaterOption, Settings.EverythingIsUnderwater);
-            setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
+            setValue(oshiroEverywhereOption, 0, Settings.OshiroEverywhere);
             setValue(disableOshiroSlowdownOption, Settings.DisableOshiroSlowdown);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
             setValue(snowballsEverywhereOption, Settings.SnowballsEverywhere);
