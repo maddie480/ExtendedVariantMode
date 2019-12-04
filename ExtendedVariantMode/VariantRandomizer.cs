@@ -299,7 +299,7 @@ namespace ExtendedVariants {
 
         private void enableVariant(ExtendedVariantsModule.Variant variant) {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.ToString()}");
-            
+
             // toggle-style variants (enable)
             if (variant == ExtendedVariantsModule.Variant.DisableWallJumping) ExtendedVariantsModule.Settings.DisableWallJumping = true;
             else if (variant == ExtendedVariantsModule.Variant.UpsideDown) ExtendedVariantsModule.Settings.UpsideDown = true;
@@ -315,6 +315,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DontRefillDashOnGround = true;
             else if (variant == ExtendedVariantsModule.Variant.EverythingIsUnderwater) ExtendedVariantsModule.Settings.EverythingIsUnderwater = true;
             else if (variant == ExtendedVariantsModule.Variant.BadelineBossesEverywhere) ExtendedVariantsModule.Settings.BadelineBossesEverywhere = true;
+            else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];
@@ -337,7 +338,6 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
             else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
             else if (variant == ExtendedVariantsModule.Variant.ColorGrading) ExtendedVariantsModule.Settings.ColorGrading = randomGenerator.Next(ColorGrading.ExistingColorGrades.Count); // random color grade
-            else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = 1; // only a single Oshiro
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {

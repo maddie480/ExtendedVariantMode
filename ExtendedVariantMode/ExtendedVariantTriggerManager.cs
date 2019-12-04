@@ -215,6 +215,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.DelayBetweenBadelines;
                     ExtendedVariantsModule.Settings.DelayBetweenBadelines = newValue;
                     break;
+                case ExtendedVariantsModule.Variant.OshiroCount:
+                    oldValue = ExtendedVariantsModule.Settings.OshiroCount;
+                    ExtendedVariantsModule.Settings.OshiroCount = newValue;
+                    break;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown:
                     oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);
