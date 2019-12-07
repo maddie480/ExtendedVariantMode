@@ -8,7 +8,7 @@ You can also use the options in your map, with the Extended Variant Trigger (**b
 
 If you find a bug, have a suggestion or even want to contribute, get in touch with max480 on Discord (max480#4596 on [the "Mt. Celeste Climbing Association" Discord server](https://discord.gg/6qjaePQ)).
 
-**Compatible with Everest 1143 and later.**
+**Compatible with Everest 1161 and later.**
 
 ## How to install
 
