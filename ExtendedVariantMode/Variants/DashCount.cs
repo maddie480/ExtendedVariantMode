@@ -48,6 +48,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original RefillDash method</param>
         /// <param name="self">The Player instance</param>
         private bool modRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
+            // trigger the "on dash refill" event
             OnDashRefill?.Invoke();
 
             if (Settings.DashCount == -1) {
@@ -73,6 +74,19 @@ namespace ExtendedVariants.Variants {
                 // call our method just before storing the result from get_MaxDashes in local variable 0
                 cursor.EmitDelegate<Func<int, int>>(determineDashCount);
             }
+
+            cursor.Index = 0;
+            
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchStfld<Player>("Dashes"))) {
+                Logger.Log("ExtendedVariantMode/DashCount", $"Inserting OnDashRefill event call at {cursor.Index} in CIL code for UseRefill");
+
+                // when UseRefill refills dashes, the OnDashRefill event should be called.
+                cursor.EmitDelegate<Action>(triggerOnDashRefill);
+            }
+        }
+
+        private void triggerOnDashRefill() {
+            OnDashRefill?.Invoke();
         }
 
 
@@ -130,6 +144,7 @@ namespace ExtendedVariants.Variants {
                 }
             }
 
+            // using a Badeline Boost refills dashes
             OnDashRefill?.Invoke();
 
             yield break;
@@ -141,8 +156,6 @@ namespace ExtendedVariants.Variants {
         /// <param name="defaultValue">The default value (= Player.MaxDashes)</param>
         /// <returns>The dash count</returns>
         private int determineDashCount(int defaultValue) {
-            OnDashRefill?.Invoke(); // if this is called, we are refilling dashes for whatever reason.
-
             if (Settings.DashCount == -1) {
                 return defaultValue;
             }

@@ -29,13 +29,13 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             IL.Celeste.Player.NormalUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate += patchJumpGraceTimer;
-            On.Celeste.Player.UseRefill += modUseRefill;
+            IL.Celeste.Player.UseRefill += modUseRefill;
         }
 
         public override void Unload() {
             IL.Celeste.Player.NormalUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate -= patchJumpGraceTimer;
-            On.Celeste.Player.UseRefill -= modUseRefill;
+            IL.Celeste.Player.UseRefill -= modUseRefill;
         }
 
         private void patchJumpGraceTimer(ILContext il) {
@@ -87,21 +87,30 @@ namespace ExtendedVariants.Variants {
         }
 
         /// <summary>
-        /// Wraps the UseRefill method, so that it returns true when crystals refill jumps.
+        /// This hook makes dash crystals activate when refilling jumps is required.
         /// </summary>
-        /// <param name="orig">The original method</param>
-        /// <param name="self">The Player entity</param>
-        /// <param name="twoDashes">unused</param>
-        /// <returns>true if the original method returned true OR the refill also refilled dashes, false otherwise</returns>
-        private bool modUseRefill(On.Celeste.Player.orig_UseRefill orig, Player self, bool twoDashes) {
-            int jumpBufferBefore = jumpBuffer;
+        private void modUseRefill(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
 
-            bool origResult = orig(self, twoDashes);
-            if(Settings.RefillJumpsOnDashRefill && jumpBuffer > jumpBufferBefore) {
-                // break the crystal because it refilled jumps
-                return true;
+            // let's jump to if (this.Dashes < num)
+            if(cursor.TryGotoNext(MoveType.After, 
+                instr => instr.MatchLdarg(0), // this
+                instr => instr.MatchLdfld<Player>("Dashes"), // this.Dashes
+                instr => instr.MatchLdloc(0), // num
+                instr => instr.OpCode == OpCodes.Blt_S)) { // jump if lower than
+
+                object branchTarget = cursor.Prev.Operand;
+
+                Logger.Log("ExtendedVariantMode/JumpCount", $"Injecting jump refill check in dash refill check at {cursor.Index} in IL code for UseRefill");
+
+                cursor.EmitDelegate<Func<bool>>(jumpNeedsRefilling);
+                cursor.Emit(OpCodes.Brtrue_S, branchTarget);
             }
-            return origResult;
+        }
+
+        private bool jumpNeedsRefilling() {
+            // JumpCount - 1 because the first jump is from vanilla Celeste
+            return Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2 && jumpBuffer < Settings.JumpCount - 1;
         }
 
         private void dashRefilled() {
