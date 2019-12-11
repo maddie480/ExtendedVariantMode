@@ -159,8 +159,6 @@ namespace ExtendedVariants.Variants {
                 bossPosition -= playerToCenter / 10f;
             }
 
-            Logger.Log("h", "opposite = " + bossPosition);
-
             Logger.Log(LogLevel.Warn, "ExtendedVariantMode/BadelineBossesEverywhere", "Could not find boss position at opposite of room! Aborting.");
             return Vector2.Zero;
         }
@@ -177,9 +175,7 @@ namespace ExtendedVariants.Variants {
                 // check if it collides with a solid
                 Rectangle collideRectangle = new Rectangle(x - 19, y - 25, 38, 38);
                 if (playerDistance > 100 && !level.CollideCheck<Solid>(collideRectangle) && !level.CollideCheck<JumpThru>(collideRectangle)) {
-
                     // found it!
-                    Logger.Log("h", "random = " + new Vector2(x, y));
                     return new Vector2(x, y);
                 }
             }
