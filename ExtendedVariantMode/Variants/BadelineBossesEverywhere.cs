@@ -103,7 +103,7 @@ namespace ExtendedVariants.Variants {
                     if (lastNode == Vector2.Zero) break;
 
                     if (bossPosition != Vector2.Zero) {
-                        Vector2 bossPositionOffscreen = player.Position;
+                        Vector2 bossPositionOffscreen = penultimateNode;
 
                         Vector2 lastMoveDirection = (lastNode - penultimateNode);
 
