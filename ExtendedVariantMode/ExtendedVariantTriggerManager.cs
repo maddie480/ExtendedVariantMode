@@ -235,6 +235,18 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses ? 1 : 0;
                     ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses = (newValue != 0);
                     break;
+                case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom:
+                    oldValue = ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom ? 1 : 0;
+                    ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom = (newValue != 0);
+                    break;
+                case ExtendedVariantsModule.Variant.BadelineBossCount:
+                    oldValue = ExtendedVariantsModule.Settings.BadelineBossCount;
+                    ExtendedVariantsModule.Settings.BadelineBossCount = newValue;
+                    break;
+                case ExtendedVariantsModule.Variant.BadelineBossNodeCount:
+                    oldValue = ExtendedVariantsModule.Settings.BadelineBossNodeCount;
+                    ExtendedVariantsModule.Settings.BadelineBossNodeCount = newValue;
+                    break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();

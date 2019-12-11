@@ -52,6 +52,9 @@ const variants = String[
 	"BadelineBossesEverywhere",
 	"BadelineAttackPattern",
 	"ChangePatternsOfExistingBosses",
+	"FirstBadelineSpawnRandom",
+	"BadelineBossCount",
+	"BadelineBossNodeCount",
 	"ColorGrading"
 ]
 

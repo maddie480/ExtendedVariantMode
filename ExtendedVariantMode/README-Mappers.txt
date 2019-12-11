@@ -21,6 +21,9 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- JumpCount: the number of jumps you want, 6 is infinite (yep).
 	- ChaserCount: the number of chasers you want for the "BadelineChasersEverywhere" variant.
 	- BadelineAttackPattern: 0 is random, 1 to 15 are specific patterns. Refer to the FinalBoss class in ILSpy or wait for a documentation of these. :ohnoshiro:
+	- FirstBadelineSpawnRandom: 0 to make the first Badeline boss spawn at the opposite of the room, 1 to make her spawn at random.
+	- BadelineBossCount: the number of bosses you want
+	- BadelineBossNodeCount: the number of nodes (positions before Badeline goes offscreen) you want
 	- DisableWallJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers, 
 		RefillJumpsOnDashRefill, OshiroEverywhere, DisableOshiroSlowdown, DisableSeekerSlowdown, TheoCrystalsEverywhere, HeldDash, AllStrawberriesAreGoldens, 
 		DontRefillDashOnGround, EverythingIsUnderwater, BadelineBossesEverywhere, ChangePatternsOfExistingBosses, InvertGrab: 1 to enable, 0 to disable.

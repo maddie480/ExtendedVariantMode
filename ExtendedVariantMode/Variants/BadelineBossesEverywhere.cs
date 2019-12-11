@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections;
-using Celeste;
+﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ExtendedVariants.Variants {
     class BadelineBossesEverywhere : AbstractExtendedVariant {
 
+        private Random positionRandomizer = new Random();
         private Random patternRandomizer = new Random();
 
         public override int GetDefaultValue() {
@@ -46,7 +48,7 @@ namespace ExtendedVariants.Variants {
             Glitch.Value = 0;
 
             if (Settings.BadelineBossesEverywhere && playerIntro != Player.IntroTypes.Transition) {
-                injectBadelineBoss(self);
+                injectBadelineBosses(self);
             }
         }
 
@@ -58,59 +60,132 @@ namespace ExtendedVariants.Variants {
             }
 
             if (Settings.BadelineBossesEverywhere) {
-                injectBadelineBoss(self);
+                injectBadelineBosses(self);
             }
         }
 
-        private void injectBadelineBoss(Level level) {
+        private void injectBadelineBosses(Level level) {
             Player player = level.Tracker.GetEntity<Player>();
 
-            if (player != null && level.Tracker.CountEntities<FinalBoss>() == 0) {
-                // there is no boss in the base level ; proceed adding our own boss
+            if (player != null) {
+                for(int id = level.Tracker.CountEntities<FinalBoss>(); id < Settings.BadelineBossCount; id++) {
+                    // let's add a boss
 
-                // let's do the funniest part: the boss position
-                // we want it to be on the opposite side of the room compared to the player (...?)
-                Vector2 playerToCenter = new Vector2(level.Bounds.Center.X - player.Position.X, level.Bounds.Center.Y - player.Position.Y);
-                Vector2 bossPosition = player.Position + playerToCenter * 2; // this is the opposite of the room relative to the center.
-
-                // failsafe: if the player happens to be in the middle of the screen, just ragequit.
-                if (playerToCenter == Vector2.Zero) return;
-
-                // we are going to try 20 positions on the line between the player and the "opposite of the room".
-                bool positionFound = false;
-                for (int i = 0; i < 20; i++) {
-                    // the Badeline boss hitbox is a circle of a 14 pixel radius, shifted 6 pixels to the top.
-                    // we want to take a 5 pixel security margin because I encountered some issues with dream blocks while testing.
-                    Rectangle collisionBox = new Rectangle((int)(bossPosition.X - 19), (int)(bossPosition.Y - 25), 38, 38);
-                    if (!level.CollideCheck<Solid>(collisionBox) && !level.CollideCheck<JumpThru>(collisionBox)) {
-                        positionFound = true;
-                        break;
+                    Vector2 bossPosition;
+                    if (id == 0 && !Settings.FirstBadelineSpawnRandom) {
+                        // the first Badeline should spawn at the opposite of the room
+                        bossPosition = computeBossPositionAtOppositeOfPlayer(level, player);
+                    } else {
+                        // all the others should spawn at random points
+                        bossPosition = computeBossPositionAtRandom(level, player);
                     }
 
-                    // if the boss ends up in a wall, draw it towards the player a bit.
-                    bossPosition -= playerToCenter / 10f;
+                    // position not found, abort!
+                    if (bossPosition == Vector2.Zero) break;
+
+                    Vector2 penultimateNode = player.Position;
+                    Vector2 lastNode = bossPosition;
+
+                    Vector2[] nodes = new Vector2[Settings.BadelineBossNodeCount];
+
+                    for(int i = 0; i < Settings.BadelineBossNodeCount - 1; i++)  {
+                        // randomize all nodes, except the last one.
+                        nodes[i] = computeBossPositionAtRandom(level, player);
+
+                        penultimateNode = lastNode;
+                        lastNode = nodes[i];
+
+                        // position not found, don't process other nodes!
+                        if (lastNode == Vector2.Zero) break;
+                    }
+
+                    // position not found, stop adding bosses!
+                    if (lastNode == Vector2.Zero) break;
+
+                    if (bossPosition != Vector2.Zero) {
+                        Vector2 bossPositionOffscreen = player.Position;
+
+                        Vector2 lastMoveDirection = (lastNode - penultimateNode);
+
+                        // extremely unlikely, but better safe than sorry
+                        if (lastMoveDirection == Vector2.Zero) lastMoveDirection = Vector2.One;
+
+                        while (bossPositionOffscreen.X + 30 > level.Bounds.Left - 50 && bossPositionOffscreen.X < level.Bounds.Right + 50
+                             && bossPositionOffscreen.Y + 30 > level.Bounds.Top - 50 && bossPositionOffscreen.Y < level.Bounds.Bottom + 50) {
+
+                            // push the position until it is offscreen, using the same direction as the last move (or the player => boss direction if there is no node).
+                            bossPositionOffscreen += lastMoveDirection;
+                        }
+
+                        // the offscreen position has to be the last node.
+                        nodes[nodes.Length - 1] = bossPositionOffscreen;
+
+                        // build the boss
+                        EntityData bossData = ExtendedVariantsModule.GenerateBasicEntityData(level, 15 + id); // 0 to 9 are Badeline chasers, 10 to 14 are seekers.
+                        bossData.Position = bossPosition;
+                        bossData.Values["canChangeMusic"] = false;
+                        bossData.Values["cameraLockY"] = false;
+                        bossData.Values["patternIndex"] = Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
+                        bossData.Nodes = nodes;
+
+                        // add it to the level!
+                        level.Add(new AutoDestroyingBadelineBoss(bossData, Vector2.Zero));
+                    }
                 }
 
-                if (positionFound) {
-                    Vector2 bossPositionOffscreen = player.Position;
-                    while(bossPositionOffscreen.X + 30 > level.Bounds.Left - 50 && bossPositionOffscreen.X < level.Bounds.Right + 50
-                         && bossPositionOffscreen.Y + 30 > level.Bounds.Top - 50 && bossPositionOffscreen.Y < level.Bounds.Bottom + 50) {
+                level.Entities.UpdateLists();
+            }
+        }
 
-                        // push the position until it is offscreen.
-                        bossPositionOffscreen += playerToCenter;
-                    }
+        private Vector2 computeBossPositionAtOppositeOfPlayer(Level level, Player player) {
+            // we want the position to be on the opposite side of the room compared to the player (...?)
+            Vector2 playerToCenter = new Vector2(level.Bounds.Center.X - player.Position.X, level.Bounds.Center.Y - player.Position.Y);
+            Vector2 bossPosition = player.Position + playerToCenter * 2; // this is the opposite of the room relative to the center.
 
-                    EntityData bossData = ExtendedVariantsModule.GenerateBasicEntityData(level, 15); // 0 to 9 are Badeline chasers, 10 to 14 are seekers.
-                    bossData.Position = bossPosition;
-                    bossData.Values["canChangeMusic"] = false;
-                    bossData.Values["cameraLockY"] = false;
-                    bossData.Values["patternIndex"] = Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
-                    bossData.Nodes = new Vector2[] { bossPositionOffscreen }; // if / when hit, the boss will fly offscreen.
+            // failsafe: if the player happens to be in the middle of the screen, just ragequit.
+            if (playerToCenter == Vector2.Zero) return Vector2.Zero;
 
-                    level.Add(new AutoDestroyingBadelineBoss(bossData, Vector2.Zero));
-                    level.Entities.UpdateLists();
+            // we are going to try 20 positions on the line between the player and the "opposite of the room".
+            for (int i = 0; i < 20; i++) {
+                // the Badeline boss hitbox is a circle of a 14 pixel radius, shifted 6 pixels to the top.
+                // we want to take a 5 pixel security margin because I encountered some issues with dream blocks while testing.
+                Rectangle collisionBox = new Rectangle((int)(bossPosition.X - 19), (int)(bossPosition.Y - 25), 38, 38);
+
+                if (!level.CollideCheck<Solid>(collisionBox) && !level.CollideCheck<JumpThru>(collisionBox)) {
+                    return bossPosition;
+                }
+
+                // if the boss ends up in a wall, draw it towards the player a bit.
+                bossPosition -= playerToCenter / 10f;
+            }
+
+            Logger.Log("h", "opposite = " + bossPosition);
+
+            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/BadelineBossesEverywhere", "Could not find boss position at opposite of room! Aborting.");
+            return Vector2.Zero;
+        }
+
+        private Vector2 computeBossPositionAtRandom(Level level, Player player) {
+            for (int i = 0; i < 100; i++) {
+                // roll a boss position in the room
+                int x = positionRandomizer.Next(level.Bounds.Width) + level.Bounds.X;
+                int y = positionRandomizer.Next(level.Bounds.Height) + level.Bounds.Y;
+
+                // should be at least 100 pixels from the player
+                double playerDistance = Math.Sqrt(Math.Pow(MathHelper.Distance(x, player.X), 2) + Math.Pow(MathHelper.Distance(y, player.Y), 2));
+
+                // check if it collides with a solid
+                Rectangle collideRectangle = new Rectangle(x - 19, y - 25, 38, 38);
+                if (playerDistance > 100 && !level.CollideCheck<Solid>(collideRectangle) && !level.CollideCheck<JumpThru>(collideRectangle)) {
+
+                    // found it!
+                    Logger.Log("h", "random = " + new Vector2(x, y));
+                    return new Vector2(x, y);
                 }
             }
+
+            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/BadelineBossesEverywhere", "Could not find boss position! Aborting.");
+            return Vector2.Zero;
         }
         
         private void modCanChangeMusic(ILContext il) {

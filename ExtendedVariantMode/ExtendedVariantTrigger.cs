@@ -38,6 +38,9 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.DisableSeekerSlowdown: return 0;
                 case ExtendedVariantsModule.Variant.BadelineAttackPattern: return 0;
                 case ExtendedVariantsModule.Variant.ChangePatternsOfExistingBosses: return 0;
+                case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom: return 0;
+                case ExtendedVariantsModule.Variant.BadelineBossCount: return 1;
+                case ExtendedVariantsModule.Variant.BadelineBossNodeCount: return 1;
 
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue();
             }

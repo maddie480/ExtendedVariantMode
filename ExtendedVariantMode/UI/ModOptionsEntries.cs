@@ -41,6 +41,9 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> badelineBossesEverywhereOption;
         private TextMenu.Option<int> badelineAttackPatternOption;
         private TextMenu.Option<bool> changePatternOfExistingBossesOption;
+        private TextMenu.Option<int> firstBadelineSpawnRandomOption;
+        private TextMenu.Option<int> badelineBossCountOption;
+        private TextMenu.Option<int> badelineBossNodeCountOption;
         private TextMenu.Option<int> regularHiccupsOption;
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
@@ -208,7 +211,10 @@ namespace ExtendedVariants.UI {
             chaserCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
                 i => i.ToString(), 1, 10, Settings.ChaserCount, 0).Change(i => Settings.ChaserCount = i);
             badelineBossesEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
-                .Change(b => Settings.BadelineBossesEverywhere = b);
+                .Change(b => {
+                    Settings.BadelineBossesEverywhere = b;
+                    refreshOptionMenuEnabledStatus();
+                });
 
             badelineAttackPatternOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEATTACKPATTERN"),
                 i => {
@@ -219,6 +225,15 @@ namespace ExtendedVariants.UI {
 
             changePatternOfExistingBossesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEPATTERNSOFEXISTINGBOSSES"), Settings.ChangePatternsOfExistingBosses, false)
                 .Change(b => Settings.ChangePatternsOfExistingBosses = b);
+
+            firstBadelineSpawnRandomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM"),
+                i => i == 1 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF"), 
+                0, 1, Settings.FirstBadelineSpawnRandom ? 1 : 0, 0).Change(i => Settings.FirstBadelineSpawnRandom = (i != 0));
+            badelineBossCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT"),
+                i => i.ToString(), 1, 5, Settings.BadelineBossCount, 0).Change(i => Settings.BadelineBossCount = i);
+            badelineBossNodeCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT"),
+                i => i.ToString(), 1, 5, Settings.BadelineBossNodeCount, 0).Change(i => Settings.BadelineBossNodeCount = i);
+
             changeVariantsRandomlyOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false)
                 .Change(b => {
                     Settings.ChangeVariantsRandomly = b;
@@ -395,7 +410,7 @@ namespace ExtendedVariants.UI {
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
-                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption };
+                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -437,6 +452,9 @@ namespace ExtendedVariants.UI {
             menu.Add(badelineBossesEverywhereOption);
             menu.Add(badelineAttackPatternOption);
             menu.Add(changePatternOfExistingBossesOption);
+            menu.Add(firstBadelineSpawnRandomOption);
+            menu.Add(badelineBossCountOption);
+            menu.Add(badelineBossNodeCountOption);
 
             menu.Add(oshiroTitle);
             menu.Add(oshiroEverywhereOption);
@@ -509,6 +527,9 @@ namespace ExtendedVariants.UI {
             setValue(badelineBossesEverywhereOption, Settings.BadelineBossesEverywhere);
             setValue(badelineAttackPatternOption, 0, Settings.BadelineAttackPattern);
             setValue(changePatternOfExistingBossesOption, Settings.ChangePatternsOfExistingBosses);
+            setValue(firstBadelineSpawnRandomOption, 0, Settings.FirstBadelineSpawnRandom ? 1 : 0);
+            setValue(badelineBossCountOption, 1, Settings.BadelineBossCount);
+            setValue(badelineBossNodeCountOption, 1, Settings.BadelineBossNodeCount);
             setValue(changeVariantsRandomlyOption, Settings.ChangeVariantsRandomly);
             setValue(regularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
@@ -542,6 +563,9 @@ namespace ExtendedVariants.UI {
             refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
             oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
             randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
+            firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
+            badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
+            badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {

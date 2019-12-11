@@ -212,6 +212,15 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool ChangePatternsOfExistingBosses { get; set; } = false;
 
+        [SettingIgnore]
+        public bool FirstBadelineSpawnRandom { get; set; } = false;
+
+        [SettingIgnore]
+        public int BadelineBossCount { get; set; } = 1;
+
+        [SettingIgnore]
+        public int BadelineBossNodeCount { get; set; } = 1;
+
         // ======================================
 
         [SettingIgnore]

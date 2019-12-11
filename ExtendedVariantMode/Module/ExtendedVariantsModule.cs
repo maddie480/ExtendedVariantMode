@@ -36,10 +36,11 @@ namespace ExtendedVariants.Module {
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
-            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, BadelineLag, DelayBetweenBadelines,
-            OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, 
-            TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater, 
-            ForceDuckOnGround, InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading
+            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
+            BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
+            SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
+            RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
+            AllStrawberriesAreGoldens, GameSpeed, ColorGrading
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -80,6 +81,9 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.BadelineBossesEverywhere] = new BadelineBossesEverywhere();
             // BadelineAttackPattern is not a variant
             // ChangePatternsOfExistingBosses is not a variant
+            // FirstBadelineSpawnRandom is not a variant
+            // BadelineBossCount is not a variant
+            // BadelineBossNodeCount is not a variant
             VariantHandlers[Variant.RegularHiccups] = new RegularHiccups();
             // HiccupStrength is not a variant
             // RefillJumpsOnDashRefill is not a variant
@@ -299,6 +303,9 @@ namespace ExtendedVariants.Module {
             Settings.DisableSeekerSlowdown = false;
             Settings.BadelineAttackPattern = 0;
             Settings.ChangePatternsOfExistingBosses = false;
+            Settings.FirstBadelineSpawnRandom = false;
+            Settings.BadelineBossCount = 1;
+            Settings.BadelineBossNodeCount = 1;
         }
 
         // ================ Font support for missing Korean characters ================
