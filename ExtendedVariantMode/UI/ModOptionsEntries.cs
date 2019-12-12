@@ -65,6 +65,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> dontRefillDashOnGroundOption;
         private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Option<int> colorGradingOption;
+        private TextMenu.Option<bool> jellyfishEverywhereOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -330,6 +331,9 @@ namespace ExtendedVariants.UI {
                 }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
                 .Change(i => Settings.ColorGrading = i);
 
+            jellyfishEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), Settings.JellyfishEverywhere, false)
+                .Change(b => Settings.JellyfishEverywhere = b);
+
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
                 Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
@@ -413,7 +417,8 @@ namespace ExtendedVariants.UI {
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
-                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption };
+                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption,
+                jellyfishEverywhereOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -482,6 +487,7 @@ namespace ExtendedVariants.UI {
             menu.Add(colorGradingOption);
 
             menu.Add(otherTitle);
+            menu.Add(jellyfishEverywhereOption);
             menu.Add(staminaOption);
             menu.Add(disableNeutralJumpingOption);
             menu.Add(regularHiccupsOption);
@@ -556,6 +562,7 @@ namespace ExtendedVariants.UI {
             setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
             setValue(colorGradingOption, -1, Settings.ColorGrading);
+            setValue(jellyfishEverywhereOption, Settings.JellyfishEverywhere);
         }
 
         private void refreshOptionMenuEnabledStatus() {

@@ -40,7 +40,7 @@ namespace ExtendedVariants.Module {
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
             SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
-            AllStrawberriesAreGoldens, GameSpeed, ColorGrading
+            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -106,6 +106,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
             VariantHandlers[Variant.GameSpeed] = new GameSpeed();
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
+            VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
         }
 
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {

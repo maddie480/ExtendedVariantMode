@@ -317,6 +317,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.EverythingIsUnderwater) ExtendedVariantsModule.Settings.EverythingIsUnderwater = true;
             else if (variant == ExtendedVariantsModule.Variant.BadelineBossesEverywhere) ExtendedVariantsModule.Settings.BadelineBossesEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
+            else if (variant == ExtendedVariantsModule.Variant.JellyfishEverywhere) ExtendedVariantsModule.Settings.JellyfishEverywhere = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];

@@ -127,6 +127,7 @@
     <Compile Include="Variants\InvertGrab.cs" />
     <Compile Include="Variants\JumpCount.cs" />
     <Compile Include="Variants\JumpHeight.cs" />
+    <Compile Include="Variants\JellyfishEverywhere.cs" />
     <Compile Include="Variants\OshiroEverywhere.cs" />
     <Compile Include="Variants\RegularHiccups.cs" />
     <Compile Include="Variants\RoomBloom.cs" />

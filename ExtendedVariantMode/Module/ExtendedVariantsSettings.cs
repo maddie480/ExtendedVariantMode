@@ -236,6 +236,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int ColorGrading { get; set; } = -1;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool JellyfishEverywhere { get; set; } = false;
+
 
         // ======================================
 
