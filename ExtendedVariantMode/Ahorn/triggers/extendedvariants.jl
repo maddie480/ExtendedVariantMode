@@ -15,6 +15,7 @@ const variants = String[
 	"Friction",
 	"AirFriction",
 	"DisableWallJumping",
+	"DisableClimbJumping",
 	"JumpCount",
 	"UpsideDown",
 	"HyperdashSpeed",

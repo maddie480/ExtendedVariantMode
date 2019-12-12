@@ -34,7 +34,7 @@ namespace ExtendedVariants.Module {
         public VariantRandomizer Randomizer;
 
         public enum Variant {
-            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
+            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
@@ -66,6 +66,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.Friction] = new Friction();
             VariantHandlers[Variant.AirFriction] = new AirFriction();
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();
+            VariantHandlers[Variant.DisableClimbJumping] = new DisableClimbJumping();
             VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount);
             VariantHandlers[Variant.UpsideDown] = new UpsideDown();
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();

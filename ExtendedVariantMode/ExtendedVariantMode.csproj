@@ -111,6 +111,7 @@
     <Compile Include="Variants\DashCount.cs" />
     <Compile Include="Variants\DashLength.cs" />
     <Compile Include="Variants\DashSpeed.cs" />
+    <Compile Include="Variants\DisableClimbJumping.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
     <Compile Include="Variants\DisableWallJumping.cs" />
     <Compile Include="Variants\DontRefillDashOnGround.cs" />

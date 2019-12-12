@@ -61,6 +61,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool DisableClimbJumping { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public int JumpCount { get; set; } = 1;
 
         [SettingIgnore]

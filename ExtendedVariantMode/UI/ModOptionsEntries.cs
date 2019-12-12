@@ -24,6 +24,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> frictionOption;
         private TextMenu.Option<int> airFrictionOption;
         private TextMenu.Option<bool> disableWallJumpingOption;
+        private TextMenu.Option<bool> disableClimbJumpingOption;
         private TextMenu.Option<int> jumpCountOption;
         private TextMenu.Option<bool> refillJumpsOnDashRefillOption;
         private TextMenu.Option<bool> upsideDownOption;
@@ -174,6 +175,8 @@ namespace ExtendedVariants.UI {
                 .Change(i => Settings.AirFriction = (i == -1 ? -1 : multiplierScale[i]));
             disableWallJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
                 .Change(b => Settings.DisableWallJumping = b);
+            disableClimbJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
+                .Change(b => Settings.DisableClimbJumping = b);
             jumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
                 i => {
                     if (i == 6) {
@@ -405,7 +408,7 @@ namespace ExtendedVariants.UI {
                 verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle,
                 // all options excluding the master switch
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
-                heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
+                heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, everythingIsUnderwaterOption,
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
@@ -425,6 +428,7 @@ namespace ExtendedVariants.UI {
             menu.Add(jumpHeightOption);
             menu.Add(wallBouncingSpeedOption);
             menu.Add(disableWallJumpingOption);
+            menu.Add(disableClimbJumpingOption);
             menu.Add(jumpCountOption);
             menu.Add(refillJumpsOnDashRefillOption);
 
@@ -510,6 +514,7 @@ namespace ExtendedVariants.UI {
             setValue(frictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(airFrictionOption, -1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction));
             setValue(disableWallJumpingOption, Settings.DisableWallJumping);
+            setValue(disableClimbJumpingOption, Settings.DisableClimbJumping);
             setValue(jumpCountOption, 0, Settings.JumpCount);
             setValue(refillJumpsOnDashRefillOption, Settings.RefillJumpsOnDashRefill);
             setValue(upsideDownOption, Settings.UpsideDown);

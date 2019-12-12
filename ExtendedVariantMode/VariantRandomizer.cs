@@ -302,6 +302,7 @@ namespace ExtendedVariants {
 
             // toggle-style variants (enable)
             if (variant == ExtendedVariantsModule.Variant.DisableWallJumping) ExtendedVariantsModule.Settings.DisableWallJumping = true;
+            else if (variant == ExtendedVariantsModule.Variant.DisableClimbJumping) ExtendedVariantsModule.Settings.DisableClimbJumping = true;
             else if (variant == ExtendedVariantsModule.Variant.UpsideDown) ExtendedVariantsModule.Settings.UpsideDown = true;
             else if (variant == ExtendedVariantsModule.Variant.ForceDuckOnGround) ExtendedVariantsModule.Settings.ForceDuckOnGround = true;
             else if (variant == ExtendedVariantsModule.Variant.InvertDashes) ExtendedVariantsModule.Settings.InvertDashes = true;
