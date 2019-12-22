@@ -65,7 +65,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> dontRefillDashOnGroundOption;
         private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Option<int> colorGradingOption;
-        private TextMenu.Option<bool> jellyfishEverywhereOption;
+        private TextMenu.Option<int> jellyfishEverywhereOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -331,8 +331,8 @@ namespace ExtendedVariants.UI {
                 }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
                 .Change(i => Settings.ColorGrading = i);
 
-            jellyfishEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), Settings.JellyfishEverywhere, false)
-                .Change(b => Settings.JellyfishEverywhere = b);
+            jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
+                .Change(i => Settings.JellyfishEverywhere = i);
 
             // create the "master switch" option with specific enable/disable handling.
             masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
@@ -562,7 +562,7 @@ namespace ExtendedVariants.UI {
             setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
             setValue(colorGradingOption, -1, Settings.ColorGrading);
-            setValue(jellyfishEverywhereOption, Settings.JellyfishEverywhere);
+            setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);
         }
 
         private void refreshOptionMenuEnabledStatus() {

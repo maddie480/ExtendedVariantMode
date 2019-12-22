@@ -15,11 +15,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override int GetValue() {
-            return Settings.JellyfishEverywhere ? 1 : 0;
+            return Settings.JellyfishEverywhere;
         }
 
         public override void SetValue(int value) {
-            Settings.JellyfishEverywhere = (value != 0);
+            Settings.JellyfishEverywhere = value;
         }
 
         public override void Load() {
@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addJellyfishToLevel(Level level) {
-            if (Settings.JellyfishEverywhere) {
+            for (int i = 0; i < Settings.JellyfishEverywhere; i++) {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player != null && player.Holding?.Entity?.GetType() != typeof(Glider)) {
                     // player is here, and is not holding jellyfish.
@@ -62,6 +62,15 @@ namespace ExtendedVariants.Variants {
                     Vector2 playerPosition = player.Position;
 
                     Glider jellyfish = new Glider(playerPosition, true, false);
+
+                    // offset the jellyfish if there are multiple
+                    if (Settings.JellyfishEverywhere == 2) {
+                        if (i == 0) jellyfish.Position.X -= 10;
+                        else jellyfish.Position.X += 10;
+                    } else if (Settings.JellyfishEverywhere == 3) {
+                        if (i == 1) jellyfish.Position.X -= 20;
+                        else if (i == 2) jellyfish.Position.X += 20;
+                    }
 
                     // move it up 20px
                     jellyfish.Position.Y -= 20;

@@ -239,7 +239,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool JellyfishEverywhere { get; set; } = false;
+        public int JellyfishEverywhere { get; set; } = 0;
 
 
         // ======================================
