@@ -94,7 +94,10 @@
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
+    <Compile Include="UI\AbstractSubmenu.cs" />
     <Compile Include="UI\ModOptionsEntries.cs" />
+    <Compile Include="UI\OuiCategorySubmenu.cs" />
+    <Compile Include="UI\OuiExtendedVariantsSubmenu.cs" />
     <Compile Include="UI\OuiRandomizerOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Module\ExtendedVariantsSettings.cs" />

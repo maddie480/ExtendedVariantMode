@@ -10,6 +10,12 @@ namespace ExtendedVariants.Module {
 
         // ======================================
 
+        public bool OptionsOutOfModOptionsMenu = false;
+
+        public bool SubmenusForEachCategory = false;
+
+        // ======================================
+
         [SettingIgnore]
         public int Gravity { get; set; } = 10;
 

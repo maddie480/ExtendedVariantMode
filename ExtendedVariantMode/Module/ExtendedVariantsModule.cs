@@ -14,6 +14,7 @@ using MonoMod.RuntimeDetour;
 using Mono.Cecil;
 using MonoMod.Utils;
 using System.Reflection;
+using Celeste.Mod.UI;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -112,7 +113,34 @@ namespace ExtendedVariants.Module {
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
-            new ModOptionsEntries().CreateAllOptions(menu, inGame, triggerIsHooked);
+            if (Settings.OptionsOutOfModOptionsMenu && inGame) {
+                // build the menu with only the master switch
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, false,
+                    null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
+            } else if (Settings.SubmenusForEachCategory) {
+                // build the menu with the master switch + submenus + randomizer options
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, true, true, false,
+                    () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
+            } else if (Settings.OptionsOutOfModOptionsMenu) {
+                // build the menu with the master switch + the button to open the submenu
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, true,
+                    null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
+            } else {
+                // build the good old full menu directly in Mod Options (master switch + all variant categories + randomizer)
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.All, true, false, true, false,
+                    () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
+            }
+        }
+
+        private void onCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal) {
+            int optionsIndex = menu.GetItems().FindIndex(item => 
+                item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_options"));
+
+            // insert ourselves just before Options if required (this is below Variants if variant mode is enabled)
+            if(Settings.OptionsOutOfModOptionsMenu) {
+                menu.Insert(optionsIndex, AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, true,
+                    null /* this is not used when in-game anyway */, new object[] { true }));
+            }
         }
 
         // ================ Variants hooking / unhooking ================
@@ -152,6 +180,7 @@ namespace ExtendedVariants.Module {
             Everest.Events.Level.OnExit += onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
+            Everest.Events.Level.OnCreatePauseMenuButtons += onCreatePauseMenuButtons;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
@@ -174,6 +203,7 @@ namespace ExtendedVariants.Module {
             Everest.Events.Level.OnExit -= onLevelExit;
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin -= onPrologueEndingCutsceneBegin;
+            Everest.Events.Level.OnCreatePauseMenuButtons -= onCreatePauseMenuButtons;
 
             // unset flags
             onLevelExit();

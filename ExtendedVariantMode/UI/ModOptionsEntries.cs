@@ -1,5 +1,4 @@
 ﻿using Celeste;
-using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
@@ -13,6 +12,8 @@ namespace ExtendedVariants.UI {
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
         private TextMenu.Option<bool> masterSwitchOption;
+        private TextMenu.Option<bool> optionsOutOfModOptionsMenuOption;
+        private TextMenu.Option<bool> submenusForEachCategoryOption;
         private TextMenu.Option<int> gravityOption;
         private TextMenu.Option<int> fallSpeedOption;
         private TextMenu.Option<int> jumpHeightOption;
@@ -136,281 +137,346 @@ namespace ExtendedVariants.UI {
             return multiplierScale.Length - 1;
         }
 
-        public void CreateAllOptions(TextMenu menu, bool inGame, bool forceEnabled) {
+        public enum VariantCategory {
+            All, VerticalSpeed, Jumping, Dashing, Moving, Chasers, Bosses, Oshiro, Everywhere, Global, Other, Troll, None
+        }
 
-            gravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
-            fallSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed), indexFromMultiplier(10)).Change(i => Settings.FallSpeed = multiplierScale[i]);
-            jumpHeightOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight), indexFromMultiplier(10)).Change(i => Settings.JumpHeight = multiplierScale[i]);
-            speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
-            staminaOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
-                i => $"{i * 10}", 0, 50, Settings.Stamina, 11).Change(i => Settings.Stamina = i);
-            dashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
-            dashCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
-                if (i == -1) {
-                    return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+        /// <summary>
+        /// Builds the HUGE extended variants options menu, or part of it.
+        /// </summary>
+        /// <param name="category">The category to include in the menu, All to include them all with subheaders</param>
+        /// <param name="includeMasterSwitch">If the master switch and Reset to default options should be included</param>
+        /// <param name="includeCategorySubmenus">If submenus per-category should be included</param>
+        /// <param name="includeRandomizer">If randomizer options should be included (with sub-header)</param>
+        /// <param name="submenuBackAction">An Action to come back to the current menu from a submenu</param>
+        /// <param name="menu">The menu to inject the options to</param>
+        /// <param name="inGame">true if we are in the pause menu, false if we are in the overworld</param>
+        /// <param name="forceEnabled">true if extended variants cannot be disabled because the map being played requires them. Only useful if includeMasterSwitch = true</param>
+        public void CreateAllOptions(VariantCategory category, bool includeMasterSwitch, bool includeCategorySubmenus, bool includeRandomizer, bool includeOpenSubmenuButton,
+            Action submenuBackAction, TextMenu menu, bool inGame, bool forceEnabled) {
+
+            if(includeMasterSwitch) {
+                // create the "master switch" option with specific enable/disable handling.
+                masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
+                    Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
                 }
-                return i.ToString();
-            }, -1, 5, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
-            frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
-                i => {
-                    switch (i) {
-                        case -1: return "0x";
-                        case 0: return "0.05x";
-                        default: return multiplierFormatter(i);
-                    }
-                }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction), indexFromMultiplier(10) + 1)
-                .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
-            airFrictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION"),
-                i => {
-                    switch (i) {
-                        case -1: return "0x";
-                        case 0: return "0.05x";
-                        default: return multiplierFormatter(i);
-                    }
-                }, -1, multiplierScale.Length - 1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction), indexFromMultiplier(10) + 1)
-                .Change(i => Settings.AirFriction = (i == -1 ? -1 : multiplierScale[i]));
-            disableWallJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
-                .Change(b => Settings.DisableWallJumping = b);
-            disableClimbJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
-                .Change(b => Settings.DisableClimbJumping = b);
-            jumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
-                i => {
-                    if (i == 6) {
-                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
+                    .Change(v => {
+                        Settings.MasterSwitch = v;
+                        refreshOptionMenuEnabledStatus();
+
+                        // (de)activate all hooks!
+                        if (v) ExtendedVariantsModule.Instance.HookStuff();
+                        else ExtendedVariantsModule.Instance.UnhookStuff();
+                    });
+                
+                if (!inGame) {
+                    optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenu)
+                        .Change(b => Settings.OptionsOutOfModOptionsMenu = b);
+                    submenusForEachCategoryOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY"), Settings.SubmenusForEachCategory)
+                        .Change(b => Settings.SubmenusForEachCategory = b);
+                }
+            }
+
+            if (category == VariantCategory.All || includeCategorySubmenus) {
+                // Add a button to easily revert to default values
+                resetToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
+                    ExtendedVariantsModule.Instance.ResetToDefaultSettings();
+                    refreshOptionMenuValues();
+                    refreshOptionMenuEnabledStatus();
+                });
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.VerticalSpeed) {
+                gravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
+                fallSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed), indexFromMultiplier(10)).Change(i => Settings.FallSpeed = multiplierScale[i]);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Jumping) {
+                jumpHeightOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight), indexFromMultiplier(10)).Change(i => Settings.JumpHeight = multiplierScale[i]);
+                wallBouncingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.WallBouncingSpeed), indexFromMultiplier(10)).Change(i => Settings.WallBouncingSpeed = multiplierScale[i]);
+                disableWallJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
+                    .Change(b => Settings.DisableWallJumping = b);
+                disableClimbJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
+                    .Change(b => Settings.DisableClimbJumping = b);
+                jumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
+                    i => {
+                        if (i == 6) {
+                            return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
+                        }
+                        return i.ToString();
+                    }, 0, 6, Settings.JumpCount, 1).Change(i => {
+                        Settings.JumpCount = i;
+                        refreshOptionMenuEnabledStatus();
+                    });
+                refillJumpsOnDashRefillOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
+                    .Change(b => Settings.RefillJumpsOnDashRefill = b);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Dashing) {
+                dashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
+                dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
+                hyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
+                dashCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
+                    if (i == -1) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     }
                     return i.ToString();
-                }, 0, 6, Settings.JumpCount, 1).Change(i => {
-                    Settings.JumpCount = i;
-                    refreshOptionMenuEnabledStatus();
-                });
-            refillJumpsOnDashRefillOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
-                .Change(b => Settings.RefillJumpsOnDashRefill = b);
-            upsideDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
-                .Change(b => Settings.UpsideDown = b);
-            hyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
-            wallBouncingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.WallBouncingSpeed), indexFromMultiplier(10)).Change(i => Settings.WallBouncingSpeed = multiplierScale[i]);
-            dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
-            forceDuckOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround, false)
+                }, -1, 5, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
+                heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
+                    .Change(b => Settings.HeldDash = b);
+                dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
+                    .Change(b => Settings.DontRefillDashOnGround = b);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Moving) {
+                speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
+                frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
+                    i => {
+                        switch (i) {
+                            case -1: return "0x";
+                            case 0: return "0.05x";
+                            default: return multiplierFormatter(i);
+                        }
+                    }, -1, multiplierScale.Length - 1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction), indexFromMultiplier(10) + 1)
+                    .Change(i => Settings.Friction = (i == -1 ? -1 : multiplierScale[i]));
+                airFrictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION"),
+                    i => {
+                        switch (i) {
+                            case -1: return "0x";
+                            case 0: return "0.05x";
+                            default: return multiplierFormatter(i);
+                        }
+                    }, -1, multiplierScale.Length - 1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction), indexFromMultiplier(10) + 1)
+                    .Change(i => Settings.AirFriction = (i == -1 ? -1 : multiplierScale[i]));
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Chasers) {
+                badelineChasersEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
+                    .Change(b => Settings.BadelineChasersEverywhere = b);
+                chaserCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
+                    i => i.ToString(), 1, 10, Settings.ChaserCount, 0).Change(i => Settings.ChaserCount = i);
+                affectExistingChasersOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AFFECTEXISTINGCHASERS"), Settings.AffectExistingChasers, false)
+                    .Change(b => Settings.AffectExistingChasers = b);
+                badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
+                    i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
+                    0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
+                delayBetweenBadelinesOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES"),
+                    i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DelayBetweenBadelines), 4)
+                    .Change(i => Settings.DelayBetweenBadelines = multiplierScale[i]);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Bosses) {
+                badelineBossesEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
+                    .Change(b => {
+                        Settings.BadelineBossesEverywhere = b;
+                        refreshOptionMenuEnabledStatus();
+                    });
+                badelineAttackPatternOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEATTACKPATTERN"),
+                    i => {
+                        if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
+                        return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_BADELINEPATTERN_{badelineBossesPatternsOptions[i]}");
+                    }, 0, badelineBossesPatternsOptions.Length - 1, indexFromPatternValue(Settings.BadelineAttackPattern), 0)
+                    .Change(i => Settings.BadelineAttackPattern = badelineBossesPatternsOptions[i]);
+                changePatternOfExistingBossesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEPATTERNSOFEXISTINGBOSSES"), Settings.ChangePatternsOfExistingBosses, false)
+                    .Change(b => Settings.ChangePatternsOfExistingBosses = b);
+                firstBadelineSpawnRandomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM"),
+                    i => i == 1 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF"),
+                    0, 1, Settings.FirstBadelineSpawnRandom ? 1 : 0, 0).Change(i => Settings.FirstBadelineSpawnRandom = (i != 0));
+                badelineBossCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT"),
+                    i => i.ToString(), 1, 5, Settings.BadelineBossCount, 0).Change(i => Settings.BadelineBossCount = i);
+                badelineBossNodeCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT"),
+                    i => i.ToString(), 1, 5, Settings.BadelineBossNodeCount, 0).Change(i => Settings.BadelineBossNodeCount = i);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Oshiro) {
+                oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
+                    .Change(b => {
+                        Settings.OshiroEverywhere = b;
+                        refreshOptionMenuEnabledStatus();
+                    });
+                oshiroCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT"),
+                    i => i.ToString(), 1, 5, Settings.OshiroCount, 0).Change(i => Settings.OshiroCount = i);
+                disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
+                    .Change(b => Settings.DisableOshiroSlowdown = b);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Everywhere) {
+                windEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
+                    i => {
+                        if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
+                        if (i == WindEverywhere.AvailableWindPatterns.Length + 1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
+                        return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_{WindEverywhere.AvailableWindPatterns[i - 1].ToString()}");
+                    },
+                    0, WindEverywhere.AvailableWindPatterns.Length + 1, Settings.WindEverywhere, 0)
+                    .Change(i => Settings.WindEverywhere = i);
+                snowballsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
+                    .Change(b => Settings.SnowballsEverywhere = b);
+                snowballDelayOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY"),
+                    i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
+                    .Change(i => Settings.SnowballDelay = multiplierScale[i]);
+                addSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
+                    i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
+                disableSeekerSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
+                    .Change(b => Settings.DisableSeekerSlowdown = b);
+                theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
+                    .Change(b => Settings.TheoCrystalsEverywhere = b);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Global) {
+                gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
+
+                upsideDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
+                    .Change(b => Settings.UpsideDown = b);
+
+                roomLightingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING"),
+                    i => {
+                        if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                        return $"{i * 10}%";
+                    }, -1, 10, Settings.RoomLighting, 0).Change(i => {
+                        Settings.RoomLighting = i;
+                        if (Engine.Scene.GetType() == typeof(Level)) {
+                            // currently in level, change lighting right away
+                            Level lvl = (Engine.Scene as Level);
+                            lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
+                        }
+                    });
+
+                roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
+                    i => {
+                        if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                        return $"{i * 10}%";
+                    }, -1, 10, Settings.RoomBloom, 0).Change(i => {
+                        Settings.RoomBloom = i;
+                        if (Engine.Scene.GetType() == typeof(Level)) {
+                            // currently in level, change bloom right away
+                            Level lvl = (Engine.Scene as Level);
+                            lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
+                        }
+                    });
+                everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
+                    .Change(b => Settings.EverythingIsUnderwater = b);
+
+                colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
+                    i => {
+                        if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+
+                        // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
+                        // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
+                        string resourceName = ColorGrading.ExistingColorGrades[i];
+                        if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
+                        return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+
+                    }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
+                    .Change(i => Settings.ColorGrading = i);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Other) {
+                jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
+                    .Change(i => Settings.JellyfishEverywhere = i);
+                staminaOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
+                    i => $"{i * 10}", 0, 50, Settings.Stamina, 11).Change(i => Settings.Stamina = i);
+                disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
+                    .Change(b => Settings.DisableNeutralJumping = b);
+                regularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
+                    i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"),
+                    0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
+                        Settings.RegularHiccups = multiplierScale[i];
+                        (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
+                    });
+                hiccupStrengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HiccupStrength), indexFromMultiplier(10)).Change(i => Settings.HiccupStrength = multiplierScale[i]);
+                allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
+                    .Change(b => Settings.AllStrawberriesAreGoldens = b);
+            }
+
+            // ======
+            if (category == VariantCategory.All || category == VariantCategory.Troll) {
+                forceDuckOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround, false)
                 .Change(b => Settings.ForceDuckOnGround = b);
-            invertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
-                .Change(b => Settings.InvertDashes = b);
-            invertGrabOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTGRAB"), Settings.InvertGrab, false)
-                .Change(b => Settings.InvertGrab = b);
-            heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
-                .Change(b => Settings.HeldDash = b);
-            disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
-                .Change(b => Settings.DisableNeutralJumping = b);
-            badelineChasersEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
-                .Change(b => Settings.BadelineChasersEverywhere = b);
-            affectExistingChasersOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AFFECTEXISTINGCHASERS"), Settings.AffectExistingChasers, false)
-                .Change(b => Settings.AffectExistingChasers = b);
-            chaserCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
-                i => i.ToString(), 1, 10, Settings.ChaserCount, 0).Change(i => Settings.ChaserCount = i);
-            badelineBossesEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
-                .Change(b => {
-                    Settings.BadelineBossesEverywhere = b;
-                    refreshOptionMenuEnabledStatus();
-                });
-
-            badelineAttackPatternOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEATTACKPATTERN"),
-                i => {
-                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
-                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_BADELINEPATTERN_{badelineBossesPatternsOptions[i]}");
-                }, 0, badelineBossesPatternsOptions.Length - 1, indexFromPatternValue(Settings.BadelineAttackPattern), 0)
-                .Change(i => Settings.BadelineAttackPattern = badelineBossesPatternsOptions[i]);
-
-            changePatternOfExistingBossesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEPATTERNSOFEXISTINGBOSSES"), Settings.ChangePatternsOfExistingBosses, false)
-                .Change(b => Settings.ChangePatternsOfExistingBosses = b);
-
-            firstBadelineSpawnRandomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM"),
-                i => i == 1 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF"), 
-                0, 1, Settings.FirstBadelineSpawnRandom ? 1 : 0, 0).Change(i => Settings.FirstBadelineSpawnRandom = (i != 0));
-            badelineBossCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT"),
-                i => i.ToString(), 1, 5, Settings.BadelineBossCount, 0).Change(i => Settings.BadelineBossCount = i);
-            badelineBossNodeCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT"),
-                i => i.ToString(), 1, 5, Settings.BadelineBossNodeCount, 0).Change(i => Settings.BadelineBossNodeCount = i);
-
-            changeVariantsRandomlyOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false)
-                .Change(b => {
-                    Settings.ChangeVariantsRandomly = b;
-                    refreshOptionMenuEnabledStatus();
-                });
-            regularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
-                i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"), 
-                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
-                    Settings.RegularHiccups = multiplierScale[i];
-                    (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
-                });
-            hiccupStrengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HiccupStrength), indexFromMultiplier(10)).Change(i => Settings.HiccupStrength = multiplierScale[i]);
-            roomLightingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING"),
-                i => {
-                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
-                    return $"{i * 10}%";
-                }, -1, 10, Settings.RoomLighting, 0).Change(i => {
-                    Settings.RoomLighting = i;
-                    if(Engine.Scene.GetType() == typeof(Level)) {
-                        // currently in level, change lighting right away
-                        Level lvl = (Engine.Scene as Level);
-                        lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
-                    }
-                });
-            roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
-                i => {
-                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
-                    return $"{i * 10}%";
-                }, -1, 10, Settings.RoomBloom, 0).Change(i => {
-                    Settings.RoomBloom = i;
-                    if(Engine.Scene.GetType() == typeof(Level)) {
-                        // currently in level, change bloom right away
-                        Level lvl = (Engine.Scene as Level);
-                        lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
-                    }
-                });
-            everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
-                .Change(b => Settings.EverythingIsUnderwater = b);
-            oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
-                .Change(b => {
-                    Settings.OshiroEverywhere = b;
-                    refreshOptionMenuEnabledStatus();
-                });
-            oshiroCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT"),
-                i => i.ToString(), 1, 5, Settings.OshiroCount, 0).Change(i => Settings.OshiroCount = i);
-            disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
-                .Change(b => Settings.DisableOshiroSlowdown = b);
-            windEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
-                i => {
-                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
-                    if (i == WindEverywhere.AvailableWindPatterns.Length + 1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
-                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_{WindEverywhere.AvailableWindPatterns[i - 1].ToString()}");
-                },
-                0, WindEverywhere.AvailableWindPatterns.Length + 1, Settings.WindEverywhere, 0)
-                .Change(i => Settings.WindEverywhere = i);
-            snowballsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
-                .Change(b => Settings.SnowballsEverywhere = b);
-            snowballDelayOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY"),
-                i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SnowballDelay), 8)
-                .Change(i => Settings.SnowballDelay = multiplierScale[i]);
-            addSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
-                i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
-            disableSeekerSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
-                .Change(b => Settings.DisableSeekerSlowdown = b);
-            theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
-                .Change(b => Settings.TheoCrystalsEverywhere = b);
-            badelineLagOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG"),
-                i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : multiplierFormatter(i).Replace("x", "s"),
-                0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BadelineLag), 0).Change(i => Settings.BadelineLag = multiplierScale[i]);
-            delayBetweenBadelinesOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES"),
-                i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DelayBetweenBadelines), 4)
-                .Change(i => Settings.DelayBetweenBadelines = multiplierScale[i]);
-            allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
-                .Change(b => Settings.AllStrawberriesAreGoldens = b);
-            dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
-                .Change(b => Settings.DontRefillDashOnGround = b);
-            gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
-                multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
-
-            colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
-                i => {
-                    if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
-
-                    // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
-                    // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
-                    string resourceName = ColorGrading.ExistingColorGrades[i];
-                    if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
-                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
-
-                }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
-                .Change(i => Settings.ColorGrading = i);
-
-            jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
-                .Change(i => Settings.JellyfishEverywhere = i);
-
-            // create the "master switch" option with specific enable/disable handling.
-            masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
-                Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
-            }
-                .Change(v => {
-                    Settings.MasterSwitch = v;
-                    refreshOptionMenuEnabledStatus();
-
-                    // (de)activate all hooks!
-                    if (v) ExtendedVariantsModule.Instance.HookStuff();
-                    else ExtendedVariantsModule.Instance.UnhookStuff();
-                });
-
-            // Add a button to easily revert to default values
-            resetToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
-                ExtendedVariantsModule.Instance.ResetToDefaultSettings();
-                refreshOptionMenuValues();
-                refreshOptionMenuEnabledStatus();
-            });
-
-            if(inGame) {
-                Level level = Engine.Scene as Level;
-
-                // this is how it works in-game
-                randomizerOptions = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER")).Pressed(() => {
-                    // close the Mod Options menu
-                    menu.RemoveSelf();
-
-                    // create our menu and prepare it
-                    TextMenu randomizerMenu = OuiRandomizerOptions.BuildMenu();
-
-                    randomizerMenu.OnESC = randomizerMenu.OnCancel = () => {
-                        // close the randomizer options
-                        Audio.Play(SFX.ui_main_button_back);
-                        randomizerMenu.Close();
-
-                        // and open the Mod Options menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
-                        // "what could possibly go wrong?" ~ famous last words
-                        level.Add(menu);
-                    };
-
-                    randomizerMenu.OnPause = () => {
-                        // we're unpausing, so close that menu, and save the mod Settings because the Mod Options menu won't do that for us
-                        Audio.Play(SFX.ui_main_button_back);
-                        randomizerMenu.CloseAndRun(Everest.SaveSettings(), () => {
-                            level.Paused = false;
-                            Engine.FreezeTimer = 0.15f;
-                        });
-                    };
-
-                    // finally, add the menu to the scene
-                    level.Add(randomizerMenu);
-                });
-            } else {
-                // this is how it works in the main menu: way more simply than the in-game mess.
-                randomizerOptions = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER")).Pressed(() => {
-                    OuiModOptions.Instance.Overworld.Goto<OuiRandomizerOptions>();
-                });
+                invertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
+                    .Change(b => Settings.InvertDashes = b);
+                invertGrabOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTGRAB"), Settings.InvertGrab, false)
+                    .Change(b => Settings.InvertGrab = b);
             }
 
-            TextMenu.SubHeader verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
-            TextMenu.SubHeader jumpingTitle = buildHeading(menu, "JUMPING");
-            TextMenu.SubHeader dashingTitle = buildHeading(menu, "DASHING");
-            TextMenu.SubHeader movingTitle = buildHeading(menu, "MOVING");
-            TextMenu.SubHeader chasersTitle = buildHeading(menu, "CHASERS");
-            TextMenu.SubHeader bossesTitle = buildHeading(menu, "BOSSES");
-            TextMenu.SubHeader oshiroTitle = buildHeading(menu, "OSHIRO");
-            TextMenu.SubHeader everywhereTitle = buildHeading(menu, "EVERYWHERE");
-            TextMenu.SubHeader globalTitle = buildHeading(menu, "GLOBAL");
-            TextMenu.SubHeader otherTitle = buildHeading(menu, "OTHER");
-            TextMenu.SubHeader trollTitle = buildHeading(menu, "TROLL");
-            TextMenu.SubHeader randomizerTitle = buildHeading(menu, "RANDOMIZER");
+            if (includeRandomizer) {
+                changeVariantsRandomlyOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false)
+                    .Change(b => {
+                        Settings.ChangeVariantsRandomly = b;
+                        refreshOptionMenuEnabledStatus();
+                    });
+
+                randomizerOptions = AbstractSubmenu.BuildOpenMenuButton<OuiRandomizerOptions>(menu, inGame, submenuBackAction, new object[0]);
+            }
+
+            TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
+                oshiroTitle = null, everywhereTitle = null, globalTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null;
+
+            if (category == VariantCategory.All) {
+                verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
+                jumpingTitle = buildHeading(menu, "JUMPING");
+                dashingTitle = buildHeading(menu, "DASHING");
+                movingTitle = buildHeading(menu, "MOVING");
+                chasersTitle = buildHeading(menu, "CHASERS");
+                bossesTitle = buildHeading(menu, "BOSSES");
+                oshiroTitle = buildHeading(menu, "OSHIRO");
+                everywhereTitle = buildHeading(menu, "EVERYWHERE");
+                globalTitle = buildHeading(menu, "GLOBAL");
+                otherTitle = buildHeading(menu, "OTHER");
+                trollTitle = buildHeading(menu, "TROLL");
+            }
+            if (includeRandomizer) randomizerTitle = buildHeading(menu, "RANDOMIZER");
+
+            TextMenu.Item verticalSpeedSubMenu = null, jumpingSubMenu = null, dashingSubMenu = null, movingSubMenu = null, chasersSubMenu = null, bossesSubMenu = null,
+                oshiroSubMenu = null, everywhereSubMenu = null, globalSubMenu = null, otherSubMenu = null, trollSubMenu = null;
+
+            if (includeCategorySubmenus) {
+                submenusTitle = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING"));
+                verticalSpeedSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.VerticalSpeed });
+                jumpingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Jumping });
+                dashingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Dashing });
+                movingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Moving });
+                chasersSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Chasers });
+                bossesSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Bosses });
+                oshiroSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Oshiro });
+                everywhereSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Everywhere });
+                globalSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Global });
+                otherSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Other });
+                trollSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Troll });
+            }
+
+            TextMenu.Item openSubmenuButton = null;
+            if (includeOpenSubmenuButton) {
+                openSubmenuButton = AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, inGame,
+                        () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), new object[] { inGame });
+            }
 
             allOptions = new List<TextMenu.Item>() {
                 // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle,
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
+                // all submenus
+                verticalSpeedSubMenu, jumpingSubMenu, dashingSubMenu, movingSubMenu, chasersSubMenu, bossesSubMenu, oshiroSubMenu, everywhereSubMenu, globalSubMenu, otherSubMenu, trollSubMenu,
                 // all options excluding the master switch
+                optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, openSubmenuButton,
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
@@ -422,87 +488,138 @@ namespace ExtendedVariants.UI {
 
             refreshOptionMenuEnabledStatus();
 
-            menu.Add(masterSwitchOption);
-            menu.Add(resetToDefaultOption);
+            if (includeMasterSwitch) {
+                menu.Add(masterSwitchOption);
+                if(!inGame) {
+                    menu.Add(optionsOutOfModOptionsMenuOption);
+                    menu.Add(submenusForEachCategoryOption);
+                }
+            }
 
-            menu.Add(verticalSpeedTitle);
-            menu.Add(gravityOption);
-            menu.Add(fallSpeedOption);
+            if(category == VariantCategory.All || includeCategorySubmenus) {
+                menu.Add(resetToDefaultOption);
+            }
 
-            menu.Add(jumpingTitle);
-            menu.Add(jumpHeightOption);
-            menu.Add(wallBouncingSpeedOption);
-            menu.Add(disableWallJumpingOption);
-            menu.Add(disableClimbJumpingOption);
-            menu.Add(jumpCountOption);
-            menu.Add(refillJumpsOnDashRefillOption);
+            if (includeOpenSubmenuButton) {
+                menu.Add(openSubmenuButton);
+            }
 
-            menu.Add(dashingTitle);
-            menu.Add(dashSpeedOption);
-            menu.Add(dashLengthOption);
-            menu.Add(hyperdashSpeedOption);
-            menu.Add(dashCountOption);
-            menu.Add(heldDashOption);
-            menu.Add(dontRefillDashOnGroundOption);
+            if (includeCategorySubmenus) {
+                menu.Add(submenusTitle);
+                menu.Add(verticalSpeedSubMenu);
+                menu.Add(jumpingSubMenu);
+                menu.Add(dashingSubMenu);
+                menu.Add(movingSubMenu);
+                menu.Add(chasersSubMenu);
+                menu.Add(bossesSubMenu);
+                menu.Add(oshiroSubMenu);
+                menu.Add(everywhereSubMenu);
+                menu.Add(globalSubMenu);
+                menu.Add(otherSubMenu);
+                menu.Add(trollSubMenu);
+            }
 
-            menu.Add(movingTitle);
-            menu.Add(speedXOption);
-            menu.Add(frictionOption);
-            menu.Add(airFrictionOption);
+            if (category == VariantCategory.All) menu.Add(verticalSpeedTitle);
+            if (category == VariantCategory.All || category == VariantCategory.VerticalSpeed) {
+                menu.Add(gravityOption);
+                menu.Add(fallSpeedOption);
+            }
 
-            menu.Add(chasersTitle);
-            menu.Add(badelineChasersEverywhereOption);
-            menu.Add(chaserCountOption);
-            menu.Add(affectExistingChasersOption);
-            menu.Add(badelineLagOption);
-            menu.Add(delayBetweenBadelinesOption);
+            if (category == VariantCategory.All) menu.Add(jumpingTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Jumping) {
+                menu.Add(jumpHeightOption);
+                menu.Add(wallBouncingSpeedOption);
+                menu.Add(disableWallJumpingOption);
+                menu.Add(disableClimbJumpingOption);
+                menu.Add(jumpCountOption);
+                menu.Add(refillJumpsOnDashRefillOption);
+            }
 
-            menu.Add(bossesTitle);
-            menu.Add(badelineBossesEverywhereOption);
-            menu.Add(badelineAttackPatternOption);
-            menu.Add(changePatternOfExistingBossesOption);
-            menu.Add(firstBadelineSpawnRandomOption);
-            menu.Add(badelineBossCountOption);
-            menu.Add(badelineBossNodeCountOption);
+            if (category == VariantCategory.All) menu.Add(dashingTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Dashing) {
+                menu.Add(dashSpeedOption);
+                menu.Add(dashLengthOption);
+                menu.Add(hyperdashSpeedOption);
+                menu.Add(dashCountOption);
+                menu.Add(heldDashOption);
+                menu.Add(dontRefillDashOnGroundOption);
+            }
 
-            menu.Add(oshiroTitle);
-            menu.Add(oshiroEverywhereOption);
-            menu.Add(oshiroCountOption);
-            menu.Add(disableOshiroSlowdownOption);
+            if (category == VariantCategory.All) menu.Add(movingTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Moving) {
+                menu.Add(speedXOption);
+                menu.Add(frictionOption);
+                menu.Add(airFrictionOption);
+            }
 
-            menu.Add(everywhereTitle);
-            menu.Add(windEverywhereOption);
-            menu.Add(snowballsEverywhereOption);
-            menu.Add(snowballDelayOption);
-            menu.Add(addSeekersOption);
-            menu.Add(disableSeekerSlowdownOption);
-            menu.Add(theoCrystalsEverywhereOption);
+            if (category == VariantCategory.All) menu.Add(chasersTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Chasers) {
+                menu.Add(badelineChasersEverywhereOption);
+                menu.Add(chaserCountOption);
+                menu.Add(affectExistingChasersOption);
+                menu.Add(badelineLagOption);
+                menu.Add(delayBetweenBadelinesOption);
+            }
 
-            menu.Add(globalTitle);
-            menu.Add(gameSpeedOption);
-            menu.Add(upsideDownOption);
-            menu.Add(roomLightingOption);
-            menu.Add(roomBloomOption);
-            menu.Add(everythingIsUnderwaterOption);
-            menu.Add(colorGradingOption);
+            if (category == VariantCategory.All) menu.Add(bossesTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Bosses) {
+                menu.Add(badelineBossesEverywhereOption);
+                menu.Add(badelineAttackPatternOption);
+                menu.Add(changePatternOfExistingBossesOption);
+                menu.Add(firstBadelineSpawnRandomOption);
+                menu.Add(badelineBossCountOption);
+                menu.Add(badelineBossNodeCountOption);
+            }
 
-            menu.Add(otherTitle);
-            menu.Add(jellyfishEverywhereOption);
-            menu.Add(staminaOption);
-            menu.Add(disableNeutralJumpingOption);
-            menu.Add(regularHiccupsOption);
-            menu.Add(hiccupStrengthOption);
-            menu.Add(allStrawberriesAreGoldensOption);
+            if (category == VariantCategory.All) menu.Add(oshiroTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Oshiro) {
+                menu.Add(oshiroEverywhereOption);
+                menu.Add(oshiroCountOption);
+                menu.Add(disableOshiroSlowdownOption);
+            }
 
-            menu.Add(trollTitle);
-            menu.Add(forceDuckOnGroundOption);
-            menu.Add(invertDashesOption);
-            menu.Add(invertGrabOption);
+            if (category == VariantCategory.All) menu.Add(everywhereTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Everywhere) {
+                menu.Add(windEverywhereOption);
+                menu.Add(snowballsEverywhereOption);
+                menu.Add(snowballDelayOption);
+                menu.Add(addSeekersOption);
+                menu.Add(disableSeekerSlowdownOption);
+                menu.Add(theoCrystalsEverywhereOption);
+            }
 
+            if (category == VariantCategory.All) menu.Add(globalTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Global) {
+                menu.Add(gameSpeedOption);
+                menu.Add(upsideDownOption);
+                menu.Add(roomLightingOption);
+                menu.Add(roomBloomOption);
+                menu.Add(everythingIsUnderwaterOption);
+                menu.Add(colorGradingOption);
+            }
 
-            menu.Add(randomizerTitle);
-            menu.Add(changeVariantsRandomlyOption);
-            menu.Add(randomizerOptions);
+            if (category == VariantCategory.All) menu.Add(otherTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Other) {
+                menu.Add(jellyfishEverywhereOption);
+                menu.Add(staminaOption);
+                menu.Add(disableNeutralJumpingOption);
+                menu.Add(regularHiccupsOption);
+                menu.Add(hiccupStrengthOption);
+                menu.Add(allStrawberriesAreGoldensOption);
+            }
+
+            if (category == VariantCategory.All) menu.Add(trollTitle);
+            if (category == VariantCategory.All || category == VariantCategory.Troll) {
+                menu.Add(forceDuckOnGroundOption);
+                menu.Add(invertDashesOption);
+                menu.Add(invertGrabOption);
+            }
+
+            if (includeRandomizer) {
+                menu.Add(randomizerTitle);
+                menu.Add(changeVariantsRandomlyOption);
+                menu.Add(randomizerOptions);
+            }
         }
 
         private TextMenu.SubHeader buildHeading(TextMenu menu, string headingNameResource) {
@@ -568,19 +685,21 @@ namespace ExtendedVariants.UI {
         private void refreshOptionMenuEnabledStatus() {
             // hide everything if the master switch is off, show everything if it is on.
             foreach (TextMenu.Item item in allOptions) {
-                item.Visible = Settings.MasterSwitch;
+                if(item != null) item.Visible = Settings.MasterSwitch;
             }
 
             // special graying-out rules for some variant options
-            refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
-            oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
-            randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
-            firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
-            badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
-            badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
+            if (refillJumpsOnDashRefillOption != null) refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
+            if (oshiroCountOption != null) oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
+            if (randomizerOptions != null) randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
+            if (firstBadelineSpawnRandomOption != null) firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
+            if (badelineBossCountOption != null) badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
+            if (badelineBossNodeCountOption != null) badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {
+            if (option == null) return;
+
             newValue -= min;
 
             if(newValue != option.Index) {
@@ -592,6 +711,8 @@ namespace ExtendedVariants.UI {
         }
 
         private void setValue(TextMenu.Option<bool> option, bool newValue) {
+            if (option == null) return;
+
             if (newValue != (option.Index == 1)) {
                 // replicate the vanilla behaviour
                 option.PreviousIndex = option.Index;

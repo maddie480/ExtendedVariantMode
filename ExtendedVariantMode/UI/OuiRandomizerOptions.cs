@@ -1,15 +1,15 @@
 ﻿using Celeste;
-using Celeste.Mod.UI;
 using ExtendedVariants.Module;
-using Microsoft.Xna.Framework;
-using Monocle;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 
 namespace ExtendedVariants.UI {
-    // That's just me trying to implement a mod options submenu. Don't mind me
-    // Heavily based off the OuiModOptions from Everest: https://github.com/EverestAPI/Everest/blob/master/Celeste.Mod.mm/Mod/UI/OuiModOptions.cs
-    class OuiRandomizerOptions : Oui {
+    /// <summary>
+    /// The randomizer options submenu. Parameters = none.
+    /// </summary>
+    public class OuiRandomizerOptions : AbstractSubmenu {
+
+        public OuiRandomizerOptions() : base("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE", "MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER") { }
         
         /// <summary>
         /// List of options shown for Change Variants Interval.
@@ -50,26 +50,14 @@ namespace ExtendedVariants.UI {
             return vanillafyScale.Length - 1;
         }
 
-
-        private TextMenu menu;
-
-        private const float onScreenX = 960f;
-        private const float offScreenX = 2880f;
-
-        private float alpha = 0f;
-
         private class OptionItems {
             public HashSet<TextMenu.Item> VanillaVariantOptions = new HashSet<TextMenu.Item>();
             public HashSet<TextMenu.Item> ExtendedVariantOptions = new HashSet<TextMenu.Item>();
             public TextMenu.Option<int> VanillafyOption;
         }
 
-        public static TextMenu BuildMenu() {
-            TextMenu menu = new TextMenu();
-
+        internal override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             OptionItems items = new OptionItems();
-
-            menu.Add(new TextMenu.Header(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE")));
 
             // Add the general settings
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_GENERALSETTINGS")));
@@ -143,8 +131,6 @@ namespace ExtendedVariants.UI {
             }
 
             refreshOptionMenuEnabledStatus(items);
-
-            return menu;
         }
 
         private static void refreshOptionMenuEnabledStatus(OptionItems items) {
@@ -177,51 +163,8 @@ namespace ExtendedVariants.UI {
             return toggle;
         }
 
-        public override IEnumerator Enter(Oui from) {
-            menu = BuildMenu();
-            Scene.Add(menu);
-
-            menu.Visible = Visible = true;
-            menu.Focused = false;
-
-            for (float p = 0f; p < 1f; p += Engine.DeltaTime * 4f) {
-                menu.X = offScreenX + -1920f * Ease.CubeOut(p);
-                alpha = Ease.CubeOut(p);
-                yield return null;
-            }
-
-            menu.Focused = true;
-        }
-
-        public override IEnumerator Leave(Oui next) {
-            Audio.Play(SFX.ui_main_whoosh_large_out);
-            menu.Focused = false;
-
-            for (float p = 0f; p < 1f; p += Engine.DeltaTime * 4f) {
-                menu.X = onScreenX + 1920f * Ease.CubeIn(p);
-                alpha = 1f - Ease.CubeIn(p);
-                yield return null;
-            }
-
-            menu.Visible = Visible = false;
-            menu.RemoveSelf();
-            menu = null;
-        }
-
-        public override void Update() {
-            if (menu != null && menu.Focused && Selected && Input.MenuCancel.Pressed) {
-                Audio.Play(SFX.ui_main_button_back);
-                Overworld.Goto<OuiModOptions>();
-            }
-
-            base.Update();
-        }
-
-        public override void Render() {
-            if (alpha > 0f) {
-                Draw.Rect(-10f, -10f, 1940f, 1100f, Color.Black * alpha * 0.4f);
-            }
-            base.Render();
+        internal override void gotoMenu(Overworld overworld) {
+            overworld.Goto<OuiRandomizerOptions>();
         }
     }
 }
