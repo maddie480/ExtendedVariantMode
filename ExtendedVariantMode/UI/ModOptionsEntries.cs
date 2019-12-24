@@ -359,8 +359,9 @@ namespace ExtendedVariants.UI {
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                        if (i > 10) return $"{(i - 9) * 100}%";
                         return $"{i * 10}%";
-                    }, -1, 10, Settings.RoomBloom, 0).Change(i => {
+                    }, -1, 14, Settings.RoomBloom, 0).Change(i => {
                         Settings.RoomBloom = i;
                         if (Engine.Scene.GetType() == typeof(Level)) {
                             // currently in level, change bloom right away

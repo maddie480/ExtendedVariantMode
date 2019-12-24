@@ -1,11 +1,11 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using Monocle;
+using MonoMod.Cil;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class RoomBloom : AbstractExtendedVariant {
-
-        bool moddedRoomBloom = false;
 
         public override int GetDefaultValue() {
             return -1;
@@ -20,71 +20,39 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            On.Celeste.Level.LoadLevel += modLoadLevel;
-            On.Celeste.BloomFadeTrigger.OnStay += modBloomFadeTriggerOnStay;
-            Everest.Events.Level.OnExit += onLevelExit;
-
-            // If we enable variants during a level, apply bloom right away.
-            if (Engine.Scene != null && Engine.Scene.GetType() == typeof(Level) && Settings.RoomBloom != -1) {
-                Level level = Engine.Scene as Level;
-
-                level.Bloom.Base = Settings.RoomBloom / 10f;
-                moddedRoomBloom = true;
-            }
+            IL.Celeste.BloomRenderer.Apply += onBloomRendererApply;
         }
 
         public override void Unload() {
-            On.Celeste.Level.LoadLevel -= modLoadLevel;
-            On.Celeste.BloomFadeTrigger.OnStay -= modBloomFadeTriggerOnStay;
-            Everest.Events.Level.OnExit -= onLevelExit;
+            IL.Celeste.BloomRenderer.Apply -= onBloomRendererApply;
+        }
 
-            // if we disable variants during a level, we have to un-mod bloom right away.
-            if(Engine.Scene.GetType() == typeof(Level)) {
-                Level level = Engine.Scene as Level;
+        private void onBloomRendererApply(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
 
-                moddedRoomBloom = false;
-                level.Bloom.Base = AreaData.Get(level).BloomBase + level.Session.BloomBaseAdd;
+            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Base"))) {
+                Logger.Log("ExtendedVariantMode/RoomBloom", $"Modding bloom base at {cursor.Index} in IL code for BloomRenderer.Apply");
+
+                cursor.EmitDelegate<Func<float, float>>(modBloomBase);
+            }
+
+            cursor.Index = 0;
+
+            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Strength"))) {
+                Logger.Log("ExtendedVariantMode/RoomBloom", $"Modding bloom strength at {cursor.Index} in IL code for BloomRenderer.Apply");
+
+                cursor.EmitDelegate<Func<float, float>>(modBloomStrength);
             }
         }
 
-        /// <summary>
-        /// Mods the bloom of a new room being loaded.
-        /// </summary>
-        /// <param name="self">The level we are in</param>
-        /// <param name="introType">How the player enters the level</param>
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
-            orig(self, playerIntro, isFromLoader);
-
-            if (Settings.RoomBloom != -1) {
-                // mod the room bloom
-                self.Bloom.Base = Settings.RoomBloom / 10f;
-                moddedRoomBloom = true;
-            } else if(moddedRoomBloom) {
-                // variant is disabled => restore the bloom according to session
-                self.Bloom.Base = AreaData.Get(self).BloomBase + self.Session.BloomBaseAdd;
-                moddedRoomBloom = false;
-            }
+        private float modBloomBase(float vanilla) {
+            if (Settings.RoomBloom == -1) return vanilla;
+            return Math.Min(Settings.RoomBloom, 10) / 10f;
         }
 
-        /// <summary>
-        /// Locks the bloom to the value set by the user even when they hit a Bloom Fade Trigger.
-        /// (The Bloom Fade Trigger will still update the BloomBaseAdd in the session, so we can use it to revert the changes if the variant is disabled.)
-        /// </summary>
-        /// <param name="orig">The original method</param>
-        /// <param name="self">The trigger itself</param>
-        /// <param name="player">The player hitting the trigger</param>
-        private void modBloomFadeTriggerOnStay(On.Celeste.BloomFadeTrigger.orig_OnStay orig, BloomFadeTrigger self, Player player) {
-            orig(self, player);
-
-            if (Settings.RoomBloom != -1) {
-                // be sure to lock the bloom to the value set by the player
-                self.SceneAs<Level>().Bloom.Base = Settings.RoomBloom / 10f;
-            }
-        }
-
-        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
-            // reset value to default
-            moddedRoomBloom = false;
+        private float modBloomStrength(float vanilla) {
+            if (Settings.RoomBloom == -1) return vanilla;
+            return Math.Max(1, Settings.RoomBloom - 9);
         }
     }
 }

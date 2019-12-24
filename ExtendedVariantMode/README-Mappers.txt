@@ -29,7 +29,11 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 		DontRefillDashOnGround, EverythingIsUnderwater, BadelineBossesEverywhere, ChangePatternsOfExistingBosses, InvertGrab, JellyfishEverywhere: 1 to enable, 0 to disable.
 	- OshiroCount: the number of Oshiros you want, when OshiroEverywhere is enabled
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
-	- RoomLighting, RoomBloom: the room's lighting or bloom in % divided by 10 (9 => 90%), -1 to disable
+	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
+	- RoomBloom: 
+		- -1 = don't change anything
+		- 0 to 10 => bloom base = value / 10, bloom strength = 1. For example, 8 => bloom base = 0.8, bloom strength = 1, displayed as 80% in the menu
+		- 11 to 14 => bloom base = 1, bloom strength = value - 9. For example, 12 => bloom base = 1, bloom strength = 3, displayed as 300% in the menu
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).

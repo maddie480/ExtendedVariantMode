@@ -9,7 +9,7 @@ namespace ExtendedVariants.UI {
 
         public OuiCategorySubmenu() : base(null, null) { }
 
-        internal override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
+        protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             ModOptionsEntries.VariantCategory category = (ModOptionsEntries.VariantCategory)parameters[0];
 
             // only put the category we're in
@@ -17,15 +17,15 @@ namespace ExtendedVariants.UI {
                 menu, inGame, false /* we don't care because there is no master switch */);
         }
 
-        internal override void gotoMenu(Overworld overworld) {
+        protected override void gotoMenu(Overworld overworld) {
             Overworld.Goto<OuiCategorySubmenu>();
         }
 
-        internal override string getButtonName(object[] parameters) {
+        protected override string getButtonName(object[] parameters) {
             return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}");
         }
 
-        internal override string getMenuName(object[] parameters) {
+        protected override string getMenuName(object[] parameters) {
             return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}").ToUpperInvariant();
         }
     }

@@ -36,19 +36,19 @@ namespace ExtendedVariants.UI {
         /// <summary>
         /// Adds all the submenu options to the TextMenu given in parameter.
         /// </summary>
-        internal abstract void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters);
+        protected abstract void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters);
 
         /// <summary>
         /// Gives the title that will be displayed on top of the menu.
         /// </summary>
-        internal virtual string getMenuName(object[] parameters) {
+        protected virtual string getMenuName(object[] parameters) {
             return Dialog.Clean(menuName);
         }
 
         /// <summary>
         /// Gives the name of the button that will open the menu from the parent submenu.
         /// </summary>
-        internal virtual string getButtonName(object[] parameters) {
+        protected virtual string getButtonName(object[] parameters) {
             return Dialog.Clean(buttonName);
         }
 
@@ -118,7 +118,7 @@ namespace ExtendedVariants.UI {
         /// <summary>
         /// Supposed to just contain "overworld.Goto<ChildType>()".
         /// </summary>
-        internal abstract void gotoMenu(Overworld overworld);
+        protected abstract void gotoMenu(Overworld overworld);
 
         /// <summary>
         /// Builds a button that opens the menu with specified type when hit.
@@ -133,7 +133,7 @@ namespace ExtendedVariants.UI {
         }
 
         /// <summary>
-        /// Method getting internally called on the Oui instance when the method just above is called.
+        /// Method getting protectedly called on the Oui instance when the method just above is called.
         /// </summary>
         private TextMenu.Item buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
             if(inGame) {
@@ -154,11 +154,11 @@ namespace ExtendedVariants.UI {
                     thisMenu.OnESC = thisMenu.OnCancel = () => {
                         // close this menu
                         Audio.Play(SFX.ui_main_button_back);
-                        thisMenu.Close();
-
-                        // and open the parent menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
-                        // "what could possibly go wrong?" ~ famous last words
-                        level.Add(parentMenu);
+                        thisMenu.CloseAndRun(Everest.SaveSettings(), () => {
+                            // and open the parent menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
+                            // "what could possibly go wrong?" ~ famous last words
+                            level.Add(parentMenu);
+                        });
                     };
 
                     thisMenu.OnPause = () => {

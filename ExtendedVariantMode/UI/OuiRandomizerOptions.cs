@@ -56,7 +56,7 @@ namespace ExtendedVariants.UI {
             public TextMenu.Option<int> VanillafyOption;
         }
 
-        internal override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
+        protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             OptionItems items = new OptionItems();
 
             // Add the general settings
@@ -163,7 +163,7 @@ namespace ExtendedVariants.UI {
             return toggle;
         }
 
-        internal override void gotoMenu(Overworld overworld) {
+        protected override void gotoMenu(Overworld overworld) {
             overworld.Goto<OuiRandomizerOptions>();
         }
     }

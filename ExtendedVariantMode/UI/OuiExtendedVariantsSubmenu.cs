@@ -14,7 +14,7 @@ namespace ExtendedVariants.UI {
 
         public OuiExtendedVariantsSubmenu() : base("MODOPTIONS_EXTENDEDVARIANTS_PAUSEMENU_BUTTON", null) { }
 
-        internal override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
+        protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             currentMenu = menu;
 
             if (ExtendedVariantsModule.Settings.SubmenusForEachCategory) {
@@ -53,15 +53,15 @@ namespace ExtendedVariants.UI {
             return base.Leave(next);
         }
 
-        internal override void gotoMenu(Overworld overworld) {
+        protected override void gotoMenu(Overworld overworld) {
             overworld.Goto<OuiExtendedVariantsSubmenu>();
         }
 
-        internal override string getMenuName(object[] parameters) {
+        protected override string getMenuName(object[] parameters) {
             return base.getMenuName(parameters).ToUpperInvariant();
         }
 
-        internal override string getButtonName(object[] parameters) {
+        protected override string getButtonName(object[] parameters) {
             return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{(((bool) parameters[0]) ? "PAUSEMENU" : "MODOPTIONS")}_BUTTON");
         }
     }
