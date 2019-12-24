@@ -5,10 +5,10 @@ using ExtendedVariants.Variants;
 using Monocle;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtendedVariants.UI {
     class ModOptionsEntries {
-
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
         private TextMenu.Option<bool> masterSwitchOption;
@@ -171,9 +171,15 @@ namespace ExtendedVariants.UI {
                 
                 if (!inGame) {
                     optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenu)
-                        .Change(b => Settings.OptionsOutOfModOptionsMenu = b);
+                        .Change(b => {
+                            Settings.OptionsOutOfModOptionsMenu = b;
+                            if (!Settings.SubmenusForEachCategory) reloadModOptions();
+                        });
                     submenusForEachCategoryOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY"), Settings.SubmenusForEachCategory)
-                        .Change(b => Settings.SubmenusForEachCategory = b);
+                        .Change(b => {
+                            Settings.SubmenusForEachCategory = b;
+                            reloadModOptions();
+                        });
                 }
             }
 
@@ -692,6 +698,11 @@ namespace ExtendedVariants.UI {
                 option.Index = newValue ? 1 : 0;
                 option.ValueWiggler.Start();
             }
+        }
+
+        private void reloadModOptions() {
+            // just transition from Mod Options... to Mod Options. Easy right?
+            OuiModOptions.Instance.Overworld.Goto<OuiModOptions>();
         }
     }
 }

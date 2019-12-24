@@ -153,10 +153,10 @@ namespace ExtendedVariants.Module {
             IEnumerator enterEnum = orig(self, from);
             if (enterEnum.MoveNext()) yield return enterEnum.Current;
 
-            if (savedMenuIndex != -1 && (from.GetType() == typeof(OuiRandomizerOptions) || from.GetType() == typeof(OuiCategorySubmenu)) 
-                || from.GetType() == typeof(OuiExtendedVariantsSubmenu)) {
+            if (savedMenuIndex != -1 && (from.GetType() == typeof(OuiRandomizerOptions) || from.GetType() == typeof(OuiCategorySubmenu))
+                || from.GetType() == typeof(OuiExtendedVariantsSubmenu) || from.GetType() == typeof(OuiModOptions)) {
 
-                // restore selection if coming from submenu
+                // restore selection if coming from submenu or reloading Mod Options
                 TextMenu currentMenu = (TextMenu)modOptionsMenu.GetValue(self);
                 if (currentMenu != null) {
                     currentMenu.Selection = savedMenuIndex;
