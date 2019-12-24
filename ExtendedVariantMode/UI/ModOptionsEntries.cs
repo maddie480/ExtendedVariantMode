@@ -138,7 +138,7 @@ namespace ExtendedVariants.UI {
         }
 
         public enum VariantCategory {
-            All, VerticalSpeed, Jumping, Dashing, Moving, Chasers, Bosses, Oshiro, Everywhere, Global, Other, Troll, None
+            All, Movement, GameElements, Visual, GameplayTweaks, None
         }
 
         /// <summary>
@@ -187,15 +187,14 @@ namespace ExtendedVariants.UI {
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.VerticalSpeed) {
+            if (category == VariantCategory.All || category == VariantCategory.Movement) {
+                // Vertical Speed
                 gravityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.Gravity), indexFromMultiplier(10)).Change(i => Settings.Gravity = multiplierScale[i]);
                 fallSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.FallSpeed), indexFromMultiplier(10)).Change(i => Settings.FallSpeed = multiplierScale[i]);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Jumping) {
+                // Jumping
                 jumpHeightOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.JumpHeight), indexFromMultiplier(10)).Change(i => Settings.JumpHeight = multiplierScale[i]);
                 wallBouncingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED"),
@@ -204,6 +203,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableWallJumping = b);
                 disableClimbJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
                     .Change(b => Settings.DisableClimbJumping = b);
+                disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
+                    .Change(b => Settings.DisableNeutralJumping = b);
                 jumpCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
                     i => {
                         if (i == 6) {
@@ -216,10 +217,8 @@ namespace ExtendedVariants.UI {
                     });
                 refillJumpsOnDashRefillOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
                     .Change(b => Settings.RefillJumpsOnDashRefill = b);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Dashing) {
+                // Dashing
                 dashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
                 dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
@@ -236,10 +235,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.HeldDash = b);
                 dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
                     .Change(b => Settings.DontRefillDashOnGround = b);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Moving) {
+                // Moving
                 speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
                 frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
@@ -263,7 +260,8 @@ namespace ExtendedVariants.UI {
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.Chasers) {
+            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
+                // Badeline Chasers
                 badelineChasersEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
                     .Change(b => Settings.BadelineChasersEverywhere = b);
                 chaserCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
@@ -276,10 +274,8 @@ namespace ExtendedVariants.UI {
                 delayBetweenBadelinesOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES"),
                     i => multiplierFormatter(i).Replace("x", "s"), 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DelayBetweenBadelines), 4)
                     .Change(i => Settings.DelayBetweenBadelines = multiplierScale[i]);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Bosses) {
+                // Badeline Bosses
                 badelineBossesEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
                     .Change(b => {
                         Settings.BadelineBossesEverywhere = b;
@@ -300,10 +296,8 @@ namespace ExtendedVariants.UI {
                     i => i.ToString(), 1, 5, Settings.BadelineBossCount, 0).Change(i => Settings.BadelineBossCount = i);
                 badelineBossNodeCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT"),
                     i => i.ToString(), 1, 5, Settings.BadelineBossNodeCount, 0).Change(i => Settings.BadelineBossNodeCount = i);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Oshiro) {
+                // Oshiro
                 oshiroEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
                     .Change(b => {
                         Settings.OshiroEverywhere = b;
@@ -313,10 +307,8 @@ namespace ExtendedVariants.UI {
                     i => i.ToString(), 1, 5, Settings.OshiroCount, 0).Change(i => Settings.OshiroCount = i);
                 disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
                     .Change(b => Settings.DisableOshiroSlowdown = b);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Everywhere) {
+                // Other elements
                 windEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
                     i => {
                         if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
@@ -336,13 +328,12 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableSeekerSlowdown = b);
                 theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
                     .Change(b => Settings.TheoCrystalsEverywhere = b);
+                jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
+                    .Change(i => Settings.JellyfishEverywhere = i);
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.Global) {
-                gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
-                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
-
+            if (category == VariantCategory.All || category == VariantCategory.Visual) {
                 upsideDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
                     .Change(b => Settings.UpsideDown = b);
 
@@ -371,9 +362,7 @@ namespace ExtendedVariants.UI {
                             lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
                         }
                     });
-                everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
-                    .Change(b => Settings.EverythingIsUnderwater = b);
-
+                
                 colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -389,27 +378,30 @@ namespace ExtendedVariants.UI {
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.Other) {
-                jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
-                    .Change(i => Settings.JellyfishEverywhere = i);
+            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
+                // ex-"Other" category
+                gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
+
+                everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
+                    .Change(b => Settings.EverythingIsUnderwater = b);
+
                 staminaOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STAMINA"),
                     i => $"{i * 10}", 0, 50, Settings.Stamina, 11).Change(i => Settings.Stamina = i);
-                disableNeutralJumpingOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
-                    .Change(b => Settings.DisableNeutralJumping = b);
                 regularHiccupsOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS"),
                     i => i == 0 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : multiplierFormatter(i).Replace("x", "s"),
                     0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RegularHiccups), 0).Change(i => {
                         Settings.RegularHiccups = multiplierScale[i];
                         (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
                     });
+
                 hiccupStrengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HiccupStrength), indexFromMultiplier(10)).Change(i => Settings.HiccupStrength = multiplierScale[i]);
+
                 allStrawberriesAreGoldensOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
                     .Change(b => Settings.AllStrawberriesAreGoldens = b);
-            }
 
-            // ======
-            if (category == VariantCategory.All || category == VariantCategory.Troll) {
+                // ex-"Troll" category
                 forceDuckOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround, false)
                 .Change(b => Settings.ForceDuckOnGround = b);
                 invertDashesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
@@ -429,39 +421,41 @@ namespace ExtendedVariants.UI {
             }
 
             TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
-                oshiroTitle = null, everywhereTitle = null, globalTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null;
+                oshiroTitle = null, everywhereTitle = null, visualTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null;
 
-            if (category == VariantCategory.All) {
+            if (category == VariantCategory.All || category == VariantCategory.Movement) {
                 verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
                 jumpingTitle = buildHeading(menu, "JUMPING");
                 dashingTitle = buildHeading(menu, "DASHING");
                 movingTitle = buildHeading(menu, "MOVING");
+            }
+
+            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
                 chasersTitle = buildHeading(menu, "CHASERS");
                 bossesTitle = buildHeading(menu, "BOSSES");
                 oshiroTitle = buildHeading(menu, "OSHIRO");
                 everywhereTitle = buildHeading(menu, "EVERYWHERE");
-                globalTitle = buildHeading(menu, "GLOBAL");
+            }
+
+            if (category == VariantCategory.All || category == VariantCategory.Visual) {
+                visualTitle = buildHeading(menu, "VISUAL");
+            }
+
+            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
                 otherTitle = buildHeading(menu, "OTHER");
                 trollTitle = buildHeading(menu, "TROLL");
             }
+
             if (includeRandomizer) randomizerTitle = buildHeading(menu, "RANDOMIZER");
 
-            TextMenu.Item verticalSpeedSubMenu = null, jumpingSubMenu = null, dashingSubMenu = null, movingSubMenu = null, chasersSubMenu = null, bossesSubMenu = null,
-                oshiroSubMenu = null, everywhereSubMenu = null, globalSubMenu = null, otherSubMenu = null, trollSubMenu = null;
+            TextMenu.Item movementSubmenu = null, gameElementsSubmenu = null, visualSubmenu = null, gameplayTweaksSubmenu = null;
 
             if (includeCategorySubmenus) {
                 submenusTitle = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING"));
-                verticalSpeedSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.VerticalSpeed });
-                jumpingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Jumping });
-                dashingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Dashing });
-                movingSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Moving });
-                chasersSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Chasers });
-                bossesSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Bosses });
-                oshiroSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Oshiro });
-                everywhereSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Everywhere });
-                globalSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Global });
-                otherSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Other });
-                trollSubMenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Troll });
+                movementSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Movement });
+                gameElementsSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameElements });
+                visualSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Visual });
+                gameplayTweaksSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameplayTweaks });
             }
 
             TextMenu.Item openSubmenuButton = null;
@@ -472,9 +466,9 @@ namespace ExtendedVariants.UI {
 
             allOptions = new List<TextMenu.Item>() {
                 // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, globalTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, visualTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
                 // all submenus
-                verticalSpeedSubMenu, jumpingSubMenu, dashingSubMenu, movingSubMenu, chasersSubMenu, bossesSubMenu, oshiroSubMenu, everywhereSubMenu, globalSubMenu, otherSubMenu, trollSubMenu,
+                movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
                 // all options excluding the master switch
                 optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, openSubmenuButton,
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
@@ -506,110 +500,89 @@ namespace ExtendedVariants.UI {
 
             if (includeCategorySubmenus) {
                 menu.Add(submenusTitle);
-                menu.Add(verticalSpeedSubMenu);
-                menu.Add(jumpingSubMenu);
-                menu.Add(dashingSubMenu);
-                menu.Add(movingSubMenu);
-                menu.Add(chasersSubMenu);
-                menu.Add(bossesSubMenu);
-                menu.Add(oshiroSubMenu);
-                menu.Add(everywhereSubMenu);
-                menu.Add(globalSubMenu);
-                menu.Add(otherSubMenu);
-                menu.Add(trollSubMenu);
+                menu.Add(movementSubmenu);
+                menu.Add(gameElementsSubmenu);
+                menu.Add(visualSubmenu);
+                menu.Add(gameplayTweaksSubmenu);
             }
 
-            if (category == VariantCategory.All) menu.Add(verticalSpeedTitle);
-            if (category == VariantCategory.All || category == VariantCategory.VerticalSpeed) {
+            if (category == VariantCategory.All || category == VariantCategory.Movement) {
+                menu.Add(verticalSpeedTitle);
                 menu.Add(gravityOption);
                 menu.Add(fallSpeedOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(jumpingTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Jumping) {
+                
+                menu.Add(jumpingTitle);
                 menu.Add(jumpHeightOption);
                 menu.Add(wallBouncingSpeedOption);
                 menu.Add(disableWallJumpingOption);
                 menu.Add(disableClimbJumpingOption);
+                menu.Add(disableNeutralJumpingOption);
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(dashingTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Dashing) {
+                
+                menu.Add(dashingTitle);
                 menu.Add(dashSpeedOption);
                 menu.Add(dashLengthOption);
                 menu.Add(hyperdashSpeedOption);
                 menu.Add(dashCountOption);
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(movingTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Moving) {
+                
+                menu.Add(movingTitle);
                 menu.Add(speedXOption);
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
             }
 
-            if (category == VariantCategory.All) menu.Add(chasersTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Chasers) {
+            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
+                menu.Add(chasersTitle);
                 menu.Add(badelineChasersEverywhereOption);
                 menu.Add(chaserCountOption);
                 menu.Add(affectExistingChasersOption);
                 menu.Add(badelineLagOption);
                 menu.Add(delayBetweenBadelinesOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(bossesTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Bosses) {
+                
+                menu.Add(bossesTitle);
                 menu.Add(badelineBossesEverywhereOption);
                 menu.Add(badelineAttackPatternOption);
                 menu.Add(changePatternOfExistingBossesOption);
                 menu.Add(firstBadelineSpawnRandomOption);
                 menu.Add(badelineBossCountOption);
                 menu.Add(badelineBossNodeCountOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(oshiroTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Oshiro) {
+                
+                menu.Add(oshiroTitle);
                 menu.Add(oshiroEverywhereOption);
                 menu.Add(oshiroCountOption);
                 menu.Add(disableOshiroSlowdownOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(everywhereTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Everywhere) {
+                
+                menu.Add(everywhereTitle);
                 menu.Add(windEverywhereOption);
                 menu.Add(snowballsEverywhereOption);
                 menu.Add(snowballDelayOption);
                 menu.Add(addSeekersOption);
                 menu.Add(disableSeekerSlowdownOption);
                 menu.Add(theoCrystalsEverywhereOption);
+                menu.Add(jellyfishEverywhereOption);
             }
 
-            if (category == VariantCategory.All) menu.Add(globalTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Global) {
-                menu.Add(gameSpeedOption);
+            if (category == VariantCategory.All || category == VariantCategory.Visual) {
+                menu.Add(visualTitle);
                 menu.Add(upsideDownOption);
                 menu.Add(roomLightingOption);
                 menu.Add(roomBloomOption);
-                menu.Add(everythingIsUnderwaterOption);
                 menu.Add(colorGradingOption);
             }
 
-            if (category == VariantCategory.All) menu.Add(otherTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Other) {
-                menu.Add(jellyfishEverywhereOption);
+            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
+                menu.Add(otherTitle);
+                menu.Add(gameSpeedOption);
+                menu.Add(everythingIsUnderwaterOption);
                 menu.Add(staminaOption);
-                menu.Add(disableNeutralJumpingOption);
                 menu.Add(regularHiccupsOption);
                 menu.Add(hiccupStrengthOption);
                 menu.Add(allStrawberriesAreGoldensOption);
-            }
-
-            if (category == VariantCategory.All) menu.Add(trollTitle);
-            if (category == VariantCategory.All || category == VariantCategory.Troll) {
+                
+                menu.Add(trollTitle);
                 menu.Add(forceDuckOnGroundOption);
                 menu.Add(invertDashesOption);
                 menu.Add(invertGrabOption);

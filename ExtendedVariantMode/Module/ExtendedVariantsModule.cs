@@ -110,6 +110,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
         }
 
+        // ================ Mod options setup ================
+
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 

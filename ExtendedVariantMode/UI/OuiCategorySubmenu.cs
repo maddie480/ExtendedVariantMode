@@ -22,11 +22,11 @@ namespace ExtendedVariants.UI {
         }
 
         internal override string getButtonName(object[] parameters) {
-            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_HEADING_{(ModOptionsEntries.VariantCategory)parameters[0]}");
+            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}");
         }
 
         internal override string getMenuName(object[] parameters) {
-            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_HEADING_{(ModOptionsEntries.VariantCategory)parameters[0]}").ToUpperInvariant();
+            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}").ToUpperInvariant();
         }
     }
 }
