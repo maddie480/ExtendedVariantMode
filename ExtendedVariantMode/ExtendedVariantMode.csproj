@@ -144,13 +144,6 @@
     <Compile Include="Variants\WindEverywhere.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Everest\Celeste.Mod.mm\Celeste.Mod.mm.csproj">
-      <Project>{d5d0239d-ff95-4897-9484-1898ab7e82f5}</Project>
-      <Name>Celeste.Mod.mm</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Ahorn\triggers\extendedvariants.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
