@@ -361,14 +361,7 @@ namespace ExtendedVariants.UI {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                         if (i > 10) return $"{(i - 9) * 100}%";
                         return $"{i * 10}%";
-                    }, -1, 14, Settings.RoomBloom, 0).Change(i => {
-                        Settings.RoomBloom = i;
-                        if (Engine.Scene.GetType() == typeof(Level)) {
-                            // currently in level, change bloom right away
-                            Level lvl = (Engine.Scene as Level);
-                            lvl.Bloom.Base = (i == -1 ? AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd : i / 10f);
-                        }
-                    });
+                    }, -1, 14, Settings.RoomBloom, 0).Change(i => Settings.RoomBloom = i);
                 
                 colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
                     i => {

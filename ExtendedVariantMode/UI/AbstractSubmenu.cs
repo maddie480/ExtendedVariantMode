@@ -133,7 +133,7 @@ namespace ExtendedVariants.UI {
         }
 
         /// <summary>
-        /// Method getting protectedly called on the Oui instance when the method just above is called.
+        /// Method getting called on the Oui instance when the method just above is called.
         /// </summary>
         private TextMenu.Item buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
             if(inGame) {
@@ -145,7 +145,7 @@ namespace ExtendedVariants.UI {
                     this.backToParentMenu = backToParentMenu;
                     this.parameters = parameters;
 
-                    // close the Mod Options menu
+                    // close the parent menu
                     parentMenu.RemoveSelf();
 
                     // create our menu and prepare it

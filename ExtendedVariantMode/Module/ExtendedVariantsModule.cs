@@ -350,11 +350,6 @@ namespace ExtendedVariants.Module {
                 Level lvl = (Engine.Scene as Level);
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
             }
-            if(Settings.RoomBloom != -1 && Engine.Scene.GetType() == typeof(Level)) {
-                // currently in level, change bloom right away
-                Level lvl = (Engine.Scene as Level);
-                lvl.Bloom.Base = AreaData.Get(lvl).BloomBase + lvl.Session.BloomBaseAdd;
-            }
             
             // reset all proper variants to their default values
             foreach(AbstractExtendedVariant variant in VariantHandlers.Values) {
