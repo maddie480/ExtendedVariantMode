@@ -325,6 +325,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.DashSpeed) ExtendedVariantsModule.Settings.DashSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.DashLength) ExtendedVariantsModule.Settings.DashLength = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.HyperdashSpeed) ExtendedVariantsModule.Settings.HyperdashSpeed = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.ExplodeLaunchSpeed) ExtendedVariantsModule.Settings.ExplodeLaunchSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];

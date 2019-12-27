@@ -120,6 +120,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int ExplodeLaunchSpeed { get; set; } = 10;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool BadelineChasersEverywhere { get; set; } = false;
 
         [SettingIgnore]

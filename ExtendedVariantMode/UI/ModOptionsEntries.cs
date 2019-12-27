@@ -30,6 +30,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> refillJumpsOnDashRefillOption;
         private TextMenu.Option<bool> upsideDownOption;
         private TextMenu.Option<int> hyperdashSpeedOption;
+        private TextMenu.Option<int> explodeLaunchSpeedOption;
         private TextMenu.Option<int> wallBouncingSpeedOption;
         private TextMenu.Option<int> dashLengthOption;
         private TextMenu.Option<bool> forceDuckOnGroundOption;
@@ -245,6 +246,8 @@ namespace ExtendedVariants.UI {
                 // Moving
                 speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
+                explodeLaunchSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ExplodeLaunchSpeed), indexFromMultiplier(10)).Change(i => Settings.ExplodeLaunchSpeed = multiplierScale[i]);
                 frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
                     i => {
                         switch (i) {
@@ -478,7 +481,7 @@ namespace ExtendedVariants.UI {
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
                 badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption,
-                jellyfishEverywhereOption};
+                jellyfishEverywhereOption, explodeLaunchSpeedOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -532,6 +535,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(speedXOption);
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
+                menu.Add(explodeLaunchSpeedOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameElements) {
@@ -615,6 +619,7 @@ namespace ExtendedVariants.UI {
             setValue(refillJumpsOnDashRefillOption, Settings.RefillJumpsOnDashRefill);
             setValue(upsideDownOption, Settings.UpsideDown);
             setValue(hyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
+            setValue(explodeLaunchSpeedOption, 0, indexFromMultiplier(Settings.ExplodeLaunchSpeed));
             setValue(wallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(forceDuckOnGroundOption, Settings.ForceDuckOnGround);

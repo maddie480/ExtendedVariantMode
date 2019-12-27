@@ -57,7 +57,8 @@ const variants = String[
 	"BadelineBossCount",
 	"BadelineBossNodeCount",
 	"ColorGrading",
-	"JellyfishEverywhere"
+	"JellyfishEverywhere",
+	"ExplodeLaunchSpeed"
 ]
 
 const placements = Ahorn.PlacementDict(
