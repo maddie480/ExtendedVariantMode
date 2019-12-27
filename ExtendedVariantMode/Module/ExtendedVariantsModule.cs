@@ -41,7 +41,7 @@ namespace ExtendedVariants.Module {
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
             SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
-            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere
+            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -102,6 +102,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
             // DisableSeekerSlowdown is not a variant
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
+            VariantHandlers[Variant.RisingLavaEverywhere] = new RisingLavaEverywhere();
             // BadelineLag is not a variant
             // DelayBetweenBadelines is not a variant
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();

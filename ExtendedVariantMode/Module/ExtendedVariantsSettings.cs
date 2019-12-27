@@ -252,6 +252,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int JellyfishEverywhere { get; set; } = 0;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool RisingLavaEverywhere { get; set; } = false;
+
 
         // ======================================
 

@@ -86,6 +86,8 @@
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
+    <Compile Include="Entities\ExtendedVariantFallingIce.cs" />
+    <Compile Include="Entities\ExtendedVariantRisingLava.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="Variants\JellyfishEverywhere.cs" />
     <Compile Include="Variants\OshiroEverywhere.cs" />
     <Compile Include="Variants\RegularHiccups.cs" />
+    <Compile Include="Variants\RisingLavaEverywhere.cs" />
     <Compile Include="Variants\RoomBloom.cs" />
     <Compile Include="Variants\RoomLighting.cs" />
     <Compile Include="Variants\SnowballsEverywhere.cs" />
