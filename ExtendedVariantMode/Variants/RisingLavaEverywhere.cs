@@ -55,8 +55,7 @@ namespace ExtendedVariants.Variants {
                 if(player != null) {
                     // spawn lava if the player is at the bottom of the screen, ice if they are at the top.
                     bool shouldBeIce = (player.Y < level.Bounds.Center.Y);
-                    if (shouldBeIce) level.Add(new ExtendedVariantFallingIce());
-                    else level.Add(new ExtendedVariantRisingLava());
+                    level.Add(new ExtendedVariantSandwichLava(shouldBeIce, player.X - 10f));
                     level.Entities.UpdateLists();
                 }
             }

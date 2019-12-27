@@ -86,8 +86,7 @@
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
-    <Compile Include="Entities\ExtendedVariantFallingIce.cs" />
-    <Compile Include="Entities\ExtendedVariantRisingLava.cs" />
+    <Compile Include="Entities\ExtendedVariantSandwichLava.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
