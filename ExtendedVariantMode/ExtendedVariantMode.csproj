@@ -130,6 +130,7 @@
     <Compile Include="Variants\HeldDash.cs" />
     <Compile Include="Variants\InvertDashes.cs" />
     <Compile Include="Variants\InvertGrab.cs" />
+    <Compile Include="Variants\InvertHorizontalControls.cs" />
     <Compile Include="Variants\JumpCount.cs" />
     <Compile Include="Variants\JumpHeight.cs" />
     <Compile Include="Variants\JellyfishEverywhere.cs" />

@@ -260,6 +260,11 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int RisingLavaSpeed { get; set; } = 10;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool InvertHorizontalControls { get; set; } = false;
+
 
         // ======================================
 

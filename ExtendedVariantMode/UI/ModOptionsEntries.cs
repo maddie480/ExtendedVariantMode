@@ -36,6 +36,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> forceDuckOnGroundOption;
         private TextMenu.Option<bool> invertDashesOption;
         private TextMenu.Option<bool> invertGrabOption;
+        private TextMenu.Option<bool> invertHorizontalControlsOption;
         private TextMenu.Option<bool> disableNeutralJumpingOption;
         private TextMenu.Option<bool> changeVariantsRandomlyOption;
         private TextMenu.Option<bool> badelineChasersEverywhereOption;
@@ -417,6 +418,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.InvertDashes = b);
                 invertGrabOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTGRAB"), Settings.InvertGrab, false)
                     .Change(b => Settings.InvertGrab = b);
+                invertHorizontalControlsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTHORIZONTALCONTROLS"), Settings.InvertHorizontalControls, false)
+                    .Change(b => Settings.InvertHorizontalControls = b);
             }
 
             if (includeRandomizer) {
@@ -487,7 +490,7 @@ namespace ExtendedVariants.UI {
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
                 badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption,
-                jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption};
+                jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -598,6 +601,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(forceDuckOnGroundOption);
                 menu.Add(invertDashesOption);
                 menu.Add(invertGrabOption);
+                menu.Add(invertHorizontalControlsOption);
             }
 
             if (includeRandomizer) {
@@ -633,6 +637,7 @@ namespace ExtendedVariants.UI {
             setValue(forceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(invertDashesOption, Settings.InvertDashes);
             setValue(invertGrabOption, Settings.InvertGrab);
+            setValue(invertHorizontalControlsOption, Settings.InvertHorizontalControls);
             setValue(heldDashOption, Settings.HeldDash);
             setValue(disableNeutralJumpingOption, Settings.DisableNeutralJumping);
             setValue(badelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);
