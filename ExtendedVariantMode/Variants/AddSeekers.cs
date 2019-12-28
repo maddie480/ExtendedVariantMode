@@ -3,9 +3,9 @@ using Celeste.Mod;
 using ExtendedVariants.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 
 namespace ExtendedVariants.Variants {
@@ -29,9 +29,17 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
-            IL.Celeste.Pathfinder.ctor += modPathfinderConstructor;
             Everest.Events.Level.OnExit += onLevelExit;
             IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;
+
+            // by ensuring our IL hook comes first, we ensure that the patch will work even with Crow Control,
+            // which uses (almost) the exact same patch. Crow Control will inject itself before us, and we will either
+            // let its modded values pass through, or make them bigger.
+            using (new DetourContext {
+                Before = { "*" }
+            }) {
+                IL.Celeste.Pathfinder.ctor += modPathfinderConstructor;
+            }
         }
 
         public override void Unload() {
@@ -115,27 +123,37 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/AddSeekers", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
 
                 // we will resize the pathfinder (provided that the seekers everywhere variant is enabled) to fit all rooms in vanilla Celeste
-                cursor.Emit(OpCodes.Pop);
-                cursor.Emit(OpCodes.Pop);
-                cursor.Emit(OpCodes.Ldarg_1);
-                cursor.EmitDelegate<Func<Pathfinder, int>>(determinePathfinderWidth);
-                cursor.Emit(OpCodes.Ldarg_1);
-                cursor.EmitDelegate<Func<Pathfinder, int>>(determinePathfinderHeight);
+                cursor.EmitDelegate<Action<int>>(storeLocal);
+                cursor.EmitDelegate<Func<int, int>>(determinePathfinderWidth);
+                cursor.EmitDelegate<Func<int>>(restoreLocal);
+                cursor.EmitDelegate<Func<int, int>>(determinePathfinderHeight);
             }
         }
 
-        private int determinePathfinderWidth(Pathfinder self) {
-            if(extendedPathfinder) {
-                return 768;
-            }
-            return 200;
+        // begin utility method to temporarily hold int in local variable
+        private int local;
+
+        private void storeLocal(int variable) {
+            local = variable;
         }
 
-        private int determinePathfinderHeight(Pathfinder self) {
+        private int restoreLocal() {
+            return local;
+        }
+        // end utility method
+
+        private int determinePathfinderWidth(int vanilla) {
             if (extendedPathfinder) {
-                return 578;
+                return Math.Max(768, vanilla);
             }
-            return 200;
+            return vanilla; // vanilla is either 200 or whatever Crow Control decided.
+        }
+
+        private int determinePathfinderHeight(int vanilla) {
+            if (extendedPathfinder) {
+                return Math.Max(578, vanilla);
+            }
+            return vanilla; // vanilla is either 200 or whatever Crow Control decided.
         }
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
