@@ -1,6 +1,10 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System;
 using System.Collections;
 using System.Linq;
 
@@ -21,13 +25,17 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
+
+            IL.Celeste.SandwichLava.Update += modRisingLavaUpdate;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
+
+            IL.Celeste.SandwichLava.Update -= modRisingLavaUpdate;
         }
-        
+
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -59,6 +67,30 @@ namespace ExtendedVariants.Variants {
                     level.Entities.UpdateLists();
                 }
             }
+        }
+
+        private void modRisingLavaUpdate(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // the constant for lava speed is 20 (base.Y += 20f * Engine.DeltaTime) => multiply that with our multiplier
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(20f))) {
+                Logger.Log("ExtendedVariantMode/RisingLavaEverywhere", $"Applying factor to lava speed at {cursor.Index} in IL code for SandwichLava.Update");
+
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Func<SandwichLava, float>>(getRisingLavaSpeedFactor);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+
+        private float getRisingLavaSpeedFactor(SandwichLava self) {
+            // if we are dealing with modded SandwichLava, make it stop if the player just respawned.
+            if(self.GetType() == typeof(ExtendedVariantSandwichLava)) {
+                Player player = self.SceneAs<Level>().Tracker.GetEntity<Player>();
+                if (player != null && player.JustRespawned) return 0;
+            }
+
+            // otherwise (or if the player did not just respawn), just return the factor.
+            return Settings.RisingLavaSpeed / 10f;
         }
     }
 }

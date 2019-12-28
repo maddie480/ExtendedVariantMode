@@ -41,7 +41,7 @@ namespace ExtendedVariants.Module {
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
             SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
-            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere
+            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -103,6 +103,7 @@ namespace ExtendedVariants.Module {
             // DisableSeekerSlowdown is not a variant
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
             VariantHandlers[Variant.RisingLavaEverywhere] = new RisingLavaEverywhere();
+            // RisingLavaSpeed is not a variant
             // BadelineLag is not a variant
             // DelayBetweenBadelines is not a variant
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
@@ -366,6 +367,7 @@ namespace ExtendedVariants.Module {
             Settings.SnowballDelay = 8;
             Settings.BadelineLag = 0;
             Settings.DelayBetweenBadelines = 4;
+            Settings.RisingLavaSpeed = 10;
             Settings.ChangeVariantsRandomly = false;
             Settings.OshiroCount = 1;
             Settings.DisableOshiroSlowdown = false;

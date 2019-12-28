@@ -69,6 +69,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> colorGradingOption;
         private TextMenu.Option<int> jellyfishEverywhereOption;
         private TextMenu.Option<bool> risingLavaEverywhereOption;
+        private TextMenu.Option<int> risingLavaSpeedOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -342,6 +343,8 @@ namespace ExtendedVariants.UI {
                     .Change(i => Settings.JellyfishEverywhere = i);
                 risingLavaEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVAEVERYWHERE"), Settings.RisingLavaEverywhere, false)
                     .Change(b => Settings.RisingLavaEverywhere = b);
+                risingLavaSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVASPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.RisingLavaSpeed), indexFromMultiplier(10)).Change(i => Settings.RisingLavaSpeed = multiplierScale[i]);
             }
 
             // ======
@@ -484,7 +487,7 @@ namespace ExtendedVariants.UI {
                 disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
                 badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
                 badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption,
-                jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption};
+                jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -571,6 +574,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(theoCrystalsEverywhereOption);
                 menu.Add(jellyfishEverywhereOption);
                 menu.Add(risingLavaEverywhereOption);
+                menu.Add(risingLavaSpeedOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.Visual) {
@@ -656,6 +660,7 @@ namespace ExtendedVariants.UI {
             setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
             setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
             setValue(risingLavaEverywhereOption, Settings.RisingLavaEverywhere);
+            setValue(risingLavaSpeedOption, 0, indexFromMultiplier(Settings.RisingLavaSpeed));
             setValue(badelineLagOption, 0, Settings.BadelineLag);
             setValue(delayBetweenBadelinesOption, 0, Settings.DelayBetweenBadelines);
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);

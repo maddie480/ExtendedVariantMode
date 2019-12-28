@@ -247,6 +247,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.BadelineBossNodeCount;
                     ExtendedVariantsModule.Settings.BadelineBossNodeCount = newValue;
                     break;
+                case ExtendedVariantsModule.Variant.RisingLavaSpeed:
+                    oldValue = ExtendedVariantsModule.Settings.RisingLavaSpeed;
+                    ExtendedVariantsModule.Settings.RisingLavaSpeed = newValue;
+                    break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();

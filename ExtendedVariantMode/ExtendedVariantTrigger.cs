@@ -41,6 +41,7 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom: return 0;
                 case ExtendedVariantsModule.Variant.BadelineBossCount: return 1;
                 case ExtendedVariantsModule.Variant.BadelineBossNodeCount: return 1;
+                case ExtendedVariantsModule.Variant.RisingLavaSpeed: return 10;
 
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue();
             }

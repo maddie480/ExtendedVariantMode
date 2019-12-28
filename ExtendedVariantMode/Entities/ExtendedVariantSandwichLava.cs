@@ -8,6 +8,8 @@ using System.Reflection;
 namespace ExtendedVariants.Entities {
     class ExtendedVariantSandwichLava : SandwichLava {
         private static FieldInfo iceMode = typeof(SandwichLava).GetField("iceMode", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo topRect = typeof(SandwichLava).GetField("topRect", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo bottomRect = typeof(SandwichLava).GetField("bottomRect", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private bool isIceMode;
         private bool triggeredLeave = false;
@@ -50,6 +52,12 @@ namespace ExtendedVariants.Entities {
 
             // waiting is broken, lava won't center at the right position.
             Waiting = false;
+
+            // prevent the "ease in" effect that is more confusing than anything in our case.
+            LavaRect topRectVal = (LavaRect)topRect.GetValue(this);
+            LavaRect bottomRectVal = (LavaRect)bottomRect.GetValue(this);
+            topRectVal.Position.Y = -360f;
+            bottomRectVal.Position.Y = 0f;
         }
 
         public override void Update() {

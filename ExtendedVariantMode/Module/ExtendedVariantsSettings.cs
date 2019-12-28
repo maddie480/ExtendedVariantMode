@@ -257,6 +257,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool RisingLavaEverywhere { get; set; } = false;
 
+        [SettingIgnore]
+        public int RisingLavaSpeed { get; set; } = 10;
+
 
         // ======================================
 
