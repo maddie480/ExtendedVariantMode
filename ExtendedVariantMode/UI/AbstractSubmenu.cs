@@ -151,6 +151,10 @@ namespace ExtendedVariants.UI {
                     // create our menu and prepare it
                     TextMenu thisMenu = buildMenu(true);
 
+                    // notify the pause menu that we aren't in the main menu anymore (hides the strawberry tracker)
+                    bool comesFromPauseMainMenu = level.PauseMainMenuOpen;
+                    level.PauseMainMenuOpen = false;
+
                     thisMenu.OnESC = thisMenu.OnCancel = () => {
                         // close this menu
                         Audio.Play(SFX.ui_main_button_back);
@@ -158,6 +162,9 @@ namespace ExtendedVariants.UI {
                             // and open the parent menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
                             // "what could possibly go wrong?" ~ famous last words
                             level.Add(parentMenu);
+
+                            // restore the pause "main menu" flag to make strawberry tracker appear again if required.
+                            level.PauseMainMenuOpen = comesFromPauseMainMenu;
                         });
                     };
 
