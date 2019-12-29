@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
             if(player != null && Settings.AddSeekers != 0) {
                 // first of all, ensure that the size is within the limits of the pathfinder
                 if (level.Bounds.Width / 8 > 768 || level.Bounds.Height / 8 > 578) {
-                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AddSeekers", $"Not spawning seekers since room exceeds max size of 659x407 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
+                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AddSeekers", $"Not spawning seekers since room exceeds max size of 768x578 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
                     return;
                 }
 
