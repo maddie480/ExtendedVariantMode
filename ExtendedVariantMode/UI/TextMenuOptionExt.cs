@@ -36,7 +36,6 @@ namespace ExtendedVariants.UI {
 
         /// <summary>
         /// This is essentially the base method, but with a twist: the non-selected color is not always white.
-        /// Too bad I can't IL hook it.
         /// </summary>
         public override void Render(Vector2 position, bool highlighted) {
             float alpha = Container.Alpha;

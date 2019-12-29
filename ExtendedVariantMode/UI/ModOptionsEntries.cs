@@ -5,9 +5,14 @@ using ExtendedVariants.Variants;
 using Monocle;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
+    /// <summary>
+    /// This class is kind of a mess, but this is where all the options for Extended Variants are defined.
+    /// This is called to build every menu or submenu containing extended variants options (parts to display or hide
+    /// are managed by the various menus / submenus depending on where you are and your display preferences).
+    /// </summary>
     class ModOptionsEntries {
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
@@ -460,7 +465,7 @@ namespace ExtendedVariants.UI {
 
             if (includeRandomizer) randomizerTitle = buildHeading(menu, "RANDOMIZER");
 
-            TextMenu.Item movementSubmenu = null, gameElementsSubmenu = null, visualSubmenu = null, gameplayTweaksSubmenu = null;
+            TextMenuButtonExt movementSubmenu = null, gameElementsSubmenu = null, visualSubmenu = null, gameplayTweaksSubmenu = null;
 
             if (includeCategorySubmenus) {
                 submenusTitle = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING"));
@@ -468,6 +473,34 @@ namespace ExtendedVariants.UI {
                 gameElementsSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameElements });
                 visualSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Visual });
                 gameplayTweaksSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameplayTweaks });
+
+                // each submenu entry should be highlighted if one of the options in it has a non-default value.
+
+                movementSubmenu.GetHighlight = () =>
+                    new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
+                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
+                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed }
+                        .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
+                        || Settings.RefillJumpsOnDashRefill;
+
+                gameElementsSubmenu.GetHighlight = () =>
+                    new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
+                        Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere }
+                        .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
+                        || Settings.ChaserCount != 1 || Settings.AffectExistingChasers || Settings.BadelineLag != 0 || Settings.DelayBetweenBadelines != 4
+                        || Settings.BadelineAttackPattern != 0 || Settings.ChangePatternsOfExistingBosses || Settings.FirstBadelineSpawnRandom || Settings.BadelineBossCount != 1
+                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 8
+                        || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
+
+                visualSubmenu.GetHighlight = () =>
+                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.ColorGrading }
+                        .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
+
+                gameplayTweaksSubmenu.GetHighlight = () =>
+                    new List<Variant> { Variant.GameSpeed, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
+                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls }
+                        .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
+                        || Settings.HiccupStrength != 10;
             }
 
             TextMenu.Item openSubmenuButton = null;

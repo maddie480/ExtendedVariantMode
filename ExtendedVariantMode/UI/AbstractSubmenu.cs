@@ -128,19 +128,19 @@ namespace ExtendedVariants.UI {
         /// <param name="backToParentMenu">Action that will be called to go back to the parent menu</param>
         /// <param name="parameters">some arbitrary parameters that can be used to build the menu</param>
         /// <returns>A button you can insert in another menu</returns>
-        public static TextMenu.Item BuildOpenMenuButton<T>(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) where T : AbstractSubmenu {
+        public static TextMenuButtonExt BuildOpenMenuButton<T>(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) where T : AbstractSubmenu {
             return OuiModOptions.Instance.Overworld.GetUI<T>().buildOpenMenuButton(parentMenu, inGame, backToParentMenu, parameters);
         }
 
         /// <summary>
         /// Method getting called on the Oui instance when the method just above is called.
         /// </summary>
-        private TextMenu.Item buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
+        private TextMenuButtonExt buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
             if(inGame) {
                 Level level = Engine.Scene as Level;
 
                 // this is how it works in-game
-                return new TextMenu.Button(getButtonName(parameters)).Pressed(() => {
+                return (TextMenuButtonExt) new TextMenuButtonExt(getButtonName(parameters)).Pressed(() => {
                     // set up the menu instance
                     this.backToParentMenu = backToParentMenu;
                     this.parameters = parameters;
@@ -182,7 +182,7 @@ namespace ExtendedVariants.UI {
                 });
             } else {
                 // this is how it works in the main menu: way more simply than the in-game mess.
-                return new TextMenu.Button(getButtonName(parameters)).Pressed(() => {
+                return (TextMenuButtonExt) new TextMenuButtonExt(getButtonName(parameters)).Pressed(() => {
                     // set up the menu instance
                     this.backToParentMenu = backToParentMenu;
                     this.parameters = parameters;
