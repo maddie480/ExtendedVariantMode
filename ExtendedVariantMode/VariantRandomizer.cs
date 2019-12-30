@@ -1,15 +1,14 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
+using ExtendedVariants.UI;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace ExtendedVariants {
     public class VanillaVariant {
@@ -58,6 +57,8 @@ namespace ExtendedVariants {
         private float variantChangeTimer = -1f;
         private float vanillafyTimer = -1f;
 
+        private InfoPanel infoPanel = new InfoPanel();
+
         /// <summary>
         /// List of options shown for multipliers.
         /// </summary>
@@ -67,43 +68,71 @@ namespace ExtendedVariants {
         };
 
         public void Load() {
-            Everest.Events.Level.OnEnter += onLevelEnter;
+            On.Celeste.Level.Begin += onLevelBegin;
+            On.Celeste.Level.End += onLevelEnd;
             On.Celeste.Level.TransitionRoutine += onRoomChange;
             On.Celeste.Player.Update += onUpdate;
-            Everest.Events.Level.OnExit += clearFile;
             On.Celeste.Level.EndPauseEffects += modEndPauseEffects;
 
             if(Engine.Scene != null && Engine.Scene.GetType() == typeof(Level)) {
                 // we're late, catch up!
-                onLevelEnter();
+                onLevelBegin();
             }
         }
 
         public void Unload() {
-            Everest.Events.Level.OnEnter -= onLevelEnter;
+            On.Celeste.Level.Begin -= onLevelBegin;
+            On.Celeste.Level.End -= onLevelEnd;
             On.Celeste.Level.TransitionRoutine -= onRoomChange;
             On.Celeste.Player.Update -= onUpdate;
-            Everest.Events.Level.OnExit -= clearFile;
             On.Celeste.Level.EndPauseEffects -= modEndPauseEffects;
 
-            // clear file right away, since Extended Variants are no more.
-            clearFile();
+            // clear up stuff as well
+            onLevelEnd();
         }
 
-        private void onLevelEnter(Session session, bool fromSaveData) {
-            onLevelEnter();
+        private void onLevelBegin(On.Celeste.Level.orig_Begin orig, Level self) {
+            orig(self);
+
+            onLevelBegin();
         }
 
-        private void onLevelEnter() {
+        private void onLevelBegin() {
             UpdateCountersFromSettings();
-            spitOutEnabledVariantsInFile();
+            refreshEnabledVariantsDisplayList();
+
+            // inject the code to display the list of enabled variants
+            Logger.Log("ExtendedVariantMode/VariantRandomizer", "Hooking HudRenderer to display list of enabled variants");
+            On.Celeste.HudRenderer.RenderContent += modRenderContent;
+        }
+
+        private void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+            orig(self);
+
+            onLevelEnd();
+        }
+
+        private void onLevelEnd() {
+            // level is being exited, clear up the hook that displays the enabled variants
+            Logger.Log("ExtendedVariantMode/VariantRandomizer", "Unhooking HudRenderer to hide list of enabled variants");
+            On.Celeste.HudRenderer.RenderContent -= modRenderContent;
         }
 
         private void modEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
-            // rewrite the file in case the player changed anything in the pause menu
-            spitOutEnabledVariantsInFile();
+            // refresh the display in case the player changed anything in the pause menu
+            refreshEnabledVariantsDisplayList();
+        }
+
+        private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
+            orig(self, scene);
+
+            if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.FileOutput && !((scene as Level)?.Paused ?? false)) {
+                Draw.SpriteBatch.Begin();
+                infoPanel.Render();
+                Draw.SpriteBatch.End();
+            }
         }
 
         public void UpdateCountersFromSettings() {
@@ -247,7 +276,7 @@ namespace ExtendedVariants {
                 }
             }
 
-            spitOutEnabledVariantsInFile();
+            refreshEnabledVariantsDisplayList();
         }
 
         private bool isDefaultValue(VanillaVariant variant) {
@@ -374,75 +403,58 @@ namespace ExtendedVariants {
             else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
-        private void spitOutEnabledVariantsInFile() {
-            if(ExtendedVariantsModule.Settings.FileOutput) {
-                Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Writing enabled variants to enabled-variants.txt");
+        private void refreshEnabledVariantsDisplayList() {
+            List<string> enabledVariantsToDisplay = new List<string>();
 
-                using (Stream fileStream = new FileStream("enabled-variants.txt", File.Exists("enabled-variants.txt") ? FileMode.Truncate : FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-                using (StreamWriter fileWriter = new StreamWriter(fileStream, new UTF8Encoding())) {
-                    IEnumerable<VanillaVariant> enabledVanillaVariants = allVanillaVariants.Where(variant => !isDefaultValue(variant));
-                    IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys.Where(variant => !isDefaultValue(variant));
+            IEnumerable<VanillaVariant> enabledVanillaVariants = allVanillaVariants.Where(variant => !isDefaultValue(variant));
+            IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys.Where(variant => !isDefaultValue(variant));
 
-                    foreach(VanillaVariant variant in enabledVanillaVariants) {
-                        if (variant == VanillaVariant.DashMode) fileWriter.WriteLine($"{Dialog.Clean(variant.Label)}: " + Dialog.Clean($"MENU_ASSIST_AIR_DASHES_{SaveData.Instance.Assists.DashMode.ToString()}"));
-                        else if (variant == VanillaVariant.GameSpeed) fileWriter.WriteLine($"{Dialog.Clean(variant.Label)}: {multiplierFormatter(SaveData.Instance.Assists.GameSpeed)}");
-                        // the rest are toggles: if enabled, display the name.
-                        else fileWriter.WriteLine(Dialog.Clean(variant.Label));
-                    }
-
-                    foreach(ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
-                        string variantName = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant.ToString().ToUpperInvariant()}");
-
-                        // "just print the raw value" variants
-                        if (variant == ExtendedVariantsModule.Variant.DashCount || variant == ExtendedVariantsModule.Variant.AddSeekers || variant == ExtendedVariantsModule.Variant.JellyfishEverywhere)
-                            fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue()}");
-                        // variants that require a bit more formatting
-                        else if (variant == ExtendedVariantsModule.Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
-                        else if (variant == ExtendedVariantsModule.Variant.Friction) {
-                            if(ExtendedVariantsModule.Settings.Friction == 0) fileWriter.WriteLine($"{variantName}: 0.05x");
-                            else if (ExtendedVariantsModule.Settings.Friction == -1) fileWriter.WriteLine($"{variantName}: 0x");
-                            else fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.Friction)}");
-                        }
-                        else if (variant == ExtendedVariantsModule.Variant.AirFriction) {
-                            if(ExtendedVariantsModule.Settings.AirFriction == 0) fileWriter.WriteLine($"{variantName}: 0.05x");
-                            else if (ExtendedVariantsModule.Settings.AirFriction == -1) fileWriter.WriteLine($"{variantName}: 0x");
-                            else fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.AirFriction)}");
-                        }
-                        else if (variant == ExtendedVariantsModule.Variant.JumpCount)
-                            fileWriter.WriteLine($"{variantName}: {(ExtendedVariantsModule.Settings.JumpCount == 6 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString())}");
-                        else if (variant == ExtendedVariantsModule.Variant.Stamina) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
-                        else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
-                        else if (variant == ExtendedVariantsModule.Variant.RoomLighting) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
-                        else if (variant == ExtendedVariantsModule.Variant.RoomBloom) fileWriter.WriteLine($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
-                        else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
-                            string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
-                            if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
-                            string formattedValue =  Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
-
-                            fileWriter.WriteLine($"{variantName}: {formattedValue}");
-                        }
-                        // multiplier-style variants
-                        else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
-                            fileWriter.WriteLine($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
-                        // toggle-style variants: print out the name
-                        else fileWriter.WriteLine(variantName);
-                    }
-                }
+            foreach(VanillaVariant variant in enabledVanillaVariants) {
+                if (variant == VanillaVariant.DashMode) enabledVariantsToDisplay.Add($"{Dialog.Clean(variant.Label)}: " + Dialog.Clean($"MENU_ASSIST_AIR_DASHES_{SaveData.Instance.Assists.DashMode.ToString()}"));
+                else if (variant == VanillaVariant.GameSpeed) enabledVariantsToDisplay.Add($"{Dialog.Clean(variant.Label)}: {multiplierFormatter(SaveData.Instance.Assists.GameSpeed)}");
+                // the rest are toggles: if enabled, display the name.
+                else enabledVariantsToDisplay.Add(Dialog.Clean(variant.Label));
             }
-        }
 
-        private void clearFile(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
-            clearFile();
-        }
+            foreach(ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
+                string variantName = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant.ToString().ToUpperInvariant()}");
 
-        private void clearFile() {
-            if(ExtendedVariantsModule.Settings.FileOutput) {
-                Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Clearing enabled-variants.txt");
-
-                using (Stream fileStream = new FileStream("enabled-variants.txt", File.Exists("enabled-variants.txt") ? FileMode.Truncate : FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-                using (StreamWriter fileWriter = new StreamWriter(fileStream, new UTF8Encoding())) {
+                // "just print the raw value" variants
+                if (variant == ExtendedVariantsModule.Variant.DashCount || variant == ExtendedVariantsModule.Variant.AddSeekers || variant == ExtendedVariantsModule.Variant.JellyfishEverywhere)
+                    enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue()}");
+                // variants that require a bit more formatting
+                else if (variant == ExtendedVariantsModule.Variant.Stamina) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
+                else if (variant == ExtendedVariantsModule.Variant.Friction) {
+                    if(ExtendedVariantsModule.Settings.Friction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
+                    else if (ExtendedVariantsModule.Settings.Friction == -1) enabledVariantsToDisplay.Add($"{variantName}: 0x");
+                    else enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.Friction)}");
                 }
+                else if (variant == ExtendedVariantsModule.Variant.AirFriction) {
+                    if(ExtendedVariantsModule.Settings.AirFriction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
+                    else if (ExtendedVariantsModule.Settings.AirFriction == -1) enabledVariantsToDisplay.Add($"{variantName}: 0x");
+                    else enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.AirFriction)}");
+                }
+                else if (variant == ExtendedVariantsModule.Variant.JumpCount)
+                    enabledVariantsToDisplay.Add($"{variantName}: {(ExtendedVariantsModule.Settings.JumpCount == 6 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString())}");
+                else if (variant == ExtendedVariantsModule.Variant.Stamina) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
+                else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
+                else if (variant == ExtendedVariantsModule.Variant.RoomLighting) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.RoomBloom) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
+                    string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
+                    if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
+                    string formattedValue =  Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+
+                    enabledVariantsToDisplay.Add($"{variantName}: {formattedValue}");
+                }
+                // multiplier-style variants
+                else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
+                    enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
+                // toggle-style variants: print out the name
+                else enabledVariantsToDisplay.Add(variantName);
             }
+
+            infoPanel.Update(enabledVariantsToDisplay);
         }
 
         private string multiplierFormatter(int multiplier) {

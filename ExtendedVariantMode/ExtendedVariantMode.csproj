@@ -96,6 +96,7 @@
     <Compile Include="Module\ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
     <Compile Include="UI\AbstractSubmenu.cs" />
+    <Compile Include="UI\InfoPanel.cs" />
     <Compile Include="UI\ModOptionsEntries.cs" />
     <Compile Include="UI\OuiCategorySubmenu.cs" />
     <Compile Include="UI\OuiExtendedVariantsSubmenu.cs" />
