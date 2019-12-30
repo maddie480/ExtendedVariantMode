@@ -128,7 +128,9 @@ namespace ExtendedVariants {
         private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
             orig(self, scene);
 
-            if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.FileOutput && !((scene as Level)?.Paused ?? false)) {
+            if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen
+                && !((scene as Level)?.Paused ?? false)) {
+
                 Draw.SpriteBatch.Begin();
                 infoPanel.Render();
                 Draw.SpriteBatch.End();

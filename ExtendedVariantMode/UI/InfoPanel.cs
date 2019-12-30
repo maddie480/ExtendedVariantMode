@@ -7,7 +7,7 @@ using Celeste;
 namespace ExtendedVariants.UI {
     // This class is heavily based on https://github.com/mrstaneh/CrowControl/blob/master/UI/InfoPanel.cs
     public class InfoPanel {
-        public Vector2 uiPos = new Vector2(15, 219);
+        private Vector2 uiPos = new Vector2(15, 219);
         private Texture2D pixel = null;
 
         private List<string> texts = new List<string>();

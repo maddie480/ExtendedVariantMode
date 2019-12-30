@@ -290,6 +290,6 @@ namespace ExtendedVariants.Module {
         public int Vanillafy { get; set; } = 0;
 
         [SettingIgnore]
-        public bool FileOutput { get; set; } = false;
+        public bool DisplayEnabledVariantsToScreen { get; set; } = false;
     }
 }

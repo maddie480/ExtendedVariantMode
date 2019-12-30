@@ -103,8 +103,8 @@ namespace ExtendedVariants.UI {
                     ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
                 }));
 
-            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_OUTPUT"), ExtendedVariantsModule.Settings.FileOutput)
-                .Change(newValue => ExtendedVariantsModule.Settings.FileOutput = newValue));
+            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN"), ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen)
+                .Change(newValue => ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue));
 
             // build the toggles to individually enable or disable all vanilla variants
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA")));
