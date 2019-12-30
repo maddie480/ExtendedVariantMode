@@ -3,6 +3,7 @@ using Celeste.Mod;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
+using MonoMod.Cil;
 using System;
 using System.Collections;
 
@@ -35,6 +36,8 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
             Everest.Events.Level.OnExit += onLevelExit;
+
+            IL.Celeste.Wire.Render += onWireRender;
         }
 
         public override void Unload() {
@@ -42,8 +45,10 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             Everest.Events.Level.OnExit -= onLevelExit;
 
+            IL.Celeste.Wire.Render -= onWireRender;
+
             // if we are in a level and extended variants added a wind backdrop, clean it up.
-            if(snowBackdropAddedByEVM && Engine.Scene.GetType() == typeof(Level)) {
+            if (snowBackdropAddedByEVM && Engine.Scene.GetType() == typeof(Level)) {
                 Level level = Engine.Scene as Level;
 
                 snowBackdropAddedByEVM = false;
@@ -112,6 +117,27 @@ namespace ExtendedVariants.Variants {
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             snowBackdropAddedByEVM = false;
+        }
+        
+        private void onWireRender(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // we'll replace "level.VisualWind" with "transformVisualWind(level.VisualWind)"
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Level>("get_VisualWind"))) {
+                Logger.Log("ExtendedVariantMode/WindEverywhere", $"Fixing wires with wind at {cursor.Index} in IL code for Wire.Render");
+
+                cursor.EmitDelegate<Func<float, float>>(transformVisualWind);
+            }
+        }
+
+        private float transformVisualWind(float vanilla) {
+            if(Settings.WindEverywhere == 0) {
+                // variant disabled: don't affect vanilla.
+                return vanilla;
+            }
+
+            // VisualWind = Wind.X + WindSine. Wind.X seems to make the wires freak out, so remove it.
+            return (Engine.Scene as Level).WindSine;
         }
     }
 }
