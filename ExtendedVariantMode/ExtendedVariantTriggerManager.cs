@@ -219,6 +219,10 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.OshiroCount;
                     ExtendedVariantsModule.Settings.OshiroCount = newValue;
                     break;
+                case ExtendedVariantsModule.Variant.ReverseOshiroCount:
+                    oldValue = ExtendedVariantsModule.Settings.ReverseOshiroCount;
+                    ExtendedVariantsModule.Settings.ReverseOshiroCount = newValue;
+                    break;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown:
                     oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);

@@ -39,6 +39,10 @@
       <HintPath>..\lib-stripped\Celeste.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DJMapHelper">
+      <HintPath>..\lib-stripped\DJMapHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="FNA">
       <HintPath>..\Everest\lib-stripped\FNA.dll</HintPath>
       <Private>False</Private>
@@ -83,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AutoDestroyingReverseOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />

@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Entities;
+using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -63,10 +64,24 @@ namespace ExtendedVariants.Variants {
                     level.Add(new AutoDestroyingAngryOshiro(position, false, i * 0.5f));
                     oshiroAdded = true;
                 }
+
+                // check if reverse Oshiros have to be added
+                if (ExtendedVariantsModule.Instance.DJMapHelperInstalled && Settings.ReverseOshiroCount > 0) {
+                    addReverseOshiroToLevel(level);
+                    oshiroAdded = true;
+                }
             }
 
             if(oshiroAdded)
                 level.Entities.UpdateLists();
+        }
+
+        private void addReverseOshiroToLevel(Level level) {
+            for (int i = 0; i < Settings.ReverseOshiroCount; i++) {
+                // this replicates the behavior of Oshiro Trigger in vanilla Celeste
+                Vector2 position = new Vector2(level.Bounds.Right + 32, level.Bounds.Top + level.Bounds.Height / 2);
+                level.Add(new AutoDestroyingReverseOshiro(position, i * 0.5f));
+            }
         }
 
         private void modAngryOshiroUpdate(ILContext il) {

@@ -21,6 +21,8 @@ namespace ExtendedVariants.Module {
 
         public static ExtendedVariantsModule Instance;
 
+        public bool DJMapHelperInstalled { get; private set; }
+
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
         private bool variantsWereForceEnabled = false;
@@ -38,8 +40,8 @@ namespace ExtendedVariants.Module {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
-            BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, DisableOshiroSlowdown, WindEverywhere, 
-            SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
+            BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown, 
+            WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls
         }
@@ -95,6 +97,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.EverythingIsUnderwater] = new EverythingIsUnderwater();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
             // OshiroCount is not a variant
+            // ReverseOshiroCount is not a variant
             // DisableOshiroSlowdown is not a variant
             VariantHandlers[Variant.WindEverywhere] = new WindEverywhere();
             VariantHandlers[Variant.SnowballsEverywhere] = new SnowballsEverywhere();
@@ -205,6 +208,13 @@ namespace ExtendedVariants.Module {
             if (stuffIsHooked) {
                 UnhookStuff();
             }
+        }
+
+        public override void Initialize() {
+            base.Initialize();
+
+            DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 7, 10) });
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");
         }
 
         public void HookStuff() {
@@ -371,6 +381,7 @@ namespace ExtendedVariants.Module {
             Settings.RisingLavaSpeed = 10;
             Settings.ChangeVariantsRandomly = false;
             Settings.OshiroCount = 1;
+            Settings.ReverseOshiroCount = 0;
             Settings.DisableOshiroSlowdown = false;
             Settings.DisableSeekerSlowdown = false;
             Settings.BadelineAttackPattern = 0;

@@ -166,6 +166,9 @@ namespace ExtendedVariants.Module {
         public int OshiroCount { get; set; } = 1;
 
         [SettingIgnore]
+        public int ReverseOshiroCount { get; set; } = 0;
+
+        [SettingIgnore]
         public bool DisableOshiroSlowdown { get; set; } = false;
 
 

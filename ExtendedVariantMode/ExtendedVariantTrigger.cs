@@ -34,6 +34,7 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.BadelineLag: return 0;
                 case ExtendedVariantsModule.Variant.DelayBetweenBadelines: return 4;
                 case ExtendedVariantsModule.Variant.OshiroCount: return 1;
+                case ExtendedVariantsModule.Variant.ReverseOshiroCount: return 0;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown: return 0;
                 case ExtendedVariantsModule.Variant.DisableSeekerSlowdown: return 0;
                 case ExtendedVariantsModule.Variant.BadelineAttackPattern: return 0;

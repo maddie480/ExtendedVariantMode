@@ -60,6 +60,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> everythingIsUnderwaterOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
         private TextMenu.Option<int> oshiroCountOption;
+        private TextMenu.Option<int> reverseOshiroCountOption;
         private TextMenu.Option<bool> disableOshiroSlowdownOption;
         private TextMenu.Option<int> windEverywhereOption;
         private TextMenu.Option<bool> snowballsEverywhereOption;
@@ -321,7 +322,9 @@ namespace ExtendedVariants.UI {
                         refreshOptionMenuEnabledStatus();
                     });
                 oshiroCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT"),
-                    i => i.ToString(), 1, 5, Settings.OshiroCount, 0).Change(i => Settings.OshiroCount = i);
+                    i => i.ToString(), 0, 5, Settings.OshiroCount, 1).Change(i => Settings.OshiroCount = i);
+                reverseOshiroCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REVERSEOSHIROCOUNT"),
+                    i => i.ToString(), 0, 5, Settings.ReverseOshiroCount, 0).Change(i => Settings.ReverseOshiroCount = i);
                 disableOshiroSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
                     .Change(b => Settings.DisableOshiroSlowdown = b);
 
@@ -489,7 +492,7 @@ namespace ExtendedVariants.UI {
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.ChaserCount != 1 || Settings.AffectExistingChasers || Settings.BadelineLag != 0 || Settings.DelayBetweenBadelines != 4
                         || Settings.BadelineAttackPattern != 0 || Settings.ChangePatternsOfExistingBosses || Settings.FirstBadelineSpawnRandom || Settings.BadelineBossCount != 1
-                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 8
+                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.ReverseOshiroCount != 0 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 8
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
 
                 visualSubmenu.GetHighlight = () =>
@@ -519,11 +522,11 @@ namespace ExtendedVariants.UI {
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
-                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, everythingIsUnderwaterOption,
-                disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption, theoCrystalsEverywhereOption,
-                badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption, resetToDefaultOption, randomizerOptions,
-                badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption, badelineBossNodeCountOption,
-                jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption};
+                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, reverseOshiroCountOption,
+                everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption,
+                theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption,
+                resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption,
+                badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -599,6 +602,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(oshiroTitle);
                 menu.Add(oshiroEverywhereOption);
                 menu.Add(oshiroCountOption);
+                if(Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption);
                 menu.Add(disableOshiroSlowdownOption);
                 
                 menu.Add(everywhereTitle);
@@ -689,7 +693,8 @@ namespace ExtendedVariants.UI {
             setValue(roomBloomOption, -1, Settings.RoomBloom);
             setValue(everythingIsUnderwaterOption, Settings.EverythingIsUnderwater);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
-            setValue(oshiroCountOption, 1, Settings.OshiroCount);
+            setValue(oshiroCountOption, 0, Settings.OshiroCount);
+            setValue(reverseOshiroCountOption, 0, Settings.ReverseOshiroCount);
             setValue(disableOshiroSlowdownOption, Settings.DisableOshiroSlowdown);
             setValue(windEverywhereOption, 0, Settings.WindEverywhere);
             setValue(snowballsEverywhereOption, Settings.SnowballsEverywhere);
@@ -717,6 +722,7 @@ namespace ExtendedVariants.UI {
             // special graying-out rules for some variant options
             if (refillJumpsOnDashRefillOption != null) refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
             if (oshiroCountOption != null) oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
+            if (reverseOshiroCountOption != null) reverseOshiroCountOption.Disabled = !Settings.OshiroEverywhere;
             if (randomizerOptions != null) randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
             if (firstBadelineSpawnRandomOption != null) firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
             if (badelineBossCountOption != null) badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
