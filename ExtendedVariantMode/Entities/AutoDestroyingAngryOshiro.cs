@@ -17,6 +17,9 @@ namespace ExtendedVariants.Entities {
         private bool playerMoved = false;
 
         public AutoDestroyingAngryOshiro(Vector2 position, bool fromCutscene, float offsetTime): base(position, fromCutscene) {
+            // bump Oshiro up so that he goes over FakeWalls
+            Depth = -13500;
+
             state = (StateMachine) stateMachine.GetValue(this);
             waitTimer = offsetTime;
 
