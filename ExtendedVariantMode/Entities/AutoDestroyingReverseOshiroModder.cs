@@ -46,7 +46,7 @@ namespace ExtendedVariants.Entities {
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null && player.Speed != Vector2.Zero) playerMoved = true;
 
-            if (player != null && playerMoved && player.X > level.Bounds.Left + 48) {
+            if (player != null && playerMoved && player.X < level.Bounds.Right - 48) {
                 // vanilla Oshiro would charge. we want to wait for waitTimer to deplete first.
                 waitTimer -= Engine.DeltaTime;
                 if(waitTimer <= 0f) {
