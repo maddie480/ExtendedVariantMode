@@ -246,7 +246,7 @@ namespace ExtendedVariants.UI {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     }
                     return i.ToString();
-                }, -1, 5, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
+                }, -1, 10, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
                 heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
                     .Change(b => Settings.HeldDash = b);
                 dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
