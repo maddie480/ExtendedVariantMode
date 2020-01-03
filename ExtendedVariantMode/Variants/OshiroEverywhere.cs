@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.DJMapHelper.Entities;
 using ExtendedVariants.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
@@ -80,7 +81,9 @@ namespace ExtendedVariants.Variants {
             for (int i = 0; i < Settings.ReverseOshiroCount; i++) {
                 // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                 Vector2 position = new Vector2(level.Bounds.Right + 32, level.Bounds.Top + level.Bounds.Height / 2);
-                level.Add(new AutoDestroyingReverseOshiro(position, i * 0.5f));
+                AngryOshiroRight oshiro = new AngryOshiroRight(position);
+                oshiro.Add(new AutoDestroyingReverseOshiroModder(i * 0.5f));
+                level.Add(oshiro);
             }
         }
 

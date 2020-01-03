@@ -87,7 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\AutoDestroyingReverseOshiro.cs" />
+    <Compile Include="Entities\AutoDestroyingReverseOshiroModder.cs" />
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />

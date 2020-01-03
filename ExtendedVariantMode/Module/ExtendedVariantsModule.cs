@@ -215,6 +215,12 @@ namespace ExtendedVariants.Module {
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 7, 10) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");
+
+            if(!DJMapHelperInstalled) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
+                Settings.ReverseOshiroCount = 0;
+                SaveSettings();
+            }
         }
 
         public void HookStuff() {
