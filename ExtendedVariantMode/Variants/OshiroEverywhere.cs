@@ -78,7 +78,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addReverseOshiroToLevel(Level level) {
-            for (int i = 0; i < Settings.ReverseOshiroCount; i++) {
+            for (int i = level.Tracker.CountEntities<AngryOshiroRight>(); i < Settings.ReverseOshiroCount; i++) {
                 // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                 Vector2 position = new Vector2(level.Bounds.Right + 32, level.Bounds.Top + level.Bounds.Height / 2);
                 AngryOshiroRight oshiro = new AngryOshiroRight(position);
