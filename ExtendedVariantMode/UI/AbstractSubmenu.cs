@@ -9,7 +9,7 @@ using System.Collections;
 namespace ExtendedVariants.UI {
     // A generic submenu kind of thing. This displays some options on a screen, and goes back to another menu when pressing Back.
     // Heavily based off the OuiModOptions from Everest: https://github.com/EverestAPI/Everest/blob/master/Celeste.Mod.mm/Mod/UI/OuiModOptions.cs
-    public abstract class AbstractSubmenu : Oui {
+    public abstract class AbstractSubmenu : Oui, OuiModOptions.ISubmenu {
 
         private TextMenu menu;
 
