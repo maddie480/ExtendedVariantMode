@@ -49,6 +49,7 @@ const variants = String[
 	"DontRefillDashOnGround",
 	"RoomLighting",
 	"RoomBloom",
+	"GlitchEffect",
 	"GameSpeed",
 	"EverythingIsUnderwater",
 	"BadelineBossesEverywhere",

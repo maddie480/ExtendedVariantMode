@@ -57,6 +57,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> hiccupStrengthOption;
         private TextMenu.Option<int> roomLightingOption;
         private TextMenu.Option<int> roomBloomOption;
+        private TextMenu.Option<int> glitchEffectOption;
         private TextMenu.Option<bool> everythingIsUnderwaterOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
         private TextMenu.Option<int> oshiroCountOption;
@@ -381,7 +382,13 @@ namespace ExtendedVariants.UI {
                         if (i > 10) return $"{(i - 9) * 100}%";
                         return $"{i * 10}%";
                     }, -1, 14, Settings.RoomBloom, 0).Change(i => Settings.RoomBloom = i);
-                
+
+                glitchEffectOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GLITCHEFFECT"),
+                    i => {
+                        if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                        return $"{i * 5}%";
+                    }, -1, 20, Settings.GlitchEffect, 0).Change(i => Settings.GlitchEffect = i);
+
                 colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -499,7 +506,7 @@ namespace ExtendedVariants.UI {
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
 
                 visualSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.ColorGrading }
+                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.GlitchEffect, Variant.ColorGrading }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -525,11 +532,12 @@ namespace ExtendedVariants.UI {
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
-                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, oshiroEverywhereOption, oshiroCountOption, reverseOshiroCountOption,
-                everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption,
-                theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption,
-                resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption,
-                badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption, bounceEverywhereOption};
+                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, glitchEffectOption, oshiroEverywhereOption, oshiroCountOption,
+                reverseOshiroCountOption, everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption,
+                disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
+                colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
+                badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
+                bounceEverywhereOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -625,6 +633,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(upsideDownOption);
                 menu.Add(roomLightingOption);
                 menu.Add(roomBloomOption);
+                menu.Add(glitchEffectOption);
                 menu.Add(colorGradingOption);
             }
 
@@ -695,6 +704,7 @@ namespace ExtendedVariants.UI {
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(roomBloomOption, -1, Settings.RoomBloom);
+            setValue(glitchEffectOption, -1, Settings.GlitchEffect);
             setValue(everythingIsUnderwaterOption, Settings.EverythingIsUnderwater);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);
             setValue(oshiroCountOption, 0, Settings.OshiroCount);

@@ -375,6 +375,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
             else if (variant == ExtendedVariantsModule.Variant.ColorGrading) ExtendedVariantsModule.Settings.ColorGrading = randomGenerator.Next(ColorGrading.ExistingColorGrades.Count); // random color grade
             else if (variant == ExtendedVariantsModule.Variant.JellyfishEverywhere) ExtendedVariantsModule.Settings.JellyfishEverywhere = 1; // 1 jellyfish
+            else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) ExtendedVariantsModule.Settings.GlitchEffect = randomGenerator.Next(3) + 1; // random 5~15%
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {

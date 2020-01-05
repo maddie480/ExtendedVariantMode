@@ -276,6 +276,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int GlitchEffect { get; set; } = -1;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool ChangeVariantsRandomly { get; set; } = false;
 
         [SettingIgnore]

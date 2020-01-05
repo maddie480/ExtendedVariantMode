@@ -12,7 +12,7 @@ First, add the dependency to your map. For example, everest.yaml will look like 
 
 To enable a variant in a map, you can place an "Extended Variant Trigger" in Ahorn. These have 3 options:
 - Variant: pick the variant you want to change
-- New Value: pick the value you want to set the variant to. Those are the internal values used by the mod:
+- New Value: pick the value you want to set the variant to. Those are the internal values used by the mod, and thus, can have kinda convoluted logic:
 	- Gravity, FallSpeed, JumpHeight, SpeedX, DashSpeed, Friction, HyperdashSpeed, ExplodeLaunchSpeed, WallBouncingSpeed, DashLength, 
 		HiccupStrength, GameSpeed, RisingLavaSpeed: the value is the multiplier * 10 (for example, "12" will set the option to 1.2x).
 		- The only exception is Friction (ground friction) and AirFriction, where 0 is actually 0.05x and -1 is 0x.
@@ -35,6 +35,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 		- -1 = don't change anything
 		- 0 to 10 => bloom base = value / 10, bloom strength = 1. For example, 8 => bloom base = 0.8, bloom strength = 1, displayed as 80% in the menu
 		- 11 to 14 => bloom base = 1, bloom strength = value - 9. For example, 12 => bloom base = 1, bloom strength = 3, displayed as 300% in the menu
+	- GlitchEffect: the value in percent / 5 (for example 19 will give 95%), -1 to disable
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).
