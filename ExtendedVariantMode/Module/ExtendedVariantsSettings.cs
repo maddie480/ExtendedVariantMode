@@ -268,6 +268,10 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool InvertHorizontalControls { get; set; } = false;
 
+        // ======================================
+
+        [SettingIgnore]
+        public bool BounceEverywhere { get; set; } = false;
 
         // ======================================
 

@@ -62,7 +62,8 @@ const variants = String[
 	"ExplodeLaunchSpeed",
 	"RisingLavaEverywhere",
 	"RisingLavaSpeed",
-	"InvertHorizontalControls"
+	"InvertHorizontalControls",
+	"BounceEverywhere"
 ]
 
 const placements = Ahorn.PlacementDict(

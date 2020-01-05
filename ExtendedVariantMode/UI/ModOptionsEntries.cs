@@ -77,6 +77,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> jellyfishEverywhereOption;
         private TextMenu.Option<bool> risingLavaEverywhereOption;
         private TextMenu.Option<int> risingLavaSpeedOption;
+        private TextMenu.Option<bool> bounceEverywhereOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -428,6 +429,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.InvertGrab = b);
                 invertHorizontalControlsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTHORIZONTALCONTROLS"), Settings.InvertHorizontalControls, false)
                     .Change(b => Settings.InvertHorizontalControls = b);
+                bounceEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOUNCEEVERYWHERE"), Settings.BounceEverywhere, false)
+                    .Change(b => Settings.BounceEverywhere = b);
             }
 
             if (includeRandomizer) {
@@ -501,7 +504,7 @@ namespace ExtendedVariants.UI {
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.GameSpeed, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls }
+                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.BounceEverywhere }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.HiccupStrength != 10;
             }
@@ -526,7 +529,7 @@ namespace ExtendedVariants.UI {
                 everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption, disableSeekerSlowdownOption,
                 theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption, colorGradingOption,
                 resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption, badelineBossCountOption,
-                badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption};
+                badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption, bounceEverywhereOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -575,7 +578,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashCountOption);
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
-                
+
                 menu.Add(movingTitle);
                 menu.Add(speedXOption);
                 menu.Add(frictionOption);
@@ -639,6 +642,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(invertDashesOption);
                 menu.Add(invertGrabOption);
                 menu.Add(invertHorizontalControlsOption);
+                menu.Add(bounceEverywhereOption);
             }
 
             if (includeRandomizer) {
@@ -711,6 +715,7 @@ namespace ExtendedVariants.UI {
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
             setValue(colorGradingOption, -1, Settings.ColorGrading);
             setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);
+            setValue(bounceEverywhereOption, Settings.BounceEverywhere);
         }
 
         private void refreshOptionMenuEnabledStatus() {
