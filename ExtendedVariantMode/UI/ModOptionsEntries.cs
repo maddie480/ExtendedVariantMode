@@ -4,6 +4,7 @@ using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Monocle;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
@@ -769,8 +770,20 @@ namespace ExtendedVariants.UI {
         }
 
         private void reloadModOptions() {
-            // just transition from Mod Options... to Mod Options. Easy right?
-            OuiModOptions.Instance.Overworld.Goto<OuiModOptions>();
+            // transition to a "submenu" that will kick us back directly to Mod Options.
+            // that will make Everest reload Mod Options while saving the position on the menu.
+            OuiModOptions.Instance.Overworld.Goto<OuiModOptionsReloaderHelper>();
+        }
+
+        public class OuiModOptionsReloaderHelper : Oui, OuiModOptions.ISubmenu {
+            public override IEnumerator Enter(Oui from) {
+                Overworld.Goto<OuiModOptions>();
+                yield break;
+            }
+
+            public override IEnumerator Leave(Oui next) {
+                yield break;
+            }
         }
     }
 }

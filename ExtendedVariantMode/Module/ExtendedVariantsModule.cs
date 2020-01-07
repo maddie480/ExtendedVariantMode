@@ -154,35 +154,6 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        private int savedMenuIndex = -1;
-        private static FieldInfo modOptionsMenu = typeof(OuiModOptions).GetField("menu", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private IEnumerator onEnterModOptions(On.Celeste.Mod.UI.OuiModOptions.orig_Enter orig, OuiModOptions self, Oui from)  {
-            // start running Enter, so that the menu is initialized
-            IEnumerator enterEnum = orig(self, from);
-            if (enterEnum.MoveNext()) yield return enterEnum.Current;
-
-            if (savedMenuIndex != -1 && (from.GetType() == typeof(OuiRandomizerOptions) || from.GetType() == typeof(OuiCategorySubmenu))
-                || from.GetType() == typeof(OuiExtendedVariantsSubmenu) || from.GetType() == typeof(OuiModOptions)) {
-
-                // restore selection if coming from submenu or reloading Mod Options
-                TextMenu currentMenu = (TextMenu)modOptionsMenu.GetValue(self);
-                if (currentMenu != null) {
-                    currentMenu.Selection = savedMenuIndex;
-                    currentMenu.Position.Y = currentMenu.ScrollTargetY;
-                }
-            }
-
-            // finish running Enter
-            while (enterEnum.MoveNext()) yield return enterEnum.Current;
-        }
-
-        private IEnumerator onLeaveModOptions(On.Celeste.Mod.UI.OuiModOptions.orig_Leave orig, OuiModOptions self, Oui next) {
-            // save the menu selection before transitioning
-            savedMenuIndex = ((TextMenu)modOptionsMenu.GetValue(self)).Selection;
-            return orig(self, next);
-        }
-
         // ================ Variants hooking / unhooking ================
 
         public override void Load() {
@@ -235,12 +206,6 @@ namespace ExtendedVariants.Module {
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons += onCreatePauseMenuButtons;
 
-            // yeah, you're reading right, we're modding Everest.
-            // what we are trying to do here (restoring the position when coming back from a submenu in Mod Options) is **nowhere** near
-            // general-usage enough to be integrated into Everest.
-            On.Celeste.Mod.UI.OuiModOptions.Enter += onEnterModOptions;
-            On.Celeste.Mod.UI.OuiModOptions.Leave += onLeaveModOptions;
-
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
 
@@ -263,9 +228,6 @@ namespace ExtendedVariants.Module {
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin -= onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons -= onCreatePauseMenuButtons;
-
-            On.Celeste.Mod.UI.OuiModOptions.Enter -= onEnterModOptions;
-            On.Celeste.Mod.UI.OuiModOptions.Leave -= onLeaveModOptions;
 
             // unset flags
             onLevelExit();
