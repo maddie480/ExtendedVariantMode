@@ -1,10 +1,17 @@
-﻿using Celeste.Mod;
+﻿using Celeste;
+using Celeste.Mod;
+using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class JumpHeight : AbstractExtendedVariant {
+
+        private ILHook wallJumpHook;
+
         public override int GetDefaultValue() {
             return 10;
         }
@@ -21,14 +28,14 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.Jump += modJump;
             IL.Celeste.Player.SuperJump += modSuperJump;
             IL.Celeste.Player.SuperWallJump += modSuperWallJump;
-            IL.Celeste.Player.WallJump += modWallJump;
+            wallJumpHook = new ILHook(typeof(Player).GetMethod(ExtendedVariantsModule.GetWallJumpMethodToPatch(), BindingFlags.Instance | BindingFlags.NonPublic), modWallJump);
         }
 
         public override void Unload() {
             IL.Celeste.Player.Jump -= modJump;
             IL.Celeste.Player.SuperJump -= modSuperJump;
             IL.Celeste.Player.SuperWallJump -= modSuperWallJump;
-            IL.Celeste.Player.WallJump -= modWallJump;
+            if (wallJumpHook != null) wallJumpHook.Dispose();
         }
         
         /// <summary>

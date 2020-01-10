@@ -1,11 +1,17 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class DisableWallJumping : AbstractExtendedVariant {
+
+        private ILHook wallJumpHook;
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -19,12 +25,12 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.Player.WallJump += modWallJump;
+            wallJumpHook = new ILHook(typeof(Player).GetMethod(ExtendedVariantsModule.GetWallJumpMethodToPatch(), BindingFlags.Instance | BindingFlags.NonPublic), modWallJump);
             On.Celeste.Player.WallJumpCheck += modWallJumpCheck;
         }
 
         public override void Unload() {
-            IL.Celeste.Player.WallJump -= modWallJump;
+            if (wallJumpHook != null) wallJumpHook.Dispose();
             On.Celeste.Player.WallJumpCheck -= modWallJumpCheck;
         }
         

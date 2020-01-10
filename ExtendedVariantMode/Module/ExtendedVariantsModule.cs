@@ -541,5 +541,15 @@ namespace ExtendedVariants.Module {
 
             prologueEndingCutscene = true;
         }
+
+        /// <summary>
+        /// Everest 1322 adds a patch on the WallJump method. If we are on Everest 1322+, we want to patch orig_WallJump instead.
+        /// </summary>
+        public static string GetWallJumpMethodToPatch() {
+            if (Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "Everest", Version = new Version(1, 1322, 0) })) {
+                return "orig_WallJump";
+            }
+            return "WallJump";
+        }
     }
 }
