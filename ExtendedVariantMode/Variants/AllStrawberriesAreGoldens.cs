@@ -18,6 +18,18 @@ namespace ExtendedVariants.Variants {
         private static MethodInfo onAnimate = typeof(Strawberry).GetMethod("OnAnimate", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private ILHook collectRoutineHook;
+        private ILHook strawberryUpdateHook;
+
+        /// <summary>
+        /// Everest 1334 adds a patch on Strawberry.Update to implement the "strawberry registry" API.
+        /// The method to be IL-hooked in this case is Strawberry.orig_Update instead.
+        /// </summary>
+        private string getStrawberryUpdateMethodToHook() {
+            if(Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "Everest", Version = new Version(1, 1334, 0) })) {
+                return "orig_Update";
+            }
+            return "Update";
+        }
 
         public override int GetDefaultValue() {
             return 0;
@@ -33,20 +45,20 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Player.Die += onPlayerDie;
-            IL.Celeste.Strawberry.Update += onStrawberryUpdate;
             IL.Celeste.Strawberry.Added += patchAllGoldenFlags;
             IL.Celeste.Strawberry.OnAnimate += patchAllGoldenFlags;
 
             collectRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Strawberry", "CollectRoutine", patchAllGoldenFlags);
+            strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod(getStrawberryUpdateMethodToHook()), onStrawberryUpdate);
         }
 
         public override void Unload() {
             On.Celeste.Player.Die -= onPlayerDie;
-            IL.Celeste.Strawberry.Update -= onStrawberryUpdate;
             IL.Celeste.Strawberry.Added -= patchAllGoldenFlags;
             IL.Celeste.Strawberry.OnAnimate -= patchAllGoldenFlags;
 
             if (collectRoutineHook != null) collectRoutineHook.Dispose();
+            if (strawberryUpdateHook != null) strawberryUpdateHook.Dispose();
         }
 
         private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
