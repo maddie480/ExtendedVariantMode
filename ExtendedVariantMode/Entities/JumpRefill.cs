@@ -17,71 +17,71 @@ namespace ExtendedVariants.Entities {
     class JumpRefill : Refill {
         private static FieldInfo f_sprite = typeof(Refill).GetField("sprite", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo f_flash = typeof(Refill).GetField("flash", BindingFlags.NonPublic | BindingFlags.Instance);
-		private static FieldInfo f_outline = typeof(Refill).GetField("outline", BindingFlags.NonPublic | BindingFlags.Instance);
-		private static FieldInfo f_wiggler = typeof(Refill).GetField("wiggler", BindingFlags.NonPublic | BindingFlags.Instance);
-		private static FieldInfo f_respawnTimer = typeof(Refill).GetField("respawnTimer", BindingFlags.NonPublic | BindingFlags.Instance);
-		private static MethodInfo m_RefillRoutine = typeof(Refill).GetMethod("RefillRoutine", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo f_outline = typeof(Refill).GetField("outline", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo f_wiggler = typeof(Refill).GetField("wiggler", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo f_respawnTimer = typeof(Refill).GetField("respawnTimer", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static MethodInfo m_RefillRoutine = typeof(Refill).GetMethod("RefillRoutine", BindingFlags.NonPublic | BindingFlags.Instance);
 
-		public JumpRefill(EntityData data, Vector2 offset)
+        public JumpRefill(EntityData data, Vector2 offset)
             : base(data, offset) {
 
-			// clean up stuff from vanilla we don't want.
-			List<Component> toRemove = new List<Component>();
-            foreach(Component c in this) {
+            // clean up stuff from vanilla we don't want.
+            List<Component> toRemove = new List<Component>();
+            foreach (Component c in this) {
                 if (c.GetType() == typeof(Sprite) || c.GetType() == typeof(Image) || c.GetType() == typeof(PlayerCollider) || c.GetType() == typeof(Wiggler))
                     toRemove.Add(c);
             }
-			Remove(toRemove.ToArray());
+            Remove(toRemove.ToArray());
 
-			// load our own sprites and create a wiggler to attach to them.
-			Sprite sprite;
-			Sprite flash;
-			Image outline;
-			Wiggler wiggler;
+            // load our own sprites and create a wiggler to attach to them.
+            Sprite sprite;
+            Sprite flash;
+            Image outline;
+            Wiggler wiggler;
 
-			Add(outline = new Image(GFX.Game["objects/ExtendedVariantMode/jumprefill/outline"]));
-			outline.CenterOrigin();
-			outline.Visible = false;
+            Add(outline = new Image(GFX.Game["objects/ExtendedVariantMode/jumprefill/outline"]));
+            outline.CenterOrigin();
+            outline.Visible = false;
 
-			Add(sprite = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/idle"));
-			sprite.AddLoop("idle", "", 0.1f);
-			sprite.Play("idle");
-			sprite.CenterOrigin();
+            Add(sprite = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/idle"));
+            sprite.AddLoop("idle", "", 0.1f);
+            sprite.Play("idle");
+            sprite.CenterOrigin();
 
-			Add(flash = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/flash"));
-			flash.Add("flash", "", 0.05f);
-			flash.OnFinish = delegate {
-				flash.Visible = false;
-			};
-			flash.CenterOrigin();
+            Add(flash = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/flash"));
+            flash.Add("flash", "", 0.05f);
+            flash.OnFinish = delegate {
+                flash.Visible = false;
+            };
+            flash.CenterOrigin();
 
-			Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v) {
-				sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
-			}));
+            Add(wiggler = Wiggler.Create(1f, 4f, delegate (float v) {
+                sprite.Scale = (flash.Scale = Vector2.One * (1f + v * 0.2f));
+            }));
 
-			f_sprite.SetValue(this, sprite);
-			f_outline.SetValue(this, outline);
-			f_flash.SetValue(this, flash);
-			f_wiggler.SetValue(this, wiggler);
+            f_sprite.SetValue(this, sprite);
+            f_outline.SetValue(this, outline);
+            f_flash.SetValue(this, flash);
+            f_wiggler.SetValue(this, wiggler);
 
-			// wire the collider to our implementation instead.
-			Add(new PlayerCollider(OnPlayer));
-		}
+            // wire the collider to our implementation instead.
+            Add(new PlayerCollider(OnPlayer));
+        }
 
-		private void OnPlayer(Player player) {
-			if (refillJumps()) {
-				Audio.Play("event:/game/general/diamond_touch", Position);
-				Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
-				Collidable = false;
+        private void OnPlayer(Player player) {
+            if (refillJumps()) {
+                Audio.Play("event:/game/general/diamond_touch", Position);
+                Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
+                Collidable = false;
 
-				// prepare for respawning using vanilla code
-				Add(new Coroutine((IEnumerator) m_RefillRoutine.Invoke(this, new object[] { player })));
-				f_respawnTimer.SetValue(this, 2.5f);
-			}
-		}
+                // prepare for respawning using vanilla code
+                Add(new Coroutine((IEnumerator) m_RefillRoutine.Invoke(this, new object[] { player })));
+                f_respawnTimer.SetValue(this, 2.5f);
+            }
+        }
 
-		private bool refillJumps() {
-			return (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount).RefillJumpBuffer();
-		}
-	}
+        private bool refillJumps() {
+            return (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount).RefillJumpBuffer();
+        }
+    }
 }
