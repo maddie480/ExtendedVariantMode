@@ -157,6 +157,9 @@
     <Compile Include="Variants\WindEverywhere.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ahorn\lang\en_gb.lang">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ahorn\triggers\extendedvariants.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

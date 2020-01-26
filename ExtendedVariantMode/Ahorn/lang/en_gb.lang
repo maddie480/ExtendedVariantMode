@@ -1,0 +1,5 @@
+﻿# Extended Variants Trigger
+placements.triggers.ExtendedVariantTrigger.tooltips.variantChange=The variant to change.
+placements.triggers.ExtendedVariantTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
+placements.triggers.ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
+placements.triggers.ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger.

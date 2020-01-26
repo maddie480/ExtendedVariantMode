@@ -1,8 +1,9 @@
-module ExtendedVariants
+module ExtendedVariantModeExtendedVariantTrigger
 
 using ..Ahorn, Maple
 
-@mapdef Trigger "ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16, variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false)
+@mapdef Trigger "ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false)
 
 const variants = String[
 	"Gravity",
@@ -68,7 +69,7 @@ const variants = String[
 ]
 
 const placements = Ahorn.PlacementDict(
-	"Extended Variant Trigger (ExtendedVariants)" => Ahorn.EntityPlacement(
+	"Extended Variant Trigger (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		ExtendedVariantTrigger,
 		"rectangle"
 	)
