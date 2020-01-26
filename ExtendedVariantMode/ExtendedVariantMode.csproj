@@ -96,6 +96,7 @@
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
     <Compile Include="Entities\ExtendedVariantWindSnowFG.cs" />
+    <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
@@ -157,10 +158,13 @@
     <Compile Include="Variants\WindEverywhere.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ahorn\entities\jumpRefill.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ahorn\lang\en_gb.lang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Ahorn\triggers\extendedvariants.jl">
+    <None Include="Ahorn\triggers\extendedVariantTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="everest.yaml">
@@ -180,6 +184,42 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dialog\Brazilian Portuguese.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash00.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\flash05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\idle00.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\idle01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\idle02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\idle03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\idle04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gui\max480_extendedvariants_extendedkorean.png">

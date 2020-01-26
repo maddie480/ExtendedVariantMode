@@ -124,6 +124,12 @@ namespace ExtendedVariants.Variants {
             if (jumpGraceTimer > 0f) jumpBuffer = Settings.JumpCount - 1;
         }
 
+        public bool RefillJumpBuffer() {
+            int oldJumpBuffer = jumpBuffer;
+            jumpBuffer = Settings.JumpCount - 1;
+            return oldJumpBuffer != jumpBuffer;
+        }
+
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
