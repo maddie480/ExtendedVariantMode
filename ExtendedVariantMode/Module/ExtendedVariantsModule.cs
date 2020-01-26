@@ -274,7 +274,9 @@ namespace ExtendedVariants.Module {
         }
         
         private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
-            if(session.MapData.Levels.Exists(levelData => levelData.Triggers.Exists(entityData => entityData.Name == "ExtendedVariantTrigger"))) {
+            if(AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int)session.Area.Mode
+                && session.MapData.Levels.Exists(levelData => levelData.Triggers.Exists(entityData => entityData.Name == "ExtendedVariantTrigger"))) {
+
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
                 hookTrigger();
 
