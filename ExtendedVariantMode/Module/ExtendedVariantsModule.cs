@@ -25,7 +25,7 @@ namespace ExtendedVariants.Module {
 
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
-        private bool variantsWereForceEnabled = false;
+        private bool showForcedVariantsPostcard = false;
         private Postcard forceEnabledVariantsPostcard;
 
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
@@ -283,20 +283,23 @@ namespace ExtendedVariants.Module {
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
                 if(!stuffIsHooked) {
-                    variantsWereForceEnabled = true;
+                    showForcedVariantsPostcard = true;
                     Settings.MasterSwitch = true;
-                    ResetToDefaultSettings();
                     HookStuff();
-                    SaveSettings();
                 }
+
+                // reset settings to be sure we match what the mapper wants, without anything the user enabled before playing their map.
+                bool settingsChanged = ResetToDefaultSettings();
+                SaveSettings();
+                showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
             }
 
             orig(session, fromSaveData);
         }
 
         private IEnumerator addForceEnabledVariantsPostcard(On.Celeste.LevelEnter.orig_Routine orig, LevelEnter self) {
-            if(variantsWereForceEnabled) {
-                variantsWereForceEnabled = false;
+            if(showForcedVariantsPostcard) {
+                showForcedVariantsPostcard = false;
 
                 // let's show a postcard to let the player know Extended Variants have been enabled.
                 self.Add(forceEnabledVariantsPostcard = new Postcard(Dialog.Get("POSTCARD_EXTENDEDVARIANTS_FORCEENABLED"), "event:/ui/main/postcard_csides_in", "event:/ui/main/postcard_csides_out"));
@@ -330,16 +333,44 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        public void ResetToDefaultSettings() {
+        public bool ResetToDefaultSettings() {
             if(Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
             }
+
+            bool settingChanged = false;
             
             // reset all proper variants to their default values
             foreach(AbstractExtendedVariant variant in VariantHandlers.Values) {
+                if(variant.GetDefaultValue() != variant.GetValue()) {
+                    settingChanged = true;
+                }
+
                 variant.SetValue(variant.GetDefaultValue());
+            }
+
+            if(Settings.ChaserCount != 1
+                || Settings.AffectExistingChasers
+                || Settings.HiccupStrength != 10
+                || Settings.RefillJumpsOnDashRefill
+                || Settings.SnowballDelay != 8
+                || Settings.BadelineLag != 0
+                || Settings.DelayBetweenBadelines != 4
+                || Settings.RisingLavaSpeed != 10
+                || Settings.ChangeVariantsRandomly
+                || Settings.OshiroCount != 1
+                || Settings.ReverseOshiroCount != 0
+                || Settings.DisableOshiroSlowdown
+                || Settings.DisableSeekerSlowdown
+                || Settings.BadelineAttackPattern != 0
+                || Settings.ChangePatternsOfExistingBosses
+                || Settings.FirstBadelineSpawnRandom
+                || Settings.BadelineBossCount != 1
+                || Settings.BadelineBossNodeCount != 1) {
+
+                settingChanged = true;
             }
 
             // reset variant customization options as well
@@ -361,6 +392,8 @@ namespace ExtendedVariants.Module {
             Settings.FirstBadelineSpawnRandom = false;
             Settings.BadelineBossCount = 1;
             Settings.BadelineBossNodeCount = 1;
+
+            return settingChanged;
         }
 
         // ================ Font support for missing Korean characters ================
