@@ -2,7 +2,7 @@ module ExtendedVariantModeExtendedVariantTrigger
 
 using ..Ahorn, Maple
 
-@mapdef Trigger "ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+@mapdef Trigger "ExtendedVariantMode/ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false)
 
 const variants = String[

@@ -1,8 +1,10 @@
 ﻿using Celeste;
+using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants {
+    [CustomEntity("ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger")]
     public class ExtendedVariantTrigger : Trigger {
         private ExtendedVariantsModule.Variant variantChange;
         private int newValue;

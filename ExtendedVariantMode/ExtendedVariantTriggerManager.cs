@@ -16,7 +16,6 @@ namespace ExtendedVariants {
         private Dictionary<ExtendedVariantsModule.Variant, int> variantValuesBeforeOverride = new Dictionary<ExtendedVariantsModule.Variant, int>();
 
         public void Load() {
-            Everest.Events.Level.OnLoadEntity += onLoadEntity;
             Everest.Events.Level.OnEnter += onLevelEnter;
             Everest.Events.Player.OnSpawn += onPlayerSpawn;
             Everest.Events.Level.OnTransitionTo += onLevelTransitionTo;
@@ -25,29 +24,11 @@ namespace ExtendedVariants {
         }
 
         public void Unload() {
-            Everest.Events.Level.OnLoadEntity -= onLoadEntity;
             Everest.Events.Level.OnEnter -= onLevelEnter;
             Everest.Events.Player.OnSpawn -= onPlayerSpawn;
             Everest.Events.Level.OnTransitionTo -= onLevelTransitionTo;
             Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
-        }
-        
-        /// <summary>
-        /// Handles ExtendedVariantTrigger constructing when loading a level.
-        /// </summary>
-        /// <param name="level">The level being loaded</param>
-        /// <param name="levelData">unused</param>
-        /// <param name="offset">offset passed to the trigger</param>
-        /// <param name="entityData">the entity parameters</param>
-        /// <returns>true if the trigger was loaded, false otherwise</returns>
-        private bool onLoadEntity(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {
-            if(entityData.Name == "ExtendedVariantTrigger") {
-                level.Add(new ExtendedVariantTrigger(entityData, offset));
-                return true;
-            }
-
-            return false;
         }
         
         /// <summary>
