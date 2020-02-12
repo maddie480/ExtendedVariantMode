@@ -28,7 +28,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate += modNormalUpdate;
             IL.Celeste.Player.SuperJump += modSuperJump;
             IL.Celeste.Player.SuperWallJump += modSuperWallJump;
-            wallJumpHook = new ILHook(typeof(Player).GetMethod(ExtendedVariantsModule.GetWallJumpMethodToPatch(), BindingFlags.Instance | BindingFlags.NonPublic), modWallJump);
+            wallJumpHook = new ILHook(typeof(Player).GetMethod("orig_WallJump", BindingFlags.Instance | BindingFlags.NonPublic), modWallJump);
         }
 
         public override void Unload() {

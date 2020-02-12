@@ -68,11 +68,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>..\Everest\packages\MonoMod.RuntimeDetour.19.12.4.1\lib\net40\MonoMod.RuntimeDetour.dll</HintPath>
+      <HintPath>..\Everest\packages\MonoMod.RuntimeDetour.20.1.1.4\lib\net40\MonoMod.RuntimeDetour.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.Utils">
-      <HintPath>..\Everest\packages\MonoMod.Utils.19.12.4.1\lib\net40\MonoMod.Utils.dll</HintPath>
+      <HintPath>..\Everest\packages\MonoMod.Utils.20.1.1.4\lib\net40\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Steamworks.NET">

@@ -20,17 +20,6 @@ namespace ExtendedVariants.Variants {
         private ILHook collectRoutineHook;
         private ILHook strawberryUpdateHook;
 
-        /// <summary>
-        /// Everest 1334 adds a patch on Strawberry.Update to implement the "strawberry registry" API.
-        /// The method to be IL-hooked in this case is Strawberry.orig_Update instead.
-        /// </summary>
-        private string getStrawberryUpdateMethodToHook() {
-            if(Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "Everest", Version = new Version(1, 1334, 0) })) {
-                return "orig_Update";
-            }
-            return "Update";
-        }
-
         public override int GetDefaultValue() {
             return 0;
         }
@@ -49,7 +38,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Strawberry.OnAnimate += patchAllGoldenFlags;
 
             collectRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Strawberry", "CollectRoutine", patchAllGoldenFlags);
-            strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod(getStrawberryUpdateMethodToHook()), onStrawberryUpdate);
+            strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod("orig_Update"), onStrawberryUpdate);
         }
 
         public override void Unload() {
