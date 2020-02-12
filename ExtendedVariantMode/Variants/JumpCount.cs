@@ -124,6 +124,10 @@ namespace ExtendedVariants.Variants {
             if (jumpGraceTimer > 0f) jumpBuffer = Settings.JumpCount - 1;
         }
 
+        /// <summary>
+        /// Refills the jump buffer, giving the maximum amount of extra jumps possible.
+        /// </summary>
+        /// <returns>Whether extra jumps were refilled or not.</returns>
         public bool RefillJumpBuffer() {
             int oldJumpBuffer = jumpBuffer;
             jumpBuffer = Settings.JumpCount - 1;
@@ -131,10 +135,31 @@ namespace ExtendedVariants.Variants {
         }
 
         /// <summary>
+        /// Adds more jumps to the jump counter.
+        /// </summary>
+        /// <param name="jumpsToAdd">The number of extra jumps to add</param>
+        /// <param name="capped">true if the jump count should not exceed the maximum count, false if we don't care</param>
+        /// <returns>Whether the jump count changed or not.</returns>
+        public bool AddJumps(int jumpsToAdd, bool capped) {
+            int oldJumpBuffer = jumpBuffer;
+
+            // even if jumps are set to 0, 2-jump extra refills give back 2 extra jumps.
+            jumpBuffer = Math.Max(0, jumpBuffer);
+            jumpBuffer += jumpsToAdd;
+
+            if (capped) {
+                // cap the extra jump count.
+                jumpBuffer = Math.Min(jumpBuffer, Settings.JumpCount - 1);
+            }
+
+            return oldJumpBuffer != jumpBuffer;
+        }
+
+        /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
         private float canJump(float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
-            if (Settings.JumpCount == 0) {
+            if (Settings.JumpCount == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
             }
@@ -147,9 +172,9 @@ namespace ExtendedVariants.Variants {
                 // infinite jumping, yay
                 return 1f;
             }
-            if (Settings.JumpCount == 1 || initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
+            if (initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
                 // return the default value because we don't want to change anything 
-                // (we are disabled, our jump buffer ran out, or vanilla Celeste allows jumping anyway)
+                // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
             }
             // consume an Extended Variant Jump(TM)

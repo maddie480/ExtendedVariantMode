@@ -4,5 +4,12 @@ placements.triggers.ExtendedVariantTrigger.tooltips.enable=If checked, the varia
 placements.triggers.ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger.
 
-# Jump Refill
-placements.entities.ExtendedVariantMode/JumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
+# Recover Jump Refill
+placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
+placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.texture=The directory, relative to Graphics/Atlases/Gameplay/objects, the refill textures are read from.
+
+# Extra Jump Refill
+placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
+placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.texture=The directory, relative to Graphics/Atlases/Gameplay/objects, the refill textures are read from.
+placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.extraJumps=The number of extra jumps this refill gives when collected.
+placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.capped=If checked, the player's jump count will never exceed the "Jump Count" extended variant setting.

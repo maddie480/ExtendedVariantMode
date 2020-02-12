@@ -13,7 +13,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ExtendedVariants.Entities {
-    [CustomEntity("ExtendedVariantMode/JumpRefill")]
+    [CustomEntity(
+        "ExtendedVariantMode/JumpRefill = RecoverJumpRefill",
+        "ExtendedVariantMode/RecoverJumpRefill = RecoverJumpRefill",
+        "ExtendedVariantMode/ExtraJumpRefill = ExtraJumpRefill")]
     class JumpRefill : Refill {
         private static FieldInfo f_sprite = typeof(Refill).GetField("sprite", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo f_flash = typeof(Refill).GetField("flash", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -22,8 +25,23 @@ namespace ExtendedVariants.Entities {
         private static FieldInfo f_respawnTimer = typeof(Refill).GetField("respawnTimer", BindingFlags.NonPublic | BindingFlags.Instance);
         private static MethodInfo m_RefillRoutine = typeof(Refill).GetMethod("RefillRoutine", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public JumpRefill(EntityData data, Vector2 offset)
+        public static JumpRefill RecoverJumpRefill(Level level, LevelData levelData, Vector2 offset, EntityData data) => new JumpRefill(data, offset, false);
+        public static JumpRefill ExtraJumpRefill(Level level, LevelData levelData, Vector2 offset, EntityData data) => new JumpRefill(data, offset, true);
+
+        private bool extraJumpRefill = false;
+        private int extraJumps;
+        private JumpCount jumpCountVariant;
+        private bool capped;
+
+        public JumpRefill(EntityData data, Vector2 offset, bool extraJumpRefill)
             : base(data, offset) {
+
+            this.extraJumpRefill = extraJumpRefill;
+            extraJumps = data.Int("extraJumps", 1);
+            capped = data.Bool("capped", false);
+            jumpCountVariant = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount;
+
+            string texture = data.Attr("texture", "ExtendedVariantMode/jumprefill");
 
             // clean up stuff from vanilla we don't want.
             List<Component> toRemove = new List<Component>();
@@ -39,16 +57,16 @@ namespace ExtendedVariants.Entities {
             Image outline;
             Wiggler wiggler;
 
-            Add(outline = new Image(GFX.Game["objects/ExtendedVariantMode/jumprefill/outline"]));
+            Add(outline = new Image(GFX.Game[$"objects/{texture}/outline"]));
             outline.CenterOrigin();
             outline.Visible = false;
 
-            Add(sprite = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/idle"));
+            Add(sprite = new Sprite(GFX.Game, $"objects/{texture}/idle"));
             sprite.AddLoop("idle", "", 0.1f);
             sprite.Play("idle");
             sprite.CenterOrigin();
 
-            Add(flash = new Sprite(GFX.Game, "objects/ExtendedVariantMode/jumprefill/flash"));
+            Add(flash = new Sprite(GFX.Game, $"objects/{texture}/flash"));
             flash.Add("flash", "", 0.05f);
             flash.OnFinish = delegate {
                 flash.Visible = false;
@@ -81,7 +99,11 @@ namespace ExtendedVariants.Entities {
         }
 
         private bool refillJumps() {
-            return (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount).RefillJumpBuffer();
+            if (extraJumpRefill) {
+                return jumpCountVariant.AddJumps(extraJumps, capped);
+            } else {
+                return jumpCountVariant.RefillJumpBuffer();
+            }
         }
     }
 }

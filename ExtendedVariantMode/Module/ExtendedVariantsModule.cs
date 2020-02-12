@@ -274,12 +274,15 @@ namespace ExtendedVariants.Module {
         }
 
         private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
-            "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/JumpRefill"
+            "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger",
+            "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill"
         };
 
         private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
-                && session.MapData.Levels.Exists(levelData => levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)))) {
+                && session.MapData.Levels.Exists(levelData =>
+                levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)) ||
+                levelData.Entities.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
                 hookTrigger();
