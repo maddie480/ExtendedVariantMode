@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
         }
-        
+
         /// <summary>
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// to handle the "force duck on ground" variant.
@@ -36,20 +36,20 @@ namespace ExtendedVariants.Variants {
 
             // jump to "if(this.Ducking)" => that's a brfalse
             // (or, in the FNA version, "bool ducking = this.Ducking;" => that's a stloc.s)
-            if (cursor.TryGotoNext(MoveType.After, 
+            if (cursor.TryGotoNext(MoveType.After,
                 instr => instr.MatchCallvirt<Player>("get_Ducking"),
                 instr => (instr.OpCode == OpCodes.Brfalse || instr.OpCode == OpCodes.Stloc_S))
                 // in the XNA version, we get after the brfalse. In the FNA version, we have a ldloc.s and a brfalse after the cursor
                 && (cursor.Prev.OpCode == OpCodes.Brfalse || cursor.Next.Next.OpCode == OpCodes.Brfalse)) {
 
-                if(cursor.Prev.OpCode == OpCodes.Stloc_S) {
+                if (cursor.Prev.OpCode == OpCodes.Stloc_S) {
                     // get after the brfalse in order to line up with the XNA version
                     cursor.Index += 2;
                 }
 
                 Logger.Log("ExtendedVariantMode/ForceDuckOnGround", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
-                ILLabel target = (ILLabel)cursor.Prev.Operand;
+                ILLabel target = (ILLabel) cursor.Prev.Operand;
 
                 // basically, this turns the if into "if(this.Ducking && !Settings.ForceDuckOnGround)": this prevents unducking
                 cursor.EmitDelegate<Func<bool>>(ForceDuckOnGroundEnabled);
@@ -59,7 +59,7 @@ namespace ExtendedVariants.Variants {
                 cursor.GotoLabel(target);
 
                 // set ourselves just before the condition we want to mod
-                if(cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdsfld(typeof(Input), "MoveY"))) {
+                if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdsfld(typeof(Input), "MoveY"))) {
                     ILCursor cursorAfterCondition = cursor.Clone();
 
                     if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Bne_Un_S))) {

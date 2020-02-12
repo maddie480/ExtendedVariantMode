@@ -75,7 +75,7 @@ namespace ExtendedVariants.Variants {
         private int applyDashTrailCounter(int dashTrailCounter) {
             if (Settings.DashLength != 10) {
                 float lastDashDuration = SaveData.Instance.Assists.SuperDashing ? 0.3f : 0.15f;
-                return (int)Math.Round(lastDashDuration * Settings.DashLength) - 1;
+                return (int) Math.Round(lastDashDuration * Settings.DashLength) - 1;
             }
             return dashTrailCounter;
         }

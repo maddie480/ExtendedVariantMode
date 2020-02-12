@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
             if (playerUpdateHook != null) playerUpdateHook.Dispose();
             if (summitGemSmashRoutineHook != null) summitGemSmashRoutineHook.Dispose();
         }
-        
+
 
         /// <summary>
         /// Replaces the default 110 stamina value with the one defined in the settings.

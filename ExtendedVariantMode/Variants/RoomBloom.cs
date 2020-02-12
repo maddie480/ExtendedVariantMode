@@ -30,7 +30,7 @@ namespace ExtendedVariants.Variants {
         private void onBloomRendererApply(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Base"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Base"))) {
                 Logger.Log("ExtendedVariantMode/RoomBloom", $"Modding bloom base at {cursor.Index} in IL code for BloomRenderer.Apply");
 
                 cursor.EmitDelegate<Func<float, float>>(modBloomBase);
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
 
             cursor.Index = 0;
 
-            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Strength"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Strength"))) {
                 Logger.Log("ExtendedVariantMode/RoomBloom", $"Modding bloom strength at {cursor.Index} in IL code for BloomRenderer.Apply");
 
                 cursor.EmitDelegate<Func<float, float>>(modBloomStrength);

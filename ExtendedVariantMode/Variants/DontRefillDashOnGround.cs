@@ -56,7 +56,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // jump to if(!Inventory.NoRefills)
-            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("NoRefills"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("NoRefills"))) {
                 Logger.Log("ExtendedVariantMode/DontRefillDashOnGround", $"Patching no refill condition at {cursor.Index} in IL code for Player.{il.Method.Name}");
 
                 // turn it into if(!(Inventory.NoRefills || Settings.DontRefillDashOnGround))
@@ -90,7 +90,7 @@ namespace ExtendedVariants.Variants {
         private bool areRefillsOnGroundDisabled() {
             return Settings.DontRefillDashOnGround;
         }
-        
+
 
         private void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
             killDashRefills = true;
@@ -113,9 +113,9 @@ namespace ExtendedVariants.Variants {
         private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
             IEnumerator original = orig(self);
 
-            while(original.MoveNext()) {
+            while (original.MoveNext()) {
                 yield return original.Current;
-                if(original.Current != null && original.Current.GetType() == typeof(float) && (float)original.Current == 0.15f) {
+                if (original.Current != null && original.Current.GetType() == typeof(float) && (float) original.Current == 0.15f) {
                     // kill dash refills between the last "yield return" and the end of the method.
                     killDashRefills = true;
                 }

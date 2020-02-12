@@ -32,7 +32,7 @@ namespace ExtendedVariants.Variants {
             // be sure the controls are not upside down anymore
             Input.Aim.InvertedY = (Input.MoveY.Inverted = false);
         }
-        
+
         /// <summary>
         /// Edits the Render method in Level (handling the whole level rendering).
         /// </summary>
@@ -48,12 +48,12 @@ namespace ExtendedVariants.Variants {
                 VariableDefinition positionVector = seekReferenceTo(il, cursor.Index, 5);
                 VariableDefinition paddingVector = seekReferenceTo(il, cursor.Index, 9);
 
-                if(positionVector == null || paddingVector == null) {
+                if (positionVector == null || paddingVector == null) {
                     positionVector = seekReferenceTo(il, cursor.Index, 10);
                     paddingVector = seekReferenceTo(il, cursor.Index, 14);
                 }
 
-                if(positionVector != null && paddingVector != null) {
+                if (positionVector != null && paddingVector != null) {
                     // insert our delegates to do about the same thing as vanilla Celeste at about the same time
                     Logger.Log("ExtendedVariantMode/UpsideDown", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender");
 
@@ -67,7 +67,7 @@ namespace ExtendedVariants.Variants {
             cursor.Index += 3;
 
             // jump to the next MirrorMode usage again
-            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference)instr.Operand).Name.Contains("MirrorMode"))) {
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference) instr.Operand).Name.Contains("MirrorMode"))) {
                 // jump back 2 steps
                 cursor.Index -= 2;
 
@@ -91,18 +91,18 @@ namespace ExtendedVariants.Variants {
         private VariableDefinition seekReferenceTo(ILContext il, int startingPoint, int variableIndex) {
             ILCursor cursor = new ILCursor(il);
             cursor.Index = startingPoint;
-            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldloc_S && ((VariableDefinition)instr.Operand).Index == variableIndex)) {
-                return (VariableDefinition)cursor.Next.Operand;
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldloc_S && ((VariableDefinition) instr.Operand).Index == variableIndex)) {
+                return (VariableDefinition) cursor.Next.Operand;
             }
             return null;
         }
 
         private delegate void TwoRefVectorParameters(ref Vector2 one, ref Vector2 two);
-        
+
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
             Input.Aim.InvertedY = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown);
 
-            if(ExtendedVariantsModule.Settings.UpsideDown) {
+            if (ExtendedVariantsModule.Settings.UpsideDown) {
                 paddingVector.Y = -paddingVector.Y;
                 positionVector.Y = 90f - (positionVector.Y - 90f);
             }

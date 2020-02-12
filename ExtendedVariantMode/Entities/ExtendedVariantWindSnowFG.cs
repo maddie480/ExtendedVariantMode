@@ -15,7 +15,7 @@ namespace ExtendedVariants.Entities {
         // This backdrop should be visible whenever no WindSnowFG or StardustFG is visible.
         private bool isVisible(Level level) {
             return level.Foreground.Backdrops.TrueForAll(backdrop => {
-                if(backdrop.GetType() == typeof(WindSnowFG) || backdrop.GetType() == typeof(StardustFG)) {
+                if (backdrop.GetType() == typeof(WindSnowFG) || backdrop.GetType() == typeof(StardustFG)) {
                     return !backdrop.IsVisible(level);
                 }
                 return true;

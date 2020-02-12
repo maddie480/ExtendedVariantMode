@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             IL.Celeste.AngryOshiro.Update -= modAngryOshiroUpdate;
         }
-        
+
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
                 addOshiroToLevel(self);
             }
         }
-        
+
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
             IEnumerator origEnum = orig(self, next, direction);
@@ -73,7 +73,7 @@ namespace ExtendedVariants.Variants {
                 }
             }
 
-            if(oshiroAdded)
+            if (oshiroAdded)
                 level.Entities.UpdateLists();
         }
 

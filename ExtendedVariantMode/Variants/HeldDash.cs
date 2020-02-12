@@ -28,16 +28,16 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.DashCoroutine -= modDashCoroutine;
             IL.Celeste.Player.DashUpdate -= modDashUpdate;
         }
-        
+
         private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             // intercept the moment when the dash coroutine sends out the dash time
             // so that we can extend it as long as Dash is pressed.
             IEnumerator coroutine = orig.Invoke(self);
-            while(coroutine.MoveNext()) {
+            while (coroutine.MoveNext()) {
                 object o = coroutine.Current;
-                if(o != null && o.GetType() == typeof(float)) {
+                if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while(Settings.HeldDash && Input.Dash.Check) {
+                    while (Settings.HeldDash && Input.Dash.Check) {
                         yield return null;
                     }
                 } else {
@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
 
             yield break;
         }
-        
+
         /// <summary>
         /// Edits the DashUpdate method in Player (called while the player is dashing).
         /// </summary>

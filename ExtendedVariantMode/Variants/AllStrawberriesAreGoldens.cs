@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
-            if(!Settings.AllStrawberriesAreGoldens) {
+            if (!Settings.AllStrawberriesAreGoldens) {
                 return orig(self, direction, evenIfInvincible, registerDeathInStats);
             }
 
@@ -69,7 +69,7 @@ namespace ExtendedVariants.Variants {
             // call the orig method
             PlayerDeadBody deadBody = orig(self, direction, evenIfInvincible, registerDeathInStats);
 
-            if(deadBody != null && !deadBody.HasGolden && firstStrawberry != null) {
+            if (deadBody != null && !deadBody.HasGolden && firstStrawberry != null) {
                 // the player is dead, doesn't have the actual golden but has a strawberry.
                 // we have to do magic to make the game believe they had the golden.
                 // (actually, we just do what vanilla does, but with a regular berry instead.)
@@ -92,7 +92,7 @@ namespace ExtendedVariants.Variants {
 
             // jump to the first Winged usage: we want to insert ourselves just above it.
             cursor.Index = 0;
-            if (cursor.TryGotoNext(MoveType.Before, 
+            if (cursor.TryGotoNext(MoveType.Before,
                 instr => instr.MatchLdarg(0),
                 instr => instr.MatchCallvirt<Strawberry>("get_Winged"))) {
                 // inject our method to potentially change the sprite from/to a golden one
@@ -113,7 +113,7 @@ namespace ExtendedVariants.Variants {
         private void patchAllGoldenFlags(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Strawberry>("get_Golden")))  {
+            while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
                 // replace the Golden flag with a method call (that returns Golden || AllStrawberriesAreGoldens)
                 Logger.Log("ExtendedVariantMode/AllStrawberriesAreGoldens", $"Patching golden strawberry check at {cursor.Index} in IL code for Strawberry.{cursor.Method.Name}");
 
@@ -127,7 +127,7 @@ namespace ExtendedVariants.Variants {
             // in vanilla, if a berry happens to be a moon golden strawberry, it will appear as a moon berry.
             bool shouldBeGolden = !self.Moon && (self.Golden || Settings.AllStrawberriesAreGoldens);
 
-            if(isGolden == shouldBeGolden) {
+            if (isGolden == shouldBeGolden) {
                 // there's nothing to do though...
                 return currentSprite;
             } else {
@@ -138,8 +138,7 @@ namespace ExtendedVariants.Variants {
                     if (self.Moon) spriteName = "moonghostberry";
                     else if (shouldBeGolden) spriteName = "goldghostberry";
                     else spriteName = "ghostberry";
-                }
-                else if (self.Moon) spriteName = "moonberry";
+                } else if (self.Moon) spriteName = "moonberry";
                 else if (shouldBeGolden) spriteName = "goldberry";
                 else spriteName = "strawberry";
 
@@ -147,15 +146,15 @@ namespace ExtendedVariants.Variants {
 
                 // first, let's remove the components we will replace
                 self.Remove(currentSprite);
-                self.Remove((Wiggler)wiggler.GetValue(self));
-                self.Remove((Wiggler)rotateWiggler.GetValue(self));
+                self.Remove((Wiggler) wiggler.GetValue(self));
+                self.Remove((Wiggler) rotateWiggler.GetValue(self));
 
                 // create the new components
                 Sprite newSprite = GFX.SpriteBank.Create(spriteName);
                 if (self.Winged) {
                     newSprite.Play("flap");
                 }
-                if(isGhostBerry) {
+                if (isGhostBerry) {
                     newSprite.Color = Color.White * 0.8f;
                 }
                 newSprite.OnFrameChange = id => onAnimate.Invoke(self, new object[] { id });
@@ -163,7 +162,7 @@ namespace ExtendedVariants.Variants {
                     newSprite.Scale = Vector2.One * (1f + v * 0.35f);
                 });
                 Wiggler newRotateWiggler = Wiggler.Create(0.5f, 4f, v => {
-                    newSprite.Rotation = v * 30f * ((float)Math.PI / 180f);
+                    newSprite.Rotation = v * 30f * ((float) Math.PI / 180f);
                 });
 
                 // fix the bloom (if switched from a strawberry to a golden for example)

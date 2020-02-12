@@ -32,11 +32,11 @@ namespace ExtendedVariants.Variants {
         private void modLevelUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Assists>("GameSpeed"))) {
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Assists>("GameSpeed"))) {
                 Logger.Log("ExtendedVariantMode/GameSpeed", $"Injecting own game speed at {cursor.Index} in IL code for Level.Update");
                 cursor.EmitDelegate<Func<int, int>>(modGameSpeed);
 
-                if(cursor.TryGotoNext(instr => instr.MatchStsfld<Level>("AssistSpeedSnapshotValue"))) {
+                if (cursor.TryGotoNext(instr => instr.MatchStsfld<Level>("AssistSpeedSnapshotValue"))) {
                     Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding speed sound snapshot at {cursor.Index} in IL code for Level.Update");
                     cursor.EmitDelegate<Func<int, int>>(modSpeedSoundSnapshot);
                 }
@@ -83,9 +83,9 @@ namespace ExtendedVariants.Variants {
             // (this is the span of the vanilla Game Speed variant)
             float timeRate = Engine.TimeRate * Engine.TimeRateB;
 
-            if(timeRate < 0.5f) {
+            if (timeRate < 0.5f) {
                 return Engine.RawDeltaTime * 0.5f;
-            } else if(timeRate > 1.6f) {
+            } else if (timeRate > 1.6f) {
                 return Engine.RawDeltaTime * 1.6f;
             }
             // return the original value

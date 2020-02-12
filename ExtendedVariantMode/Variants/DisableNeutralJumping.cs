@@ -32,12 +32,12 @@ namespace ExtendedVariants.Variants {
             if (wallJumpHook != null) wallJumpHook.Dispose();
         }
 
-        
+
         private void modWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to the first MoveX usage (this.MoveX => ldarg.0 then ldfld MoveX basically)
-            if(cursor.TryGotoNext(MoveType.Before,
+            if (cursor.TryGotoNext(MoveType.Before,
                 instr => instr.OpCode == OpCodes.Ldarg_0,
                 instr => instr.MatchLdfld<Player>("moveX"))) {
 
@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Index++;
 
                 ILCursor cursorAfterBranch = cursor.Clone();
-                if(cursorAfterBranch.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brfalse_S)) {
+                if (cursorAfterBranch.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Brfalse_S)) {
 
                     Logger.Log("ExtendedVariantMode/DisableNeutralJumping", $"Inserting condition to enforce Disable Neutral Jumping at {cursor.Index} in CIL code for WallJump");
 

@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class DashCount : AbstractExtendedVariant {
-        
+
         /// <summary>
         /// This event is invoked whenever the dash is refilled.
         /// </summary>
@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
 
             if (Settings.DashCount == -1) {
                 return orig.Invoke(self);
-            } else if(self.Dashes < Settings.DashCount) {
+            } else if (self.Dashes < Settings.DashCount) {
                 self.Dashes = Settings.DashCount;
                 return true;
             }
@@ -76,7 +76,7 @@ namespace ExtendedVariants.Variants {
             }
 
             cursor.Index = 0;
-            
+
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchStfld<Player>("Dashes"))) {
                 Logger.Log("ExtendedVariantMode/DashCount", $"Inserting OnDashRefill event call at {cursor.Index} in CIL code for UseRefill");
 
@@ -126,7 +126,7 @@ namespace ExtendedVariants.Variants {
             orig.Invoke(self, scene);
             self.Dashes = determineDashCount(self.Dashes);
         }
-        
+
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
             IEnumerator coroutine = orig(self, player);
             while (coroutine.MoveNext()) {
@@ -134,7 +134,7 @@ namespace ExtendedVariants.Variants {
             }
 
             // apply the dash refill rules here (this does not call RefillDash)
-            if(Settings.DashCount != -1) {
+            if (Settings.DashCount != -1) {
                 // this will run in 0.15 seconds: if (player.Dashes < player.Inventory.Dashes) player.Dashes++;
                 // let's take that into account and deduce 1 from the dash count if required.
                 if (Settings.DashCount < player.Inventory.Dashes) {

@@ -30,14 +30,14 @@ namespace ExtendedVariants.Variants {
         }
 
         private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
-            if(!Settings.DisableClimbJumping) {
+            if (!Settings.DisableClimbJumping) {
                 orig(self);
             }
         }
         private void modClimbUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
                 Logger.Log("ExtendedVariantMode/DisableClimbJumping", $"Adding condition to kill climb jumping at {cursor.Index} in IL code for ClimbUpdate");
 
                 cursor.Emit(OpCodes.Ldarg_0);
@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool modJumpButtonCheck(bool actualValue, Player self, int moveX) {
-            if(!Settings.DisableClimbJumping) {
+            if (!Settings.DisableClimbJumping) {
                 // nothing to do
                 return actualValue;
             }

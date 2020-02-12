@@ -17,7 +17,7 @@ namespace ExtendedVariants.Entities {
         public ExtendedVariantSandwichLava(bool isIceMode, float startX) : base(startX) {
             this.isIceMode = isIceMode;
 
-            foreach(Component component in Components) {
+            foreach (Component component in Components) {
                 // toss the CoreModeListener so that the lava/ice doesn't depend on the core mode.
                 if (component.GetType() == typeof(CoreModeListener)) {
                     Remove(component);
@@ -42,7 +42,7 @@ namespace ExtendedVariants.Entities {
 
             // initialize the Y so that the player is in the middle of the sandwich lava
             Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
-            if(player != null) {
+            if (player != null) {
                 Y = player.Y + 80f;
             }
         }
@@ -54,8 +54,8 @@ namespace ExtendedVariants.Entities {
             Waiting = false;
 
             // prevent the "ease in" effect that is more confusing than anything in our case.
-            LavaRect topRectVal = (LavaRect)topRect.GetValue(this);
-            LavaRect bottomRectVal = (LavaRect)bottomRect.GetValue(this);
+            LavaRect topRectVal = (LavaRect) topRect.GetValue(this);
+            LavaRect bottomRectVal = (LavaRect) bottomRect.GetValue(this);
             topRectVal.Position.Y = -360f;
             bottomRectVal.Position.Y = 0f;
         }

@@ -43,7 +43,7 @@ namespace ExtendedVariants.Variants {
                 addSnowballToLevel(self);
             }
         }
-        
+
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
             IEnumerator origEnum = orig(self, next, direction);
@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
 
             yield break;
         }
-        
+
         private void addSnowballToLevel(Level level) {
             // do pretty much the same thing as the so-called "Wind Attack Trigger" from vanilla
             if (Settings.SnowballsEverywhere && level.Entities.FindFirst<Snowball>() == null) {
@@ -102,7 +102,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineDelayBetweenSnowballs() {
-            if(ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings()) {
+            if (ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings()) {
                 return 0.8f;
             }
             return Settings.SnowballDelay / 10f;

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Variants {
     class TheoCrystalsEverywhere : AbstractExtendedVariant {
-        
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
-            if(Settings.TheoCrystalsEverywhere && 
+            if (Settings.TheoCrystalsEverywhere &&
                 // the player is holding nothing...
                 (player.Holding == null || player.Holding.Entity == null || !player.Holding.IsHeld ||
                 // or this thing is not a Theo crystal (f.e. jellyfish)
@@ -64,16 +64,16 @@ namespace ExtendedVariants.Variants {
                     // prevent the player from going left
                     player.Left = bounds.Left;
                     player.OnBoundsH();
-                } else if(player.Right > bounds.Right) {
+                } else if (player.Right > bounds.Right) {
                     // prevent the player from going right
                     player.Right = bounds.Right;
                     player.OnBoundsH();
-                } else if(player.Top < bounds.Top) {
+                } else if (player.Top < bounds.Top) {
                     // prevent the player from going up
                     player.Top = bounds.Top;
                     player.OnBoundsV();
-                } else if(player.Bottom > bounds.Bottom) {
-                    if(SaveData.Instance.Assists.Invincible) {
+                } else if (player.Bottom > bounds.Bottom) {
+                    if (SaveData.Instance.Assists.Invincible) {
                         // bounce the player off the bottom of the screen (= falling into a pit with invincibility on)
                         player.Play("event:/game/general/assist_screenbottom");
                         player.Bounce(bounds.Bottom);

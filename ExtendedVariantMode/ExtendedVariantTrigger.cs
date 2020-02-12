@@ -11,7 +11,7 @@ namespace ExtendedVariants {
         private bool revertOnLeave;
         private int oldValueToRevertOnLeave;
 
-        public ExtendedVariantTrigger(EntityData data, Vector2 offset): base(data, offset) {
+        public ExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) {
             // parse the trigger parameters
             variantChange = data.Enum("variantChange", ExtendedVariantsModule.Variant.Gravity);
             newValue = data.Int("newValue", 10);
@@ -55,7 +55,7 @@ namespace ExtendedVariants {
 
             int oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave);
 
-            if(revertOnLeave) {
+            if (revertOnLeave) {
                 oldValueToRevertOnLeave = oldValue;
             }
         }
@@ -63,7 +63,7 @@ namespace ExtendedVariants {
         public override void OnLeave(Player player) {
             base.OnLeave(player);
 
-            if(revertOnLeave) {
+            if (revertOnLeave) {
                 ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, oldValueToRevertOnLeave);
             }
         }

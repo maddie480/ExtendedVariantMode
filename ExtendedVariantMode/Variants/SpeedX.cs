@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.SuperWallJump -= modSuperWallJump;
             if (wallJumpHook != null) wallJumpHook.Dispose();
         }
-        
+
         /// <summary>
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// to handle the X speed part.
@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
             // (actually, this is V_31 in the FNA version)
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(90f))
                 && cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Stloc_S
-                    && (((VariableDefinition)instr.Operand).Index == 6 || ((VariableDefinition)instr.Operand).Index == 31))) {
+                    && (((VariableDefinition) instr.Operand).Index == 6 || ((VariableDefinition) instr.Operand).Index == 31))) {
 
                 VariableDefinition variable = (VariableDefinition) cursor.Next.Operand;
 
@@ -88,12 +88,12 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Mul);
             }
         }
-        
+
         /// <summary>
         /// Edits the SuperJump method in Player (called when super/hyperdashing on a wall.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperWallJump(ILContext il)  {
+        private void modSuperWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply 170f (X speed given by a superdash) with the X speed factor

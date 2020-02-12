@@ -33,7 +33,7 @@ namespace ExtendedVariants.Variants {
             if (wallJumpHook != null) wallJumpHook.Dispose();
             On.Celeste.Player.WallJumpCheck -= modWallJumpCheck;
         }
-        
+
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
@@ -60,7 +60,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="dir">the direction</param>
         /// <returns>true if walljumping is possible, false otherwise</returns>
         private bool modWallJumpCheck(On.Celeste.Player.orig_WallJumpCheck orig, Player self, int dir) {
-            if(Settings.DisableWallJumping) {
+            if (Settings.DisableWallJumping) {
                 return false;
             }
             return orig(self, dir);

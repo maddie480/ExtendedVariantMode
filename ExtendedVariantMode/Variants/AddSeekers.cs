@@ -49,21 +49,21 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
 
             // if disabled during a level, we have to plug out the extended pathfinder right away.
-            if(extendedPathfinder && Engine.Scene.GetType() == typeof(Level)) {
+            if (extendedPathfinder && Engine.Scene.GetType() == typeof(Level)) {
                 Level level = Engine.Scene as Level;
 
                 extendedPathfinder = false;
                 level.Pathfinder = new Pathfinder(level);
             }
         }
-        
+
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             Level level = self;
             Player player = level.Tracker.GetEntity<Player>();
-                
-            if(player != null && Settings.AddSeekers != 0) {
+
+            if (player != null && Settings.AddSeekers != 0) {
                 // first of all, ensure that the size is within the limits of the pathfinder
                 if (level.Bounds.Width / 8 > 768 || level.Bounds.Height / 8 > 578) {
                     Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AddSeekers", $"Not spawning seekers since room exceeds max size of 768x578 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
@@ -106,7 +106,7 @@ namespace ExtendedVariants.Variants {
                 foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = false;
 
                 level.Entities.UpdateLists();
-            } else if(Settings.AddSeekers == 0 && extendedPathfinder) {
+            } else if (Settings.AddSeekers == 0 && extendedPathfinder) {
                 extendedPathfinder = false;
                 level.Pathfinder = new Pathfinder(level);
             }

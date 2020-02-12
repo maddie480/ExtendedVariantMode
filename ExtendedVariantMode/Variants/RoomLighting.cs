@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
     public class RoomLighting : AbstractExtendedVariant {
-        
+
         private float initialBaseLightingAlpha = -1f;
 
         public override int GetDefaultValue() {

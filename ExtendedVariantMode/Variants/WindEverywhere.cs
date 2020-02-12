@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
                 level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(ExtendedVariantWindSnowFG));
             }
         }
-        
+
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -78,7 +78,7 @@ namespace ExtendedVariants.Variants {
 
         private void applyWind(Level level) {
             if (Settings.WindEverywhere != 0) {
-                if(!snowBackdropAddedByEVM) {
+                if (!snowBackdropAddedByEVM) {
                     // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
                     // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
                     level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
@@ -118,7 +118,7 @@ namespace ExtendedVariants.Variants {
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             snowBackdropAddedByEVM = false;
         }
-        
+
         private void onWireRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
@@ -131,7 +131,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformVisualWind(float vanilla) {
-            if(Settings.WindEverywhere == 0) {
+            if (Settings.WindEverywhere == 0) {
                 // variant disabled: don't affect vanilla.
                 return vanilla;
             }

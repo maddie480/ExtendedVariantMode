@@ -10,7 +10,7 @@ namespace ExtendedVariants.UI {
     public class OuiRandomizerOptions : AbstractSubmenu {
 
         public OuiRandomizerOptions() : base("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE", "MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER") { }
-        
+
         /// <summary>
         /// List of options shown for Change Variants Interval.
         /// </summary>
@@ -34,7 +34,7 @@ namespace ExtendedVariants.UI {
 
             return changeVariantsIntervalScale.Length - 1;
         }
-        
+
 
         private static int[] vanillafyScale = new int[] {
             0, 15, 30, 60, 120, 300, 600
@@ -95,7 +95,7 @@ namespace ExtendedVariants.UI {
             menu.Add(items.VanillafyOption = new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VANILLAFY"), i => {
                 if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED");
                 i = vanillafyScale[i];
-                if(i < 60) return $"{i.ToString()}s";
+                if (i < 60) return $"{i.ToString()}s";
                 return $"{(i / 60).ToString()} min";
             }, 0, vanillafyScale.Length - 1, indexFromVanillafyScale(ExtendedVariantsModule.Settings.Vanillafy))
                 .Change(newValue => {
@@ -126,7 +126,7 @@ namespace ExtendedVariants.UI {
 
             // and do the same with extended ones
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_EXTENDED")));
-            foreach(ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Instance.VariantHandlers.Keys) {
+            foreach (ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Instance.VariantHandlers.Keys) {
                 items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, variant));
             }
 
@@ -138,7 +138,7 @@ namespace ExtendedVariants.UI {
             foreach (TextMenu.Item item in items.ExtendedVariantOptions) item.Disabled = (ExtendedVariantsModule.Settings.VariantSet / 2 == 0);
             items.VanillafyOption.Disabled = ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0;
 
-            if(ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0 && ExtendedVariantsModule.Settings.Vanillafy != 0) {
+            if (ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0 && ExtendedVariantsModule.Settings.Vanillafy != 0) {
                 // vanillafy is impossible, so set its value to 0
                 ExtendedVariantsModule.Settings.Vanillafy = 0;
                 items.VanillafyOption.PreviousIndex = items.VanillafyOption.Index;

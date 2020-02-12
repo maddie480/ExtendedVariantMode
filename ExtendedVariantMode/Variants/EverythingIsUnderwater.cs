@@ -30,7 +30,7 @@ namespace ExtendedVariants.Variants {
             if (Settings.EverythingIsUnderwater && !levelData.Underwater) {
                 // reproduce the vanilla behavior of the Underwater flag: ... simply cover the level with water.
                 // (we make the water go 10 pixels above the screen to avoid having a weird "coming out from water" sound effect on upwards transitions.)
-                self.Add(new Water(new Vector2(levelData.Bounds.Left, levelData.Bounds.Top - 10), 
+                self.Add(new Water(new Vector2(levelData.Bounds.Left, levelData.Bounds.Top - 10),
                     false, false, levelData.Bounds.Width, levelData.Bounds.Height + 10));
             }
         }

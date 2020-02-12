@@ -113,7 +113,7 @@ namespace ExtendedVariants.UI {
 
             return badelineBossesPatternsOptions.Length - 1;
         }
-        
+
         /// <summary>
         /// List of options shown for multipliers.
         /// </summary>
@@ -168,7 +168,7 @@ namespace ExtendedVariants.UI {
         public void CreateAllOptions(VariantCategory category, bool includeMasterSwitch, bool includeCategorySubmenus, bool includeRandomizer, bool includeOpenSubmenuButton,
             Action submenuBackAction, TextMenu menu, bool inGame, bool forceEnabled) {
 
-            if(includeMasterSwitch) {
+            if (includeMasterSwitch) {
                 // create the "master switch" option with specific enable/disable handling.
                 masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
                     Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
@@ -181,7 +181,7 @@ namespace ExtendedVariants.UI {
                         if (v) ExtendedVariantsModule.Instance.HookStuff();
                         else ExtendedVariantsModule.Instance.UnhookStuff();
                     });
-                
+
                 if (!inGame) {
                     optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenu)
                         .Change(b => {
@@ -544,13 +544,13 @@ namespace ExtendedVariants.UI {
 
             if (includeMasterSwitch) {
                 menu.Add(masterSwitchOption);
-                if(!inGame) {
+                if (!inGame) {
                     menu.Add(optionsOutOfModOptionsMenuOption);
                     menu.Add(submenusForEachCategoryOption);
                 }
             }
 
-            if(category == VariantCategory.All || includeCategorySubmenus) {
+            if (category == VariantCategory.All || includeCategorySubmenus) {
                 menu.Add(resetToDefaultOption);
             }
 
@@ -570,7 +570,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(verticalSpeedTitle);
                 menu.Add(gravityOption);
                 menu.Add(fallSpeedOption);
-                
+
                 menu.Add(jumpingTitle);
                 menu.Add(jumpHeightOption);
                 menu.Add(wallBouncingSpeedOption);
@@ -579,7 +579,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(disableNeutralJumpingOption);
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
-                
+
                 menu.Add(dashingTitle);
                 menu.Add(dashSpeedOption);
                 menu.Add(dashLengthOption);
@@ -602,7 +602,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(affectExistingChasersOption);
                 menu.Add(badelineLagOption);
                 menu.Add(delayBetweenBadelinesOption);
-                
+
                 menu.Add(bossesTitle);
                 menu.Add(badelineBossesEverywhereOption);
                 menu.Add(badelineAttackPatternOption);
@@ -610,13 +610,13 @@ namespace ExtendedVariants.UI {
                 menu.Add(firstBadelineSpawnRandomOption);
                 menu.Add(badelineBossCountOption);
                 menu.Add(badelineBossNodeCountOption);
-                
+
                 menu.Add(oshiroTitle);
                 menu.Add(oshiroEverywhereOption);
                 menu.Add(oshiroCountOption);
-                if(Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption);
+                if (Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption);
                 menu.Add(disableOshiroSlowdownOption);
-                
+
                 menu.Add(everywhereTitle);
                 menu.Add(windEverywhereOption);
                 menu.Add(snowballsEverywhereOption);
@@ -646,7 +646,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(regularHiccupsOption);
                 menu.Add(hiccupStrengthOption);
                 menu.Add(allStrawberriesAreGoldensOption);
-                
+
                 menu.Add(trollTitle);
                 menu.Add(forceDuckOnGroundOption);
                 menu.Add(invertDashesOption);
@@ -732,7 +732,7 @@ namespace ExtendedVariants.UI {
         private void refreshOptionMenuEnabledStatus() {
             // hide everything if the master switch is off, show everything if it is on.
             foreach (TextMenu.Item item in allOptions) {
-                if(item != null) item.Visible = Settings.MasterSwitch;
+                if (item != null) item.Visible = Settings.MasterSwitch;
             }
 
             // special graying-out rules for some variant options
@@ -750,7 +750,7 @@ namespace ExtendedVariants.UI {
 
             newValue -= min;
 
-            if(newValue != option.Index) {
+            if (newValue != option.Index) {
                 // replicate the vanilla behaviour
                 option.PreviousIndex = option.Index;
                 option.Index = newValue;

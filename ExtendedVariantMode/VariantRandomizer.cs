@@ -20,11 +20,11 @@ namespace ExtendedVariants {
             Label = label;
         }
 
-        public static bool operator == (VanillaVariant one, VanillaVariant other) {
+        public static bool operator ==(VanillaVariant one, VanillaVariant other) {
             return one.Name == other.Name;
         }
 
-        public static bool operator != (VanillaVariant one, VanillaVariant other) {
+        public static bool operator !=(VanillaVariant one, VanillaVariant other) {
             return one.Name != other.Name;
         }
 
@@ -74,7 +74,7 @@ namespace ExtendedVariants {
             On.Celeste.Player.Update += onUpdate;
             On.Celeste.Level.EndPauseEffects += modEndPauseEffects;
 
-            if(Engine.Scene != null && Engine.Scene.GetType() == typeof(Level)) {
+            if (Engine.Scene != null && Engine.Scene.GetType() == typeof(Level)) {
                 // we're late, catch up!
                 onLevelBegin();
             }
@@ -157,7 +157,7 @@ namespace ExtendedVariants {
                     Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {vanillafyTimer}");
                 }
             }
-            
+
             IEnumerator origEnum = orig(self, next, direction);
             while (origEnum.MoveNext()) {
                 yield return origEnum.Current;
@@ -170,7 +170,7 @@ namespace ExtendedVariants {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0) {
                     variantChangeTimer -= Engine.DeltaTime;
-                    if(variantChangeTimer <= 0f) {
+                    if (variantChangeTimer <= 0f) {
                         // variant timer is over => change variant now!
                         changeVariantNow();
 
@@ -178,7 +178,7 @@ namespace ExtendedVariants {
                         Logger.Log("ExtendedVariantMode/VariantRandomizer", $"variantChangeTimer reset to {variantChangeTimer}");
                     }
                 }
-                
+
 
                 if (ExtendedVariantsModule.Settings.Vanillafy != 0) {
                     vanillafyTimer -= Engine.DeltaTime;
@@ -204,7 +204,7 @@ namespace ExtendedVariants {
         private void changeVariantNow(bool disableOnly = false) {
             // get filtered lists for changeable variants, and those which are enabled
             IEnumerable<VanillaVariant> changeableVanillaVariants = new List<VanillaVariant>();
-            if(SaveData.Instance.VariantMode && ExtendedVariantsModule.Settings.VariantSet % 2 == 1)
+            if (SaveData.Instance.VariantMode && ExtendedVariantsModule.Settings.VariantSet % 2 == 1)
                 changeableVanillaVariants = allVanillaVariants.Where(variant => ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(variant.Name, out bool enabled) ? enabled : true);
 
             IEnumerable<ExtendedVariantsModule.Variant> changeableExtendedVariants = new List<ExtendedVariantsModule.Variant>();
@@ -227,7 +227,7 @@ namespace ExtendedVariants {
                 for (int i = 0; i < changeableVanillaVariants.Count() + changeableExtendedVariants.Count(); i++) variantNumbers.Add(i);
 
                 // remove numbers until there are few enough left
-                while(variantNumbers.Count() > ExtendedVariantsModule.Settings.MaxEnabledVariants) {
+                while (variantNumbers.Count() > ExtendedVariantsModule.Settings.MaxEnabledVariants) {
                     variantNumbers.RemoveAt(randomGenerator.Next(variantNumbers.Count()));
                 }
 
@@ -239,11 +239,11 @@ namespace ExtendedVariants {
                     if (variantNumbers.Contains(index++)) enableVariant(variant);
             } else {
                 // pick a random variant (if disableOnly or the max variant count has been reached, pick from the enabled ones)
-                if(disableOnly || (enabledVanillaVariants.Count() + enabledExtendedVariants.Count() >= ExtendedVariantsModule.Settings.MaxEnabledVariants)) {
+                if (disableOnly || (enabledVanillaVariants.Count() + enabledExtendedVariants.Count() >= ExtendedVariantsModule.Settings.MaxEnabledVariants)) {
                     Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Randomizing: picking a variant in disableOnly mode " +
                         $"({enabledVanillaVariants.Count() + enabledExtendedVariants.Count()} enabled, {ExtendedVariantsModule.Settings.MaxEnabledVariants} max)");
 
-                    if(enabledVanillaVariants.Count() + enabledExtendedVariants.Count() == 0) {
+                    if (enabledVanillaVariants.Count() + enabledExtendedVariants.Count() == 0) {
                         Logger.Log(LogLevel.Warn, "ExtendedVariantMode/VariantRandomizer", "ESCAPE: We are in disableOnly mode and no variant is enabled.");
                         return;
                     }
@@ -323,7 +323,7 @@ namespace ExtendedVariants {
         private void enableVariant(VanillaVariant variant) {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.Name}");
 
-            if (variant == VanillaVariant.DashMode) SaveData.Instance.Assists.DashMode = new Assists.DashModes[] {Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(2)];
+            if (variant == VanillaVariant.DashMode) SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(2)];
             else if (variant == VanillaVariant.GameSpeed) SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 12, 12, 14, 14, 16 }[randomGenerator.Next(10)];
             else toggleVanillaVariant(variant, true);
         }
@@ -388,8 +388,7 @@ namespace ExtendedVariants {
                 SaveData.Instance.Assists.MirrorMode = enabled;
                 Input.Aim.InvertedX = enabled;
                 Input.MoveX.Inverted = enabled;
-            }
-            else if (variant == VanillaVariant.NoGrabbing) SaveData.Instance.Assists.NoGrabbing = enabled;
+            } else if (variant == VanillaVariant.NoGrabbing) SaveData.Instance.Assists.NoGrabbing = enabled;
             else if (variant == VanillaVariant.SuperDashing) SaveData.Instance.Assists.SuperDashing = enabled;
             else if (variant == VanillaVariant.ThreeSixtyDashing) SaveData.Instance.Assists.ThreeSixtyDashing = enabled;
             else if (variant == VanillaVariant.PlayAsBadeline) {
@@ -403,8 +402,7 @@ namespace ExtendedVariants {
                     }
                     entity.ResetSprite(mode);
                 }
-            }
-            else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
+            } else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
         private void refreshEnabledVariantsDisplayList() {
@@ -413,14 +411,14 @@ namespace ExtendedVariants {
             IEnumerable<VanillaVariant> enabledVanillaVariants = allVanillaVariants.Where(variant => !isDefaultValue(variant));
             IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys.Where(variant => !isDefaultValue(variant));
 
-            foreach(VanillaVariant variant in enabledVanillaVariants) {
+            foreach (VanillaVariant variant in enabledVanillaVariants) {
                 if (variant == VanillaVariant.DashMode) enabledVariantsToDisplay.Add($"{Dialog.Clean(variant.Label)}: " + Dialog.Clean($"MENU_ASSIST_AIR_DASHES_{SaveData.Instance.Assists.DashMode.ToString()}"));
                 else if (variant == VanillaVariant.GameSpeed) enabledVariantsToDisplay.Add($"{Dialog.Clean(variant.Label)}: {multiplierFormatter(SaveData.Instance.Assists.GameSpeed)}");
                 // the rest are toggles: if enabled, display the name.
                 else enabledVariantsToDisplay.Add(Dialog.Clean(variant.Label));
             }
 
-            foreach(ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
+            foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
                 string variantName = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant.ToString().ToUpperInvariant()}");
 
                 // "just print the raw value" variants
@@ -429,16 +427,14 @@ namespace ExtendedVariants {
                 // variants that require a bit more formatting
                 else if (variant == ExtendedVariantsModule.Variant.Stamina) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
                 else if (variant == ExtendedVariantsModule.Variant.Friction) {
-                    if(ExtendedVariantsModule.Settings.Friction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
+                    if (ExtendedVariantsModule.Settings.Friction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
                     else if (ExtendedVariantsModule.Settings.Friction == -1) enabledVariantsToDisplay.Add($"{variantName}: 0x");
                     else enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.Friction)}");
-                }
-                else if (variant == ExtendedVariantsModule.Variant.AirFriction) {
-                    if(ExtendedVariantsModule.Settings.AirFriction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
+                } else if (variant == ExtendedVariantsModule.Variant.AirFriction) {
+                    if (ExtendedVariantsModule.Settings.AirFriction == 0) enabledVariantsToDisplay.Add($"{variantName}: 0.05x");
                     else if (ExtendedVariantsModule.Settings.AirFriction == -1) enabledVariantsToDisplay.Add($"{variantName}: 0x");
                     else enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.AirFriction)}");
-                }
-                else if (variant == ExtendedVariantsModule.Variant.JumpCount)
+                } else if (variant == ExtendedVariantsModule.Variant.JumpCount)
                     enabledVariantsToDisplay.Add($"{variantName}: {(ExtendedVariantsModule.Settings.JumpCount == 6 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString())}");
                 else if (variant == ExtendedVariantsModule.Variant.Stamina) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
                 else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
@@ -446,8 +442,8 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.RoomBloom) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
                     string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
-                    if(resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
-                    string formattedValue =  Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+                    if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
+                    string formattedValue = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
 
                     enabledVariantsToDisplay.Add($"{variantName}: {formattedValue}");
                 }

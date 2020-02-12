@@ -30,7 +30,7 @@ namespace ExtendedVariants {
             Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
         }
-        
+
         /// <summary>
         /// Restore extended variants values when entering a saved level.
         /// </summary>
@@ -42,7 +42,7 @@ namespace ExtendedVariants {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "WARNING: Session was null. This should not happen. Initializing it to an empty session.");
                 ExtendedVariantsModule.Instance._Session = new ExtendedVariantsSession();
             }
-            if(fromSaveData) {
+            if (fromSaveData) {
                 foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
                     int oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]);
@@ -50,7 +50,7 @@ namespace ExtendedVariants {
                 }
             }
         }
-        
+
         /// <summary>
         /// Handle respawn (reset variants that were set in the room).
         /// </summary>
@@ -69,7 +69,7 @@ namespace ExtendedVariants {
                 overridenVariantsInRoom.Clear();
             }
         }
-        
+
         /// <summary>
         /// Handle screen transitions (make variants set within the room permanent).
         /// </summary>
@@ -113,7 +113,7 @@ namespace ExtendedVariants {
                 overridenVariantsInRoom.Clear();
             }
         }
-        
+
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             if (variantValuesBeforeOverride.Count != 0) {
                 // reset all variants that got set during the session
@@ -131,7 +131,7 @@ namespace ExtendedVariants {
 
             ExtendedVariantsModule.Instance.SaveSettings();
         }
-        
+
         public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave) {
             // change the variant value
             int oldValue = setVariantValue(variantChange, newValue);
@@ -167,7 +167,7 @@ namespace ExtendedVariants {
         private int setVariantValue(ExtendedVariantsModule.Variant variantChange, int newValue) {
             int oldValue;
 
-            switch(variantChange) {
+            switch (variantChange) {
                 case ExtendedVariantsModule.Variant.ChaserCount:
                     oldValue = ExtendedVariantsModule.Settings.ChaserCount;
                     ExtendedVariantsModule.Settings.ChaserCount = newValue;

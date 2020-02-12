@@ -20,7 +20,7 @@ namespace ExtendedVariants.Entities {
         private float waitTimer;
         private bool playerMoved = false;
 
-        public AutoDestroyingReverseOshiroModder(float offsetTime): base(true, false) {
+        public AutoDestroyingReverseOshiroModder(float offsetTime) : base(true, false) {
             this.offsetTime = offsetTime;
         }
 
@@ -30,7 +30,7 @@ namespace ExtendedVariants.Entities {
             // bump Oshiro up so that he goes over FakeWalls
             entity.Depth = -13500;
 
-            state = (StateMachine)stateMachine.GetValue(entity);
+            state = (StateMachine) stateMachine.GetValue(entity);
             waitTimer = offsetTime;
 
             state.SetCallbacks(StWaitingOffset, WaitingOffsetUpdate);
@@ -49,7 +49,7 @@ namespace ExtendedVariants.Entities {
             if (player != null && playerMoved && player.X < level.Bounds.Right - 48) {
                 // vanilla Oshiro would charge. we want to wait for waitTimer to deplete first.
                 waitTimer -= Engine.DeltaTime;
-                if(waitTimer <= 0f) {
+                if (waitTimer <= 0f) {
                     // timer depleted, proceed to Chase state
                     return 0;
                 }

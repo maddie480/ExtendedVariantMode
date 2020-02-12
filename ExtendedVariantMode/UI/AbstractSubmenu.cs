@@ -136,7 +136,7 @@ namespace ExtendedVariants.UI {
         /// Method getting called on the Oui instance when the method just above is called.
         /// </summary>
         private TextMenuButtonExt buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
-            if(inGame) {
+            if (inGame) {
                 Level level = Engine.Scene as Level;
 
                 // this is how it works in-game

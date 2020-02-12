@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
 
                 // check for collision below
                 hitbox.Height++;
-                if(level.CollideCheck<Solid>(hitbox) && self.Speed.Y >= 0f) {
+                if (level.CollideCheck<Solid>(hitbox) && self.Speed.Y >= 0f) {
                     self.SuperBounce(self.Bottom);
                     bounce = true;
                 } else {
@@ -56,7 +56,7 @@ namespace ExtendedVariants.Variants {
                     }
                 }
 
-                if(bounce) {
+                if (bounce) {
                     Audio.Play("event:/game/general/spring", self.Center);
                 }
             }

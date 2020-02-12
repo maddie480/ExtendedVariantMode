@@ -43,7 +43,7 @@ namespace ExtendedVariants.Variants {
                 addRisingLavaToLevel(self);
             }
         }
-        
+
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
             IEnumerator origEnum = orig(self, next, direction);
@@ -57,10 +57,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addRisingLavaToLevel(Level level) {
-            if(Settings.RisingLavaEverywhere && level.Entities.All(entity => entity.GetType() != typeof(RisingLava) && entity.GetType() != typeof(SandwichLava))) {
+            if (Settings.RisingLavaEverywhere && level.Entities.All(entity => entity.GetType() != typeof(RisingLava) && entity.GetType() != typeof(SandwichLava))) {
                 // we should add a rising lava entity to the level, since there isn't any at the moment.
                 Player player = level.Tracker.GetEntity<Player>();
-                if(player != null) {
+                if (player != null) {
                     // spawn lava if the player is at the bottom of the screen, ice if they are at the top.
                     bool shouldBeIce = (player.Y < level.Bounds.Center.Y);
                     level.Add(new ExtendedVariantSandwichLava(shouldBeIce, player.X - 10f));
@@ -84,7 +84,7 @@ namespace ExtendedVariants.Variants {
 
         private float getRisingLavaSpeedFactor(SandwichLava self) {
             // if we are dealing with modded SandwichLava, make it stop if the player just respawned.
-            if(self.GetType() == typeof(ExtendedVariantSandwichLava)) {
+            if (self.GetType() == typeof(ExtendedVariantSandwichLava)) {
                 Player player = self.SceneAs<Level>().Tracker.GetEntity<Player>();
                 if (player != null && player.JustRespawned) return 0;
             }

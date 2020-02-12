@@ -31,8 +31,8 @@ namespace ExtendedVariants.Module {
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
         public override Type SessionType => typeof(ExtendedVariantsSession);
 
-        public static ExtendedVariantsSettings Settings => (ExtendedVariantsSettings)Instance._Settings;
-        public static ExtendedVariantsSession Session => (ExtendedVariantsSession)Instance._Session;
+        public static ExtendedVariantsSettings Settings => (ExtendedVariantsSettings) Instance._Settings;
+        public static ExtendedVariantsSession Session => (ExtendedVariantsSession) Instance._Session;
 
         public VariantRandomizer Randomizer;
 
@@ -40,9 +40,9 @@ namespace ExtendedVariants.Module {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
-            BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown, 
-            WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere,  Stamina, UpsideDown, DisableNeutralJumping, 
-            RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater,  ForceDuckOnGround, InvertDashes, InvertGrab, 
+            BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
+            WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
+            RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere
         }
 
@@ -144,11 +144,11 @@ namespace ExtendedVariants.Module {
         }
 
         private void onCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal) {
-            int optionsIndex = menu.GetItems().FindIndex(item => 
-                item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button)item).Label == Dialog.Clean("menu_pause_options"));
+            int optionsIndex = menu.GetItems().FindIndex(item =>
+                item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button) item).Label == Dialog.Clean("menu_pause_options"));
 
             // insert ourselves just before Options if required (this is below Variants if variant mode is enabled)
-            if(Settings.OptionsOutOfModOptionsMenu) {
+            if (Settings.OptionsOutOfModOptionsMenu) {
                 menu.Insert(optionsIndex, AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, true,
                     null /* this is not used when in-game anyway */, new object[] { true }));
             }
@@ -189,7 +189,7 @@ namespace ExtendedVariants.Module {
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 7, 10) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");
 
-            if(!DJMapHelperInstalled) {
+            if (!DJMapHelperInstalled) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
                 Settings.ReverseOshiroCount = 0;
                 SaveSettings();
@@ -209,7 +209,7 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
 
-            foreach(Variant variant in VariantHandlers.Keys) {
+            foreach (Variant variant in VariantHandlers.Keys) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant {variant}...");
                 VariantHandlers[variant].Load();
             }
@@ -234,8 +234,8 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant randomizer...");
             Randomizer.Unload();
-            
-            foreach(Variant variant in VariantHandlers.Keys) {
+
+            foreach (Variant variant in VariantHandlers.Keys) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant {variant}...");
                 VariantHandlers[variant].Unload();
             }
@@ -276,9 +276,9 @@ namespace ExtendedVariants.Module {
         private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
             "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/JumpRefill"
         };
-        
+
         private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
-            if(AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int)session.Area.Mode
+            if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && session.MapData.Levels.Exists(levelData => levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
@@ -286,7 +286,7 @@ namespace ExtendedVariants.Module {
 
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
-                if(!stuffIsHooked) {
+                if (!stuffIsHooked) {
                     showForcedVariantsPostcard = true;
                     Settings.MasterSwitch = true;
                     HookStuff();
@@ -302,7 +302,7 @@ namespace ExtendedVariants.Module {
         }
 
         private IEnumerator addForceEnabledVariantsPostcard(On.Celeste.LevelEnter.orig_Routine orig, LevelEnter self) {
-            if(showForcedVariantsPostcard) {
+            if (showForcedVariantsPostcard) {
                 showForcedVariantsPostcard = false;
 
                 // let's show a postcard to let the player know Extended Variants have been enabled.
@@ -338,24 +338,24 @@ namespace ExtendedVariants.Module {
         }
 
         public bool ResetToDefaultSettings() {
-            if(Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
+            if (Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
             }
 
             bool settingChanged = false;
-            
+
             // reset all proper variants to their default values
-            foreach(AbstractExtendedVariant variant in VariantHandlers.Values) {
-                if(variant.GetDefaultValue() != variant.GetValue()) {
+            foreach (AbstractExtendedVariant variant in VariantHandlers.Values) {
+                if (variant.GetDefaultValue() != variant.GetValue()) {
                     settingChanged = true;
                 }
 
                 variant.SetValue(variant.GetDefaultValue());
             }
 
-            if(Settings.ChaserCount != 1
+            if (Settings.ChaserCount != 1
                 || Settings.AffectExistingChasers
                 || Settings.HiccupStrength != 10
                 || Settings.RefillJumpsOnDashRefill
@@ -428,12 +428,12 @@ namespace ExtendedVariants.Module {
             pathList.Add("Dialog/Fonts/max480_extendedvariants_extendedkorean.xml");
         }
 
-        private PixelFontSize loadOrMergeExtendedFont(On.Monocle.PixelFont.orig_AddFontSize_string_XmlElement_Atlas_bool orig, PixelFont self, 
+        private PixelFontSize loadOrMergeExtendedFont(On.Monocle.PixelFont.orig_AddFontSize_string_XmlElement_Atlas_bool orig, PixelFont self,
             string path, XmlElement data, Atlas atlas, bool outline) {
 
             PixelFontSize loadedFontSize = orig(self, path, data, atlas, outline);
 
-            if(path == "Dialog/Fonts/max480_extendedvariants_extendedkorean.xml") {
+            if (path == "Dialog/Fonts/max480_extendedvariants_extendedkorean.xml") {
                 // we just loaded our extended font, we shall merge it with the original font.
                 // (a size of 63 has been set in purpose so that Celeste will load it as a different size.)
                 foreach (PixelFontSize originalFontSize in self.Sizes) {
@@ -459,7 +459,7 @@ namespace ExtendedVariants.Module {
         /// Wraps the VersionNumberAndVariants in the base game in order to add the Variant Mode logo if Extended Variants are enabled.
         /// </summary>
         private void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
-            if(Settings.MasterSwitch) {
+            if (Settings.MasterSwitch) {
                 // The "if" conditioning the display of the Variant Mode logo is in an "orig_" method, we can't access it with IL.Celeste.
                 // The best we can do is turn on Variant Mode, run the method then restore its original value.
                 bool oldVariantModeValue = SaveData.Instance.VariantMode;
@@ -525,7 +525,7 @@ namespace ExtendedVariants.Module {
 
             return false;
         }
-        
+
         /// <summary>
         /// Generates a new EntityData instance, linked to the level given, an ID which will be the same if and only if generated
         /// in the same room with the same entityNumber, and an empty map of attributes.
@@ -565,7 +565,7 @@ namespace ExtendedVariants.Module {
             }
             badelineBoosting = false;
         }
-        
+
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             onLevelExit();
         }

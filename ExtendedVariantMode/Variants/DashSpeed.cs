@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Player.CallDashEvents -= modCallDashEvents;
         }
-        
+
         /// <summary>
         /// Edits the CallDashEvents method in Player (called multiple times when the player dashes).
         /// </summary>

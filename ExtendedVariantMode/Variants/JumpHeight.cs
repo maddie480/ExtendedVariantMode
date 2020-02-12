@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.SuperWallJump -= modSuperWallJump;
             if (wallJumpHook != null) wallJumpHook.Dispose();
         }
-        
+
         /// <summary>
         /// Edits the Jump method in Player (called when jumping, simply.)
         /// </summary>

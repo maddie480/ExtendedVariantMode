@@ -68,7 +68,7 @@ namespace ExtendedVariants.Variants {
             Player player = level.Tracker.GetEntity<Player>();
 
             if (player != null) {
-                for(int id = level.Tracker.CountEntities<FinalBoss>(); id < Settings.BadelineBossCount; id++) {
+                for (int id = level.Tracker.CountEntities<FinalBoss>(); id < Settings.BadelineBossCount; id++) {
                     // let's add a boss
 
                     Vector2 bossPosition;
@@ -88,7 +88,7 @@ namespace ExtendedVariants.Variants {
 
                     Vector2[] nodes = new Vector2[Settings.BadelineBossNodeCount];
 
-                    for(int i = 0; i < Settings.BadelineBossNodeCount - 1; i++)  {
+                    for (int i = 0; i < Settings.BadelineBossNodeCount - 1; i++) {
                         // randomize all nodes, except the last one.
                         nodes[i] = computeBossPositionAtRandom(level, player);
 
@@ -149,7 +149,7 @@ namespace ExtendedVariants.Variants {
             for (int i = 0; i < 20; i++) {
                 // the Badeline boss hitbox is a circle of a 14 pixel radius, shifted 6 pixels to the top.
                 // we want to take a 5 pixel security margin because I encountered some issues with dream blocks while testing.
-                Rectangle collisionBox = new Rectangle((int)(bossPosition.X - 19), (int)(bossPosition.Y - 25), 38, 38);
+                Rectangle collisionBox = new Rectangle((int) (bossPosition.X - 19), (int) (bossPosition.Y - 25), 38, 38);
 
                 if (!level.CollideCheck<Solid>(collisionBox) && !level.CollideCheck<JumpThru>(collisionBox)) {
                     return bossPosition;
@@ -183,7 +183,7 @@ namespace ExtendedVariants.Variants {
             Logger.Log(LogLevel.Warn, "ExtendedVariantMode/BadelineBossesEverywhere", "Could not find boss position! Aborting.");
             return Vector2.Zero;
         }
-        
+
         private void modCanChangeMusic(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
@@ -208,7 +208,7 @@ namespace ExtendedVariants.Variants {
         private void modBadelineBossConstructor(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if(cursor.TryGotoNext(instr => instr.MatchStfld<FinalBoss>("patternIndex"))) {
+            if (cursor.TryGotoNext(instr => instr.MatchStfld<FinalBoss>("patternIndex"))) {
                 Logger.Log("ExtendedVariantMode/BadelineBossesEverywhere", $"Modding Badeline Boss patterns at {cursor.Index} in IL code for the FinalBoss constructor");
 
                 cursor.EmitDelegate<Func<int, int>>(modAttackPattern);
@@ -216,7 +216,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modAttackPattern(int vanillaPattern) {
-            if(Settings.ChangePatternsOfExistingBosses) {
+            if (Settings.ChangePatternsOfExistingBosses) {
                 return Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
             }
             return vanillaPattern;

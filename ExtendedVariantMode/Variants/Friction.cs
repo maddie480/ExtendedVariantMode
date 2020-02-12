@@ -62,7 +62,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // we're jumping to this line: "if (Math.Abs(this.Speed.X) <= 25f && this.moveX == 0)"
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 25f)) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 25f)) {
                 Logger.Log("ExtendedVariantMode/Friction", $"Modding constant at {cursor.Index} in CIL code for UpdateSprite to fix animation with friction");
 
                 // call our method which will essentially replace the 25 with whatever value we want
@@ -77,7 +77,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The idle animation threshold (minimum 25, gets higher as the friction factor is lower)</returns>
         private float getIdleAnimationThreshold() {
-            if(Settings.Friction >= 10) {
+            if (Settings.Friction >= 10) {
                 // keep the default value
                 return 25f;
             }

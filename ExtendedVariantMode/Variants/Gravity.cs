@@ -103,7 +103,7 @@ namespace ExtendedVariants.Variants {
             orig(self);
 
             // deplete the cooldown
-            if(climbJumpGrabCooldown >= 0f)
+            if (climbJumpGrabCooldown >= 0f)
                 climbJumpGrabCooldown -= Engine.DeltaTime;
         }
 

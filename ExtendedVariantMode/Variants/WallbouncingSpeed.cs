@@ -24,7 +24,7 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Player.SuperWallJump -= modSuperWallJump;
         }
-        
+
         /// <summary>
         /// Edits the SuperWallJump method in Player (called when super/hyperdashing on a wall.)
         /// </summary>
@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Mul);
             }
         }
-        
+
         /// <summary>
         /// Returns the current wallbounce speed factor.
         /// </summary>

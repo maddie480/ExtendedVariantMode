@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
         public override void SetValue(int value) {
             Settings.InvertDashes = (value != 0);
         }
-        
+
         public override void Load() {
             IL.Celeste.Player.CallDashEvents += modCallDashEvents;
         }
@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Player.CallDashEvents -= modCallDashEvents;
         }
-        
+
         /// <summary>
         /// Edits the CallDashEvents method in Player (called multiple times when the player dashes).
         /// </summary>
@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
                 cursor.EmitDelegate<Action<Player>>(invertDashSpeed);
             }
         }
-        
+
         /// <summary>
         /// Inverts the dash direction of the player.
         /// </summary>

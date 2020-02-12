@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
         private void wrapExplodeLaunchCall(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("ExplodeLaunch"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("ExplodeLaunch"))) {
                 Logger.Log("ExtendedVariantMode/ExplodeLaunchSpeed", $"Adding call after ExplodeLaunch at {cursor.Index} in IL code for {il.Method.DeclaringType.Name}.{il.Method.Name}");
                 cursor.EmitDelegate<Action>(correctExplodeLaunchSpeed);
             }

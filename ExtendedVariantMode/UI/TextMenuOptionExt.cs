@@ -45,7 +45,7 @@ namespace ExtendedVariants.UI {
             if (Values.Count > 0) {
                 float num = RightWidth();
                 ActiveFont.DrawOutline(Values[Index].Item1, position + new Vector2(Container.Width - num * 0.5f + lastDir * ValueWiggler.Value * 8f, 0f), new Vector2(0.5f, 0.5f), Vector2.One * 0.8f, color, 2f, strokeColor);
-                Vector2 vector = Vector2.UnitX * (highlighted ? ((float)Math.Sin(sine * 4f) * 4f) : 0f);
+                Vector2 vector = Vector2.UnitX * (highlighted ? ((float) Math.Sin(sine * 4f) * 4f) : 0f);
                 bool flag = this.Index > 0;
                 Color color2 = flag ? color : (Color.DarkSlateGray * alpha);
                 Vector2 position2 = position + new Vector2(Container.Width - num + 40f + ((lastDir < 0) ? (-ValueWiggler.Value * 8f) : 0f), 0f) - (flag ? vector : Vector2.Zero);
@@ -62,7 +62,7 @@ namespace ExtendedVariants.UI {
         /// </summary>
         /// <returns>The non-selected color</returns>
         private Color getUnselectedColor() {
-            if(Index == defaultIndex) {
+            if (Index == defaultIndex) {
                 return Color.White;
             }
             return Color.Goldenrod;

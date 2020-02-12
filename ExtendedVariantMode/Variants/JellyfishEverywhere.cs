@@ -31,7 +31,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
         }
-        
+
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
                 addJellyfishToLevel(self);
             }
         }
-        
+
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
             IEnumerator origEnum = orig(self, next, direction);
@@ -91,7 +91,7 @@ namespace ExtendedVariants.Variants {
                         }
                     }
 
-                    if(collideOrOffscreenCheck(level, jellyfish)) {
+                    if (collideOrOffscreenCheck(level, jellyfish)) {
                         Logger.Log("ExtendedVariantMode/JellyfishEverywhere", "Could not find a position to spawn that jellyfish!");
                     } else {
                         // spawn that jellyfish then

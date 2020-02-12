@@ -15,9 +15,9 @@ namespace ExtendedVariants.UI {
 
         public void Update(List<string> texts) {
             this.texts = texts;
-            maxWidth = (int)findMaxWidth();
+            maxWidth = (int) findMaxWidth();
         }
-        
+
         private float findMaxWidth() {
             if (texts.Count == 0) {
                 return 0;
@@ -42,7 +42,7 @@ namespace ExtendedVariants.UI {
             }
 
             if (texts.Count != 0) {
-                Draw.SpriteBatch.Draw(pixel, new Rectangle((int)uiPos.X, (int)uiPos.Y + 5, maxWidth + 10, (texts.Count * 35) + 10), new Color(10, 10, 10, 200));
+                Draw.SpriteBatch.Draw(pixel, new Rectangle((int) uiPos.X, (int) uiPos.Y + 5, maxWidth + 10, (texts.Count * 35) + 10), new Color(10, 10, 10, 200));
 
                 for (int i = 0; i < texts.Count; i++) {
                     ActiveFont.Draw(texts[i], new Vector2(uiPos.X + 5, uiPos.Y + 5 + (i * 35)), new Vector2(0, 0), new Vector2(0.7f, 0.7f), Color.White);

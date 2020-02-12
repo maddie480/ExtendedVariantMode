@@ -10,7 +10,7 @@ namespace ExtendedVariants.UI {
         public OuiCategorySubmenu() : base(null, null) { }
 
         protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
-            ModOptionsEntries.VariantCategory category = (ModOptionsEntries.VariantCategory)parameters[0];
+            ModOptionsEntries.VariantCategory category = (ModOptionsEntries.VariantCategory) parameters[0];
 
             // only put the category we're in
             new ModOptionsEntries().CreateAllOptions(category, false, false, false, false, null /* we don't care because there is no submenu */,
@@ -22,11 +22,11 @@ namespace ExtendedVariants.UI {
         }
 
         protected override string getButtonName(object[] parameters) {
-            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}");
+            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory) parameters[0]}");
         }
 
         protected override string getMenuName(object[] parameters) {
-            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory)parameters[0]}").ToUpperInvariant();
+            return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_{(ModOptionsEntries.VariantCategory) parameters[0]}").ToUpperInvariant();
         }
     }
 }

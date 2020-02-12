@@ -29,13 +29,13 @@ namespace ExtendedVariants.UI {
                     menu, inGame, false /* we don't care since there is no master switch */);
             }
         }
-        
+
         public override IEnumerator Enter(Oui from) {
             // start running Enter, so that the menu is initialized
             IEnumerator enterEnum = base.Enter(from);
-            if(enterEnum.MoveNext()) yield return enterEnum.Current;
+            if (enterEnum.MoveNext()) yield return enterEnum.Current;
 
-            if(savedMenuIndex != -1 && currentMenu != null && 
+            if (savedMenuIndex != -1 && currentMenu != null &&
                 (from.GetType() == typeof(OuiRandomizerOptions) || from.GetType() == typeof(OuiCategorySubmenu))) {
 
                 // restore selection if coming from submenu

@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
             IL.Celeste.Player.UpdateSprite -= modUpdateSprite;
         }
-        
+
         /// <summary>
         /// Edits the NormalBegin method in Player, so that ma fall speed is applied right when entering the "normal" state.
         /// </summary>
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float)instr.Operand == 160f)) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && (float) instr.Operand == 160f)) {
                 Logger.Log("ExtendedVariantMode/FallSpeed", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalBegin");
 
                 // add two instructions to multiply those constants with the "fall speed factor"
@@ -59,7 +59,7 @@ namespace ExtendedVariants.Variants {
             // * 240 = max falling speed when holding Down
 
             // find out where those constants are loaded into the stack
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && ((float)instr.Operand == 160f || (float)instr.Operand == 240f))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_R4 && ((float) instr.Operand == 160f || (float) instr.Operand == 240f))) {
                 Logger.Log("ExtendedVariantMode/FallSpeed", $"Applying max fall speed factor to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                 // add two instructions to multiply those constants with the "fall speed factor"
@@ -85,7 +85,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Beq, label); // we jump (= skip the "if") if DetermineFallSpeedFactor is equal to 0.
             }
         }
-        
+
         /// <summary>
         /// Edits the UpdateSprite method in Player (updating the player animation.)
         /// </summary>

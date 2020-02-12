@@ -22,7 +22,7 @@ namespace ExtendedVariants.Entities {
             base.Update();
 
             // commit remove self if the variant is disabled mid-screen
-            if(!ExtendedVariantsModule.Settings.TheoCrystalsEverywhere) {
+            if (!ExtendedVariantsModule.Settings.TheoCrystalsEverywhere) {
                 RemoveSelf();
             }
         }

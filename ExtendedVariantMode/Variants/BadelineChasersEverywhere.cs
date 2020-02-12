@@ -100,8 +100,8 @@ namespace ExtendedVariants.Variants {
                 if (player != null) player.JustRespawned = true;
             }
 
-            if(playerIntro != Player.IntroTypes.Transition) {
-                if((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers)) {
+            if (playerIntro != Player.IntroTypes.Transition) {
+                if ((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers)) {
                     injectBadelineChasers(self);
                 }
                 updateLastChaserLag(self);
@@ -139,7 +139,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // go right after the equality check that compares the level set name with "Celeste"
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference) instr.Operand).Name.Contains("op_Equality"))) {
                 Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding vanilla level check at index {cursor.Index} in the Added method from BadelineOldsite");
 
                 // mod the result of that check to prevent the chasers we will spawn from... committing suicide
@@ -156,7 +156,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // go right after the equality check that compares the level set name with "Celeste"
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference)instr.Operand).Name.Contains("op_Equality"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference) instr.Operand).Name.Contains("op_Equality"))) {
                 Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding vanilla level check at index {cursor.Index} in the CanChangeMusic method from BadelineOldsite");
 
                 // mod the result of that check to always use modded value, even in vanilla levels
@@ -183,16 +183,16 @@ namespace ExtendedVariants.Variants {
 
             // plz disregard the settings and don't touch the chasers if in Badeline Intro cutscene
             // because the chaser triggers the cutscene, so having 10 chasers triggers 10 instances of the cutscene at the same time (a)
-            if(Settings.AffectExistingChasers && hasChasersInBaseLevel && notInBadelineIntroCutscene(level)) {
+            if (Settings.AffectExistingChasers && hasChasersInBaseLevel && notInBadelineIntroCutscene(level)) {
                 List<Entity> chasers = level.Tracker.GetEntities<BadelineOldsite>();
                 if (chasers.Count > Settings.ChaserCount) {
                     // for example, if there are 6 chasers and we want 3, we will ask chasers 4-6 to commit suicide
-                    for(int i = chasers.Count - 1; i >= Settings.ChaserCount; i--) {
+                    for (int i = chasers.Count - 1; i >= Settings.ChaserCount; i--) {
                         chasers[i].RemoveSelf();
                     }
-                } else if(chasers.Count < Settings.ChaserCount) {
+                } else if (chasers.Count < Settings.ChaserCount) {
                     // for example, if we have 2 chasers and we want 6, we will duplicate both chasers twice
-                    for(int i = chasers.Count; i < Settings.ChaserCount; i++) {
+                    for (int i = chasers.Count; i < Settings.ChaserCount; i++) {
                         int baseChaser = i % chasers.Count;
                         level.Add(new AutoDestroyingBadelineOldsite(generateBadelineEntityData(level, i), chasers[baseChaser].Position, i));
                     }
@@ -224,9 +224,9 @@ namespace ExtendedVariants.Variants {
         private bool modVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
             Session session = (scene as Level).Session;
 
-            if (Settings.BadelineChasersEverywhere && 
+            if (Settings.BadelineChasersEverywhere &&
                 // don't use vanilla behaviour when that would lead the chasers to commit suicide
-                (!session.GetLevelFlag("3") || session.GetLevelFlag("11") || 
+                (!session.GetLevelFlag("3") || session.GetLevelFlag("11") ||
                 // don't use vanilla behaviour when that would trigger the Badeline intro cutscene, except (of course) on Old Site
                 (session.Area.GetSID() != "Celeste/2-OldSite" && session.Level == "3" && session.Area.Mode == AreaMode.Normal))) {
                 return false;

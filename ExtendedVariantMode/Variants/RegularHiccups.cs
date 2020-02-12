@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
         private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
-            if(Settings.RegularHiccups != 0) {
+            if (Settings.RegularHiccups != 0) {
                 regularHiccupTimer -= Engine.DeltaTime;
 
                 if (regularHiccupTimer > Settings.RegularHiccups / 10f) {
@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
         private void modHiccupJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-60f))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-60f))) {
                 Logger.Log("ExtendedVariantMode/RegularHiccups", $"Modding hiccup size at {cursor.Index} in CIL code for HiccupJump");
 
                 cursor.EmitDelegate<Func<float>>(determineHiccupStrengthFactor);

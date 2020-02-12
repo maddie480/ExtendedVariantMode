@@ -48,7 +48,7 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/JumpCount", $"Patching jump count in at {cursor.Index} in CIL code");
 
                 // store a reference to it
-                FieldReference refToJumpGraceTimer = ((FieldReference)cursor.Prev.Operand);
+                FieldReference refToJumpGraceTimer = ((FieldReference) cursor.Prev.Operand);
 
                 // call this.WallJumpCheck(1)
                 cursor.Emit(OpCodes.Ldarg_0);
@@ -71,7 +71,7 @@ namespace ExtendedVariants.Variants {
                 cursor.EmitDelegate<Action<float>>(refillJumpBuffer);
             }
         }
-        
+
         /// <summary>
         /// Seeks any reference to a named method (callvirt) in IL code.
         /// </summary>
@@ -80,8 +80,8 @@ namespace ExtendedVariants.Variants {
         /// <returns>A reference to the method</returns>
         private MethodReference seekReferenceToMethod(ILContext il, string methodName) {
             ILCursor cursor = new ILCursor(il);
-            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference)instr.Operand).Name.Contains(methodName))) {
-                return (MethodReference)cursor.Next.Operand;
+            if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference) instr.Operand).Name.Contains(methodName))) {
+                return (MethodReference) cursor.Next.Operand;
             }
             return null;
         }
@@ -93,7 +93,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // let's jump to if (this.Dashes < num)
-            if(cursor.TryGotoNext(MoveType.After, 
+            if (cursor.TryGotoNext(MoveType.After,
                 instr => instr.MatchLdarg(0), // this
                 instr => instr.MatchLdfld<Player>("Dashes"), // this.Dashes
                 instr => instr.MatchLdloc(0), // num
@@ -134,20 +134,20 @@ namespace ExtendedVariants.Variants {
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
         private float canJump(float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
-            if(Settings.JumpCount == 0) {
+            if (Settings.JumpCount == 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
             }
-            if(canWallJumpLeft || canWallJumpRight) {
+            if (canWallJumpLeft || canWallJumpRight) {
                 // no matter what, don't touch vanilla behavior if a wall jump is possible
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
-            if(Settings.JumpCount == 6) {
+            if (Settings.JumpCount == 6) {
                 // infinite jumping, yay
                 return 1f;
             }
-            if(Settings.JumpCount == 1 || initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
+            if (Settings.JumpCount == 1 || initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
                 // return the default value because we don't want to change anything 
                 // (we are disabled, our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;

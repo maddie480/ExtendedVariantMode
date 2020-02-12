@@ -42,11 +42,11 @@ namespace ExtendedVariants.Variants {
             // 1/ the game thinks this is both the current and previous color grades, and that there is no fade to make
             // 2/ we don't touch the session itself, so it will behave like normal
             // 3/ when we disable the variant, everything goes back to normal again.
-            if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Level>("lastColorGrade"))) {
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Level>("lastColorGrade"))) {
                 Logger.Log("ExtendedVariantMode/ColorGrading", $"Modding color grading at {cursor.Index} in IL code for Level.Render");
                 cursor.EmitDelegate<Func<string, string>>(modColorGrading);
             }
-            if(cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Session>("ColorGrade"))) {
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Session>("ColorGrade"))) {
                 Logger.Log("ExtendedVariantMode/ColorGrading", $"Modding color grading at {cursor.Index} in IL code for Level.Render");
                 cursor.EmitDelegate<Func<string, string>>(modColorGrading);
             }
