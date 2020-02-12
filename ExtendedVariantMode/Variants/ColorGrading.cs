@@ -11,7 +11,7 @@ namespace ExtendedVariants.Variants {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
             "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
             "max480/extendedvariants/greyscale", "max480/extendedvariants/sepia", "max480/extendedvariants/inverted",
-            "max480/extendedvariants/rgbshift1", "max480/extendedvariants/rgbshift2"
+            "max480/extendedvariants/rgbshift1", "max480/extendedvariants/rgbshift2", "max480/extendedvariants/hollys_randomnoise"
         };
 
         public override int GetDefaultValue() {

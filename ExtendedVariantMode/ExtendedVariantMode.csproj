@@ -243,6 +243,9 @@
     <Content Include="Graphics\ColorGrading\max480\extendedvariants\greyscale.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Graphics\ColorGrading\max480\extendedvariants\hollys_randomnoise.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Graphics\ColorGrading\max480\extendedvariants\inverted.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
