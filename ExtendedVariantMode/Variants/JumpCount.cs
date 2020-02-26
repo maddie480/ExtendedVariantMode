@@ -1,7 +1,9 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
 
@@ -30,12 +32,14 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill += modUseRefill;
+            On.Celeste.Player.Render += modPlayerRender;
         }
 
         public override void Unload() {
             IL.Celeste.Player.NormalUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill -= modUseRefill;
+            On.Celeste.Player.Render -= modPlayerRender;
         }
 
         private void patchJumpGraceTimer(ILContext il) {
@@ -180,6 +184,20 @@ namespace ExtendedVariants.Variants {
             // consume an Extended Variant Jump(TM)
             jumpBuffer--;
             return 1f;
+        }
+
+        private void modPlayerRender(On.Celeste.Player.orig_Render orig, Player self) {
+            orig(self);
+
+            MTexture jumpIndicator = GFX.Game["ExtendedVariantMode/jumpindicator"];
+
+            // draw 1 indicator all the time in the case of infinite jumps.
+            int jumpIndicatorsToDraw = Settings.JumpCount == 6 ? 1 : jumpBuffer;
+
+            int totalWidth = jumpIndicatorsToDraw * 6 - 2;
+            for (int i = 0; i < jumpIndicatorsToDraw; i++) {
+                jumpIndicator.DrawJustified(self.Center + new Vector2(-totalWidth / 2 + i * 6, -15f), new Vector2(0f, 0.5f));
+            }
         }
     }
 }

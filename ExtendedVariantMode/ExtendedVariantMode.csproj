@@ -189,6 +189,9 @@
     <Content Include="Dialog\Brazilian Portuguese.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Graphics\Atlases\Gameplay\ExtendedVariantMode\jumpindicator.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefillblue\flash00.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
