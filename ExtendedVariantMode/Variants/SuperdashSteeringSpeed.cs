@@ -2,10 +2,6 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
     class SuperdashSteeringSpeed : AbstractExtendedVariant {
