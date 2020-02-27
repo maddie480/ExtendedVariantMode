@@ -43,7 +43,8 @@ namespace ExtendedVariants.Module {
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
-            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere
+            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
+            SuperdashSteeringSpeed
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -117,6 +118,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
             VariantHandlers[Variant.InvertHorizontalControls] = new InvertHorizontalControls();
             VariantHandlers[Variant.BounceEverywhere] = new BounceEverywhere();
+            VariantHandlers[Variant.SuperdashSteeringSpeed] = new SuperdashSteeringSpeed();
         }
 
         // ================ Mod options setup ================

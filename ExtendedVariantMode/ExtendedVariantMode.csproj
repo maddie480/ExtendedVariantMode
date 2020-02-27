@@ -152,6 +152,7 @@
     <Compile Include="Variants\SnowballsEverywhere.cs" />
     <Compile Include="Variants\Stamina.cs" />
     <Compile Include="Variants\SpeedX.cs" />
+    <Compile Include="Variants\SuperdashSteeringSpeed.cs" />
     <Compile Include="Variants\TheoCrystalsEverywhere.cs" />
     <Compile Include="Variants\UpsideDown.cs" />
     <Compile Include="Variants\WallbouncingSpeed.cs" />

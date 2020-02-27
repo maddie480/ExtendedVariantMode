@@ -80,6 +80,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> risingLavaEverywhereOption;
         private TextMenu.Option<int> risingLavaSpeedOption;
         private TextMenu.Option<bool> bounceEverywhereOption;
+        private TextMenu.Option<int> superdashSteeringSpeedOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -254,6 +255,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.HeldDash = b);
                 dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
                     .Change(b => Settings.DontRefillDashOnGround = b);
+                superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SuperdashSteeringSpeed), indexFromMultiplier(10)).Change(i => Settings.SuperdashSteeringSpeed = multiplierScale[i]);
 
                 // Moving
                 speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
@@ -493,7 +496,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed }
+                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill;
 
@@ -538,7 +541,7 @@ namespace ExtendedVariants.UI {
                 disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
-                bounceEverywhereOption};
+                bounceEverywhereOption, superdashSteeringSpeedOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -584,6 +587,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashSpeedOption);
                 menu.Add(dashLengthOption);
                 menu.Add(hyperdashSpeedOption);
+                menu.Add(superdashSteeringSpeedOption);
                 menu.Add(dashCountOption);
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
@@ -727,6 +731,7 @@ namespace ExtendedVariants.UI {
             setValue(colorGradingOption, -1, Settings.ColorGrading);
             setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);
             setValue(bounceEverywhereOption, Settings.BounceEverywhere);
+            setValue(superdashSteeringSpeedOption, 0, indexFromMultiplier(Settings.SuperdashSteeringSpeed));
         }
 
         private void refreshOptionMenuEnabledStatus() {
