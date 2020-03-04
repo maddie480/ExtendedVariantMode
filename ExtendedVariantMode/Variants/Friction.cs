@@ -1,10 +1,16 @@
-﻿using Celeste.Mod;
+﻿using Celeste;
+using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class Friction : AbstractExtendedVariant {
+
+        private ILHook hookUpdateSprite;
+
         public override int GetDefaultValue() {
             return 10;
         }
@@ -18,13 +24,15 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
+            bool isUpdateSpritePatched = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "Everest", Version = new Version(1, 1432) });
+
             IL.Celeste.Player.NormalUpdate += modNormalUpdate;
-            IL.Celeste.Player.UpdateSprite += modUpdateSprite;
+            hookUpdateSprite = new ILHook(typeof(Player).GetMethod(isUpdateSpritePatched ? "orig_UpdateSprite" : "UpdateSprite", BindingFlags.NonPublic | BindingFlags.Instance), modUpdateSprite);
         }
 
         public override void Unload() {
             IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
-            IL.Celeste.Player.UpdateSprite -= modUpdateSprite;
+            hookUpdateSprite?.Dispose();
         }
 
         /// <summary>
