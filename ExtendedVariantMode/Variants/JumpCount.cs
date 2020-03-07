@@ -194,9 +194,15 @@ namespace ExtendedVariants.Variants {
             // draw 1 indicator all the time in the case of infinite jumps.
             int jumpIndicatorsToDraw = Settings.JumpCount == 6 ? 1 : jumpBuffer;
 
-            int totalWidth = jumpIndicatorsToDraw * 6 - 2;
-            for (int i = 0; i < jumpIndicatorsToDraw; i++) {
-                jumpIndicator.DrawJustified(self.Center + new Vector2(-totalWidth / 2 + i * 6, -15f), new Vector2(0f, 0.5f));
+            int lines = 1 + (jumpIndicatorsToDraw - 1) / 5;
+
+            for (int line = 0; line < lines; line++) {
+                int jumpIndicatorsToDrawOnLine = Math.Min(jumpIndicatorsToDraw, 5);
+                int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
+                for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
+                    jumpIndicator.DrawJustified(self.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6), new Vector2(0f, 0.5f));
+                }
+                jumpIndicatorsToDraw -= jumpIndicatorsToDrawOnLine;
             }
         }
     }
