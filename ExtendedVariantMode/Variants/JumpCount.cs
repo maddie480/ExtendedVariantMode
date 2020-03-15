@@ -36,6 +36,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill += modUseRefill;
             On.Celeste.Player.Render += modPlayerRender;
+            On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
         }
 
         public override void Unload() {
@@ -43,6 +44,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill -= modUseRefill;
             On.Celeste.Player.Render -= modPlayerRender;
+            On.Celeste.Player.DreamDashEnd -= modDreamDashEnd;
         }
 
         private void patchJumpGraceTimer(ILContext il) {
@@ -125,7 +127,7 @@ namespace ExtendedVariants.Variants {
 
         private void dashRefilled() {
             if (Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2) {
-                refillJumpBuffer(1f);
+                RefillJumpBuffer();
             }
         }
 
@@ -211,6 +213,14 @@ namespace ExtendedVariants.Variants {
                 }
                 jumpIndicatorsToDraw -= jumpIndicatorsToDrawOnLine;
             }
+        }
+
+        private void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
+            orig(self);
+
+            // consistently refill jumps, whichever direction the dream dash was in.
+            // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
+            RefillJumpBuffer();
         }
     }
 }
