@@ -6,9 +6,12 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class JumpCount : AbstractExtendedVariant {
+
+        private static FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static int jumpBuffer = 0;
 
@@ -54,6 +57,9 @@ namespace ExtendedVariants.Variants {
                 // store a reference to it
                 FieldReference refToJumpGraceTimer = ((FieldReference) cursor.Prev.Operand);
 
+                // get "this"
+                cursor.Emit(OpCodes.Ldarg_0);
+
                 // call this.WallJumpCheck(1)
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldc_I4_1);
@@ -65,7 +71,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
 
                 // replace the jumpGraceTimer with the modded value
-                cursor.EmitDelegate<Func<float, bool, bool, float>>(canJump);
+                cursor.EmitDelegate<Func<Player, float, bool, bool, float>>(canJump);
 
                 // go back to the beginning of the method
                 cursor.Index = 0;
@@ -162,7 +168,7 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
-        private float canJump(float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
+        private float canJump(Player self, float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
             if (Settings.JumpCount == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
@@ -172,17 +178,18 @@ namespace ExtendedVariants.Variants {
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
-            if (Settings.JumpCount == 6) {
-                // infinite jumping, yay
-                return 1f;
-            }
-            if (initialJumpGraceTimer > 0f || jumpBuffer <= 0) {
+            if (initialJumpGraceTimer > 0f || (Settings.JumpCount != 6 && jumpBuffer <= 0)) {
                 // return the default value because we don't want to change anything 
                 // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
             }
+
             // consume an Extended Variant Jump(TM)
             jumpBuffer--;
+
+            // be sure that the sound played is not the dream jump one.
+            playerDreamJump.SetValue(self, false);
+
             return 1f;
         }
 
