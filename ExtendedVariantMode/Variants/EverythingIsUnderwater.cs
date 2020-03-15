@@ -1,5 +1,5 @@
 ﻿using Celeste;
-using Microsoft.Xna.Framework;
+using ExtendedVariants.Entities;
 
 namespace ExtendedVariants.Variants {
     class EverythingIsUnderwater : AbstractExtendedVariant {
@@ -27,11 +27,10 @@ namespace ExtendedVariants.Variants {
             orig(self, playerIntro, isFromLoader);
 
             LevelData levelData = self.Session.LevelData;
-            if (Settings.EverythingIsUnderwater && !levelData.Underwater) {
-                // reproduce the vanilla behavior of the Underwater flag: ... simply cover the level with water.
-                // (we make the water go 10 pixels above the screen to avoid having a weird "coming out from water" sound effect on upwards transitions.)
-                self.Add(new Water(new Vector2(levelData.Bounds.Left, levelData.Bounds.Top - 10),
-                    false, false, levelData.Bounds.Width, levelData.Bounds.Height + 10));
+            if (!levelData.Underwater) {
+                // inject a controller that will spawn/despawn water depending on the extended variant setting.
+                self.Add(new UnderwaterSwitchController(Settings));
+                self.Entities.UpdateLists();
             }
         }
     }
