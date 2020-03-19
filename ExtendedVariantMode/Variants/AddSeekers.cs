@@ -5,15 +5,12 @@ using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
 using System;
 
 namespace ExtendedVariants.Variants {
     public class AddSeekers : AbstractExtendedVariant {
 
         private Random randomGenerator = new Random();
-
-        private bool extendedPathfinder = false;
 
         public override int GetDefaultValue() {
             return 0;
@@ -29,32 +26,12 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
-            Everest.Events.Level.OnExit += onLevelExit;
             IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;
-
-            // by ensuring our IL hook comes first, we ensure that the patch will work even with Crow Control,
-            // which uses (almost) the exact same patch. Crow Control will inject itself before us, and we will either
-            // let its modded values pass through, or make them bigger.
-            using (new DetourContext {
-                Before = { "*" }
-            }) {
-                IL.Celeste.Pathfinder.ctor += modPathfinderConstructor;
-            }
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
-            IL.Celeste.Pathfinder.ctor -= modPathfinderConstructor;
-            Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
-
-            // if disabled during a level, we have to plug out the extended pathfinder right away.
-            if (extendedPathfinder && Engine.Scene.GetType() == typeof(Level)) {
-                Level level = Engine.Scene as Level;
-
-                extendedPathfinder = false;
-                level.Pathfinder = new Pathfinder(level);
-            }
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -64,18 +41,6 @@ namespace ExtendedVariants.Variants {
             Player player = level.Tracker.GetEntity<Player>();
 
             if (player != null && Settings.AddSeekers != 0) {
-                // first of all, ensure that the size is within the limits of the pathfinder
-                if (level.Bounds.Width / 8 > 768 || level.Bounds.Height / 8 > 578) {
-                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AddSeekers", $"Not spawning seekers since room exceeds max size of 768x578 tiles. ({level.Bounds.Width / 8}x{level.Bounds.Height / 8})");
-                    return;
-                }
-
-                // ensure the pathfinder is the right one (i.e. the extended one)
-                if (!extendedPathfinder) {
-                    extendedPathfinder = true;
-                    level.Pathfinder = new Pathfinder(level);
-                }
-
                 // make the seeker barriers temporarily collidable so that they are taken in account in Solid collide checks
                 // and seekers can't spawn in them
                 // (... yes, this is also what vanilla does in the seekers' Update method.)
@@ -106,58 +71,7 @@ namespace ExtendedVariants.Variants {
                 foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = false;
 
                 level.Entities.UpdateLists();
-            } else if (Settings.AddSeekers == 0 && extendedPathfinder) {
-                extendedPathfinder = false;
-                level.Pathfinder = new Pathfinder(level);
             }
-        }
-
-        private void modPathfinderConstructor(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-
-            // go everywhere where the 0.8 second delay is defined
-            if (cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchLdcI4(200),
-                instr => instr.MatchLdcI4(200))) {
-
-                Logger.Log("ExtendedVariantMode/AddSeekers", $"Modding size of pathfinder array at {cursor.Index} in CIL code for the Pathfinder constructor");
-
-                // we will resize the pathfinder (provided that the seekers everywhere variant is enabled) to fit all rooms in vanilla Celeste
-                cursor.EmitDelegate<Action<int>>(storeLocal);
-                cursor.EmitDelegate<Func<int, int>>(determinePathfinderWidth);
-                cursor.EmitDelegate<Func<int>>(restoreLocal);
-                cursor.EmitDelegate<Func<int, int>>(determinePathfinderHeight);
-            }
-        }
-
-        // begin utility method to temporarily hold int in local variable
-        private int local;
-
-        private void storeLocal(int variable) {
-            local = variable;
-        }
-
-        private int restoreLocal() {
-            return local;
-        }
-        // end utility method
-
-        private int determinePathfinderWidth(int vanilla) {
-            if (extendedPathfinder) {
-                return Math.Max(768, vanilla);
-            }
-            return vanilla; // vanilla is either 200 or whatever Crow Control decided.
-        }
-
-        private int determinePathfinderHeight(int vanilla) {
-            if (extendedPathfinder) {
-                return Math.Max(578, vanilla);
-            }
-            return vanilla; // vanilla is either 200 or whatever Crow Control decided.
-        }
-
-        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
-            extendedPathfinder = false;
         }
 
         private void onSeekerEffectsControllerUpdate(ILContext il) {
