@@ -26,8 +26,7 @@ namespace ExtendedVariants.Variants {
         private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
-            LevelData levelData = self.Session.LevelData;
-            if (!levelData.Underwater) {
+            if (!self.Session?.LevelData?.Underwater ?? false) {
                 // inject a controller that will spawn/despawn water depending on the extended variant setting.
                 self.Add(new UnderwaterSwitchController(Settings));
                 self.Entities.UpdateLists();
