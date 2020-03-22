@@ -269,9 +269,9 @@
     <Content Include="Graphics\Atlases\Gui\max480_extendedvariants_extendedkorean.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Dialog\Fonts\max480_extendedvariants_extendedkorean.xml">
+    <None Include="Dialog\Fonts\korean.fnt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Content Include="Dialog\German.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
