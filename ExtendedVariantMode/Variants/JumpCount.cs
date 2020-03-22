@@ -37,6 +37,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.UseRefill += modUseRefill;
             On.Celeste.Player.Render += modPlayerRender;
             On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
+            On.Celeste.Level.LoadLevel += modLoadLevel;
         }
 
         public override void Unload() {
@@ -45,6 +46,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.UseRefill -= modUseRefill;
             On.Celeste.Player.Render -= modPlayerRender;
             On.Celeste.Player.DreamDashEnd -= modDreamDashEnd;
+            On.Celeste.Level.LoadLevel -= modLoadLevel;
         }
 
         private void patchJumpGraceTimer(ILContext il) {
@@ -221,6 +223,15 @@ namespace ExtendedVariants.Variants {
             // consistently refill jumps, whichever direction the dream dash was in.
             // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
             RefillJumpBuffer();
+        }
+
+        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+            orig(self, playerIntro, isFromLoader);
+
+            if (playerIntro != Player.IntroTypes.Transition) {
+                // always reset the jump count when the player enters a new level (respawn, new map, etc... everything but a transition)
+                RefillJumpBuffer();
+            }
         }
     }
 }
