@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -35,7 +36,6 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill += modUseRefill;
-            On.Celeste.Player.Render += modPlayerRender;
             On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
             On.Celeste.Level.LoadLevel += modLoadLevel;
         }
@@ -44,7 +44,6 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.DashUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill -= modUseRefill;
-            On.Celeste.Player.Render -= modPlayerRender;
             On.Celeste.Player.DreamDashEnd -= modDreamDashEnd;
             On.Celeste.Level.LoadLevel -= modLoadLevel;
         }
@@ -197,26 +196,6 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        private void modPlayerRender(On.Celeste.Player.orig_Render orig, Player self) {
-            orig(self);
-
-            MTexture jumpIndicator = GFX.Game["ExtendedVariantMode/jumpindicator"];
-
-            // draw 1 indicator all the time in the case of infinite jumps.
-            int jumpIndicatorsToDraw = Settings.JumpCount == 6 ? 1 : jumpBuffer;
-
-            int lines = 1 + (jumpIndicatorsToDraw - 1) / 5;
-
-            for (int line = 0; line < lines; line++) {
-                int jumpIndicatorsToDrawOnLine = Math.Min(jumpIndicatorsToDraw, 5);
-                int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
-                for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
-                    jumpIndicator.DrawJustified(self.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6), new Vector2(0f, 0.5f));
-                }
-                jumpIndicatorsToDraw -= jumpIndicatorsToDrawOnLine;
-            }
-        }
-
         private void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
             orig(self);
 
@@ -231,7 +210,15 @@ namespace ExtendedVariants.Variants {
             if (playerIntro != Player.IntroTypes.Transition) {
                 // always reset the jump count when the player enters a new level (respawn, new map, etc... everything but a transition)
                 RefillJumpBuffer();
+
+                // add the entity showing the jump count
+                self.Add(new JumpIndicator());
+                self.Entities.UpdateLists();
             }
+        }
+
+        public static int GetJumpBuffer() {
+            return jumpBuffer;
         }
     }
 }

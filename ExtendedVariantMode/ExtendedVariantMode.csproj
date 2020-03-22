@@ -96,6 +96,7 @@
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
     <Compile Include="Entities\ExtendedVariantWindSnowFG.cs" />
+    <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
