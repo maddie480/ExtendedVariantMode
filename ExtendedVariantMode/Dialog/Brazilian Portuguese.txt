@@ -18,6 +18,7 @@
 # {trigger x} this triggers an in-game event
 # {anchor} controls the visual position of the textbox in-game
 
+MODNAME_EXTENDEDVARIANTMODE=	Modo Variável Extendido
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Modo Variável Extendido
 
 POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	Você está entrando em um mapa usando o {# 9B3FB5}Modo Variável Extendido{#}.{n}{n}Para este mapa funcionar, {# 9B3FB5}Variáveis Extendidos{#} foram habilitados e resetados aos seus valores padrões.

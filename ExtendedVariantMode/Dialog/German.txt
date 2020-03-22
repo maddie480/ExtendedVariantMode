@@ -18,6 +18,7 @@
 # {trigger x} this triggers an in-game event
 # {anchor} controls the visual position of the textbox in-game
 
+MODNAME_EXTENDEDVARIANTMODE=	Extended Variant Mode
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Extended Variant Mode
 
 POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	Du beginnst gerade eine Map welche {# 9B3FB5}Extended Variant Mode{#} benutzt.{n}{n}Damit diese richtig funktioniert, wurde {# 9B3FB5}Extended Variants{#} aktiviert und alle Werte wurden zurückgesetzt.

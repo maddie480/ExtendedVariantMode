@@ -18,6 +18,7 @@
 # {trigger x} this triggers an in-game event
 # {anchor} controls the visual position of the textbox in-game
 
+MODNAME_EXTENDEDVARIANTMODE=	확장된 별형 모드
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	확장된 별형 모드
 
 POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	

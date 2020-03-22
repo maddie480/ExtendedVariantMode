@@ -18,6 +18,7 @@
 # {trigger x} this triggers an in-game event
 # {anchor} controls the visual position of the textbox in-game
 
+MODNAME_EXTENDEDVARIANTMODE=	Mode Variante étendu
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=	Mode Variante étendu
 
 POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=	Tu entres dans une map qui utilise le {# 9B3FB5}Mode Variante étendu{#}.{n}{n}Pour que cette map fonctionne, les {# 9B3FB5}variantes étendues{#} ont été activées et remises à zéro à leurs valeurs par défaut.
