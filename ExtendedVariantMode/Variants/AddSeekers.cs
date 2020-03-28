@@ -70,7 +70,9 @@ namespace ExtendedVariants.Variants {
 
                 foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = false;
 
-                level.Entities.UpdateLists();
+                if (playerIntro != Player.IntroTypes.Transition) {
+                    level.Entities.UpdateLists();
+                }
             }
         }
 

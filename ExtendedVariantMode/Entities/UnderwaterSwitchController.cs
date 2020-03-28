@@ -20,16 +20,7 @@ namespace ExtendedVariants.Entities {
             this.settings = settings;
 
             Add(new Coroutine(Routine()));
-
-            Add(new TransitionListener() {
-                OnInBegin = () => {
-                    // when transitioning in a room with a controller and the variant is already enabled, spawn water right away
-                    Session session = SceneAs<Level>().Session;
-                    if (settings.EverythingIsUnderwater) {
-                        spawnWater(session.LevelData.Bounds);
-                    }
-                }
-            });
+            AddTag(Tags.TransitionUpdate);
         }
 
         public IEnumerator Routine() {
