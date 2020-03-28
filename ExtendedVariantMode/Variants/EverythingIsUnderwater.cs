@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
+using Monocle;
 
 namespace ExtendedVariants.Variants {
     class EverythingIsUnderwater : AbstractExtendedVariant {
@@ -17,6 +18,12 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Level.LoadLevel += onLoadLevel;
+
+            // if already in a map, add the underwater switch controller right away.
+            if (Engine.Scene is Level level) {
+                level.Add(new UnderwaterSwitchController(Settings));
+                level.Entities.UpdateLists();
+            }
         }
 
         public override void Unload() {

@@ -45,14 +45,20 @@ namespace ExtendedVariants.Entities {
                     spawnWater(session.LevelData.Bounds);
                 }
 
-                // wait until the variant is disabled.
-                while (settings.EverythingIsUnderwater) {
+                // wait until the variant is disabled, or the mod is turned off.
+                while (settings.EverythingIsUnderwater && settings.MasterSwitch) {
                     yield return null;
                 }
 
                 // make water go away.
                 Scene.Remove(water);
                 water = null;
+
+                // if the mod was turned off, destroy the controller.
+                if (!settings.MasterSwitch) {
+                    RemoveSelf();
+                    yield break;
+                }
             }
         }
 
