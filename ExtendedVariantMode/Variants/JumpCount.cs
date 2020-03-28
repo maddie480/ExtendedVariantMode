@@ -38,6 +38,12 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.UseRefill += modUseRefill;
             On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
             On.Celeste.Level.LoadLevel += modLoadLevel;
+
+            // if already in a map, add the jump indicator right away.
+            if (Engine.Scene is Level level) {
+                level.Add(new JumpIndicator());
+                level.Entities.UpdateLists();
+            }
         }
 
         public override void Unload() {

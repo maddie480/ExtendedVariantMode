@@ -14,8 +14,18 @@ namespace ExtendedVariants.Entities {
 
         public JumpIndicator() {
             Depth = -20000; // appear on top of most things, including (most importantly) fg tiles
+            AddTag(Tags.Persistent); // this entity isn't bound to the screen it was spawned in, keep it when transitioning to another level.
 
             settings = ExtendedVariantsModule.Settings;
+        }
+
+        public override void Update() {
+            base.Update();
+
+            if (!settings.MasterSwitch) {
+                // extended variants were turned off, the jump indicator should kick itself out.
+                RemoveSelf();
+            }
         }
 
         public override void Render() {
