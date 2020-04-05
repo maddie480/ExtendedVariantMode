@@ -81,6 +81,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> risingLavaSpeedOption;
         private TextMenu.Option<bool> bounceEverywhereOption;
         private TextMenu.Option<int> superdashSteeringSpeedOption;
+        private TextMenu.Option<int> screenShakeIntensityOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -405,6 +406,9 @@ namespace ExtendedVariants.UI {
 
                     }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
                     .Change(i => Settings.ColorGrading = i);
+
+                screenShakeIntensityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SCREENSHAKEINTENSITY"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ScreenShakeIntensity), indexFromMultiplier(10)).Change(i => Settings.ScreenShakeIntensity = multiplierScale[i]);
             }
 
             // ======
@@ -510,7 +514,7 @@ namespace ExtendedVariants.UI {
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
 
                 visualSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.GlitchEffect, Variant.ColorGrading }
+                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.GlitchEffect, Variant.ColorGrading, Variant.ScreenShakeIntensity }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -541,7 +545,7 @@ namespace ExtendedVariants.UI {
                 disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
-                bounceEverywhereOption, superdashSteeringSpeedOption};
+                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -640,6 +644,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(roomBloomOption);
                 menu.Add(glitchEffectOption);
                 menu.Add(colorGradingOption);
+                menu.Add(screenShakeIntensityOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
@@ -732,6 +737,7 @@ namespace ExtendedVariants.UI {
             setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);
             setValue(bounceEverywhereOption, Settings.BounceEverywhere);
             setValue(superdashSteeringSpeedOption, 0, indexFromMultiplier(Settings.SuperdashSteeringSpeed));
+            setValue(screenShakeIntensityOption, 0, Settings.ScreenShakeIntensity);
         }
 
         private void refreshOptionMenuEnabledStatus() {

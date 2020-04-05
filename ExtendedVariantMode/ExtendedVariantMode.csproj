@@ -151,6 +151,7 @@
     <Compile Include="Variants\RisingLavaEverywhere.cs" />
     <Compile Include="Variants\RoomBloom.cs" />
     <Compile Include="Variants\RoomLighting.cs" />
+    <Compile Include="Variants\ScreenShakeIntensity.cs" />
     <Compile Include="Variants\SnowballsEverywhere.cs" />
     <Compile Include="Variants\Stamina.cs" />
     <Compile Include="Variants\SpeedX.cs" />
@@ -265,6 +266,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gameplay\objects\ExtendedVariantMode\jumprefill\outline.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gui\emoji\extendedvariants_warning.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gui\max480_extendedvariants_extendedkorean.png">

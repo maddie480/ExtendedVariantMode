@@ -44,7 +44,7 @@ namespace ExtendedVariants.Module {
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
-            SuperdashSteeringSpeed
+            SuperdashSteeringSpeed, ScreenShakeIntensity
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -119,6 +119,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.InvertHorizontalControls] = new InvertHorizontalControls();
             VariantHandlers[Variant.BounceEverywhere] = new BounceEverywhere();
             VariantHandlers[Variant.SuperdashSteeringSpeed] = new SuperdashSteeringSpeed();
+            VariantHandlers[Variant.ScreenShakeIntensity] = new ScreenShakeIntensity();
         }
 
         // ================ Mod options setup ================

@@ -66,7 +66,8 @@ const variants = String[
 	"RisingLavaSpeed",
 	"InvertHorizontalControls",
 	"BounceEverywhere",
-	"SuperdashSteeringSpeed"
+	"SuperdashSteeringSpeed",
+	"ScreenShakeIntensity"
 ]
 
 const placements = Ahorn.PlacementDict(
