@@ -80,7 +80,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
 
                 // replace the jumpGraceTimer with the modded value
-                cursor.EmitDelegate<Func<Player, float, bool, bool, float>>(canJump);
+                cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJump);
 
                 // go back to the beginning of the method
                 cursor.Index = 0;
@@ -177,7 +177,7 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
-        private float canJump(Player self, float initialJumpGraceTimer, bool canWallJumpRight, bool canWallJumpLeft) {
+        private float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
             if (Settings.JumpCount == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
