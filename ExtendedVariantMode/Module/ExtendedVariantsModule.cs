@@ -42,7 +42,7 @@ namespace ExtendedVariants.Module {
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
-            SuperdashSteeringSpeed, ScreenShakeIntensity
+            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -94,6 +94,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.RoomBloom] = new RoomBloom();
             VariantHandlers[Variant.GlitchEffect] = new GlitchEffect();
+            VariantHandlers[Variant.AnxietyEffect] = new AnxietyEffect();
             VariantHandlers[Variant.EverythingIsUnderwater] = new EverythingIsUnderwater();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
             // OshiroCount is not a variant

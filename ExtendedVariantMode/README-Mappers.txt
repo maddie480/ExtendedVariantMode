@@ -35,7 +35,7 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 		- -1 = don't change anything
 		- 0 to 10 => bloom base = value / 10, bloom strength = 1. For example, 8 => bloom base = 0.8, bloom strength = 1, displayed as 80% in the menu
 		- 11 to 14 => bloom base = 1, bloom strength = value - 9. For example, 12 => bloom base = 1, bloom strength = 3, displayed as 300% in the menu
-	- GlitchEffect: the value in percent / 5 (for example 19 will give 95%), -1 to disable
+	- GlitchEffect, AnxietyEffect: the value in percent / 5 (for example 19 will give 95%), -1 to disable
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
 	- SnowballDelay: The delay between two snowballs, multiplied by 10. Default is 8 (for 0.8s).
