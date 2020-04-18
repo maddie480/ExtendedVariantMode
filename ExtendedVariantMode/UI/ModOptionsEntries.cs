@@ -39,6 +39,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> explodeLaunchSpeedOption;
         private TextMenu.Option<int> wallBouncingSpeedOption;
         private TextMenu.Option<int> dashLengthOption;
+        private TextMenu.Option<int> dashDirectionOption;
         private TextMenu.Option<bool> forceDuckOnGroundOption;
         private TextMenu.Option<bool> invertDashesOption;
         private TextMenu.Option<bool> invertGrabOption;
@@ -247,6 +248,8 @@ namespace ExtendedVariants.UI {
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
                 dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
+                dashDirectionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
+                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 2, Settings.DashDirection, 0).Change(i => Settings.DashDirection = i);
                 hyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
                 dashCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
@@ -514,7 +517,7 @@ namespace ExtendedVariants.UI {
 
                 movementSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
-                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
+                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill;
@@ -561,7 +564,7 @@ namespace ExtendedVariants.UI {
                 disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
-                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption};
+                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -606,6 +609,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashingTitle);
                 menu.Add(dashSpeedOption);
                 menu.Add(dashLengthOption);
+                menu.Add(dashDirectionOption);
                 menu.Add(hyperdashSpeedOption);
                 menu.Add(superdashSteeringSpeedOption);
                 menu.Add(dashCountOption);
@@ -713,6 +717,7 @@ namespace ExtendedVariants.UI {
             setValue(explodeLaunchSpeedOption, 0, indexFromMultiplier(Settings.ExplodeLaunchSpeed));
             setValue(wallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
+            setValue(dashDirectionOption, 0, Settings.DashDirection);
             setValue(forceDuckOnGroundOption, Settings.ForceDuckOnGround);
             setValue(invertDashesOption, Settings.InvertDashes);
             setValue(invertGrabOption, Settings.InvertGrab);

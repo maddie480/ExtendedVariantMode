@@ -126,6 +126,7 @@
     <Compile Include="Variants\BounceEverywhere.cs" />
     <Compile Include="Variants\ColorGrading.cs" />
     <Compile Include="Variants\DashCount.cs" />
+    <Compile Include="Variants\DashDirection.cs" />
     <Compile Include="Variants\DashLength.cs" />
     <Compile Include="Variants\DashSpeed.cs" />
     <Compile Include="Variants\DisableClimbJumping.cs" />

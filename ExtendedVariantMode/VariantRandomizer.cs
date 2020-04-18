@@ -381,6 +381,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) ExtendedVariantsModule.Settings.GlitchEffect = randomGenerator.Next(3) + 1; // random 5~15%
             else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) ExtendedVariantsModule.Settings.AnxietyEffect = randomGenerator.Next(3) + 1; // random 5~15%
             else if (variant == ExtendedVariantsModule.Variant.BlurLevel) ExtendedVariantsModule.Settings.BlurLevel = randomGenerator.Next(10) + 1; // random 5~100%
+            else if (variant == ExtendedVariantsModule.Variant.DashDirection) ExtendedVariantsModule.Settings.DashDirection = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {

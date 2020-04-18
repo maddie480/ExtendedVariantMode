@@ -70,7 +70,8 @@ const variants = String[
 	"ScreenShakeIntensity",
 	"AnxietyEffect",
 	"BlurLevel",
-	"ZoomLevel"
+	"ZoomLevel",
+	"DashDirection"
 ]
 
 const placements = Ahorn.PlacementDict(
