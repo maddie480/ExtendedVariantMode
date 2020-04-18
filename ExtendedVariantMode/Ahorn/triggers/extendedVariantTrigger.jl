@@ -69,7 +69,8 @@ const variants = String[
 	"SuperdashSteeringSpeed",
 	"ScreenShakeIntensity",
 	"AnxietyEffect",
-	"BlurLevel"
+	"BlurLevel",
+	"ZoomLevel"
 ]
 
 const placements = Ahorn.PlacementDict(

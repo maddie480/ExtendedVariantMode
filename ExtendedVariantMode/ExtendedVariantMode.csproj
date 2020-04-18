@@ -162,6 +162,7 @@
     <Compile Include="Variants\UpsideDown.cs" />
     <Compile Include="Variants\WallbouncingSpeed.cs" />
     <Compile Include="Variants\WindEverywhere.cs" />
+    <Compile Include="Variants\ZoomLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ahorn\entities\extraJumpRefill.jl">

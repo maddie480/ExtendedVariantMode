@@ -42,7 +42,7 @@ namespace ExtendedVariants.Module {
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
-            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel
+            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -57,6 +57,7 @@ namespace ExtendedVariants.Module {
             TriggerManager = new ExtendedVariantTriggerManager();
 
             DashCount dashCount;
+            ZoomLevel zoomLevel;
             VariantHandlers[Variant.Gravity] = new Gravity();
             VariantHandlers[Variant.FallSpeed] = new FallSpeed();
             VariantHandlers[Variant.JumpHeight] = new JumpHeight();
@@ -70,7 +71,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();
             VariantHandlers[Variant.DisableClimbJumping] = new DisableClimbJumping();
             VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount);
-            VariantHandlers[Variant.UpsideDown] = new UpsideDown();
+            VariantHandlers[Variant.ZoomLevel] = (zoomLevel = new ZoomLevel());
+            VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();
             VariantHandlers[Variant.ExplodeLaunchSpeed] = new ExplodeLaunchSpeed();
             VariantHandlers[Variant.WallBouncingSpeed] = new WallbouncingSpeed();

@@ -10,6 +10,12 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class UpsideDown : AbstractExtendedVariant {
+        private static ZoomLevel zoomLevelVariant;
+
+        public UpsideDown(ZoomLevel zoomLevel) {
+            zoomLevelVariant = zoomLevel;
+        }
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -101,6 +107,8 @@ namespace ExtendedVariants.Variants {
 
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
             Input.Aim.InvertedY = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown);
+
+            paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
             if (ExtendedVariantsModule.Settings.UpsideDown) {
                 paddingVector.Y = -paddingVector.Y;
