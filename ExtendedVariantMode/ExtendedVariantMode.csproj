@@ -122,6 +122,7 @@
     <Compile Include="Variants\BadelineBossesEverywhere.cs" />
     <Compile Include="Variants\BadelineChasersEverywhere.cs" />
     <Compile Include="Variants\AddSeekers.cs" />
+    <Compile Include="Variants\BlurLevel.cs" />
     <Compile Include="Variants\BounceEverywhere.cs" />
     <Compile Include="Variants\ColorGrading.cs" />
     <Compile Include="Variants\DashCount.cs" />

@@ -1,7 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using System;
 

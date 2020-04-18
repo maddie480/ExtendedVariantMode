@@ -31,7 +31,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- OshiroCount, ReverseOshiroCount: the number of Oshiros you want, when OshiroEverywhere is enabled
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
 	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
-	- RoomBloom: 
+	- BlurLevel: the percentage displayed in-game, divided by 10 (5 => 50%). 50% gives a Gaussian blur with sample scale = 0.5. Don't ask me too many details.
+	- RoomBloom:
 		- -1 = don't change anything
 		- 0 to 10 => bloom base = value / 10, bloom strength = 1. For example, 8 => bloom base = 0.8, bloom strength = 1, displayed as 80% in the menu
 		- 11 to 14 => bloom base = 1, bloom strength = value - 9. For example, 12 => bloom base = 1, bloom strength = 3, displayed as 300% in the menu
