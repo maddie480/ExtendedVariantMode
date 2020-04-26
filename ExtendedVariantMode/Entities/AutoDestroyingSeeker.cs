@@ -1,8 +1,10 @@
 ﻿using Celeste;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
+using Monocle;
 
 namespace ExtendedVariants.Entities {
+    [TrackedAs(typeof(Seeker))]
     class AutoDestroyingSeeker : Seeker {
         public AutoDestroyingSeeker(EntityData data, Vector2 offset) : base(data, offset) { }
 

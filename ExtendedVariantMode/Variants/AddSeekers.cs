@@ -6,11 +6,14 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class AddSeekers : AbstractExtendedVariant {
 
         private Random randomGenerator = new Random();
+
+        private bool killSeekerSlowdownToFixHeart = false;
 
         public override int GetDefaultValue() {
             return 0;
@@ -27,15 +30,20 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;
+            On.Celeste.HeartGem.Collect += onHeartGemCollect;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
+            On.Celeste.HeartGem.Collect -= onHeartGemCollect;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
+
+            // if we killed the slowdown earlier, stop now!
+            killSeekerSlowdownToFixHeart = false;
 
             Level level = self;
             Player player = level.Tracker.GetEntity<Player>();
@@ -91,7 +99,16 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformTimeRate(float vanillaTimeRate) {
-            return Settings.DisableSeekerSlowdown ? 1f : vanillaTimeRate;
+            return Settings.DisableSeekerSlowdown || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
+        }
+
+        private void onHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
+            orig(self, player);
+
+            // prevent seekers from slowing down time!
+            if (self.Scene.Entities.OfType<AutoDestroyingSeeker>().Count() != 0) {
+                killSeekerSlowdownToFixHeart = true;
+            }
         }
     }
 }

@@ -358,7 +358,13 @@ namespace ExtendedVariants.UI {
                 addSeekersOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS"),
                     i => i.ToString(), 0, 5, indexFromMultiplier(Settings.AddSeekers), 0).Change(i => Settings.AddSeekers = i);
                 disableSeekerSlowdownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
-                    .Change(b => Settings.DisableSeekerSlowdown = b);
+                    .Change(b => {
+                        Settings.DisableSeekerSlowdown = b;
+                        if (b && Engine.Scene is Level level && level.Tracker.CountEntities<Seeker>() != 0) {
+                            // since we are in a map with seekers and we are killing slowdown, set speed to 1 to be sure we aren't making the current slowdown permanent. :maddyS:
+                            Engine.TimeRate = 1f;
+                        }
+                    });
                 theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
                     .Change(b => Settings.TheoCrystalsEverywhere = b);
                 jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
