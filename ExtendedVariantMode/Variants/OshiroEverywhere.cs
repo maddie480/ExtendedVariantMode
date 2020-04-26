@@ -8,6 +8,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class OshiroEverywhere : AbstractExtendedVariant {
@@ -27,12 +28,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
             IL.Celeste.AngryOshiro.Update += modAngryOshiroUpdate;
+            On.Celeste.HeartGem.Collect += modHeartGemCollect;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             IL.Celeste.AngryOshiro.Update -= modAngryOshiroUpdate;
+            On.Celeste.HeartGem.Collect -= modHeartGemCollect;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -109,6 +112,27 @@ namespace ExtendedVariants.Variants {
 
         private bool isOshiroSlowdownDisabled() {
             return Settings.DisableOshiroSlowdown;
+        }
+
+        private void modHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
+            // tell all extended variant Oshiros to stop controlling time
+            foreach (AutoDestroyingAngryOshiro oshiro in self.Scene.Entities.OfType<AutoDestroyingAngryOshiro>()) {
+                oshiro.StopControllingTime();
+            }
+            // tell all reverse Oshiros spawned by Extended Variants to do the same
+            if (ExtendedVariantsModule.Instance.DJMapHelperInstalled) {
+                tellReverseOshirosToStopControllingTime(self);
+            }
+
+            orig(self, player);
+        }
+
+        private void tellReverseOshirosToStopControllingTime(HeartGem self) {
+            foreach (AngryOshiroRight oshiro in self.Scene.Entities.OfType<AngryOshiroRight>()) {
+                if (oshiro.Any(component => component.GetType() == typeof(AutoDestroyingReverseOshiroModder))) {
+                    oshiro.StopControllingTime();
+                }
+            }
         }
     }
 }
