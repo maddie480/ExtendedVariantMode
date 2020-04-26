@@ -446,6 +446,9 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
                 else if (variant == ExtendedVariantsModule.Variant.RoomLighting) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.RoomBloom) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.GlitchEffect * 5}%");
+                else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.AnxietyEffect * 5}%");
+                else if (variant == ExtendedVariantsModule.Variant.BlurLevel) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BlurLevel * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
                     string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
                     if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
@@ -453,6 +456,7 @@ namespace ExtendedVariants {
 
                     enabledVariantsToDisplay.Add($"{variantName}: {formattedValue}");
                 }
+                else if (variant == ExtendedVariantsModule.Variant.DashDirection) enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ExtendedVariantsModule.Settings.DashDirection}")}");
                 // multiplier-style variants
                 else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
                     enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
