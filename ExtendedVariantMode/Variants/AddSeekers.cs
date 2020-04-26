@@ -37,6 +37,8 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             IL.Celeste.SeekerEffectsController.Update -= onSeekerEffectsControllerUpdate;
             On.Celeste.HeartGem.Collect -= onHeartGemCollect;
+
+            killSeekerSlowdownToFixHeart = false;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
