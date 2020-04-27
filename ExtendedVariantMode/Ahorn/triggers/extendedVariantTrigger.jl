@@ -71,7 +71,8 @@ const variants = String[
 	"AnxietyEffect",
 	"BlurLevel",
 	"ZoomLevel",
-	"DashDirection"
+	"DashDirection",
+	"BackgroundBrightness"
 ]
 
 const placements = Ahorn.PlacementDict(

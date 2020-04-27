@@ -86,6 +86,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> bounceEverywhereOption;
         private TextMenu.Option<int> superdashSteeringSpeedOption;
         private TextMenu.Option<int> screenShakeIntensityOption;
+        private TextMenu.Option<int> backgroundBrightnessOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -393,6 +394,9 @@ namespace ExtendedVariants.UI {
                         }
                     });
 
+                backgroundBrightnessOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBRIGHTNESS"),
+                    i => $"{i * 10}%", 0, 10, Settings.BackgroundBrightness, 10).Change(i => Settings.BackgroundBrightness = i);
+
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -538,8 +542,8 @@ namespace ExtendedVariants.UI {
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
 
                 visualSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.RoomBloom, Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel,
-                        Variant.ColorGrading, Variant.ScreenShakeIntensity }
+                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.RoomBloom, Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel,
+                        Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -570,7 +574,7 @@ namespace ExtendedVariants.UI {
                 disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
-                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption};
+                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -667,6 +671,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(visualTitle);
                 menu.Add(upsideDownOption);
                 menu.Add(roomLightingOption);
+                menu.Add(backgroundBrightnessOption);
                 menu.Add(roomBloomOption);
                 menu.Add(glitchEffectOption);
                 menu.Add(anxietyEffectOption);
@@ -743,6 +748,7 @@ namespace ExtendedVariants.UI {
             setValue(regularHiccupsOption, 0, indexFromMultiplier(Settings.RegularHiccups));
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
+            setValue(backgroundBrightnessOption, 0, Settings.BackgroundBrightness);
             setValue(roomBloomOption, -1, Settings.RoomBloom);
             setValue(glitchEffectOption, -1, Settings.GlitchEffect);
             setValue(anxietyEffectOption, -1, Settings.AnxietyEffect);

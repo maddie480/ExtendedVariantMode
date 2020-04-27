@@ -311,6 +311,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int BackgroundBrightness { get; set; } = 10;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool ChangeVariantsRandomly { get; set; } = false;
 
         [SettingIgnore]

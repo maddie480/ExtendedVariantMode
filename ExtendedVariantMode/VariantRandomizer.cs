@@ -373,6 +373,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.Stamina) ExtendedVariantsModule.Settings.Stamina = randomGenerator.Next(23); // random 0~220
             else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) ExtendedVariantsModule.Settings.RegularHiccups = multiplierScale[randomGenerator.Next(13) + 10]; // random 1~3 seconds
             else if (variant == ExtendedVariantsModule.Variant.RoomLighting) ExtendedVariantsModule.Settings.RoomLighting = randomGenerator.Next(11); // random 0~100%
+            else if (variant == ExtendedVariantsModule.Variant.BackgroundBrightness) ExtendedVariantsModule.Settings.BackgroundBrightness = randomGenerator.Next(10); // random 0~90% (100% is vanilla)
             else if (variant == ExtendedVariantsModule.Variant.RoomBloom) ExtendedVariantsModule.Settings.RoomBloom = randomGenerator.Next(11); // random 0~100%
             else if (variant == ExtendedVariantsModule.Variant.WindEverywhere) ExtendedVariantsModule.Settings.WindEverywhere = 13; // 13 is the random setting
             else if (variant == ExtendedVariantsModule.Variant.AddSeekers) ExtendedVariantsModule.Settings.AddSeekers = randomGenerator.Next(3) + 1; // random 1~3 seekers
@@ -445,6 +446,7 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.Stamina) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.Stamina * 10}");
                 else if (variant == ExtendedVariantsModule.Variant.RegularHiccups) enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Settings.RegularHiccups).Replace("x", "s")}");
                 else if (variant == ExtendedVariantsModule.Variant.RoomLighting) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomLighting * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.BackgroundBrightness) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BackgroundBrightness * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.RoomBloom) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.RoomBloom * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.GlitchEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.AnxietyEffect * 5}%");
@@ -455,8 +457,7 @@ namespace ExtendedVariants {
                     string formattedValue = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
 
                     enabledVariantsToDisplay.Add($"{variantName}: {formattedValue}");
-                }
-                else if (variant == ExtendedVariantsModule.Variant.DashDirection) enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ExtendedVariantsModule.Settings.DashDirection}")}");
+                } else if (variant == ExtendedVariantsModule.Variant.DashDirection) enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ExtendedVariantsModule.Settings.DashDirection}")}");
                 // multiplier-style variants
                 else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
                     enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");
