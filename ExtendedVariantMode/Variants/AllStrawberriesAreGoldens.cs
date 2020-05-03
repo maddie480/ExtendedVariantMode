@@ -20,6 +20,8 @@ namespace ExtendedVariants.Variants {
         private ILHook collectRoutineHook;
         private ILHook strawberryUpdateHook;
 
+        private bool strawberriesWereMadeGolden;
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -36,18 +38,30 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Die += onPlayerDie;
             IL.Celeste.Strawberry.Added += patchAllGoldenFlags;
             IL.Celeste.Strawberry.OnAnimate += patchAllGoldenFlags;
+            On.Celeste.Level.LoadLevel += onLoadLevel;
 
             collectRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Strawberry", "CollectRoutine", patchAllGoldenFlags);
             strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod("orig_Update"), onStrawberryUpdate);
+
+            // strawberries weren't made golden yet, we just turned on Extended Variants.
+            strawberriesWereMadeGolden = false;
         }
 
         public override void Unload() {
             On.Celeste.Player.Die -= onPlayerDie;
             IL.Celeste.Strawberry.Added -= patchAllGoldenFlags;
             IL.Celeste.Strawberry.OnAnimate -= patchAllGoldenFlags;
+            On.Celeste.Level.LoadLevel -= onLoadLevel;
 
             if (collectRoutineHook != null) collectRoutineHook.Dispose();
             if (strawberryUpdateHook != null) strawberryUpdateHook.Dispose();
+        }
+
+        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+            // strawberries weren't made golden yet, they were just spawned.
+            strawberriesWereMadeGolden = false;
+
+            orig(self, playerIntro, isFromLoader);
         }
 
         private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
@@ -123,6 +137,13 @@ namespace ExtendedVariants.Variants {
         }
 
         private Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
+            if (!Settings.AllStrawberriesAreGoldens && !strawberriesWereMadeGolden) {
+                // nothing to do actually.
+                return currentSprite;
+            }
+
+            strawberriesWereMadeGolden = true;
+
             bool isGolden = currentSprite.Texture?.AtlasPath?.Contains("gold") ?? false;
             // in vanilla, if a berry happens to be a moon golden strawberry, it will appear as a moon berry.
             bool shouldBeGolden = !self.Moon && (self.Golden || Settings.AllStrawberriesAreGoldens);
