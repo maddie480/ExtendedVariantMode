@@ -4,6 +4,9 @@ placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.enable=I
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger.
 
+# Color Grade Trigger
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.
+
 # Recover Jump Refill
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.texture=The directory, relative to Graphics/Atlases/Gameplay/objects, the refill textures are read from.

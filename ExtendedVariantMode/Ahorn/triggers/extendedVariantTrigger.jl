@@ -59,7 +59,6 @@ const variants = String[
 	"FirstBadelineSpawnRandom",
 	"BadelineBossCount",
 	"BadelineBossNodeCount",
-	"ColorGrading",
 	"JellyfishEverywhere",
 	"ExplodeLaunchSpeed",
 	"RisingLavaEverywhere",

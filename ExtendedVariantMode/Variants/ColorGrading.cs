@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Module;
 using MonoMod.Cil;
 
 namespace ExtendedVariants.Variants {
     class ColorGrading : AbstractExtendedVariant {
-
         public static List<string> ExistingColorGrades = new List<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
             "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
@@ -24,14 +24,52 @@ namespace ExtendedVariants.Variants {
 
         public override void SetValue(int value) {
             Settings.ColorGrading = value;
+
+            // if setting to "trigger", add "trigger" to the list.
+            if (value >= ExistingColorGrades.Count && !ExistingColorGrades.Contains("trigger")) {
+                ExistingColorGrades.Add("trigger");
+            }
         }
 
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
+            Everest.Events.Level.OnExit += onLevelExit;
+
+            // make triple sure the current color grade isn't out of bounds.
+            if (Settings.ColorGrading >= ExistingColorGrades.Count) {
+                Settings.ColorGrading = -1;
+            }
         }
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
+            Everest.Events.Level.OnExit -= onLevelExit;
+
+            ExistingColorGrades.Remove("trigger");
+        }
+
+        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            ExistingColorGrades.Remove("trigger");
+            if (Settings.ColorGrading >= ExistingColorGrades.Count) {
+                Settings.ColorGrading = -1;
+            }
+        }
+
+        public void SetColorGrade(string colorGrade) {
+            // delete "trigger" if present
+            ExistingColorGrades.Remove("trigger");
+
+            if (ExistingColorGrades.Contains(colorGrade)) {
+                // this is the equivalent of using the extended variant trigger with the Color Grading variant.
+                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.ColorGrading,
+                    ExistingColorGrades.IndexOf(colorGrade), false);
+            } else {
+                // add a new special "trigger" entry for that custom color grade.
+                ExistingColorGrades.Add("trigger");
+                ExtendedVariantsModule.Session.TriggerColorGrade = colorGrade;
+                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.ColorGrading,
+                    ExistingColorGrades.IndexOf("trigger"), false);
+            }
         }
 
         private void modLevelRender(ILContext il) {
@@ -54,6 +92,7 @@ namespace ExtendedVariants.Variants {
 
         private string modColorGrading(string vanillaValue) {
             if (Settings.ColorGrading == -1) return vanillaValue;
+            if (ExistingColorGrades[Settings.ColorGrading] == "trigger") return ExtendedVariantsModule.Session.TriggerColorGrade;
             return ExistingColorGrades[Settings.ColorGrading];
         }
     }

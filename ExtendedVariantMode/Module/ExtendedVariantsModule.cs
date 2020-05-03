@@ -278,7 +278,7 @@ namespace ExtendedVariants.Module {
         }
 
         private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
-            "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger",
+            "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/ColorGradeTrigger",
             "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill"
         };
 

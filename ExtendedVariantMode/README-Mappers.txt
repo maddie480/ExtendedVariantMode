@@ -44,9 +44,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- BadelineLag: The delay between the player and the first Badeline, multiplied by 10, default is 0 (actually 1.55s).
 	- DelayBetweenBadelines: The delay between two Badelines, multiplied by 10, default is 4 (0.4s).
 	- AddSeekers: The number of seekers to add.
-	- ColorGrading: -1 to disable. 0 = "none", 1 = "oldsite", 2 = "panicattack", 3 = "templevoid", 4 = "reflection", 5 = "credits", 6 = "cold", 7 = "hot", 8 = "feelingdown", 9 = "golden".
-		10 = "tetris" (from Celsius), 11 = "greyscale", 12 = "sepia", 13 = "inverted", 14 = "rgbshift1", 15 = "rgbshift2", 16 = "corrupted".
 	- DashDirection: 0 = any, 1 = no diagonals, 2 = diagonals only.
+	- ColorGrading: Use the Color Grade Trigger to change it.
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
 
