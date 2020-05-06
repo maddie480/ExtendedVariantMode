@@ -19,14 +19,14 @@ namespace ExtendedVariants {
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
-                newValue = getDefaultValueForVariant(variantChange);
+                newValue = GetDefaultValueForVariant(variantChange);
             }
 
             // failsafe
             oldValueToRevertOnLeave = newValue;
         }
 
-        private int getDefaultValueForVariant(ExtendedVariantsModule.Variant variant) {
+        public static int GetDefaultValueForVariant(ExtendedVariantsModule.Variant variant) {
             switch (variant) {
                 case ExtendedVariantsModule.Variant.ChaserCount: return 1;
                 case ExtendedVariantsModule.Variant.AffectExistingChasers: return 0;

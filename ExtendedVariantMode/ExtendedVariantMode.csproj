@@ -169,19 +169,19 @@
     <Compile Include="Variants\ZoomLevel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ahorn\entities\extraJumpRefill.jl">
+    <None Include="Ahorn\entities\extendedVariantsExtraJumpRefill.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Ahorn\entities\recoverJumpRefill.jl">
+    <None Include="Ahorn\entities\extendedVariantsRecoverJumpRefill.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\lang\en_gb.lang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Ahorn\triggers\colorGradeTrigger.jl">
+    <None Include="Ahorn\triggers\extendedVariantsColorGradeTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Ahorn\triggers\extendedVariantTrigger.jl">
+    <None Include="Ahorn\triggers\extendedVariantsExtendedVariantTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="everest.yaml">
@@ -279,6 +279,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gui\emoji\extendedvariants_warning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gui\ExtendedVariantMode\cs_variantmode_recolor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gui\max480_extendedvariants_extendedkorean.png">

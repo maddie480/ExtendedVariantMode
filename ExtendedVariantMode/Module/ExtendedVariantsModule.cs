@@ -200,6 +200,8 @@ namespace ExtendedVariants.Module {
             }
         }
 
+        private ILHook hookOnVersionNumberAndVariants;
+
         public void HookStuff() {
             if (stuffIsHooked) return;
 
@@ -209,6 +211,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.BadelineBoost.BoostRoutine += modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons += onCreatePauseMenuButtons;
+            hookOnVersionNumberAndVariants = new ILHook(typeof(AreaComplete).GetMethod("orig_VersionNumberAndVariants"), ilModVersionNumberAndVariants);
+            On.Celeste.Player.Update += onPlayerUpdate;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
@@ -232,6 +236,9 @@ namespace ExtendedVariants.Module {
             On.Celeste.BadelineBoost.BoostRoutine -= modBadelineBoostRoutine;
             On.Celeste.CS00_Ending.OnBegin -= onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons -= onCreatePauseMenuButtons;
+            hookOnVersionNumberAndVariants?.Dispose();
+            hookOnVersionNumberAndVariants = null;
+            On.Celeste.Player.Update -= onPlayerUpdate;
 
             // unset flags
             onLevelExit();
@@ -409,11 +416,28 @@ namespace ExtendedVariants.Module {
 
         // ================ Stamp on Chapter Complete screen ================
 
+        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+            orig(self);
+
+            if (!Session.ExtendedVariantsWereUsed) {
+                // check if extended variants are used.
+                foreach (Variant variant in Enum.GetValues(typeof(Variant))) {
+                    int expectedValue = TriggerManager.GetExpectedVariantValue(variant);
+                    int actualValue = TriggerManager.GetCurrentVariantValue(variant);
+                    if (expectedValue != actualValue) {
+                        Logger.Log("ExtendedVariantTrigger/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
+                        Session.ExtendedVariantsWereUsed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Wraps the VersionNumberAndVariants in the base game in order to add the Variant Mode logo if Extended Variants are enabled.
         /// </summary>
         private void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
-            if (Settings.MasterSwitch) {
+            if (Session.ExtendedVariantsWereUsed) {
                 // The "if" conditioning the display of the Variant Mode logo is in an "orig_" method, we can't access it with IL.Celeste.
                 // The best we can do is turn on Variant Mode, run the method then restore its original value.
                 bool oldVariantModeValue = SaveData.Instance.VariantMode;
@@ -426,6 +450,22 @@ namespace ExtendedVariants.Module {
                 // Extended Variants are disabled so just keep the original behaviour
                 orig.Invoke(version, ease, alpha);
             }
+        }
+
+        private void ilModVersionNumberAndVariants(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("cs_variantmode"))) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Injecting method to mod Variant Mode logo at {cursor.Index} in IL for AreaComplete.orig_VersionNumberAndVariants");
+                cursor.EmitDelegate<Func<string, string>>(modVariantModeLogo);
+            }
+        }
+
+        private string modVariantModeLogo(string orig) {
+            if (Session.ExtendedVariantsWereUsed) {
+                return "ExtendedVariantMode/cs_variantmode_recolor";
+            }
+            return orig;
         }
 
         // ================ Common methods for multiple variants ================

@@ -7,11 +7,13 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
 
         private Dictionary<ExtendedVariantsModule.Variant, int> overridenVariantsInRoom = new Dictionary<ExtendedVariantsModule.Variant, int>();
+        private Dictionary<ExtendedVariantsModule.Variant, int> overridenVariantsInRoomRevertOnLeave = new Dictionary<ExtendedVariantsModule.Variant, int>();
         private Dictionary<ExtendedVariantsModule.Variant, int> oldVariantsInRoom = new Dictionary<ExtendedVariantsModule.Variant, int>();
         private Dictionary<ExtendedVariantsModule.Variant, int> variantValuesBeforeOverride = new Dictionary<ExtendedVariantsModule.Variant, int>();
 
@@ -67,6 +69,7 @@ namespace ExtendedVariants {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "Room state reset");
                 oldVariantsInRoom.Clear();
                 overridenVariantsInRoom.Clear();
+                overridenVariantsInRoomRevertOnLeave.Clear();
             }
         }
 
@@ -111,6 +114,7 @@ namespace ExtendedVariants {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "Room state reset");
                 oldVariantsInRoom.Clear();
                 overridenVariantsInRoom.Clear();
+                overridenVariantsInRoomRevertOnLeave.Clear();
             }
         }
 
@@ -126,6 +130,7 @@ namespace ExtendedVariants {
             // exiting level: clear state
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "Room and session state reset");
             overridenVariantsInRoom.Clear();
+            overridenVariantsInRoomRevertOnLeave.Clear();
             oldVariantsInRoom.Clear();
             variantValuesBeforeOverride.Clear();
 
@@ -146,7 +151,9 @@ namespace ExtendedVariants {
             if (!variantValuesBeforeOverride.ContainsKey(variantChange)) {
                 variantValuesBeforeOverride[variantChange] = oldValue;
             }
-            if (!revertOnLeave) { // we don't want the value to be committed when leaving the room, since this is temporary
+            if (revertOnLeave) {
+                overridenVariantsInRoomRevertOnLeave[variantChange] = newValue;
+            } else {
                 overridenVariantsInRoom[variantChange] = newValue;
             }
 
@@ -155,7 +162,48 @@ namespace ExtendedVariants {
 
         public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, int oldValueToRevertOnLeave) {
             setVariantValue(variantChange, oldValueToRevertOnLeave);
+            overridenVariantsInRoomRevertOnLeave[variantChange] = oldValueToRevertOnLeave;
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
+        }
+
+        public int GetExpectedVariantValue(ExtendedVariantsModule.Variant variant) {
+            if (overridenVariantsInRoomRevertOnLeave.ContainsKey(variant)) {
+                // variant was replaced in current room in "revert on leave" mode: we expect this value to be set.
+                return overridenVariantsInRoomRevertOnLeave[variant];
+            }
+            if (overridenVariantsInRoom.ContainsKey(variant)) {
+                // variant was replaced in current room: we expect this value to be set.
+                return overridenVariantsInRoom[variant];
+            }
+            if (ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.ContainsKey(variant)) {
+                // variant was replaced in a previous room: we expect this value to be set.
+                return ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[variant];
+            }
+            // no variant trigger has been used: we expect the default value.
+            return ExtendedVariantTrigger.GetDefaultValueForVariant(variant);
+        }
+
+        public int GetCurrentVariantValue(ExtendedVariantsModule.Variant variant) {
+            switch (variant) {
+                case ExtendedVariantsModule.Variant.ChaserCount: return ExtendedVariantsModule.Settings.ChaserCount;
+                case ExtendedVariantsModule.Variant.AffectExistingChasers: return ExtendedVariantsModule.Settings.AffectExistingChasers ? 1 : 0;
+                case ExtendedVariantsModule.Variant.RefillJumpsOnDashRefill: return ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
+                case ExtendedVariantsModule.Variant.HiccupStrength: return ExtendedVariantsModule.Settings.HiccupStrength;
+                case ExtendedVariantsModule.Variant.SnowballDelay: return ExtendedVariantsModule.Settings.SnowballDelay;
+                case ExtendedVariantsModule.Variant.BadelineLag: return ExtendedVariantsModule.Settings.BadelineLag;
+                case ExtendedVariantsModule.Variant.DelayBetweenBadelines: return ExtendedVariantsModule.Settings.DelayBetweenBadelines;
+                case ExtendedVariantsModule.Variant.OshiroCount: return ExtendedVariantsModule.Settings.OshiroCount;
+                case ExtendedVariantsModule.Variant.ReverseOshiroCount: return ExtendedVariantsModule.Settings.ReverseOshiroCount;
+                case ExtendedVariantsModule.Variant.DisableOshiroSlowdown: return ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
+                case ExtendedVariantsModule.Variant.DisableSeekerSlowdown: return ExtendedVariantsModule.Settings.DisableSeekerSlowdown ? 1 : 0;
+                case ExtendedVariantsModule.Variant.BadelineAttackPattern: return ExtendedVariantsModule.Settings.BadelineAttackPattern;
+                case ExtendedVariantsModule.Variant.ChangePatternsOfExistingBosses: return ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses ? 1 : 0;
+                case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom: return ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom ? 1 : 0;
+                case ExtendedVariantsModule.Variant.BadelineBossCount: return ExtendedVariantsModule.Settings.BadelineBossCount;
+                case ExtendedVariantsModule.Variant.BadelineBossNodeCount: return ExtendedVariantsModule.Settings.BadelineBossNodeCount;
+                case ExtendedVariantsModule.Variant.RisingLavaSpeed: return ExtendedVariantsModule.Settings.RisingLavaSpeed;
+                default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue();
+            }
         }
 
         /// <summary>
