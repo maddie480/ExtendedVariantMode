@@ -463,7 +463,7 @@ namespace ExtendedVariants.Module {
 
         private string modVariantModeLogo(string orig) {
             if (Session.ExtendedVariantsWereUsed) {
-                return "ExtendedVariantMode/cs_variantmode_recolor";
+                return "ExtendedVariantMode/complete_screen_stamp";
             }
             return orig;
         }
