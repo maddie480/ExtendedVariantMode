@@ -132,15 +132,15 @@ namespace ExtendedVariants.Module {
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
-            if (Settings.OptionsOutOfModOptionsMenu && inGame) {
+            if (Settings.OptionsOutOfModOptionsMenuEnabled && inGame) {
                 // build the menu with only the master switch
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, false,
                     null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
-            } else if (Settings.SubmenusForEachCategory) {
+            } else if (Settings.SubmenusForEachCategoryEnabled) {
                 // build the menu with the master switch + submenus + randomizer options
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, true, true, false,
                     () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
-            } else if (Settings.OptionsOutOfModOptionsMenu) {
+            } else if (Settings.OptionsOutOfModOptionsMenuEnabled) {
                 // build the menu with the master switch + the button to open the submenu
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, true,
                     null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
@@ -156,7 +156,7 @@ namespace ExtendedVariants.Module {
                 item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button) item).Label == Dialog.Clean("menu_pause_options"));
 
             // insert ourselves just before Options if required (this is below Variants if variant mode is enabled)
-            if (Settings.OptionsOutOfModOptionsMenu) {
+            if (Settings.OptionsOutOfModOptionsMenuEnabled) {
                 menu.Insert(optionsIndex, AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, true,
                     null /* this is not used when in-game anyway */, new object[] { true }));
             }

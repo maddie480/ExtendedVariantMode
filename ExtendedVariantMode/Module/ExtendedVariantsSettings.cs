@@ -10,9 +10,9 @@ namespace ExtendedVariants.Module {
 
         // ======================================
 
-        public bool OptionsOutOfModOptionsMenu = false;
+        public bool OptionsOutOfModOptionsMenuEnabled = true;
 
-        public bool SubmenusForEachCategory = false;
+        public bool SubmenusForEachCategoryEnabled = true;
 
         // ======================================
 

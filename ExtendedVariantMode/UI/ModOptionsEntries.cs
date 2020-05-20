@@ -191,14 +191,14 @@ namespace ExtendedVariants.UI {
                     });
 
                 if (!inGame) {
-                    optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenu)
+                    optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenuEnabled)
                         .Change(b => {
-                            Settings.OptionsOutOfModOptionsMenu = b;
-                            if (!Settings.SubmenusForEachCategory) reloadModOptions();
+                            Settings.OptionsOutOfModOptionsMenuEnabled = b;
+                            if (!Settings.SubmenusForEachCategoryEnabled) reloadModOptions();
                         });
-                    submenusForEachCategoryOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY"), Settings.SubmenusForEachCategory)
+                    submenusForEachCategoryOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY"), Settings.SubmenusForEachCategoryEnabled)
                         .Change(b => {
-                            Settings.SubmenusForEachCategory = b;
+                            Settings.SubmenusForEachCategoryEnabled = b;
                             reloadModOptions();
                         });
                 }

@@ -17,7 +17,7 @@ namespace ExtendedVariants.UI {
         protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             currentMenu = menu;
 
-            if (ExtendedVariantsModule.Settings.SubmenusForEachCategory) {
+            if (ExtendedVariantsModule.Settings.SubmenusForEachCategoryEnabled) {
                 // variants submenus + randomizer options
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, false, true, true, false,
                     () => OuiModOptions.Instance.Overworld.Goto<OuiExtendedVariantsSubmenu>(),
