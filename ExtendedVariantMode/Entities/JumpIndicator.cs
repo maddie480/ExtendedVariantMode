@@ -35,8 +35,8 @@ namespace ExtendedVariants.Entities {
             if (player != null) {
                 MTexture jumpIndicator = GFX.Game["ExtendedVariantMode/jumpindicator"];
 
-                // draw 1 indicator all the time in the case of infinite jumps.
-                int jumpIndicatorsToDraw = settings.JumpCount == 6 ? 1 : JumpCount.GetJumpBuffer();
+                // draw no indicator in the case of infinite jumps.
+                int jumpIndicatorsToDraw = settings.JumpCount == 6 ? 0 : JumpCount.GetJumpBuffer();
 
                 int lines = 1 + (jumpIndicatorsToDraw - 1) / 5;
 
