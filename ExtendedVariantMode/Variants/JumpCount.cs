@@ -13,6 +13,7 @@ namespace ExtendedVariants.Variants {
     public class JumpCount : AbstractExtendedVariant {
 
         private static FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo playerJumpGraceTimer = typeof(Player).GetField("jumpGraceTimer", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private static int jumpBuffer = 0;
 
@@ -60,11 +61,8 @@ namespace ExtendedVariants.Variants {
             MethodReference wallJumpCheck = seekReferenceToMethod(il, "WallJumpCheck");
 
             // jump to whenever jumpGraceTimer is retrieved
-            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("jumpGraceTimer"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("jumpGraceTimer"))) {
                 Logger.Log("ExtendedVariantMode/JumpCount", $"Patching jump count in at {cursor.Index} in CIL code");
-
-                // store a reference to it
-                FieldReference refToJumpGraceTimer = ((FieldReference) cursor.Prev.Operand);
 
                 // get "this"
                 cursor.Emit(OpCodes.Ldarg_0);
@@ -81,14 +79,13 @@ namespace ExtendedVariants.Variants {
 
                 // replace the jumpGraceTimer with the modded value
                 cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJump);
-
-                // go back to the beginning of the method
-                cursor.Index = 0;
-                // and add a call to RefillJumpBuffer so that we can reset the jumpBuffer even if we cannot access jumpGraceTimer (being private)
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.Emit(OpCodes.Ldfld, refToJumpGraceTimer);
-                cursor.EmitDelegate<Action<float>>(refillJumpBuffer);
             }
+
+            // go back to the beginning of the method
+            cursor.Index = 0;
+            // and add a call to RefillJumpBuffer so that we can reset the jumpBuffer if normal jumps are available.
+            cursor.Emit(OpCodes.Ldarg_0);
+            cursor.EmitDelegate<Action<Player>>(refillJumpBuffer);
         }
 
         /// <summary>
@@ -138,7 +135,8 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void refillJumpBuffer(float jumpGraceTimer) {
+        private void refillJumpBuffer(Player player) {
+            float jumpGraceTimer = (float) playerJumpGraceTimer.GetValue(player);
             // JumpCount - 1 because the first jump is from vanilla Celeste
             if (jumpGraceTimer > 0f) jumpBuffer = Settings.JumpCount - 1;
         }
