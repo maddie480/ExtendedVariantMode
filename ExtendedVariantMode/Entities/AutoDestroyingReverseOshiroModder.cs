@@ -42,6 +42,14 @@ namespace ExtendedVariants.Entities {
             level = (Level) scene;
         }
 
+        public override void EntityAwake() {
+            base.EntityAwake();
+
+            // if the state is Waiting and Oshiro has an offset, hijack the state to take our own instead.
+            if (state.State == 4 && waitTimer > 0f)
+                state.State = StWaitingOffset;
+        }
+
         private int WaitingOffsetUpdate() {
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null && player.Speed != Vector2.Zero) playerMoved = true;
@@ -59,10 +67,6 @@ namespace ExtendedVariants.Entities {
 
         public override void Update() {
             base.Update();
-
-            // if the state is Waiting and Oshiro has an offset, hijack the state to take our own instead.
-            if (state.State == 4 && waitTimer > 0f)
-                state.State = StWaitingOffset;
 
             Level level = SceneAs<Level>();
             Player player = level.Tracker.GetEntity<Player>();
