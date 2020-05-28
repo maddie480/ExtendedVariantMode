@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.UI;
+using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
@@ -158,23 +159,27 @@ namespace ExtendedVariants.UI {
                     thisMenu.OnESC = thisMenu.OnCancel = () => {
                         // close this menu
                         Audio.Play(SFX.ui_main_button_back);
-                        thisMenu.CloseAndRun(Everest.SaveSettings(), () => {
-                            // and open the parent menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
-                            // "what could possibly go wrong?" ~ famous last words
-                            level.Add(parentMenu);
 
-                            // restore the pause "main menu" flag to make strawberry tracker appear again if required.
-                            level.PauseMainMenuOpen = comesFromPauseMainMenu;
-                        });
+                        ExtendedVariantsModule.Instance.SaveSettings();
+                        thisMenu.Close();
+
+                        // and open the parent menu back (this should work, right? we only removed it from the scene earlier, but it still exists and is intact)
+                        // "what could possibly go wrong?" ~ famous last words
+                        level.Add(parentMenu);
+
+                        // restore the pause "main menu" flag to make strawberry tracker appear again if required.
+                        level.PauseMainMenuOpen = comesFromPauseMainMenu;
                     };
 
                     thisMenu.OnPause = () => {
                         // we're unpausing, so close that menu, and save the mod Settings because the Mod Options menu won't do that for us
                         Audio.Play(SFX.ui_main_button_back);
-                        thisMenu.CloseAndRun(Everest.SaveSettings(), () => {
-                            level.Paused = false;
-                            Engine.FreezeTimer = 0.15f;
-                        });
+
+                        ExtendedVariantsModule.Instance.SaveSettings();
+                        thisMenu.Close();
+
+                        level.Paused = false;
+                        Engine.FreezeTimer = 0.15f;
                     };
 
                     // finally, add the menu to the scene
