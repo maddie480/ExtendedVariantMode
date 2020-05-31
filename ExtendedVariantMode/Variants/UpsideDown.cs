@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Level.Render -= modLevelRender;
 
             // be sure the controls are not upside down anymore
-            Input.Aim.InvertedY = (Input.MoveY.Inverted = false);
+            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace ExtendedVariants.Variants {
         private delegate void TwoRefVectorParameters(ref Vector2 one, ref Vector2 two);
 
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
-            Input.Aim.InvertedY = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown);
+            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
 
             paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
