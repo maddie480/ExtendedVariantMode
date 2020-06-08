@@ -25,6 +25,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
+            On.Celeste.Level.BeforeRender += onLevelBeforeRender;
             On.Celeste.GameplayBuffers.Create += onGameplayBuffersCreate;
             On.Celeste.GameplayBuffers.Unload += onGameplayBuffersUnload;
 
@@ -36,6 +37,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
+            On.Celeste.Level.BeforeRender -= onLevelBeforeRender;
             On.Celeste.GameplayBuffers.Create -= onGameplayBuffersCreate;
             On.Celeste.GameplayBuffers.Unload -= onGameplayBuffersUnload;
 
@@ -57,6 +59,16 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/BackgroundBrightness", $"Adding lighting rendering at {cursor.Index} in IL for Level.Render");
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.EmitDelegate<Action<Level>>(renderBackgroundLighting);
+            }
+        }
+
+        private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
+            orig(self);
+
+            if (blackMask != null) {
+                // ensure the black mask is... well, black.
+                Engine.Graphics.GraphicsDevice.SetRenderTarget(blackMask);
+                Engine.Graphics.GraphicsDevice.Clear(Color.Black);
             }
         }
 
