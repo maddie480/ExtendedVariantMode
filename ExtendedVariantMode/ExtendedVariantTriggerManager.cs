@@ -47,7 +47,7 @@ namespace ExtendedVariants {
             if (fromSaveData) {
                 foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
-                    int oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]);
+                    int oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v], out _);
                     variantValuesBeforeOverride[v] = oldValue;
                 }
             }
@@ -62,7 +62,7 @@ namespace ExtendedVariants {
                 // reset all variants that got set in the room
                 foreach (ExtendedVariantsModule.Variant v in oldVariantsInRoom.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Died in room: resetting {v} to {oldVariantsInRoom[v]}");
-                    setVariantValue(v, oldVariantsInRoom[v]);
+                    setVariantValue(v, oldVariantsInRoom[v], out _);
                 }
 
                 // clear values
@@ -123,7 +123,7 @@ namespace ExtendedVariants {
                 // reset all variants that got set during the session
                 foreach (ExtendedVariantsModule.Variant v in variantValuesBeforeOverride.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Ending session: resetting {v} to {variantValuesBeforeOverride[v]}");
-                    setVariantValue(v, variantValuesBeforeOverride[v]);
+                    setVariantValue(v, variantValuesBeforeOverride[v], out _);
                 }
             }
 
@@ -139,11 +139,11 @@ namespace ExtendedVariants {
 
         public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave) {
             // change the variant value
-            int oldValue = setVariantValue(variantChange, newValue);
+            int oldValue = setVariantValue(variantChange, newValue, out int actualNewValue);
 
             // store the fact that the variant was changed within the room
             // so that it can be reverted if we die, or saved if we save & quit later
-            Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave})");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave}) => variant set to {actualNewValue}");
 
             if (!oldVariantsInRoom.ContainsKey(variantChange)) {
                 oldVariantsInRoom[variantChange] = oldValue;
@@ -152,16 +152,16 @@ namespace ExtendedVariants {
                 variantValuesBeforeOverride[variantChange] = oldValue;
             }
             if (revertOnLeave) {
-                overridenVariantsInRoomRevertOnLeave[variantChange] = newValue;
+                overridenVariantsInRoomRevertOnLeave[variantChange] = actualNewValue;
             } else {
-                overridenVariantsInRoom[variantChange] = newValue;
+                overridenVariantsInRoom[variantChange] = actualNewValue;
             }
 
             return oldValue;
         }
 
         public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, int oldValueToRevertOnLeave) {
-            setVariantValue(variantChange, oldValueToRevertOnLeave);
+            setVariantValue(variantChange, oldValueToRevertOnLeave, out _);
             overridenVariantsInRoomRevertOnLeave[variantChange] = oldValueToRevertOnLeave;
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
         }
@@ -212,82 +212,100 @@ namespace ExtendedVariants {
         /// <param name="variantChange">The variant to change</param>
         /// <param name="newValue">The new value</param>
         /// <returns>The old value for this variant</returns>
-        private int setVariantValue(ExtendedVariantsModule.Variant variantChange, int newValue) {
+        private int setVariantValue(ExtendedVariantsModule.Variant variantChange, int newValue, out int actualNewValue) {
             int oldValue;
 
             switch (variantChange) {
                 case ExtendedVariantsModule.Variant.ChaserCount:
                     oldValue = ExtendedVariantsModule.Settings.ChaserCount;
                     ExtendedVariantsModule.Settings.ChaserCount = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.AffectExistingChasers:
                     oldValue = ExtendedVariantsModule.Settings.AffectExistingChasers ? 1 : 0;
                     ExtendedVariantsModule.Settings.AffectExistingChasers = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.RefillJumpsOnDashRefill:
                     oldValue = ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill ? 1 : 0;
                     ExtendedVariantsModule.Settings.RefillJumpsOnDashRefill = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.HiccupStrength:
                     oldValue = ExtendedVariantsModule.Settings.HiccupStrength;
                     ExtendedVariantsModule.Settings.HiccupStrength = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.SnowballDelay:
                     oldValue = ExtendedVariantsModule.Settings.SnowballDelay;
                     ExtendedVariantsModule.Settings.SnowballDelay = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.BadelineLag:
                     oldValue = ExtendedVariantsModule.Settings.BadelineLag;
                     ExtendedVariantsModule.Settings.BadelineLag = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.DelayBetweenBadelines:
                     oldValue = ExtendedVariantsModule.Settings.DelayBetweenBadelines;
                     ExtendedVariantsModule.Settings.DelayBetweenBadelines = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.OshiroCount:
                     oldValue = ExtendedVariantsModule.Settings.OshiroCount;
                     ExtendedVariantsModule.Settings.OshiroCount = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.ReverseOshiroCount:
                     oldValue = ExtendedVariantsModule.Settings.ReverseOshiroCount;
                     ExtendedVariantsModule.Settings.ReverseOshiroCount = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.DisableOshiroSlowdown:
                     oldValue = ExtendedVariantsModule.Settings.DisableOshiroSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableOshiroSlowdown = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.DisableSeekerSlowdown:
                     oldValue = ExtendedVariantsModule.Settings.DisableSeekerSlowdown ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableSeekerSlowdown = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.BadelineAttackPattern:
                     oldValue = ExtendedVariantsModule.Settings.BadelineAttackPattern;
                     ExtendedVariantsModule.Settings.BadelineAttackPattern = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.ChangePatternsOfExistingBosses:
                     oldValue = ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses ? 1 : 0;
                     ExtendedVariantsModule.Settings.ChangePatternsOfExistingBosses = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom:
                     oldValue = ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom ? 1 : 0;
                     ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 case ExtendedVariantsModule.Variant.BadelineBossCount:
                     oldValue = ExtendedVariantsModule.Settings.BadelineBossCount;
                     ExtendedVariantsModule.Settings.BadelineBossCount = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.BadelineBossNodeCount:
                     oldValue = ExtendedVariantsModule.Settings.BadelineBossNodeCount;
                     ExtendedVariantsModule.Settings.BadelineBossNodeCount = newValue;
+                    actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.RisingLavaSpeed:
                     oldValue = ExtendedVariantsModule.Settings.RisingLavaSpeed;
                     ExtendedVariantsModule.Settings.RisingLavaSpeed = newValue;
+                    actualNewValue = newValue;
                     break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
                     oldValue = variant.GetValue();
                     variant.SetValue(newValue);
+                    actualNewValue = variant.GetValue();
                     break;
             }
 
