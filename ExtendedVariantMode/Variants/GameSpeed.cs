@@ -59,7 +59,6 @@ namespace ExtendedVariants.Variants {
 
             // in vanilla, no snapshot is applied past 1.6x, change that to *infinite*.
             // we want to apply the 1.6x snapshot even on 100x speed.
-            // we want to apply the 1.6x snapshot even on 100x speed.
             if (cursor.TryGotoNext(instr => instr.MatchLdcI4(16))) {
                 cursor.Next.OpCode = OpCodes.Ldc_I4;
                 cursor.Next.Operand = int.MaxValue;
