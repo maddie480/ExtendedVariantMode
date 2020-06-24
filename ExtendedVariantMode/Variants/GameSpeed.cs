@@ -4,9 +4,12 @@ using Celeste;
 using Celeste.Mod;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     class GameSpeed : AbstractExtendedVariant {
+        private int previousGameSpeed = 10;
+
         public override int GetDefaultValue() {
             return 10;
         }
@@ -27,6 +30,8 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Level.Update -= modLevelUpdate;
             IL.Monocle.VirtualButton.Update -= modVirtualButtonUpdate;
+
+            previousGameSpeed = 10;
         }
 
         private void modLevelUpdate(ILContext il) {
@@ -44,6 +49,38 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modGameSpeed(int gameSpeed) {
+            if (previousGameSpeed > Settings.GameSpeed) {
+                Logger.Log("ExtendedVariantMode/GameSpeed", "Game speed slowed down, ensuring cassette blocks and sprites are sane...");
+                if (Engine.Scene is Level level) {
+                    // go across all entities in the screen
+                    foreach (Entity entity in level.Entities) {
+                        // ... and all sprites in them
+                        foreach (Sprite sprite in entity.Components.GetAll<Sprite>()) {
+                            if (sprite.Animating) {
+                                // if the current animation is waaaay over, bring it to a more sane value.
+                                DynData<Sprite> data = new DynData<Sprite>(sprite);
+                                if (Math.Abs(data.Get<float>("animationTimer")) >= data.Get<Sprite.Animation>("currentAnimation").Delay * 2) {
+                                    data["animationTimer"] = data.Get<Sprite.Animation>("currentAnimation").Delay;
+                                    Logger.Log("ExtendedVariantMode/GameSpeed", $"Sanified animation for {sprite.Texture?.AtlasPath}");
+                                }
+                            }
+                        }
+                    }
+
+                    CassetteBlockManager manager = level.Tracker.GetEntity<CassetteBlockManager>();
+                    if (manager != null) {
+                        // check if the beatTimer of the cassette block manager went overboard or not.
+                        DynData<CassetteBlockManager> data = new DynData<CassetteBlockManager>(manager);
+                        if (data.Get<float>("beatTimer") > 0.166666672f * 2) {
+                            // this is madness!
+                            data["beatTimer"] = 0.166666672f;
+                            Logger.Log("ExtendedVariantMode/GameSpeed", "Sanified cassette block beat timer");
+                        }
+                    }
+                }
+            }
+            previousGameSpeed = Settings.GameSpeed;
+
             return gameSpeed * Settings.GameSpeed / 10;
         }
 
