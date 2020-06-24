@@ -2,6 +2,7 @@
 using System;
 using Celeste;
 using Celeste.Mod;
+using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.Utils;
@@ -40,11 +41,28 @@ namespace ExtendedVariants.Variants {
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Assists>("GameSpeed"))) {
                 Logger.Log("ExtendedVariantMode/GameSpeed", $"Injecting own game speed at {cursor.Index} in IL code for Level.Update");
                 cursor.EmitDelegate<Func<int, int>>(modGameSpeed);
+            }
 
-                if (cursor.TryGotoNext(instr => instr.MatchStsfld<Level>("AssistSpeedSnapshotValue"))) {
-                    Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding speed sound snapshot at {cursor.Index} in IL code for Level.Update");
-                    cursor.EmitDelegate<Func<int, int>>(modSpeedSoundSnapshot);
-                }
+            // mod the snapshots that are applied to snap all extended variants values to their closest available vanilla values.
+            while (cursor.TryGotoNext(
+                instr => instr.MatchLdsfld<Level>("AssistSpeedSnapshotValue"),
+                instr => instr.MatchLdcI4(10),
+                instr => instr.MatchMul())) {
+
+                cursor.Index++;
+
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding speed sound snapshot at {cursor.Index} in IL code for Level.Update");
+                cursor.EmitDelegate<Func<int, int>>(modSpeedSoundSnapshot);
+            }
+
+            cursor.Index = 0;
+
+            // in vanilla, no snapshot is applied past 1.6x, change that to *infinite*.
+            // we want to apply the 1.6x snapshot even on 100x speed.
+            // we want to apply the 1.6x snapshot even on 100x speed.
+            if (cursor.TryGotoNext(instr => instr.MatchLdcI4(16))) {
+                cursor.Next.OpCode = OpCodes.Ldc_I4;
+                cursor.Next.Operand = int.MaxValue;
             }
         }
 
