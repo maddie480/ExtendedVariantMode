@@ -1,11 +1,16 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 
 namespace ExtendedVariants.Variants {
     public class DashSpeed : AbstractExtendedVariant {
+        private static ILHook dashCoroutineHook;
+        private static ILHook redDashCoroutineHook;
+
         public override int GetDefaultValue() {
             return 10;
         }
@@ -19,37 +24,32 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.Player.CallDashEvents += modCallDashEvents;
+            dashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modDashSpeed);
+            redDashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "RedDashCoroutine", modDashSpeed);
         }
 
         public override void Unload() {
-            IL.Celeste.Player.CallDashEvents -= modCallDashEvents;
+            dashCoroutineHook?.Dispose();
+            redDashCoroutineHook?.Dispose();
+
+            dashCoroutineHook = null;
+            redDashCoroutineHook = null;
         }
 
-        /// <summary>
-        /// Edits the CallDashEvents method in Player (called multiple times when the player dashes).
-        /// </summary>
-        /// <param name="il">Object allowing CIL patching</param>
-        private void modCallDashEvents(ILContext il) {
+        private void modDashSpeed(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            // enter the if in the method (the "if" checks if dash events were already called) and inject ourselves in there
-            // (those are actually brtrue in the XNA version and brfalse in the FNA version. Seriously?)
-            if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue || instr.OpCode == OpCodes.Brfalse))) {
-                Logger.Log("ExtendedVariantMode/DashSpeed", $"Adding code to mod dash speed at index {cursor.Index} in CIL code for CallDashEvents");
+            // find 240f in the method (dash speed) and multiply it with our modifier.
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(240f))) {
+                Logger.Log("ExtendedVariantMode/DashSpeed", $"Modding dash speed at index {cursor.Index} in CIL code for {cursor.Method.Name}");
 
-                // just add a call to ModifyDashSpeed (arg 0 = this)
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Action<Player>>(modifyDashSpeed);
+                cursor.EmitDelegate<Func<float>>(getDashSpeedMultiplier);
+                cursor.Emit(OpCodes.Mul);
             }
         }
 
-        /// <summary>
-        /// Modifies the dash speed of the player.
-        /// </summary>
-        /// <param name="self">A reference to the player</param>
-        private void modifyDashSpeed(Player self) {
-            self.Speed *= Settings.DashSpeed / 10f;
+        private float getDashSpeedMultiplier() {
+            return Settings.DashSpeed / 10f;
         }
     }
 }
