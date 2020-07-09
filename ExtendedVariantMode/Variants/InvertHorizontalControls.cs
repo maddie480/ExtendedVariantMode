@@ -28,6 +28,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+            if (Input.Aim == null || Input.MoveX == null || SaveData.Instance?.Assists == null || Settings == null) {
+                orig(self);
+                return;
+            }
+
             // this is vanilla behavior
             Input.Aim.InvertedX = SaveData.Instance.Assists.MirrorMode;
 
