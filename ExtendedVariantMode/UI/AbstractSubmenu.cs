@@ -130,7 +130,16 @@ namespace ExtendedVariants.UI {
         /// <param name="parameters">some arbitrary parameters that can be used to build the menu</param>
         /// <returns>A button you can insert in another menu</returns>
         public static TextMenuButtonExt BuildOpenMenuButton<T>(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) where T : AbstractSubmenu {
-            return OuiModOptions.Instance.Overworld.GetUI<T>().buildOpenMenuButton(parentMenu, inGame, backToParentMenu, parameters);
+            return getOrInstantiateSubmenu<T>().buildOpenMenuButton(parentMenu, inGame, backToParentMenu, parameters);
+        }
+
+        private static T getOrInstantiateSubmenu<T>() where T : AbstractSubmenu {
+            if (OuiModOptions.Instance?.Overworld == null) {
+                // this is a very edgy edge case. but it still might happen. :maddyS:
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AbstractSubmenu", $"Warning: overworld does not exist, instanciating submenu {typeof(T)} on the spot!");
+                return (T) Activator.CreateInstance(typeof(T));
+            }
+            return OuiModOptions.Instance.Overworld.GetUI<T>();
         }
 
         /// <summary>
