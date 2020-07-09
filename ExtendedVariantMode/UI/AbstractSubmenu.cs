@@ -138,10 +138,10 @@ namespace ExtendedVariants.UI {
         /// </summary>
         private TextMenuButtonExt buildOpenMenuButton(TextMenu parentMenu, bool inGame, Action backToParentMenu, object[] parameters) {
             if (inGame) {
-                Level level = Engine.Scene as Level;
-
                 // this is how it works in-game
                 return (TextMenuButtonExt) new TextMenuButtonExt(getButtonName(parameters)).Pressed(() => {
+                    Level level = Engine.Scene as Level;
+
                     // set up the menu instance
                     this.backToParentMenu = backToParentMenu;
                     this.parameters = parameters;
