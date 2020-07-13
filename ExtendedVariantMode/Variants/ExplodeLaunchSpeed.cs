@@ -4,7 +4,9 @@ using ExtendedVariants.Module;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     class ExplodeLaunchSpeed : AbstractExtendedVariant {
@@ -29,7 +31,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Bumper.OnPlayer += wrapExplodeLaunchCall;
             IL.Celeste.Puffer.Explode += wrapExplodeLaunchCall;
             IL.Celeste.TempleBigEyeball.OnPlayer += wrapExplodeLaunchCall;
-            seekerRegenerateHook = ExtendedVariantsModule.HookCoroutine("Celeste.Seeker", "RegenerateCoroutine", wrapExplodeLaunchCall);
+            seekerRegenerateHook = new ILHook(typeof(Seeker).GetMethod("RegenerateCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), wrapExplodeLaunchCall);
         }
 
         public override void Unload() {

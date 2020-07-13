@@ -4,7 +4,9 @@ using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class Stamina : AbstractExtendedVariant {
@@ -32,7 +34,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.RefillStamina += modRefillStamina;
 
             playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), patchOutStamina);
-            summitGemSmashRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.SummitGem", "SmashRoutine", patchOutStamina);
+            summitGemSmashRoutineHook = new ILHook(typeof(SummitGem).GetMethod("SmashRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchOutStamina);
         }
 
         public override void Unload() {

@@ -8,6 +8,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     class AllStrawberriesAreGoldens : AbstractExtendedVariant {
@@ -40,7 +41,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Strawberry.OnAnimate += patchAllGoldenFlags;
             On.Celeste.Level.LoadLevel += onLoadLevel;
 
-            collectRoutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Strawberry", "CollectRoutine", patchAllGoldenFlags);
+            collectRoutineHook = new ILHook(typeof(Strawberry).GetMethod("CollectRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchAllGoldenFlags);
             strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod("orig_Update"), onStrawberryUpdate);
 
             // strawberries weren't made golden yet, we just turned on Extended Variants.

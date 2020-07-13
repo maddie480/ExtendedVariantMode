@@ -4,7 +4,9 @@ using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class DashSpeed : AbstractExtendedVariant {
@@ -24,8 +26,8 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            dashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modDashSpeed);
-            redDashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "RedDashCoroutine", modDashSpeed);
+            dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), modDashSpeed);
+            redDashCoroutineHook = new ILHook(typeof(Player).GetMethod("RedDashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), modDashSpeed);
         }
 
         public override void Unload() {

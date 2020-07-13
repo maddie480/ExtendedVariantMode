@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Input;
 using Monocle;
 using ExtendedVariants.Module;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class InvertGrab : AbstractExtendedVariant {
@@ -37,7 +39,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.LaunchUpdate += modInputGrabCheck;
             IL.Celeste.Player.StarFlyUpdate += modInputGrabCheck;
 
-            dashCoroutineHook = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modInputGrabCheck);
+            dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), modInputGrabCheck);
         }
 
         public override void Unload() {

@@ -4,7 +4,9 @@ using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class DashLength : AbstractExtendedVariant {
@@ -27,8 +29,9 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             IL.Celeste.Player.DashBegin += modDashLength;
 
-            dashCoroutineHookForTimer = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modDashLength);
-            dashCoroutineHookForCounter = ExtendedVariantsModule.HookCoroutine("Celeste.Player", "DashCoroutine", modDashTrailCounter);
+            MethodInfo dashCoroutine = typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
+            dashCoroutineHookForTimer = new ILHook(dashCoroutine, modDashLength);
+            dashCoroutineHookForCounter = new ILHook(dashCoroutine, modDashTrailCounter);
         }
 
         public override void Unload() {
