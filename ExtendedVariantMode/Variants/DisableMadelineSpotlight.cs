@@ -1,5 +1,7 @@
 ﻿using Celeste;
 using Monocle;
+using MonoMod.Utils;
+using System.Linq;
 
 namespace ExtendedVariants.Variants {
     class DisableMadelineSpotlight : AbstractExtendedVariant {
@@ -27,17 +29,33 @@ namespace ExtendedVariants.Variants {
             float origSpotlightAlpha = 0f;
 
             Player player = scene?.Tracker.GetEntity<Player>();
-            if (Settings.DisableMadelineSpotlight && player != null) {
+            PlayerDeadBody deadPlayer = null;
+            if (player == null) {
+                deadPlayer = scene?.Entities?.OfType<PlayerDeadBody>().FirstOrDefault();
+            }
+
+            if (Settings.DisableMadelineSpotlight) {
                 // save the lighting alpha, then replace it.
-                origSpotlightAlpha = player.Light.Alpha;
-                player.Light.Alpha = 0f;
+                if (player != null) {
+                    origSpotlightAlpha = player.Light.Alpha;
+                    player.Light.Alpha = 0f;
+                } else if (deadPlayer != null) {
+                    VertexLight light = new DynData<PlayerDeadBody>(deadPlayer).Get<VertexLight>("light");
+                    origSpotlightAlpha = light.Alpha;
+                    light.Alpha = 0f;
+                }
             }
 
             orig(self, scene);
 
-            if (Settings.DisableMadelineSpotlight && player != null) {
+            if (Settings.DisableMadelineSpotlight) {
                 // restore the spotlight
-                player.Light.Alpha = origSpotlightAlpha;
+                if (player != null) {
+                    player.Light.Alpha = origSpotlightAlpha;
+                } else if (deadPlayer != null) {
+                    VertexLight light = new DynData<PlayerDeadBody>(deadPlayer).Get<VertexLight>("light");
+                    light.Alpha = origSpotlightAlpha;
+                }
             }
         }
     }
