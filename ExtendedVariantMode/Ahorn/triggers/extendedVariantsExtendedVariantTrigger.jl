@@ -73,7 +73,8 @@ const variants = String[
 	"ZoomLevel",
 	"DashDirection",
 	"BackgroundBrightness",
-	"DisableMadelineSpotlight"
+	"DisableMadelineSpotlight",
+	"ForegroundEffectOpacity"
 ]
 
 const placements = Ahorn.PlacementDict(

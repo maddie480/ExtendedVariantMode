@@ -88,6 +88,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> screenShakeIntensityOption;
         private TextMenu.Option<int> backgroundBrightnessOption;
         private TextMenu.Option<bool> disableMadelineSpotlightOption;
+        private TextMenu.Option<int> foregroundEffectOpacityOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -398,6 +399,9 @@ namespace ExtendedVariants.UI {
                 backgroundBrightnessOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBRIGHTNESS"),
                     i => $"{i * 10}%", 0, 10, Settings.BackgroundBrightness, 10).Change(i => Settings.BackgroundBrightness = i);
 
+                foregroundEffectOpacityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FOREGROUNDEFFECTOPACITY"),
+                    i => $"{i * 10}%", 0, 10, Settings.ForegroundEffectOpacity, 10).Change(i => Settings.ForegroundEffectOpacity = i);
+
                 disableMadelineSpotlightOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEMADELINESPOTLIGHT"), Settings.DisableMadelineSpotlight, false)
                     .Change(b => Settings.DisableMadelineSpotlight = b);
 
@@ -546,8 +550,8 @@ namespace ExtendedVariants.UI {
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
 
                 visualSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.DisableMadelineSpotlight, Variant.RoomBloom, Variant.GlitchEffect, Variant.AnxietyEffect,
-                        Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity }
+                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
+                        Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -579,7 +583,7 @@ namespace ExtendedVariants.UI {
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption};
+                disableMadelineSpotlightOption, foregroundEffectOpacityOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -677,6 +681,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(upsideDownOption);
                 menu.Add(roomLightingOption);
                 menu.Add(backgroundBrightnessOption);
+                menu.Add(foregroundEffectOpacityOption);
                 menu.Add(disableMadelineSpotlightOption);
                 menu.Add(roomBloomOption);
                 menu.Add(glitchEffectOption);
@@ -755,6 +760,7 @@ namespace ExtendedVariants.UI {
             setValue(hiccupStrengthOption, 0, indexFromMultiplier(Settings.HiccupStrength));
             setValue(roomLightingOption, -1, Settings.RoomLighting);
             setValue(backgroundBrightnessOption, 0, Settings.BackgroundBrightness);
+            setValue(foregroundEffectOpacityOption, 0, Settings.ForegroundEffectOpacity);
             setValue(disableMadelineSpotlightOption, Settings.DisableMadelineSpotlight);
             setValue(roomBloomOption, -1, Settings.RoomBloom);
             setValue(glitchEffectOption, -1, Settings.GlitchEffect);

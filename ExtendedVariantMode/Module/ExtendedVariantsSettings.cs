@@ -316,6 +316,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int ForegroundEffectOpacity { get; set; } = 10;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool DisableMadelineSpotlight { get; set; } = false;
 
         // ======================================

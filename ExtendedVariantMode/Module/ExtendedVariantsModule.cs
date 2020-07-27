@@ -39,7 +39,8 @@ namespace ExtendedVariants.Module {
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
-            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight
+            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
+            ForegroundEffectOpacity
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -122,6 +123,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DashDirection] = new DashDirection();
             VariantHandlers[Variant.BackgroundBrightness] = new BackgroundBrightness();
             VariantHandlers[Variant.DisableMadelineSpotlight] = new DisableMadelineSpotlight();
+            VariantHandlers[Variant.ForegroundEffectOpacity] = new ForegroundEffectOpacity();
         }
 
         // ================ Mod options setup ================
