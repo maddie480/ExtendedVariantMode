@@ -1,12 +1,12 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Entities;
-using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
@@ -214,7 +214,9 @@ namespace ExtendedVariants.Variants {
             if (playerIntro != Player.IntroTypes.Transition) {
                 // always reset the jump count when the player enters a new level (respawn, new map, etc... everything but a transition)
                 RefillJumpBuffer();
+            }
 
+            if (!self.Entities.Any(entity => entity is JumpIndicator)) {
                 // add the entity showing the jump count
                 self.Add(new JumpIndicator());
                 self.Entities.UpdateLists();
