@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
@@ -61,7 +62,10 @@ namespace ExtendedVariants.Entities {
             outline.CenterOrigin();
             outline.Visible = false;
 
-            Add(sprite = new Sprite(GFX.Game, $"objects/{texture}/idle"));
+            bool oneUseSprite = data.Bool("oneUse") && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "BetterRefillGems", Version = new Version(1, 0, 0) })
+                && GFX.Game.Has($"objects/{texture}/oneuse_idle00");
+
+            Add(sprite = new Sprite(GFX.Game, oneUseSprite ? $"objects/{texture}/oneuse_idle" : $"objects/{texture}/idle"));
             sprite.AddLoop("idle", "", 0.1f);
             sprite.Play("idle");
             sprite.CenterOrigin();
