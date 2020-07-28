@@ -44,6 +44,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int DashSpeed { get; set; } = 10;
 
+        [SettingIgnore]
+        public bool LegacyDashSpeedBehavior { get; set; } = false;
+
         // ======================================
 
         [SettingIgnore]

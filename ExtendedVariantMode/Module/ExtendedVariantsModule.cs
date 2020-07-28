@@ -166,6 +166,10 @@ namespace ExtendedVariants.Module {
         public override void Load() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
+            if (Settings.LegacyDashSpeedBehavior) {
+                VariantHandlers[Variant.DashSpeed] = new DashSpeedOld();
+            }
+
             On.Celeste.LevelEnter.Go += checkForceEnableVariants;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
 
@@ -357,6 +361,13 @@ namespace ExtendedVariants.Module {
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
             }
 
+            if(Settings.LegacyDashSpeedBehavior) {
+                // restore the "new" dash speed behavior
+                Instance.VariantHandlers[Variant.DashSpeed].Unload();
+                Instance.VariantHandlers[Variant.DashSpeed] = new DashSpeed();
+                Instance.VariantHandlers[Variant.DashSpeed].Load();
+            }
+
             bool settingChanged = false;
 
             // reset all proper variants to their default values
@@ -385,7 +396,8 @@ namespace ExtendedVariants.Module {
                 || Settings.ChangePatternsOfExistingBosses
                 || Settings.FirstBadelineSpawnRandom
                 || Settings.BadelineBossCount != 1
-                || Settings.BadelineBossNodeCount != 1) {
+                || Settings.BadelineBossNodeCount != 1
+                || Settings.LegacyDashSpeedBehavior) {
 
                 settingChanged = true;
             }
@@ -409,6 +421,7 @@ namespace ExtendedVariants.Module {
             Settings.FirstBadelineSpawnRandom = false;
             Settings.BadelineBossCount = 1;
             Settings.BadelineBossNodeCount = 1;
+            Settings.LegacyDashSpeedBehavior = false;
 
             return settingChanged;
         }

@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
@@ -26,6 +27,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> speedXOption;
         private TextMenu.Option<int> staminaOption;
         private TextMenu.Option<int> dashSpeedOption;
+        private TextMenu.Option<bool> legacyDashSpeedBehaviorOption;
         private TextMenu.Option<int> dashCountOption;
         private TextMenu.Option<bool> heldDashOption;
         private TextMenu.Option<int> frictionOption;
@@ -249,6 +251,15 @@ namespace ExtendedVariants.UI {
                 // Dashing
                 dashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashSpeed), indexFromMultiplier(10)).Change(i => Settings.DashSpeed = multiplierScale[i]);
+                legacyDashSpeedBehaviorOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR"), Settings.LegacyDashSpeedBehavior, false)
+                    .Change(value => {
+                        Settings.LegacyDashSpeedBehavior = value;
+
+                        // hot swap the "dash speed" variant handler
+                        Instance.VariantHandlers[Variant.DashSpeed].Unload();
+                        Instance.VariantHandlers[Variant.DashSpeed] = Settings.LegacyDashSpeedBehavior ? (AbstractExtendedVariant) new DashSpeedOld() : new DashSpeed();
+                        Instance.VariantHandlers[Variant.DashSpeed].Load();
+                    });
                 dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
                 dashDirectionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
@@ -538,7 +549,7 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
-                        || Settings.RefillJumpsOnDashRefill;
+                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
@@ -574,7 +585,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
                 // all options excluding the master switch
                 optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, openSubmenuButton,
-                gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption,
+                gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption, legacyDashSpeedBehaviorOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, glitchEffectOption, oshiroEverywhereOption, oshiroCountOption,
@@ -627,6 +638,8 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(dashingTitle);
                 menu.Add(dashSpeedOption);
+                menu.Add(legacyDashSpeedBehaviorOption);
+                legacyDashSpeedBehaviorOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR_HINT"));
                 menu.Add(dashLengthOption);
                 menu.Add(dashDirectionOption);
                 menu.Add(hyperdashSpeedOption);
@@ -727,6 +740,7 @@ namespace ExtendedVariants.UI {
             setValue(speedXOption, 0, indexFromMultiplier(Settings.SpeedX));
             setValue(staminaOption, 0, Settings.Stamina);
             setValue(dashSpeedOption, 0, indexFromMultiplier(Settings.DashSpeed));
+            setValue(legacyDashSpeedBehaviorOption, Settings.LegacyDashSpeedBehavior);
             setValue(dashCountOption, -1, Settings.DashCount);
             setValue(frictionOption, -1, Settings.Friction == -1 ? -1 : indexFromMultiplier(Settings.Friction));
             setValue(airFrictionOption, -1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction));

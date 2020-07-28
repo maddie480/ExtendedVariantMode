@@ -131,6 +131,7 @@
     <Compile Include="Variants\DashDirection.cs" />
     <Compile Include="Variants\DashLength.cs" />
     <Compile Include="Variants\DashSpeed.cs" />
+    <Compile Include="Variants\DashSpeedOld.cs" />
     <Compile Include="Variants\DisableClimbJumping.cs" />
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
