@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BetterRefillGems">
+      <HintPath>..\lib-stripped\BetterRefillGems.dll</HintPath>
+    </Reference>
     <Reference Include="Celeste">
       <HintPath>..\lib-stripped\Celeste.exe</HintPath>
       <Private>False</Private>

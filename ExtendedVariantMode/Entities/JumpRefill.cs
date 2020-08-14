@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.BetterRefillGems;
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
@@ -8,10 +9,7 @@ using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Entities {
     [CustomEntity(
@@ -62,8 +60,8 @@ namespace ExtendedVariants.Entities {
             outline.CenterOrigin();
             outline.Visible = false;
 
-            bool oneUseSprite = data.Bool("oneUse") && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "BetterRefillGems", Version = new Version(1, 0, 0) })
-                && GFX.Game.Has($"objects/{texture}/oneuse_idle00");
+            bool oneUseSprite = data.Bool("oneUse") && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "BetterRefillGems", Version = new Version(1, 0, 1) })
+                && betterRefillGemsEnabled() && GFX.Game.Has($"objects/{texture}/oneuse_idle00");
 
             Add(sprite = new Sprite(GFX.Game, oneUseSprite ? $"objects/{texture}/oneuse_idle" : $"objects/{texture}/idle"));
             sprite.AddLoop("idle", "", 0.1f);
@@ -88,6 +86,10 @@ namespace ExtendedVariants.Entities {
 
             // wire the collider to our implementation instead.
             Add(new PlayerCollider(OnPlayer));
+        }
+
+        private bool betterRefillGemsEnabled() {
+            return BetterRefillGemsModule.Settings.Enabled;
         }
 
         private void OnPlayer(Player player) {
