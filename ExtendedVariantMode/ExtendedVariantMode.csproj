@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="BetterRefillGems">
       <HintPath>..\lib-stripped\BetterRefillGems.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Celeste">
       <HintPath>..\lib-stripped\Celeste.exe</HintPath>
