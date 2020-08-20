@@ -215,7 +215,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons += onCreatePauseMenuButtons;
             hookOnVersionNumberAndVariants = new ILHook(typeof(AreaComplete).GetMethod("orig_VersionNumberAndVariants"), ilModVersionNumberAndVariants);
-            On.Celeste.Player.Update += onPlayerUpdate;
+            On.Celeste.Level.LoadLevel += onLoadLevel;
+            On.Celeste.Level.EndPauseEffects += onUnpause;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
@@ -241,7 +242,8 @@ namespace ExtendedVariants.Module {
             Everest.Events.Level.OnCreatePauseMenuButtons -= onCreatePauseMenuButtons;
             hookOnVersionNumberAndVariants?.Dispose();
             hookOnVersionNumberAndVariants = null;
-            On.Celeste.Player.Update -= onPlayerUpdate;
+            On.Celeste.Level.LoadLevel -= onLoadLevel;
+            On.Celeste.Level.EndPauseEffects -= onUnpause;
 
             // unset flags
             onLevelExit();
@@ -361,7 +363,7 @@ namespace ExtendedVariants.Module {
                 lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
             }
 
-            if(Settings.LegacyDashSpeedBehavior) {
+            if (Settings.LegacyDashSpeedBehavior) {
                 // restore the "new" dash speed behavior
                 Instance.VariantHandlers[Variant.DashSpeed].Unload();
                 Instance.VariantHandlers[Variant.DashSpeed] = new DashSpeed();
@@ -428,9 +430,19 @@ namespace ExtendedVariants.Module {
 
         // ================ Stamp on Chapter Complete screen ================
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+            orig(self, playerIntro, isFromLoader);
+
+            checkForUsedVariants();
+        }
+
+        private void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
+            checkForUsedVariants();
+        }
+
+        private void checkForUsedVariants() {
             if (!Session.ExtendedVariantsWereUsed) {
                 // check if extended variants are used.
                 foreach (Variant variant in Enum.GetValues(typeof(Variant))) {
