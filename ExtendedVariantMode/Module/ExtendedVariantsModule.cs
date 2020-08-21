@@ -22,6 +22,7 @@ namespace ExtendedVariants.Module {
         private bool triggerIsHooked = false;
         private bool showForcedVariantsPostcard = false;
         private Postcard forceEnabledVariantsPostcard;
+        private bool isLevelEnding = false;
 
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
         public override Type SessionType => typeof(ExtendedVariantsSession);
@@ -215,8 +216,10 @@ namespace ExtendedVariants.Module {
             On.Celeste.CS00_Ending.OnBegin += onPrologueEndingCutsceneBegin;
             Everest.Events.Level.OnCreatePauseMenuButtons += onCreatePauseMenuButtons;
             hookOnVersionNumberAndVariants = new ILHook(typeof(AreaComplete).GetMethod("orig_VersionNumberAndVariants"), ilModVersionNumberAndVariants);
+
             On.Celeste.Level.LoadLevel += onLoadLevel;
             On.Celeste.Level.EndPauseEffects += onUnpause;
+            On.Celeste.Level.End += onLevelEnd;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
@@ -242,8 +245,10 @@ namespace ExtendedVariants.Module {
             Everest.Events.Level.OnCreatePauseMenuButtons -= onCreatePauseMenuButtons;
             hookOnVersionNumberAndVariants?.Dispose();
             hookOnVersionNumberAndVariants = null;
+
             On.Celeste.Level.LoadLevel -= onLoadLevel;
             On.Celeste.Level.EndPauseEffects -= onUnpause;
+            On.Celeste.Level.End -= onLevelEnd;
 
             // unset flags
             onLevelExit();
@@ -430,6 +435,12 @@ namespace ExtendedVariants.Module {
 
         // ================ Stamp on Chapter Complete screen ================
 
+        private void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+            isLevelEnding = true;
+            orig(self);
+            isLevelEnding = false;
+        }
+
         private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -439,7 +450,9 @@ namespace ExtendedVariants.Module {
         private void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
-            checkForUsedVariants();
+            if (!isLevelEnding) {
+                checkForUsedVariants();
+            }
         }
 
         private void checkForUsedVariants() {
