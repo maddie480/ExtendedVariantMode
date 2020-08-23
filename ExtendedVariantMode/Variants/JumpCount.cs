@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Entities;
+using Microsoft.Xna.Framework;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -180,8 +181,8 @@ namespace ExtendedVariants.Variants {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
             }
-            if (canWallJumpLeft || canWallJumpRight) {
-                // no matter what, don't touch vanilla behavior if a wall jump is possible
+            if (canWallJumpLeft || canWallJumpRight || self.CollideCheck<Water>(self.Position + Vector2.UnitY * 2f)) {
+                // no matter what, don't touch vanilla behavior if a wall jump or water jump is possible
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
