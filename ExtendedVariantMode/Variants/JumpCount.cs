@@ -181,7 +181,7 @@ namespace ExtendedVariants.Variants {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
             }
-            if (canWallJumpLeft || canWallJumpRight || self.CollideCheck<Water>(self.Position + Vector2.UnitY * 2f)) {
+            if (self.CanUnDuck && (canWallJumpLeft || canWallJumpRight || self.CollideCheck<Water>(self.Position + Vector2.UnitY * 2f))) {
                 // no matter what, don't touch vanilla behavior if a wall jump or water jump is possible
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
