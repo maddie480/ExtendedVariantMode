@@ -136,7 +136,7 @@ namespace ExtendedVariants.UI {
         private static T getOrInstantiateSubmenu<T>() where T : AbstractSubmenu {
             if (OuiModOptions.Instance?.Overworld == null) {
                 // this is a very edgy edge case. but it still might happen. :maddyS:
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AbstractSubmenu", $"Warning: overworld does not exist, instanciating submenu {typeof(T)} on the spot!");
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AbstractSubmenu", $"Overworld does not exist, instanciating submenu {typeof(T)} on the spot!");
                 return (T) Activator.CreateInstance(typeof(T));
             }
             return OuiModOptions.Instance.Overworld.GetUI<T>();

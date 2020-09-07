@@ -306,7 +306,7 @@ namespace ExtendedVariants {
         }
 
         private void disableVariant(VanillaVariant variant) {
-            Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.Name}");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.Name}");
 
             if (variant == VanillaVariant.DashMode) SaveData.Instance.Assists.DashMode = Assists.DashModes.Normal;
             else if (variant == VanillaVariant.GameSpeed) SaveData.Instance.Assists.GameSpeed = 10;
@@ -314,14 +314,14 @@ namespace ExtendedVariants {
         }
 
         private void disableVariant(ExtendedVariantsModule.Variant variant) {
-            Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.ToString()}");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.ToString()}");
 
             AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
             variantHandler.SetValue(variantHandler.GetDefaultValue());
         }
 
         private void enableVariant(VanillaVariant variant) {
-            Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.Name}");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.Name}");
 
             if (variant == VanillaVariant.DashMode) SaveData.Instance.Assists.DashMode = new Assists.DashModes[] { Assists.DashModes.Two, Assists.DashModes.Infinite }[randomGenerator.Next(2)];
             else if (variant == VanillaVariant.GameSpeed) SaveData.Instance.Assists.GameSpeed = new int[] { 5, 6, 7, 8, 9, 12, 12, 14, 14, 16 }[randomGenerator.Next(10)];
@@ -329,7 +329,7 @@ namespace ExtendedVariants {
         }
 
         private void enableVariant(ExtendedVariantsModule.Variant variant) {
-            Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.ToString()}");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Enabling variant {variant.ToString()}");
 
             // toggle-style variants (enable)
             if (variant == ExtendedVariantsModule.Variant.DisableWallJumping) ExtendedVariantsModule.Settings.DisableWallJumping = true;

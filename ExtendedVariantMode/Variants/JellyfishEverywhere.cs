@@ -92,7 +92,7 @@ namespace ExtendedVariants.Variants {
                     }
 
                     if (collideOrOffscreenCheck(level, jellyfish)) {
-                        Logger.Log("ExtendedVariantMode/JellyfishEverywhere", "Could not find a position to spawn that jellyfish!");
+                        Logger.Log(LogLevel.Warn, "ExtendedVariantMode/JellyfishEverywhere", "Could not find a position to spawn that jellyfish!");
                     } else {
                         // spawn that jellyfish then
                         // (we spawn a new one because we want its startPos to be the right one.)

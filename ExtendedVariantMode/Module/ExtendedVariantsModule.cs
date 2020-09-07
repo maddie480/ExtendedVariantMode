@@ -165,6 +165,9 @@ namespace ExtendedVariants.Module {
         // ================ Variants hooking / unhooking ================
 
         public override void Load() {
+            Logger.SetLogLevel("ExtendedVariantMode", LogLevel.Info);
+            Logger.SetLogLevel("ExtendedVariantMode/ExtendedVariantTriggerManager", LogLevel.Verbose);
+
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
             if (Settings.LegacyDashSpeedBehavior) {
@@ -229,7 +232,7 @@ namespace ExtendedVariants.Module {
                 VariantHandlers[variant].Load();
             }
 
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
             stuffIsHooked = true;
         }
@@ -261,7 +264,7 @@ namespace ExtendedVariants.Module {
                 VariantHandlers[variant].Unload();
             }
 
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
 
             stuffIsHooked = false;
         }
@@ -275,7 +278,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;
 
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Done loading variant trigger manager.");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done loading variant trigger manager.");
 
             triggerIsHooked = true;
         }
@@ -289,7 +292,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelEnter.Routine -= addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender -= addForceEnabledVariantsPostcardRendering;
 
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Done unloading variant trigger manager.");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done unloading variant trigger manager.");
 
             triggerIsHooked = false;
         }
@@ -462,7 +465,7 @@ namespace ExtendedVariants.Module {
                     int expectedValue = TriggerManager.GetExpectedVariantValue(variant);
                     int actualValue = TriggerManager.GetCurrentVariantValue(variant);
                     if (expectedValue != actualValue) {
-                        Logger.Log("ExtendedVariantTrigger/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
+                        Logger.Log(LogLevel.Warn, "ExtendedVariantTrigger/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
                         Session.ExtendedVariantsWereUsed = true;
                         break;
                     }

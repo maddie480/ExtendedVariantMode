@@ -78,7 +78,7 @@ namespace ExtendedVariants.Variants {
                                 DynData<Sprite> data = new DynData<Sprite>(sprite);
                                 if (Math.Abs(data.Get<float>("animationTimer")) >= data.Get<Sprite.Animation>("currentAnimation").Delay * 2) {
                                     data["animationTimer"] = data.Get<Sprite.Animation>("currentAnimation").Delay;
-                                    Logger.Log("ExtendedVariantMode/GameSpeed", $"Sanified animation for {sprite.Texture?.AtlasPath}");
+                                    Logger.Log(LogLevel.Info, "ExtendedVariantMode/GameSpeed", $"Sanified animation for {sprite.Texture?.AtlasPath}");
                                 }
                             }
                         }
@@ -91,7 +91,7 @@ namespace ExtendedVariants.Variants {
                         if (data.Get<float>("beatTimer") > 0.166666672f * 2) {
                             // this is madness!
                             data["beatTimer"] = 0.166666672f;
-                            Logger.Log("ExtendedVariantMode/GameSpeed", "Sanified cassette block beat timer");
+                            Logger.Log(LogLevel.Info, "ExtendedVariantMode/GameSpeed", "Sanified cassette block beat timer");
                         }
                     }
                 }

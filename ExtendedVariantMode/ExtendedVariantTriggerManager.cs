@@ -7,7 +7,6 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
@@ -41,7 +40,7 @@ namespace ExtendedVariants {
         private void onLevelEnter(Session session, bool fromSaveData) {
             // failsafe: if VariantsEnabledViaTrigger is null, initialize it. THIS SHOULD NEVER HAPPEN, but already happened in a case of a corrupted save.
             if ((ExtendedVariantsModule.Session?.VariantsEnabledViaTrigger ?? null) == null) {
-                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "WARNING: Session was null. This should not happen. Initializing it to an empty session.");
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantTriggerManager", "Session was null. This should not happen. Initializing it to an empty session.");
                 ExtendedVariantsModule.Instance._Session = new ExtendedVariantsSession();
             }
             if (fromSaveData) {
