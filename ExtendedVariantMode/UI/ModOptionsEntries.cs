@@ -21,6 +21,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> masterSwitchOption;
         private TextMenu.Option<bool> optionsOutOfModOptionsMenuOption;
         private TextMenu.Option<bool> submenusForEachCategoryOption;
+        private TextMenu.Option<bool> automaticallyResetVariantsOption;
         private TextMenu.Option<int> gravityOption;
         private TextMenu.Option<int> fallSpeedOption;
         private TextMenu.Option<int> jumpHeightOption;
@@ -205,6 +206,8 @@ namespace ExtendedVariants.UI {
                             Settings.SubmenusForEachCategoryEnabled = b;
                             reloadModOptions();
                         });
+                    automaticallyResetVariantsOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOMATICALLYRESETVARIANTS"), Settings.AutomaticallyResetVariants)
+                        .Change(b => Settings.AutomaticallyResetVariants = b);
                 }
             }
 
@@ -587,7 +590,7 @@ namespace ExtendedVariants.UI {
                 // all submenus
                 movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
                 // all options excluding the master switch
-                optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, openSubmenuButton,
+                optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, automaticallyResetVariantsOption, openSubmenuButton,
                 gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, staminaOption, dashSpeedOption, dashCountOption, legacyDashSpeedBehaviorOption,
                 heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
                 wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
@@ -606,6 +609,8 @@ namespace ExtendedVariants.UI {
                 if (!inGame) {
                     menu.Add(optionsOutOfModOptionsMenuOption);
                     menu.Add(submenusForEachCategoryOption);
+                    menu.Add(automaticallyResetVariantsOption);
+                    automaticallyResetVariantsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOMATICALLYRESETVARIANTS_DESCRIPTION"));
                 }
             }
 

@@ -14,6 +14,8 @@ namespace ExtendedVariants.Module {
 
         public bool SubmenusForEachCategoryEnabled = true;
 
+        public bool AutomaticallyResetVariants = true;
+
         // ======================================
 
         [SettingIgnore]

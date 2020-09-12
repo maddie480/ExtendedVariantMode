@@ -215,13 +215,14 @@ namespace ExtendedVariants.Module {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Is Silhouette");
                 Settings.MadelineIsSilhouette = false;
                 SaveSettings();
-            }
+            } else {
+                // let's add this variant in now.
+                VariantHandlers[Variant.MadelineIsSilhouette] = new MadelineIsSilhouette();
 
-            // let's add this variant in now.
-            VariantHandlers[Variant.MadelineIsSilhouette] = new MadelineIsSilhouette();
-
-            if (stuffIsHooked) {
-                VariantHandlers[Variant.MadelineIsSilhouette].Load();
+                if (stuffIsHooked) {
+                    // and activate it if all others are already active!
+                    VariantHandlers[Variant.MadelineIsSilhouette].Load();
+                }
             }
         }
 
@@ -329,6 +330,8 @@ namespace ExtendedVariants.Module {
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
                 hookTrigger();
 
+                bool variantsWereDisabled = !Settings.MasterSwitch;
+
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
                 if (!stuffIsHooked) {
@@ -338,8 +341,11 @@ namespace ExtendedVariants.Module {
                 }
 
                 // reset settings to be sure we match what the mapper wants, without anything the user enabled before playing their map.
-                bool settingsChanged = ResetToDefaultSettings();
-                SaveSettings();
+                bool settingsChanged = false;
+                if (variantsWereDisabled || Settings.AutomaticallyResetVariants) {
+                    settingsChanged = ResetToDefaultSettings();
+                    SaveSettings();
+                }
                 showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
             }
 
