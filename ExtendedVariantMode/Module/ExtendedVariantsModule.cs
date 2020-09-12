@@ -17,6 +17,8 @@ namespace ExtendedVariants.Module {
         public static ExtendedVariantsModule Instance;
 
         public bool DJMapHelperInstalled { get; private set; }
+        public bool SpringCollab2020Installed { get; private set; }
+        public bool MaxHelpingHandInstalled { get; private set; }
 
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
@@ -41,7 +43,7 @@ namespace ExtendedVariants.Module {
             RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
             AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
             SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
-            ForegroundEffectOpacity
+            ForegroundEffectOpacity, MadelineIsSilhouette
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -199,11 +201,27 @@ namespace ExtendedVariants.Module {
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 7, 10) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");
+            SpringCollab2020Installed = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "SpringCollab2020", Version = new Version(1, 0, 0) });
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Spring Collab 2020 installed = {SpringCollab2020Installed}");
+            MaxHelpingHandInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "MaxHelpingHand", Version = new Version(1, 6, 0) });
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Max Helping Hand installed = {MaxHelpingHandInstalled}");
 
             if (!DJMapHelperInstalled) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
                 Settings.ReverseOshiroCount = 0;
                 SaveSettings();
+            }
+            if (!SpringCollab2020Installed && !MaxHelpingHandInstalled) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Is Silhouette");
+                Settings.MadelineIsSilhouette = false;
+                SaveSettings();
+            }
+
+            // let's add this variant in now.
+            VariantHandlers[Variant.MadelineIsSilhouette] = new MadelineIsSilhouette();
+
+            if (stuffIsHooked) {
+                VariantHandlers[Variant.MadelineIsSilhouette].Load();
             }
         }
 

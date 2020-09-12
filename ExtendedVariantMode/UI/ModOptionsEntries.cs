@@ -91,6 +91,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> backgroundBrightnessOption;
         private TextMenu.Option<bool> disableMadelineSpotlightOption;
         private TextMenu.Option<int> foregroundEffectOpacityOption;
+        private TextMenu.Option<bool> madelineIsSilhouetteOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -415,6 +416,8 @@ namespace ExtendedVariants.UI {
 
                 disableMadelineSpotlightOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEMADELINESPOTLIGHT"), Settings.DisableMadelineSpotlight, false)
                     .Change(b => Settings.DisableMadelineSpotlight = b);
+                madelineIsSilhouetteOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEISSILHOUETTE"), Settings.MadelineIsSilhouette, false)
+                    .Change(b => Settings.MadelineIsSilhouette = b);
 
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
@@ -594,7 +597,7 @@ namespace ExtendedVariants.UI {
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption, foregroundEffectOpacityOption};
+                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -703,6 +706,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(zoomLevelOption);
                 menu.Add(colorGradingOption);
                 menu.Add(screenShakeIntensityOption);
+                if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(madelineIsSilhouetteOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
@@ -804,6 +808,7 @@ namespace ExtendedVariants.UI {
             setValue(bounceEverywhereOption, Settings.BounceEverywhere);
             setValue(superdashSteeringSpeedOption, 0, indexFromMultiplier(Settings.SuperdashSteeringSpeed));
             setValue(screenShakeIntensityOption, 0, Settings.ScreenShakeIntensity);
+            setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
         }
 
         private void refreshOptionMenuEnabledStatus() {

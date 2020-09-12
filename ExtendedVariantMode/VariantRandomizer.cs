@@ -352,6 +352,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.InvertHorizontalControls) ExtendedVariantsModule.Settings.InvertHorizontalControls = true;
             else if (variant == ExtendedVariantsModule.Variant.BounceEverywhere) ExtendedVariantsModule.Settings.BounceEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableMadelineSpotlight) ExtendedVariantsModule.Settings.DisableMadelineSpotlight = true;
+            else if (variant == ExtendedVariantsModule.Variant.MadelineIsSilhouette) ExtendedVariantsModule.Settings.MadelineIsSilhouette = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];
