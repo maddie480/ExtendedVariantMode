@@ -93,6 +93,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableMadelineSpotlightOption;
         private TextMenu.Option<int> foregroundEffectOpacityOption;
         private TextMenu.Option<bool> madelineIsSilhouetteOption;
+        private TextMenu.Option<bool> dashTrailAllTheTimeOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -421,6 +422,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableMadelineSpotlight = b);
                 madelineIsSilhouetteOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEISSILHOUETTE"), Settings.MadelineIsSilhouette, false)
                     .Change(b => Settings.MadelineIsSilhouette = b);
+                dashTrailAllTheTimeOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTRAILALLTHETIME"), Settings.DashTrailAllTheTime, false)
+                    .Change(b => Settings.DashTrailAllTheTime = b);
 
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
@@ -512,7 +515,8 @@ namespace ExtendedVariants.UI {
             }
 
             TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
-                oshiroTitle = null, everywhereTitle = null, visualTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null;
+                oshiroTitle = null, everywhereTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null,
+                madelineTitle = null, levelTitle = null;
 
             if (category == VariantCategory.All || category == VariantCategory.Movement) {
                 verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
@@ -529,7 +533,8 @@ namespace ExtendedVariants.UI {
             }
 
             if (category == VariantCategory.All || category == VariantCategory.Visual) {
-                visualTitle = buildHeading(menu, "VISUAL");
+                madelineTitle = buildHeading(menu, "MADELINE");
+                levelTitle = buildHeading(menu, "LEVEL");
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
@@ -568,7 +573,8 @@ namespace ExtendedVariants.UI {
 
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
-                        Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette }
+                        Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
+                        Variant.DashTrailAllTheTime}
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -586,7 +592,7 @@ namespace ExtendedVariants.UI {
 
             allOptions = new List<TextMenu.Item>() {
                 // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, visualTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, madelineTitle, levelTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
                 // all submenus
                 movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
                 // all options excluding the master switch
@@ -600,7 +606,7 @@ namespace ExtendedVariants.UI {
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption};
+                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -698,12 +704,16 @@ namespace ExtendedVariants.UI {
             }
 
             if (category == VariantCategory.All || category == VariantCategory.Visual) {
-                menu.Add(visualTitle);
+                menu.Add(madelineTitle);
+                menu.Add(disableMadelineSpotlightOption);
+                if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(madelineIsSilhouetteOption);
+                menu.Add(dashTrailAllTheTimeOption);
+
+                menu.Add(levelTitle);
                 menu.Add(upsideDownOption);
                 menu.Add(roomLightingOption);
                 menu.Add(backgroundBrightnessOption);
                 menu.Add(foregroundEffectOpacityOption);
-                menu.Add(disableMadelineSpotlightOption);
                 menu.Add(roomBloomOption);
                 menu.Add(glitchEffectOption);
                 menu.Add(anxietyEffectOption);
@@ -711,7 +721,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(zoomLevelOption);
                 menu.Add(colorGradingOption);
                 menu.Add(screenShakeIntensityOption);
-                if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(madelineIsSilhouetteOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
@@ -814,6 +823,7 @@ namespace ExtendedVariants.UI {
             setValue(superdashSteeringSpeedOption, 0, indexFromMultiplier(Settings.SuperdashSteeringSpeed));
             setValue(screenShakeIntensityOption, 0, Settings.ScreenShakeIntensity);
             setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
+            setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
         }
 
         private void refreshOptionMenuEnabledStatus() {

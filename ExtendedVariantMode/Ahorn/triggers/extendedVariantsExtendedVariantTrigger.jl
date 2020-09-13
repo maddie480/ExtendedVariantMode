@@ -74,7 +74,8 @@ const variants = String[
 	"DashDirection",
 	"BackgroundBrightness",
 	"DisableMadelineSpotlight",
-	"ForegroundEffectOpacity"
+	"ForegroundEffectOpacity",
+	"DashTrailAllTheTime"
 ]
 
 const placements = Ahorn.PlacementDict(
