@@ -486,6 +486,10 @@ namespace ExtendedVariants.Module {
             if (!Session.ExtendedVariantsWereUsed) {
                 // check if extended variants are used.
                 foreach (Variant variant in Enum.GetValues(typeof(Variant))) {
+                    if (variant == Variant.MadelineIsSilhouette && !MaxHelpingHandInstalled && !SpringCollab2020Installed) {
+                        // this variant cannot be enabled, because it does not exist.
+                        continue;
+                    }
                     int expectedValue = TriggerManager.GetExpectedVariantValue(variant);
                     int actualValue = TriggerManager.GetCurrentVariantValue(variant);
                     if (expectedValue != actualValue) {
