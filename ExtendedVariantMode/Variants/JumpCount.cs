@@ -156,9 +156,10 @@ namespace ExtendedVariants.Variants {
         /// Adds more jumps to the jump counter.
         /// </summary>
         /// <param name="jumpsToAdd">The number of extra jumps to add</param>
-        /// <param name="capped">true if the jump count should not exceed the maximum count, false if we don't care</param>
+        /// <param name="capped">true if the jump count should not exceed the cap, false if we don't care</param>
+        /// <param name="cap">the maximum number of jumps to apply, -1 to use the current extended variant setting</param>
         /// <returns>Whether the jump count changed or not.</returns>
-        public bool AddJumps(int jumpsToAdd, bool capped) {
+        public bool AddJumps(int jumpsToAdd, bool capped, int cap) {
             int oldJumpBuffer = jumpBuffer;
 
             // even if jumps are set to 0, 2-jump extra refills give back 2 extra jumps.
@@ -167,7 +168,7 @@ namespace ExtendedVariants.Variants {
 
             if (capped) {
                 // cap the extra jump count.
-                jumpBuffer = Math.Min(jumpBuffer, Settings.JumpCount - 1);
+                jumpBuffer = Math.Min(jumpBuffer, cap == -1 ? Settings.JumpCount - 1 : cap);
             }
 
             return oldJumpBuffer != jumpBuffer;

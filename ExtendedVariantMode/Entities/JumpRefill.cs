@@ -31,6 +31,7 @@ namespace ExtendedVariants.Entities {
         private int extraJumps;
         private JumpCount jumpCountVariant;
         private bool capped;
+        private int cap;
 
         public JumpRefill(EntityData data, Vector2 offset, bool extraJumpRefill)
             : base(data, offset) {
@@ -38,6 +39,7 @@ namespace ExtendedVariants.Entities {
             this.extraJumpRefill = extraJumpRefill;
             extraJumps = data.Int("extraJumps", 1);
             capped = data.Bool("capped", false);
+            cap = data.Int("cap", -1);
             jumpCountVariant = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount;
 
             string texture = data.Attr("texture", "ExtendedVariantMode/jumprefill");
@@ -106,7 +108,7 @@ namespace ExtendedVariants.Entities {
 
         private bool refillJumps() {
             if (extraJumpRefill) {
-                return jumpCountVariant.AddJumps(extraJumps, capped);
+                return jumpCountVariant.AddJumps(extraJumps, capped, cap);
             } else {
                 return jumpCountVariant.RefillJumpBuffer();
             }
