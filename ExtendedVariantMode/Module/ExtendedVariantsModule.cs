@@ -10,6 +10,7 @@ using ExtendedVariants.Variants;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Celeste.Mod.UI;
+using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -178,7 +179,8 @@ namespace ExtendedVariants.Module {
                 VariantHandlers[Variant.DashSpeed] = new DashSpeedOld();
             }
 
-            On.Celeste.LevelEnter.Go += checkForceEnableVariants;
+            On.Celeste.LevelEnter.Go += checkForceEnableVariantsOnLevelEnter;
+            On.Celeste.LevelLoader.ctor += checkForceEnableVariantsOnLevelLoad;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
 
             if (Settings.MasterSwitch) {
@@ -190,7 +192,8 @@ namespace ExtendedVariants.Module {
         public override void Unload() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Unloading Extended Variant Mode");
 
-            On.Celeste.LevelEnter.Go -= checkForceEnableVariants;
+            On.Celeste.LevelEnter.Go -= checkForceEnableVariantsOnLevelEnter;
+            On.Celeste.LevelLoader.ctor -= checkForceEnableVariantsOnLevelLoad;
             On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
 
             if (stuffIsHooked) {
@@ -323,7 +326,25 @@ namespace ExtendedVariants.Module {
             "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill"
         };
 
-        private void checkForceEnableVariants(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
+        // this one is for the normal case (entering a level from the overworld or opening a save)
+        private void checkForceEnableVariantsOnLevelEnter(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
+            checkForceEnableVariants(session);
+
+            orig(session, fromSaveData);
+        }
+
+        // this one is for breaking in a level directly (typically due to a console load command)
+        // this is a fallback, and since we don't go through the level enter routine, we can't show the postcard.
+        private void checkForceEnableVariantsOnLevelLoad(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            if (!triggerIsHooked) {
+                checkForceEnableVariants(session);
+                showForcedVariantsPostcard = false;
+            }
+
+            orig(self, session, startPosition);
+        }
+
+        private void checkForceEnableVariants(Session session) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && session.MapData.Levels.Exists(levelData =>
                 levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)) ||
@@ -350,8 +371,6 @@ namespace ExtendedVariants.Module {
                 }
                 showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
             }
-
-            orig(session, fromSaveData);
         }
 
         private IEnumerator addForceEnabledVariantsPostcard(On.Celeste.LevelEnter.orig_Routine orig, LevelEnter self) {
