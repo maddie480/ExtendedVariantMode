@@ -336,6 +336,12 @@ namespace ExtendedVariants.Module {
         // this one is for breaking in a level directly (typically due to a console load command)
         // this is a fallback, and since we don't go through the level enter routine, we can't show the postcard.
         private void checkForceEnableVariantsOnLevelLoad(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            if (triggerIsHooked && Engine.Scene is Level) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Loading level from level (console load?), running level exit hooks!");
+                TriggerManager.ResetVariantsOnLevelExit();
+                unhookTrigger();
+            }
+
             if (!triggerIsHooked) {
                 checkForceEnableVariants(session);
                 showForcedVariantsPostcard = false;

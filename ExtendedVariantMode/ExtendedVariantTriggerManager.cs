@@ -118,6 +118,10 @@ namespace ExtendedVariants {
         }
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+            ResetVariantsOnLevelExit();
+        }
+
+        internal void ResetVariantsOnLevelExit() {
             if (variantValuesBeforeOverride.Count != 0) {
                 // reset all variants that got set during the session
                 foreach (ExtendedVariantsModule.Variant v in variantValuesBeforeOverride.Keys) {
