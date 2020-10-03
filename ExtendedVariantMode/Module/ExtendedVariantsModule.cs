@@ -256,6 +256,8 @@ namespace ExtendedVariants.Module {
                 VariantHandlers[variant].Load();
             }
 
+            LeakPreventionHack.Load();
+
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
             stuffIsHooked = true;
@@ -287,6 +289,8 @@ namespace ExtendedVariants.Module {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant {variant}...");
                 VariantHandlers[variant].Unload();
             }
+
+            LeakPreventionHack.Unload();
 
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
 

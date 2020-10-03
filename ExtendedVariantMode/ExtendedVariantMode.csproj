@@ -79,6 +79,9 @@
       <HintPath>..\packages\MonoMod.Utils.20.5.21.5\lib\net40\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NLua">
+      <HintPath>..\lib-stripped\NLua.dll</HintPath>
+    </Reference>
     <Reference Include="Steamworks.NET">
       <HintPath>..\Everest\lib-stripped\Steamworks.NET.dll</HintPath>
       <Private>False</Private>
@@ -105,6 +108,7 @@
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
+    <Compile Include="LeakPreventionHack.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
     <Compile Include="ExtendedVariantTrigger.cs" />
