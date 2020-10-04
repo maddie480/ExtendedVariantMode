@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="NLua">
       <HintPath>..\lib-stripped\NLua.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Steamworks.NET">
       <HintPath>..\Everest\lib-stripped\Steamworks.NET.dll</HintPath>
