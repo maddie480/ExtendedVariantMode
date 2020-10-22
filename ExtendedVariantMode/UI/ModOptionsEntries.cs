@@ -94,6 +94,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> foregroundEffectOpacityOption;
         private TextMenu.Option<bool> madelineIsSilhouetteOption;
         private TextMenu.Option<bool> dashTrailAllTheTimeOption;
+        private TextMenu.Option<bool> disableClimbingUpOrDownOption;
         private TextMenu.Item resetToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
@@ -307,6 +308,8 @@ namespace ExtendedVariants.UI {
                         }
                     }, -1, multiplierScale.Length - 1, Settings.AirFriction == -1 ? -1 : indexFromMultiplier(Settings.AirFriction), indexFromMultiplier(10) + 1)
                     .Change(i => Settings.AirFriction = (i == -1 ? -1 : multiplierScale[i]));
+                disableClimbingUpOrDownOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"), Settings.DisableClimbingUpOrDown, false)
+                    .Change(b => Settings.DisableClimbingUpOrDown = b);
             }
 
             // ======
@@ -558,7 +561,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed }
+                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
 
@@ -606,7 +609,7 @@ namespace ExtendedVariants.UI {
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption};
+                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -667,6 +670,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
                 menu.Add(explodeLaunchSpeedOption);
+                menu.Add(disableClimbingUpOrDownOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameElements) {
@@ -824,6 +828,7 @@ namespace ExtendedVariants.UI {
             setValue(screenShakeIntensityOption, 0, Settings.ScreenShakeIntensity);
             setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
             setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
+            setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
         }
 
         private void refreshOptionMenuEnabledStatus() {

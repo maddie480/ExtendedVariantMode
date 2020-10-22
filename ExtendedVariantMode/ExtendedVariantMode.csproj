@@ -142,6 +142,7 @@
     <Compile Include="Variants\DashSpeed.cs" />
     <Compile Include="Variants\DashSpeedOld.cs" />
     <Compile Include="Variants\DashTrailAllTheTime.cs" />
+    <Compile Include="Variants\DisableClimbingUpOrDown.cs" />
     <Compile Include="Variants\DisableClimbJumping.cs" />
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />

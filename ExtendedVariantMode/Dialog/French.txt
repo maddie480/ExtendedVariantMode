@@ -190,6 +190,8 @@ MODOPTIONS_EXTENDEDVARIANTS_FOREGROUNDEFFECTOPACITY=	Opacité des effets au prem
 MODOPTIONS_EXTENDEDVARIANTS_MADELINEISSILHOUETTE=	Madeline est une silhouette
 MODOPTIONS_EXTENDEDVARIANTS_DASHTRAILALLTHETIME=	Effet "dash" tout le temps
 
+MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN=	Empêcher de grimper vers le haut ou le bas
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Remettre à zéro les variantes automatiquement
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= lorsque tu entres dans un niveau utilisant des variantes étendues
 
