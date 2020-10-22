@@ -14,6 +14,8 @@ using System.Collections.Generic;
 namespace ExtendedVariants.Variants {
     public class BadelineChasersEverywhere : AbstractExtendedVariant {
 
+        public static bool UsingWatchtower { get; private set; } = false;
+
         private float lastChaserLag = 0f;
 
         public override int GetDefaultValue() {
@@ -36,6 +38,11 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.BadelineOldsite.CanChangeMusic += modBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.IsChaseEnd += modBadelineOldsiteIsChaseEnd;
             IL.Celeste.Player.UpdateChaserStates += modUpdateChaserStates;
+
+            On.Celeste.LevelLoader.ctor += onLevelStart;
+            On.Celeste.Lookout.Interact += onWatchtowerInteract;
+            On.Celeste.Lookout.LookRoutine += onWatchtowerUse;
+            On.Celeste.Player.UpdateChaserStates += onUpdateChaserStates;
         }
 
         public override void Unload() {
@@ -47,8 +54,16 @@ namespace ExtendedVariants.Variants {
             On.Celeste.BadelineOldsite.IsChaseEnd -= modBadelineOldsiteIsChaseEnd;
             IL.Celeste.Player.UpdateChaserStates -= modUpdateChaserStates;
 
+            On.Celeste.LevelLoader.ctor -= onLevelStart;
+            On.Celeste.Lookout.Interact -= onWatchtowerInteract;
+            On.Celeste.Lookout.LookRoutine -= onWatchtowerUse;
+            On.Celeste.Player.UpdateChaserStates -= onUpdateChaserStates;
+
             // this is reset on every room enter. reset that in case we enable variants again mid-level
             lastChaserLag = 0f;
+
+            // force every Badeline to unfreeze and vanish.
+            UsingWatchtower = false;
         }
 
         private void modBadelineOldsiteConstructor(ILContext il) {
@@ -270,6 +285,50 @@ namespace ExtendedVariants.Variants {
             // we can count how many vanilla + extended Badelines we have on-screen.
             int badelineCount = self.Entities.AmountOf<BadelineOldsite>();
             lastChaserLag = determineBadelineLag() + (badelineCount - 1) * determineDelayBetweenBadelines();
+        }
+
+        // ========== Watchtower handling ==========
+
+        private void onLevelStart(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            orig(self, session, startPosition);
+            UsingWatchtower = false;
+        }
+
+        private void onWatchtowerInteract(On.Celeste.Lookout.orig_Interact orig, Lookout self, Player player) {
+            orig(self, player);
+
+            // Pandora's Box seems to throw the player in the Dummy state 1 frame too early, so we got to flip the flag earlier as well. :a:
+            UsingWatchtower = true;
+        }
+
+        private IEnumerator onWatchtowerUse(On.Celeste.Lookout.orig_LookRoutine orig, Lookout self, Player player) {
+            UsingWatchtower = true;
+            float timeStartedUsing = Engine.Scene.TimeActive;
+
+            IEnumerator origRoutine = orig(self, player);
+            while (origRoutine.MoveNext()) {
+                yield return origRoutine.Current;
+            }
+
+            UsingWatchtower = false;
+
+            if (Settings.BadelineChasersEverywhere) {
+                // adjust chaser state timestamps so that they behave as if the player didn't stand by that watchtower.
+                float timeDiff = Engine.Scene.TimeActive - timeStartedUsing;
+                for (int i = 0; i < player.ChaserStates.Count; i++) {
+                    // structs are nice. I have to copy it, modify it, then place it back.
+                    Player.ChaserState state = player.ChaserStates[i];
+                    state.TimeStamp += timeDiff;
+                    player.ChaserStates[i] = state;
+                }
+            }
+        }
+
+        private void onUpdateChaserStates(On.Celeste.Player.orig_UpdateChaserStates orig, Player self) {
+            // we want to stop saving chaser states when Madeline is using a watchtower, because Extended Variants-brand Badeline chasers are going to pause.
+            if (!Settings.BadelineChasersEverywhere || !UsingWatchtower) {
+                orig(self);
+            }
         }
     }
 }
