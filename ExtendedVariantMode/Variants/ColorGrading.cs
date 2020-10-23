@@ -6,7 +6,7 @@ using ExtendedVariants.Module;
 using MonoMod.Cil;
 
 namespace ExtendedVariants.Variants {
-    class ColorGrading : AbstractExtendedVariant {
+    public class ColorGrading : AbstractExtendedVariant {
         public static List<string> ExistingColorGrades = new List<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
             "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
