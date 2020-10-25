@@ -4,6 +4,12 @@ placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.enable=I
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger.
 
+# Extended Variants Fade Trigger
+placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.variantChange=The variant to change.
+placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.valueA=The internal value for the variant to fade from (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
+placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.valueB=The internal value for the variant to fade to (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
+placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
+
 # Color Grade Trigger
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.
 

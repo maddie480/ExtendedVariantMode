@@ -173,6 +173,7 @@ namespace ExtendedVariants.Module {
         public override void Load() {
             Logger.SetLogLevel("ExtendedVariantMode", LogLevel.Info);
             Logger.SetLogLevel("ExtendedVariantMode/ExtendedVariantTriggerManager", LogLevel.Verbose);
+            Logger.SetLogLevel("ExtendedVariantMode/ExtendedVariantTriggerManager-fade", LogLevel.Info);
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
@@ -328,7 +329,8 @@ namespace ExtendedVariants.Module {
 
         private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
             "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/ColorGradeTrigger",
-            "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill"
+            "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill",
+            "ExtendedVariantMode/ExtendedVariantFadeTrigger"
         };
 
         // this one is for the normal case (entering a level from the overworld or opening a save)

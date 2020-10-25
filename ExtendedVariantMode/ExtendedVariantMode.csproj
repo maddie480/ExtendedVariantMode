@@ -108,6 +108,7 @@
     <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
+    <Compile Include="ExtendedVariantFadeTrigger.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="LeakPreventionHack.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
@@ -192,7 +193,13 @@
     <None Include="Ahorn\lang\en_gb.lang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Ahorn\libraries\extendedVariantDictionary.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ahorn\triggers\extendedVariantsColorGradeTrigger.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ahorn\triggers\extendedVariantsExtendedVariantFadeTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\triggers\extendedVariantsExtendedVariantTrigger.jl">
