@@ -411,7 +411,7 @@ namespace ExtendedVariants.UI {
                         if (Engine.Scene.GetType() == typeof(Level)) {
                             // currently in level, change lighting right away
                             Level lvl = (Engine.Scene as Level);
-                            lvl.Lighting.Alpha = (i == -1 ? lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd : 1 - (i / 10f));
+                            lvl.Lighting.Alpha = (i == -1 ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - (i / 10f));
                         }
                     });
 

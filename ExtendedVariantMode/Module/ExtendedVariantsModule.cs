@@ -426,7 +426,7 @@ namespace ExtendedVariants.Module {
             if (Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
-                lvl.Lighting.Alpha = lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd;
+                lvl.Lighting.Alpha = (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd);
             }
 
             if (Settings.LegacyDashSpeedBehavior) {
