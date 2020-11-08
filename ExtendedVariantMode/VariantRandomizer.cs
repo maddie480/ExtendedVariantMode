@@ -365,6 +365,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.ExplodeLaunchSpeed) ExtendedVariantsModule.Settings.ExplodeLaunchSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.SwimmingSpeed) ExtendedVariantsModule.Settings.SwimmingSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.AirFriction) ExtendedVariantsModule.Settings.AirFriction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.GameSpeed) ExtendedVariantsModule.Settings.GameSpeed = multiplierScale[randomGenerator.Next(22) + 1]; // don't set game speed to 0x for obvious reasons

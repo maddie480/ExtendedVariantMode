@@ -69,6 +69,7 @@ const Variants = String[
 	"SpeedX",
 	"Stamina",
 	"SuperdashSteeringSpeed",
+	"SwimmingSpeed",
 	"TheoCrystalsEverywhere",
 	"UpsideDown",
 	"WallBouncingSpeed",

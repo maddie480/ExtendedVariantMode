@@ -60,10 +60,12 @@ namespace ExtendedVariants.Variants {
             // in vanilla, no snapshot is applied past 1.6x, change that to *infinite*.
             // we want to apply the 1.6x snapshot even on 100x speed.
             if (cursor.TryGotoNext(
-                instr => instr.MatchStsfld<Level>("AssistSpeedSnapshotValue"),
+                instr => instr.MatchLdsfld<Level>("AssistSpeedSnapshotValue"),
                 instr => instr.MatchLdcI4(16))) {
 
                 cursor.Index++;
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding max speed sound snapshot at {cursor.Index} in IL code for Level.Update");
+
                 cursor.Next.OpCode = OpCodes.Ldc_I4;
                 cursor.Next.Operand = int.MaxValue;
             }
