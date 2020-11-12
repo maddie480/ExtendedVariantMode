@@ -95,11 +95,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ahorn\entities\extendedVariantsExtendedVariantController.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Compile Include="ColorGradeTrigger.cs" />
     <Compile Include="Entities\AutoDestroyingReverseOshiroModder.cs" />
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
+    <Compile Include="Entities\ExtendedVariantController.cs" />
     <Compile Include="Entities\ExtendedVariantSandwichLava.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
@@ -223,6 +227,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dialog\Brazilian Portuguese.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Graphics\Atlases\Gameplay\ahorn\ExtendedVariantMode\extended_variant_controller.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Graphics\Atlases\Gameplay\ExtendedVariantMode\jumpindicator.png">
