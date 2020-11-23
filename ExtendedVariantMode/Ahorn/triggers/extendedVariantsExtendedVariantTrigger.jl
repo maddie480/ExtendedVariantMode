@@ -3,7 +3,7 @@ module ExtendedVariantModeExtendedVariantTrigger
 using ..Ahorn, Maple
 
 @mapdef Trigger "ExtendedVariantMode/ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false)
+	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false, revertOnDeath::Bool=true)
 
 const placements = Ahorn.PlacementDict(
 	"Extended Variant Trigger (Extended Variant Mode)" => Ahorn.EntityPlacement(

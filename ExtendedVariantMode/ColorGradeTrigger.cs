@@ -8,16 +8,18 @@ namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantMode/ColorGradeTrigger")]
     class ColorGradeTrigger : Trigger {
         private string colorGrade;
+        private bool revertOnDeath;
 
         public ColorGradeTrigger(EntityData data, Vector2 offset) : base(data, offset) {
             colorGrade = data.Attr("colorGrade", "none");
+            revertOnDeath = data.Bool("revertOnDeath", true);
         }
 
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
             (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.ColorGrading] as ColorGrading)
-                .SetColorGrade(colorGrade);
+                .SetColorGrade(colorGrade, revertOnDeath);
         }
     }
 }

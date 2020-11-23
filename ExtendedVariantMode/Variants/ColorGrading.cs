@@ -55,20 +55,20 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        public void SetColorGrade(string colorGrade) {
+        public void SetColorGrade(string colorGrade, bool revertOnDeath) {
             // delete "trigger" if present
             ExistingColorGrades.Remove("trigger");
 
             if (ExistingColorGrades.Contains(colorGrade)) {
                 // this is the equivalent of using the extended variant trigger with the Color Grading variant.
                 ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.ColorGrading,
-                    ExistingColorGrades.IndexOf(colorGrade), false);
+                    ExistingColorGrades.IndexOf(colorGrade), revertOnLeave: false, isFade: false, revertOnDeath);
             } else {
                 // add a new special "trigger" entry for that custom color grade.
                 ExistingColorGrades.Add("trigger");
                 ExtendedVariantsModule.Session.TriggerColorGrade = colorGrade;
                 ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.ColorGrading,
-                    ExistingColorGrades.IndexOf("trigger"), false);
+                    ExistingColorGrades.IndexOf("trigger"), revertOnLeave: false, isFade: false, revertOnDeath);
             }
         }
 

@@ -9,6 +9,7 @@ namespace ExtendedVariants {
         private ExtendedVariantsModule.Variant variantChange;
         private int newValue;
         private bool revertOnLeave;
+        private bool revertOnDeath;
         private int oldValueToRevertOnLeave;
 
         public ExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) {
@@ -16,6 +17,7 @@ namespace ExtendedVariants {
             variantChange = data.Enum("variantChange", ExtendedVariantsModule.Variant.Gravity);
             newValue = data.Int("newValue", 10);
             revertOnLeave = data.Bool("revertOnLeave", false);
+            revertOnDeath = data.Bool("revertOnDeath", true);
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
@@ -53,7 +55,7 @@ namespace ExtendedVariants {
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            int oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave);
+            int oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath);
 
             if (revertOnLeave) {
                 oldValueToRevertOnLeave = oldValue;

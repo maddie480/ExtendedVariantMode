@@ -2,13 +2,15 @@
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
-placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger.
+placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 
 # Extended Variants Fade Trigger
 placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.valueA=The internal value for the variant to fade from (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.valueB=The internal value for the variant to fade to (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
+placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 
 # Extended Variants Controller
 placements.entities.ExtendedVariantMode/ExtendedVariantController.tooltips.variantChange=The variant to change.
@@ -18,6 +20,7 @@ placements.entities.ExtendedVariantMode/ExtendedVariantController.tooltips.rever
 
 # Color Grade Trigger
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnDeath=If checked, the previous value for the Color Grading variant will be restored if the player dies before changing rooms or changing respawn points.
 
 # Recover Jump Refill
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.

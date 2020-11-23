@@ -145,24 +145,41 @@ namespace ExtendedVariants {
         }
 
         public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave, bool isFade) {
+            return OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade, revertOnDeath: true);
+        }
+
+        public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave, bool isFade, bool revertOnDeath) {
             // change the variant value
             int oldValue = setVariantValue(variantChange, newValue, out int actualNewValue);
 
-            // store the fact that the variant was changed within the room
-            // so that it can be reverted if we die, or saved if we save & quit later
-            // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
-            Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave}) => variant set to {actualNewValue}");
-
-            if (!oldVariantsInRoom.ContainsKey(variantChange)) {
-                oldVariantsInRoom[variantChange] = oldValue;
-            }
             if (!variantValuesBeforeOverride.ContainsKey(variantChange)) {
                 variantValuesBeforeOverride[variantChange] = oldValue;
             }
-            if (revertOnLeave) {
-                overridenVariantsInRoomRevertOnLeave[variantChange] = actualNewValue;
+
+            if (revertOnDeath) {
+                // store the fact that the variant was changed within the room
+                // so that it can be reverted if we die, or saved if we save & quit later
+                // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave}) => variant set to {actualNewValue}");
+
+                if (!oldVariantsInRoom.ContainsKey(variantChange)) {
+                    oldVariantsInRoom[variantChange] = oldValue;
+                }
+                if (revertOnLeave) {
+                    overridenVariantsInRoomRevertOnLeave[variantChange] = actualNewValue;
+                } else {
+                    overridenVariantsInRoom[variantChange] = actualNewValue;
+                }
             } else {
-                overridenVariantsInRoom[variantChange] = actualNewValue;
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Triggered ExtendedVariantTrigger: changed and committed {variantChange} from {oldValue} to {newValue} => variant set to {actualNewValue}");
+
+                // remove the variant from the room state if it was in there...
+                oldVariantsInRoom.Remove(variantChange);
+                overridenVariantsInRoom.Remove(variantChange);
+                overridenVariantsInRoomRevertOnLeave.Remove(variantChange);
+
+                // ... and save it straight into session.
+                ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[variantChange] = actualNewValue;
             }
 
             return oldValue;
