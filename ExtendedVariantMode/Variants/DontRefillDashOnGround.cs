@@ -94,7 +94,7 @@ namespace ExtendedVariants.Variants {
             IEnumerator original = orig(self);
 
             Session session = self.SceneAs<Level>().Session;
-            bool origNoRefills = false;
+            bool origNoRefills = session.Inventory.NoRefills;
 
             while (original.MoveNext()) {
                 yield return original.Current;
