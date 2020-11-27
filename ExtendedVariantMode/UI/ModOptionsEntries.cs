@@ -81,7 +81,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Option<int> delayBetweenBadelinesOption;
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
-        private TextMenu.Option<bool> dontRefillDashOnGroundOption;
+        private TextMenu.Option<int> dontRefillDashOnGroundOption;
         private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Option<int> colorGradingOption;
         private TextMenu.Option<int> jellyfishEverywhereOption;
@@ -281,8 +281,10 @@ namespace ExtendedVariants.UI {
                 }, -1, 10, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
                 heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
                     .Change(b => Settings.HeldDash = b);
-                dontRefillDashOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), Settings.DontRefillDashOnGround, false)
-                    .Change(b => Settings.DontRefillDashOnGround = b);
+                dontRefillDashOnGroundOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), 
+                    i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[i], 
+                    0, 2, Settings.DashRefillOnGroundState, 0)
+                    .Change(i => Settings.DashRefillOnGroundState = i);
                 superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SuperdashSteeringSpeed), indexFromMultiplier(10)).Change(i => Settings.SuperdashSteeringSpeed = multiplierScale[i]);
 
@@ -825,7 +827,7 @@ namespace ExtendedVariants.UI {
             setValue(badelineLagOption, 0, Settings.BadelineLag);
             setValue(delayBetweenBadelinesOption, 0, Settings.DelayBetweenBadelines);
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
-            setValue(dontRefillDashOnGroundOption, Settings.DontRefillDashOnGround);
+            setValue(dontRefillDashOnGroundOption, 0, Settings.DashRefillOnGroundState);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
             setValue(colorGradingOption, -1, Settings.ColorGrading);
             setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);

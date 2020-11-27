@@ -218,7 +218,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool DontRefillDashOnGround { get; set; } = false;
+        public int DashRefillOnGroundState { get; set; } = 0;
 
         // ======================================
 

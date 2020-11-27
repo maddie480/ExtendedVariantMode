@@ -26,8 +26,9 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- BadelineBossNodeCount: the number of nodes (positions before Badeline goes offscreen) you want
 	- DisableWallJumping, DisableClimbJumping, UpsideDown, ForceDuckOnGround, InvertDashes, DisableNeutralJumping, BadelineChasersEverywhere, AffectExistingChasers, 
 		RefillJumpsOnDashRefill, OshiroEverywhere, DisableOshiroSlowdown, DisableSeekerSlowdown, TheoCrystalsEverywhere, HeldDash, AllStrawberriesAreGoldens, 
-		DontRefillDashOnGround, EverythingIsUnderwater, BadelineBossesEverywhere, ChangePatternsOfExistingBosses, InvertGrab, JellyfishEverywhere, 
-		RisingLavaEverywhere, InvertHorizontalControls, BounceEverywhere, DisableMadelineSpotlight, DashTrailAllTheTime, DisableClimbingUpOrDown: 1 to enable, 0 to disable.
+		EverythingIsUnderwater, BadelineBossesEverywhere, ChangePatternsOfExistingBosses, InvertGrab, JellyfishEverywhere, RisingLavaEverywhere,
+		InvertHorizontalControls, BounceEverywhere, DisableMadelineSpotlight, DashTrailAllTheTime, DisableClimbingUpOrDown: 1 to enable, 0 to disable.
+	- DontRefillDashOnGround: 0 to use the map's default, 1 to disable dash refills on ground, 2 to force dash refills on ground to be enabled.
 	- OshiroCount, ReverseOshiroCount: the number of Oshiros you want, when OshiroEverywhere is enabled
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
 	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable

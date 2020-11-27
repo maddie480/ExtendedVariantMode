@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections;
@@ -12,11 +11,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override int GetValue() {
-            return Settings.DontRefillDashOnGround ? 1 : 0;
+            return Settings.DashRefillOnGroundState;
         }
 
         public override void SetValue(int value) {
-            Settings.DontRefillDashOnGround = (value != 0);
+            Settings.DashRefillOnGroundState = value;
         }
 
         public override void Load() {
@@ -34,7 +33,6 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Seeker.RegenerateCoroutine += patchSeekerRegenerateCoroutine;
 
             On.Celeste.Player.Update += patchUpdate;
-            On.Celeste.Player.RefillDash += killRefillDashIfNeeded;
         }
 
         public override void Unload() {
@@ -49,7 +47,6 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Seeker.RegenerateCoroutine -= patchSeekerRegenerateCoroutine;
 
             On.Celeste.Player.Update -= patchUpdate;
-            On.Celeste.Player.RefillDash -= killRefillDashIfNeeded;
         }
 
         private void patchNoRefills(ILContext il) {
@@ -58,69 +55,56 @@ namespace ExtendedVariants.Variants {
             // jump to if(!Inventory.NoRefills)
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<PlayerInventory>("NoRefills"))) {
                 Logger.Log("ExtendedVariantMode/DontRefillDashOnGround", $"Patching no refill condition at {cursor.Index} in IL code for Player.{il.Method.Name}");
-
-                // turn it into if(!(Inventory.NoRefills || Settings.DontRefillDashOnGround))
-                // => if(!Inventory.NoRefills && !Settings.DontRefillDashOnGround)
-                cursor.EmitDelegate<Func<bool>>(areRefillsOnGroundDisabled);
-                cursor.Emit(OpCodes.Or);
+                cursor.EmitDelegate<Func<bool, bool>>(areRefillsOnGroundDisabled);
             }
-        }
-
-        bool killDashRefills = false;
-
-        private bool killRefillDashIfNeeded(On.Celeste.Player.orig_RefillDash orig, Player self) {
-            if (!Settings.DontRefillDashOnGround || !killDashRefills) {
-                return orig(self);
-            }
-            // dash was NOT refilled.
-            return false;
         }
 
         private void patchUpdate(On.Celeste.Player.orig_Update orig, Player self) {
-            // there are 3 invocations of RefillDash in Update: one of them enforces the Infinite Dashes assist,
-            // the 2 others should be killed if DontRefillDashOnGround is enabled.
-            killDashRefills = (Settings.DontRefillDashOnGround &&
-                (SaveData.Instance.Assists.DashMode != Assists.DashModes.Infinite || self.SceneAs<Level>().InCutscene));
-
-            orig(self);
-
-            killDashRefills = false;
+            swapNoRefillsTemporarily(() => orig(self), self.SceneAs<Level>().Session);
         }
 
-        private bool areRefillsOnGroundDisabled() {
-            return Settings.DontRefillDashOnGround;
+        private void swapNoRefillsTemporarily(Action action, Session session) {
+            bool origNoRefills = session.Inventory.NoRefills;
+            session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
+            action();
+            session.Inventory.NoRefills = origNoRefills;
         }
-
 
         private void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
-            killDashRefills = true;
-            orig(self, player);
-            killDashRefills = false;
+            swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
         }
 
         private void patchPufferExplode(On.Celeste.Puffer.orig_Explode orig, Puffer self) {
-            killDashRefills = true;
-            orig(self);
-            killDashRefills = false;
+            swapNoRefillsTemporarily(() => orig(self), self.SceneAs<Level>().Session);
         }
 
         private void patchTempleBigEyeballOnPlayer(On.Celeste.TempleBigEyeball.orig_OnPlayer orig, TempleBigEyeball self, Player player) {
-            killDashRefills = true;
-            orig(self, player);
-            killDashRefills = false;
+            swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
+        }
+
+        private bool areRefillsOnGroundDisabled(bool vanilla) {
+            switch (Settings.DashRefillOnGroundState) {
+                case 0: return vanilla;
+                case 2: return false;
+                default: return true;
+            }
         }
 
         private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
             IEnumerator original = orig(self);
 
+            Session session = self.SceneAs<Level>().Session;
+            bool origNoRefills = false;
+
             while (original.MoveNext()) {
                 yield return original.Current;
                 if (original.Current != null && original.Current.GetType() == typeof(float) && (float) original.Current == 0.15f) {
-                    // kill dash refills between the last "yield return" and the end of the method.
-                    killDashRefills = true;
+                    // modify dash refills between the last "yield return" and the end of the method.
+                    origNoRefills = session.Inventory.NoRefills;
+                    session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
                 }
             }
-            killDashRefills = false;
+            session.Inventory.NoRefills = origNoRefills;
         }
     }
 }

@@ -344,7 +344,6 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.TheoCrystalsEverywhere) ExtendedVariantsModule.Settings.TheoCrystalsEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.HeldDash) ExtendedVariantsModule.Settings.HeldDash = true;
             else if (variant == ExtendedVariantsModule.Variant.AllStrawberriesAreGoldens) ExtendedVariantsModule.Settings.AllStrawberriesAreGoldens = true;
-            else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DontRefillDashOnGround = true;
             else if (variant == ExtendedVariantsModule.Variant.EverythingIsUnderwater) ExtendedVariantsModule.Settings.EverythingIsUnderwater = true;
             else if (variant == ExtendedVariantsModule.Variant.BadelineBossesEverywhere) ExtendedVariantsModule.Settings.BadelineBossesEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.OshiroEverywhere) ExtendedVariantsModule.Settings.OshiroEverywhere = true;
@@ -389,6 +388,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) ExtendedVariantsModule.Settings.AnxietyEffect = randomGenerator.Next(3) + 1; // random 5~15%
             else if (variant == ExtendedVariantsModule.Variant.BlurLevel) ExtendedVariantsModule.Settings.BlurLevel = randomGenerator.Next(10) + 1; // random 5~100%
             else if (variant == ExtendedVariantsModule.Variant.DashDirection) ExtendedVariantsModule.Settings.DashDirection = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
+            else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DashRefillOnGroundState = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {
@@ -457,6 +457,7 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.GlitchEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.AnxietyEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.BlurLevel) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BlurLevel * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) enabledVariantsToDisplay.Add($"{variantName}: " + (ExtendedVariantsModule.Settings.DashRefillOnGroundState == 2 ? Dialog.Clean("OPTIONS_OFF") : Dialog.Clean("OPTIONS_ON")));
                 else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
                     string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
                     if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
