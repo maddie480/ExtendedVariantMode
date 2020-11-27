@@ -1,11 +1,14 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
     class DontRefillDashOnGround : AbstractExtendedVariant {
+        private ILHook patchOrigUpdate;
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -32,7 +35,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.TempleBigEyeball.OnPlayer += patchTempleBigEyeballOnPlayer;
             On.Celeste.Seeker.RegenerateCoroutine += patchSeekerRegenerateCoroutine;
 
-            On.Celeste.Player.Update += patchUpdate;
+            patchOrigUpdate = new ILHook(typeof(Player).GetMethod("orig_Update"), patchNoRefills);
         }
 
         public override void Unload() {
@@ -46,7 +49,8 @@ namespace ExtendedVariants.Variants {
             On.Celeste.TempleBigEyeball.OnPlayer -= patchTempleBigEyeballOnPlayer;
             On.Celeste.Seeker.RegenerateCoroutine -= patchSeekerRegenerateCoroutine;
 
-            On.Celeste.Player.Update -= patchUpdate;
+            patchOrigUpdate?.Dispose();
+            patchOrigUpdate = null;
         }
 
         private void patchNoRefills(ILContext il) {
@@ -59,17 +63,6 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void patchUpdate(On.Celeste.Player.orig_Update orig, Player self) {
-            swapNoRefillsTemporarily(() => orig(self), self.SceneAs<Level>().Session);
-        }
-
-        private void swapNoRefillsTemporarily(Action action, Session session) {
-            bool origNoRefills = session.Inventory.NoRefills;
-            session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
-            action();
-            session.Inventory.NoRefills = origNoRefills;
-        }
-
         private void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
             swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
         }
@@ -80,6 +73,13 @@ namespace ExtendedVariants.Variants {
 
         private void patchTempleBigEyeballOnPlayer(On.Celeste.TempleBigEyeball.orig_OnPlayer orig, TempleBigEyeball self, Player player) {
             swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
+        }
+
+        private void swapNoRefillsTemporarily(Action action, Session session) {
+            bool origNoRefills = session.Inventory.NoRefills;
+            session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
+            action();
+            session.Inventory.NoRefills = origNoRefills;
         }
 
         private bool areRefillsOnGroundDisabled(bool vanilla) {
