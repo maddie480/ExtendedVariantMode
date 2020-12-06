@@ -360,6 +360,7 @@ namespace ExtendedVariants.Module {
 
         private void checkForceEnableVariants(Session session) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
+                && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
                 levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)) ||
                 levelData.Entities.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)))) {
