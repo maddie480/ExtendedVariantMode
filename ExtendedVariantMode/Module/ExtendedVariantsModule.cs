@@ -40,10 +40,10 @@ namespace ExtendedVariants.Module {
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
-            WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, Stamina, UpsideDown, DisableNeutralJumping,
-            RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround, InvertDashes, InvertGrab,
-            AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls, BounceEverywhere,
-            SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
+            WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, AllowThrowingTheoOffscreen, AllowLeavingTheoBehind,
+            Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround,
+            InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
+            BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed
         }
 
@@ -111,6 +111,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
             // DisableSeekerSlowdown is not a variant
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
+            // AllowThrowingTheoOffscreen is not a variant
+            // AllowLeavingTheoBehind is not a variant
             VariantHandlers[Variant.RisingLavaEverywhere] = new RisingLavaEverywhere();
             // RisingLavaSpeed is not a variant
             // BadelineLag is not a variant
@@ -453,6 +455,8 @@ namespace ExtendedVariants.Module {
                 || Settings.AffectExistingChasers
                 || Settings.HiccupStrength != 10
                 || Settings.RefillJumpsOnDashRefill
+                || Settings.AllowThrowingTheoOffscreen
+                || Settings.AllowLeavingTheoBehind
                 || Settings.SnowballDelay != 8
                 || Settings.BadelineLag != 0
                 || Settings.DelayBetweenBadelines != 4
@@ -477,6 +481,8 @@ namespace ExtendedVariants.Module {
             Settings.AffectExistingChasers = false;
             Settings.HiccupStrength = 10;
             Settings.RefillJumpsOnDashRefill = false;
+            Settings.AllowThrowingTheoOffscreen = false;
+            Settings.AllowLeavingTheoBehind = false;
             Settings.SnowballDelay = 8;
             Settings.BadelineLag = 0;
             Settings.DelayBetweenBadelines = 4;

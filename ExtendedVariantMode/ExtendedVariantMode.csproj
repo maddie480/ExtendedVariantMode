@@ -108,6 +108,7 @@
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
+    <Compile Include="Entities\ExtendedVariantTheoCrystalGoingOffscreen.cs" />
     <Compile Include="Entities\ExtendedVariantWindSnowFG.cs" />
     <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />

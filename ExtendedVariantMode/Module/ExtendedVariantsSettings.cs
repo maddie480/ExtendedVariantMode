@@ -205,6 +205,12 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool TheoCrystalsEverywhere { get; set; } = false;
 
+        [SettingIgnore]
+        public bool AllowThrowingTheoOffscreen { get; set; } = false;
+
+        [SettingIgnore]
+        public bool AllowLeavingTheoBehind { get; set; } = false;
+
         // ======================================
 
         [SettingIgnore]

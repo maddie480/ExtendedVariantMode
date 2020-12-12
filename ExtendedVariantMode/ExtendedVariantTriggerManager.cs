@@ -227,6 +227,8 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.BadelineBossCount: return ExtendedVariantsModule.Settings.BadelineBossCount;
                 case ExtendedVariantsModule.Variant.BadelineBossNodeCount: return ExtendedVariantsModule.Settings.BadelineBossNodeCount;
                 case ExtendedVariantsModule.Variant.RisingLavaSpeed: return ExtendedVariantsModule.Settings.RisingLavaSpeed;
+                case ExtendedVariantsModule.Variant.AllowThrowingTheoOffscreen: return ExtendedVariantsModule.Settings.AllowThrowingTheoOffscreen ? 1 : 0;
+                case ExtendedVariantsModule.Variant.AllowLeavingTheoBehind: return ExtendedVariantsModule.Settings.AllowLeavingTheoBehind ? 1 : 0;
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue();
             }
         }
@@ -325,6 +327,16 @@ namespace ExtendedVariants {
                     oldValue = ExtendedVariantsModule.Settings.RisingLavaSpeed;
                     ExtendedVariantsModule.Settings.RisingLavaSpeed = newValue;
                     actualNewValue = newValue;
+                    break;
+                case ExtendedVariantsModule.Variant.AllowThrowingTheoOffscreen:
+                    oldValue = ExtendedVariantsModule.Settings.AllowThrowingTheoOffscreen ? 1 : 0;
+                    ExtendedVariantsModule.Settings.AllowThrowingTheoOffscreen = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
+                    break;
+                case ExtendedVariantsModule.Variant.AllowLeavingTheoBehind:
+                    oldValue = ExtendedVariantsModule.Settings.AllowLeavingTheoBehind ? 1 : 0;
+                    ExtendedVariantsModule.Settings.AllowLeavingTheoBehind = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 default:
                     AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];

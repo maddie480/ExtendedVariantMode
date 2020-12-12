@@ -47,6 +47,8 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.BadelineBossCount: return 1;
                 case ExtendedVariantsModule.Variant.BadelineBossNodeCount: return 1;
                 case ExtendedVariantsModule.Variant.RisingLavaSpeed: return 10;
+                case ExtendedVariantsModule.Variant.AllowThrowingTheoOffscreen: return 0;
+                case ExtendedVariantsModule.Variant.AllowLeavingTheoBehind: return 0;
 
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue();
             }

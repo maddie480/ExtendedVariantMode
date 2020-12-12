@@ -6,6 +6,8 @@ const Variants = String[
 	"AddSeekers",
 	"AffectExistingChasers",
 	"AirFriction",
+	"AllowLeavingTheoBehind",
+	"AllowThrowingTheoOffscreen",
 	"AllStrawberriesAreGoldens",
 	"AnxietyEffect",
 	"BackgroundBrightness",

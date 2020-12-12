@@ -78,6 +78,8 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> addSeekersOption;
         private TextMenu.Option<bool> disableSeekerSlowdownOption;
         private TextMenu.Option<bool> theoCrystalsEverywhereOption;
+        private TextMenu.Option<bool> allowThrowingTheoOffscreenOption;
+        private TextMenu.Option<bool> allowLeavingTheoBehindOption;
         private TextMenu.Option<int> badelineLagOption;
         private TextMenu.Option<int> delayBetweenBadelinesOption;
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
@@ -281,8 +283,8 @@ namespace ExtendedVariants.UI {
                 }, -1, 10, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
                 heldDashOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
                     .Change(b => Settings.HeldDash = b);
-                dontRefillDashOnGroundOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"), 
-                    i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[i], 
+                dontRefillDashOnGroundOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"),
+                    i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[i],
                     0, 2, Settings.DashRefillOnGroundState, 0)
                     .Change(i => Settings.DashRefillOnGroundState = i);
                 superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
@@ -393,7 +395,14 @@ namespace ExtendedVariants.UI {
                         }
                     });
                 theoCrystalsEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
-                    .Change(b => Settings.TheoCrystalsEverywhere = b);
+                    .Change(b => {
+                        Settings.TheoCrystalsEverywhere = b;
+                        refreshOptionMenuEnabledStatus();
+                    });
+                allowThrowingTheoOffscreenOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_allowThrowingTheoOffscreen"), Settings.AllowThrowingTheoOffscreen, false)
+                    .Change(b => Settings.AllowThrowingTheoOffscreen = b);
+                allowLeavingTheoBehindOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_allowLeavingTheoBehind"), Settings.AllowLeavingTheoBehind, false)
+                    .Change(b => Settings.AllowLeavingTheoBehind = b);
                 jellyfishEverywhereOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
                     .Change(i => Settings.JellyfishEverywhere = i);
                 risingLavaEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVAEVERYWHERE"), Settings.RisingLavaEverywhere, false)
@@ -523,7 +532,7 @@ namespace ExtendedVariants.UI {
             }
 
             TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
-                oshiroTitle = null, everywhereTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null,
+                oshiroTitle = null, theoTitle = null, everywhereTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null,
                 madelineTitle = null, levelTitle = null;
 
             if (category == VariantCategory.All || category == VariantCategory.Movement) {
@@ -537,6 +546,7 @@ namespace ExtendedVariants.UI {
                 chasersTitle = buildHeading(menu, "CHASERS");
                 bossesTitle = buildHeading(menu, "BOSSES");
                 oshiroTitle = buildHeading(menu, "OSHIRO");
+                theoTitle = buildHeading(menu, "THEO");
                 everywhereTitle = buildHeading(menu, "EVERYWHERE");
             }
 
@@ -578,7 +588,7 @@ namespace ExtendedVariants.UI {
                         || Settings.ChaserCount != 1 || Settings.AffectExistingChasers || Settings.BadelineLag != 0 || Settings.DelayBetweenBadelines != 4
                         || Settings.BadelineAttackPattern != 0 || Settings.ChangePatternsOfExistingBosses || Settings.FirstBadelineSpawnRandom || Settings.BadelineBossCount != 1
                         || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.ReverseOshiroCount != 0 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 8
-                        || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10;
+                        || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 10 || Settings.AllowThrowingTheoOffscreen || Settings.AllowLeavingTheoBehind;
 
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
@@ -601,7 +611,7 @@ namespace ExtendedVariants.UI {
 
             allOptions = new List<TextMenu.Item>() {
                 // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, everywhereTitle, madelineTitle, levelTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
+                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, theoTitle, everywhereTitle, madelineTitle, levelTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
                 // all submenus
                 movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
                 // all options excluding the master switch
@@ -615,7 +625,8 @@ namespace ExtendedVariants.UI {
                 colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption};
+                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
+                allowLeavingTheoBehindOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -702,13 +713,19 @@ namespace ExtendedVariants.UI {
                 if (Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption);
                 menu.Add(disableOshiroSlowdownOption);
 
+                menu.Add(theoTitle);
+                menu.Add(theoCrystalsEverywhereOption);
+                menu.Add(allowThrowingTheoOffscreenOption);
+                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc2"));
+                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc1"));
+                menu.Add(allowLeavingTheoBehindOption);
+
                 menu.Add(everywhereTitle);
                 menu.Add(windEverywhereOption);
                 menu.Add(snowballsEverywhereOption);
                 menu.Add(snowballDelayOption);
                 menu.Add(addSeekersOption);
                 menu.Add(disableSeekerSlowdownOption);
-                menu.Add(theoCrystalsEverywhereOption);
                 menu.Add(jellyfishEverywhereOption);
                 menu.Add(risingLavaEverywhereOption);
                 menu.Add(risingLavaSpeedOption);
@@ -822,6 +839,8 @@ namespace ExtendedVariants.UI {
             setValue(addSeekersOption, 0, Settings.AddSeekers);
             setValue(disableSeekerSlowdownOption, Settings.DisableSeekerSlowdown);
             setValue(theoCrystalsEverywhereOption, Settings.TheoCrystalsEverywhere);
+            setValue(allowThrowingTheoOffscreenOption, Settings.AllowThrowingTheoOffscreen);
+            setValue(allowLeavingTheoBehindOption, Settings.AllowLeavingTheoBehind);
             setValue(risingLavaEverywhereOption, Settings.RisingLavaEverywhere);
             setValue(risingLavaSpeedOption, 0, indexFromMultiplier(Settings.RisingLavaSpeed));
             setValue(badelineLagOption, 0, Settings.BadelineLag);
@@ -853,6 +872,8 @@ namespace ExtendedVariants.UI {
             if (firstBadelineSpawnRandomOption != null) firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
             if (badelineBossCountOption != null) badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
             if (badelineBossNodeCountOption != null) badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
+            if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !Settings.TheoCrystalsEverywhere;
+            if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !Settings.TheoCrystalsEverywhere;
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {

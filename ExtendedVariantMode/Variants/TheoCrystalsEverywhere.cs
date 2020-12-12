@@ -1,6 +1,8 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
+using System;
+using System.Linq;
 
 namespace ExtendedVariants.Variants {
     class TheoCrystalsEverywhere : AbstractExtendedVariant {
@@ -32,6 +34,16 @@ namespace ExtendedVariants.Variants {
 
             if (playerIntro != Player.IntroTypes.Transition) {
                 injectTheoCrystal(self);
+
+            } else if ((Settings.AllowLeavingTheoBehind || Settings.AllowThrowingTheoOffscreen) &&
+                !(self.Tracker.GetEntity<Player>()?.Holding?.Entity is TheoCrystal)) {
+
+                // player is transitioning into a new room, but doesn't have Theo with them.
+                injectTheoCrystalAfterTransition(self);
+
+            } else if (self.Tracker.CountEntities<ExtendedVariantTheoCrystal>() == 0) {
+                // player is transitioning into a new room, and no Theo crystal is in the room: we should add one if the variant is enabled.
+                injectTheoCrystalAfterTransition(self);
             }
         }
 
@@ -43,18 +55,33 @@ namespace ExtendedVariants.Variants {
                 // check if the base level already has a crystal
                 if (player != null && !hasCrystalInBaseLevel) {
                     // add a Theo Crystal where the player is
-                    level.Add(new ExtendedVariantTheoCrystal(player.Position));
+                    level.Add(Settings.AllowThrowingTheoOffscreen ? new ExtendedVariantTheoCrystalGoingOffscreen(player.Position) : new ExtendedVariantTheoCrystal(player.Position));
+                    level.Entities.UpdateLists();
+                }
+            }
+        }
+
+        private void injectTheoCrystalAfterTransition(Level level) {
+            if (Settings.TheoCrystalsEverywhere) {
+                Player player = level.Tracker.GetEntity<Player>();
+                bool hasCrystalInBaseLevel = level.Session.LevelData.Entities.Any(entity => entity.Name == "theoCrystal");
+
+                // check if the base level already has a crystal
+                if (player != null && !hasCrystalInBaseLevel) {
+                    // add a Theo Crystal where the spawn point nearest to player is
+                    Vector2 spawn = level.GetSpawnPoint(player.Position);
+                    level.Add(Settings.AllowThrowingTheoOffscreen ? new ExtendedVariantTheoCrystalGoingOffscreen(spawn) : new ExtendedVariantTheoCrystal(spawn));
                     level.Entities.UpdateLists();
                 }
             }
         }
 
         private void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
-            if (Settings.TheoCrystalsEverywhere &&
+            if (Settings.TheoCrystalsEverywhere && !Settings.AllowLeavingTheoBehind &&
                 // the player is holding nothing...
                 (player.Holding == null || player.Holding.Entity == null || !player.Holding.IsHeld ||
                 // or this thing is not a Theo crystal (f.e. jellyfish)
-                (player.Holding.Entity.GetType() != typeof(TheoCrystal) && player.Holding.Entity.GetType() != typeof(ExtendedVariantTheoCrystal))) &&
+                (player.Holding.Entity.GetType() != typeof(TheoCrystal) && player.Holding.Entity.GetType() != typeof(ExtendedVariantTheoCrystal) && player.Holding.Entity.GetType() != typeof(ExtendedVariantTheoCrystalGoingOffscreen))) &&
                 // but there is a Theo crystal on screen so the player has to grab it
                 self.Tracker.CountEntities<ExtendedVariantTheoCrystal>() != 0) {
 
@@ -86,7 +113,7 @@ namespace ExtendedVariants.Variants {
                     orig(self, player);
                 }
             } else {
-                // the variant is disabled or the player is holding Theo => we have no business here.
+                // the variant is disabled, we are allowed to leave Theo behind, or the player is holding Theo => we have no business here.
                 orig(self, player);
             }
         }

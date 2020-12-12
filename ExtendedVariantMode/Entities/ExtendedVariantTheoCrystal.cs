@@ -4,10 +4,12 @@ using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace ExtendedVariants.Entities {
-    [Tracked(false)]
+    [Tracked(true)]
     public class ExtendedVariantTheoCrystal : TheoCrystal {
 
-        public ExtendedVariantTheoCrystal(Vector2 position) : base(position) { }
+        public ExtendedVariantTheoCrystal(Vector2 position) : base(position) {
+            RemoveTag(Tags.TransitionUpdate); // I still don't know why vanilla Theo has this, but this causes issues with leaving him behind.
+        }
 
         public override void Update() {
             Level level = SceneAs<Level>();
