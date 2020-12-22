@@ -1,6 +1,9 @@
 ﻿using Celeste;
+using Celeste.Mod;
+using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ExtendedVariants.UI {
@@ -10,6 +13,8 @@ namespace ExtendedVariants.UI {
     public class OuiRandomizerOptions : AbstractSubmenu {
 
         public OuiRandomizerOptions() : base("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE", "MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER") { }
+
+        private int returnIndex = -1;
 
         /// <summary>
         /// List of options shown for Change Variants Interval.
@@ -106,6 +111,35 @@ namespace ExtendedVariants.UI {
             menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN"), ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen)
                 .Change(newValue => ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue));
 
+            if (!inGame) {
+                TextMenu.Button seedButton = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDINPUT") + " " + ExtendedVariantsModule.Settings.RandoSetSeed);
+                seedButton.Pressed(() => {
+                    returnIndex = menu.Selection;
+                    Audio.Play(SFX.ui_main_savefile_rename_start);
+                    menu.SceneAs<Overworld>().Goto<OuiModOptionString>().Init<OuiRandomizerOptions>(
+                        ExtendedVariantsModule.Settings.RandoSetSeed,
+                        v => ExtendedVariantsModule.Settings.RandoSetSeed = v,
+                        25
+                    );
+                });
+
+                TextMenu.Option<bool> toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SETSEED"), ExtendedVariantsModule.Settings.RandoSetSeed != null)
+                    .Change(newValue => {
+                        ExtendedVariantsModule.Settings.RandoSetSeed = (newValue ? "seed" : null);
+
+                        seedButton.Visible = newValue;
+                        seedButton.Label = Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDINPUT") + " seed";
+                    });
+
+                seedButton.Visible = ExtendedVariantsModule.Settings.RandoSetSeed != null;
+
+                menu.Add(toggle);
+                toggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDDESCRIPTION2"));
+                toggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDDESCRIPTION1"));
+                menu.Add(seedButton);
+            }
+
+
             // build the toggles to individually enable or disable all vanilla variants
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA")));
             items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, VanillaVariant.GameSpeed));
@@ -131,6 +165,11 @@ namespace ExtendedVariants.UI {
             }
 
             refreshOptionMenuEnabledStatus(items);
+
+            if (returnIndex >= 0) {
+                menu.Selection = returnIndex;
+                returnIndex = -1;
+            }
         }
 
         private static void refreshOptionMenuEnabledStatus(OptionItems items) {

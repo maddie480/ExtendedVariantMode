@@ -378,6 +378,9 @@ namespace ExtendedVariants.Module {
         public int MaxEnabledVariants { get; set; } = 10;
 
         [SettingIgnore]
+        public string RandoSetSeed { get; set; } = null;
+
+        [SettingIgnore]
         public int Vanillafy { get; set; } = 0;
 
         [SettingIgnore]

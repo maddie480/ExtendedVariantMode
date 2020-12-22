@@ -580,7 +580,7 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown, Variant.BoostMuliplier }
+                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
 

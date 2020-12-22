@@ -95,6 +95,17 @@ namespace ExtendedVariants {
             orig(self);
 
             onLevelBegin();
+
+            if (ExtendedVariantsModule.Settings.RandoSetSeed != null) {
+                // the seed is actually the set seed + starting level seed.
+                // this way, this is consistent when we start the same level, but we don't get the same set of variants all the time either.
+                string setSeedString = ExtendedVariantsModule.Settings.RandoSetSeed + "/" + self.Session.LevelData.LoadSeed.ToString();
+                int setSeed = setSeedString.GetHashCode();
+
+                Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Variant randomizer seed is: [{setSeedString}] => {setSeed}");
+
+                randomGenerator = new Random(setSeed);
+            }
         }
 
         private void onLevelBegin() {
@@ -365,7 +376,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.WallBouncingSpeed) ExtendedVariantsModule.Settings.WallBouncingSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.SpeedX) ExtendedVariantsModule.Settings.SpeedX = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.SwimmingSpeed) ExtendedVariantsModule.Settings.SwimmingSpeed = multiplierScale[randomGenerator.Next(23)];
-            else if (variant == ExtendedVariantsModule.Variant.BoostMuliplier) ExtendedVariantsModule.Settings.BoostMultiplier = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.BoostMultiplier) ExtendedVariantsModule.Settings.BoostMultiplier = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.AirFriction) ExtendedVariantsModule.Settings.AirFriction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.GameSpeed) ExtendedVariantsModule.Settings.GameSpeed = multiplierScale[randomGenerator.Next(22) + 1]; // don't set game speed to 0x for obvious reasons
