@@ -202,6 +202,8 @@ MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN=	Disable Climbing Up or Down
 
 MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED=	Swimming Speed
 
+MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER=	Boost Multiplier
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automatically Reset Variants
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= when entering a map using Extended Variants
 

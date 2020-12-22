@@ -355,6 +355,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int BoostMultiplier { get; set; } = 10;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool ChangeVariantsRandomly { get; set; } = false;
 
         [SettingIgnore]

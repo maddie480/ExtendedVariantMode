@@ -44,7 +44,7 @@ namespace ExtendedVariants.Module {
             Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround,
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
-            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed
+            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMuliplier
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -134,6 +134,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DashTrailAllTheTime] = new DashTrailAllTheTime();
             VariantHandlers[Variant.DisableClimbingUpOrDown] = new DisableClimbingUpOrDown();
             VariantHandlers[Variant.SwimmingSpeed] = new SwimmingSpeed();
+            VariantHandlers[Variant.BoostMuliplier] = new BoostMultiplier();
         }
 
         // ================ Mod options setup ================

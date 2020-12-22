@@ -27,6 +27,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> jumpHeightOption;
         private TextMenu.Option<int> speedXOption;
         private TextMenu.Option<int> swimmingSpeedOption;
+        private TextMenu.Option<int> boostMultiplierOption;
         private TextMenu.Option<int> staminaOption;
         private TextMenu.Option<int> dashSpeedOption;
         private TextMenu.Option<bool> legacyDashSpeedBehaviorOption;
@@ -295,6 +296,8 @@ namespace ExtendedVariants.UI {
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SpeedX), indexFromMultiplier(10)).Change(i => Settings.SpeedX = multiplierScale[i]);
                 swimmingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SwimmingSpeed), indexFromMultiplier(10)).Change(i => Settings.SwimmingSpeed = multiplierScale[i]);
+                boostMultiplierOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER"),
+                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BoostMultiplier), indexFromMultiplier(10)).Change(i => Settings.BoostMultiplier = multiplierScale[i]);
                 explodeLaunchSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ExplodeLaunchSpeed), indexFromMultiplier(10)).Change(i => Settings.ExplodeLaunchSpeed = multiplierScale[i]);
                 frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
@@ -577,7 +580,7 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown }
+                        Variant.DisableClimbingUpOrDown, Variant.BoostMuliplier }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
 
@@ -626,7 +629,7 @@ namespace ExtendedVariants.UI {
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption};
+                allowLeavingTheoBehindOption, boostMultiplierOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -688,6 +691,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
                 menu.Add(explodeLaunchSpeedOption);
+                menu.Add(boostMultiplierOption);
                 menu.Add(disableClimbingUpOrDownOption);
             }
 
@@ -785,6 +789,7 @@ namespace ExtendedVariants.UI {
             setValue(jumpHeightOption, 0, indexFromMultiplier(Settings.JumpHeight));
             setValue(speedXOption, 0, indexFromMultiplier(Settings.SpeedX));
             setValue(swimmingSpeedOption, 0, indexFromMultiplier(Settings.SwimmingSpeed));
+            setValue(boostMultiplierOption, 0, indexFromMultiplier(Settings.BoostMultiplier));
             setValue(staminaOption, 0, Settings.Stamina);
             setValue(dashSpeedOption, 0, indexFromMultiplier(Settings.DashSpeed));
             setValue(legacyDashSpeedBehaviorOption, Settings.LegacyDashSpeedBehavior);

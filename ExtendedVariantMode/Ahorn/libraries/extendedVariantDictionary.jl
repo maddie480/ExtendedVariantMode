@@ -18,6 +18,7 @@ const Variants = String[
 	"BadelineChasersEverywhere",
 	"BadelineLag",
 	"BlurLevel",
+	"BoostMultiplier",
 	"BounceEverywhere",
 	"ChangePatternsOfExistingBosses",
 	"ChangeVariantsInterval",
