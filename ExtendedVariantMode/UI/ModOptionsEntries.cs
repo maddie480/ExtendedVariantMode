@@ -99,7 +99,8 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> madelineIsSilhouetteOption;
         private TextMenu.Option<bool> dashTrailAllTheTimeOption;
         private TextMenu.Option<bool> disableClimbingUpOrDownOption;
-        private TextMenu.Item resetToDefaultOption;
+        private TextMenu.Item resetExtendedToDefaultOption;
+        private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
 
         private List<TextMenu.Item> allOptions;
@@ -218,8 +219,15 @@ namespace ExtendedVariants.UI {
             }
 
             if (category == VariantCategory.All || includeCategorySubmenus) {
-                // Add a button to easily revert to default values
-                resetToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT")).Pressed(() => {
+                // Add buttons to easily revert to default values (vanilla and extended variants)
+                if (inGame) {
+                    resetVanillaToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_VANILLA")).Pressed(() => {
+                        // from SaveData.AssistModeChecks() when both assist and variant mode are disabled
+                        ExtendedVariantsModule.ResetVanillaVariants();
+                    });
+                }
+
+                resetExtendedToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_EXTENDED")).Pressed(() => {
                     ExtendedVariantsModule.Instance.ResetToDefaultSettings();
                     refreshOptionMenuValues();
                     refreshOptionMenuEnabledStatus();
@@ -625,11 +633,11 @@ namespace ExtendedVariants.UI {
                 chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, glitchEffectOption, oshiroEverywhereOption, oshiroCountOption,
                 reverseOshiroCountOption, everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption,
                 disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
-                colorGradingOption, resetToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
+                colorGradingOption, resetExtendedToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption, boostMultiplierOption};
+                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -644,7 +652,8 @@ namespace ExtendedVariants.UI {
             }
 
             if (category == VariantCategory.All || includeCategorySubmenus) {
-                menu.Add(resetToDefaultOption);
+                if (resetVanillaToDefaultOption != null) menu.Add(resetVanillaToDefaultOption);
+                menu.Add(resetExtendedToDefaultOption);
             }
 
             if (includeOpenSubmenuButton) {

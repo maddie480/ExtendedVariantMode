@@ -462,7 +462,6 @@ namespace ExtendedVariants.Module {
                 || Settings.BadelineLag != 0
                 || Settings.DelayBetweenBadelines != 4
                 || Settings.RisingLavaSpeed != 10
-                || Settings.ChangeVariantsRandomly
                 || Settings.OshiroCount != 1
                 || Settings.ReverseOshiroCount != 0
                 || Settings.DisableOshiroSlowdown
@@ -488,7 +487,6 @@ namespace ExtendedVariants.Module {
             Settings.BadelineLag = 0;
             Settings.DelayBetweenBadelines = 4;
             Settings.RisingLavaSpeed = 10;
-            Settings.ChangeVariantsRandomly = false;
             Settings.OshiroCount = 1;
             Settings.ReverseOshiroCount = 0;
             Settings.DisableOshiroSlowdown = false;
@@ -501,6 +499,21 @@ namespace ExtendedVariants.Module {
             Settings.LegacyDashSpeedBehavior = false;
 
             return settingChanged;
+        }
+
+        public static void ResetVanillaVariants() {
+            SaveData.Instance.Assists = default(Assists);
+            SaveData.Instance.Assists.GameSpeed = 10;
+
+            Player p = Engine.Scene.Tracker.GetEntity<Player>();
+            if (p != null) {
+                PlayerSpriteMode mode = p.DefaultSpriteMode;
+                if (p.Active) {
+                    p.ResetSpriteNextFrame(mode);
+                } else {
+                    p.ResetSprite(mode);
+                }
+            }
         }
 
         // ================ Stamp on Chapter Complete screen ================
