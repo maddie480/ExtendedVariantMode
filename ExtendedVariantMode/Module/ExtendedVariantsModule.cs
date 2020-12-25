@@ -498,6 +498,10 @@ namespace ExtendedVariants.Module {
             Settings.BadelineBossNodeCount = 1;
             Settings.LegacyDashSpeedBehavior = false;
 
+            if (settingChanged && SaveData.Instance != null) {
+                Randomizer.RefreshEnabledVariantsDisplayList();
+            }
+
             return settingChanged;
         }
 
@@ -514,6 +518,26 @@ namespace ExtendedVariants.Module {
                     p.ResetSprite(mode);
                 }
             }
+
+            if (SaveData.Instance != null) {
+                Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            }
+        }
+
+        // ==================== Reset Variants commands =====================
+
+        [Command("reset_vanilla_variants", "[from Extended Variant Mode] resets vanilla variants to their default values")]
+        public static void CmdResetVanillaVariants() {
+            if (SaveData.Instance == null) {
+                Engine.Commands.Log("This command only works when a save is loaded!");
+            } else {
+                ResetVanillaVariants();
+            }
+        }
+
+        [Command("reset_extended_variants", "[from Extended Variant Mode] resets extended variants to their default values")]
+        public static void CmdResetExtendedVariants() {
+            Instance.ResetToDefaultSettings();
         }
 
         // ================ Stamp on Chapter Complete screen ================

@@ -110,7 +110,7 @@ namespace ExtendedVariants {
 
         private void onLevelBegin() {
             UpdateCountersFromSettings();
-            refreshEnabledVariantsDisplayList();
+            RefreshEnabledVariantsDisplayList();
 
             // inject the code to display the list of enabled variants
             Logger.Log("ExtendedVariantMode/VariantRandomizer", "Hooking HudRenderer to display list of enabled variants");
@@ -133,7 +133,7 @@ namespace ExtendedVariants {
             orig(self);
 
             // refresh the display in case the player changed anything in the pause menu
-            refreshEnabledVariantsDisplayList();
+            RefreshEnabledVariantsDisplayList();
         }
 
         private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
@@ -289,7 +289,7 @@ namespace ExtendedVariants {
                 }
             }
 
-            refreshEnabledVariantsDisplayList();
+            RefreshEnabledVariantsDisplayList();
         }
 
         private bool isDefaultValue(VanillaVariant variant) {
@@ -430,7 +430,7 @@ namespace ExtendedVariants {
             } else if (variant == VanillaVariant.DashAssist) SaveData.Instance.Assists.DashAssist = enabled;
         }
 
-        private void refreshEnabledVariantsDisplayList() {
+        public void RefreshEnabledVariantsDisplayList() {
             List<string> enabledVariantsToDisplay = new List<string>();
 
             IEnumerable<VanillaVariant> enabledVanillaVariants = allVanillaVariants.Where(variant => !isDefaultValue(variant));
