@@ -222,7 +222,6 @@ namespace ExtendedVariants.UI {
                 // Add buttons to easily revert to default values (vanilla and extended variants)
                 if (inGame) {
                     resetVanillaToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_VANILLA")).Pressed(() => {
-                        // from SaveData.AssistModeChecks() when both assist and variant mode are disabled
                         ExtendedVariantsModule.ResetVanillaVariants();
                     });
                 }

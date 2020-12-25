@@ -506,9 +506,11 @@ namespace ExtendedVariants.Module {
         }
 
         public static void ResetVanillaVariants() {
+            // from SaveData.AssistModeChecks() when both assist and variant mode are disabled
             SaveData.Instance.Assists = default(Assists);
             SaveData.Instance.Assists.GameSpeed = 10;
 
+            // apply the Other Self variant right now.
             Player p = Engine.Scene.Tracker.GetEntity<Player>();
             if (p != null) {
                 PlayerSpriteMode mode = p.DefaultSpriteMode;
