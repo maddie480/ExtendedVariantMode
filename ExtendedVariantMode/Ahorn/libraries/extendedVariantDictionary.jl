@@ -46,6 +46,7 @@ const Variants = String[
 	"ForceDuckOnGround",
 	"ForegroundEffectOpacity",
 	"Friction",
+	"FriendlyBadelineFollower",
 	"GameSpeed",
 	"GlitchEffect",
 	"Gravity",

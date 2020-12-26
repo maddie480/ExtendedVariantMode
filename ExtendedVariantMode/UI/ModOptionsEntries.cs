@@ -99,6 +99,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> madelineIsSilhouetteOption;
         private TextMenu.Option<bool> dashTrailAllTheTimeOption;
         private TextMenu.Option<bool> disableClimbingUpOrDownOption;
+        private TextMenu.Option<bool> friendlyBadelineFollowerOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -492,6 +493,9 @@ namespace ExtendedVariants.UI {
 
                 screenShakeIntensityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SCREENSHAKEINTENSITY"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ScreenShakeIntensity), indexFromMultiplier(10)).Change(i => Settings.ScreenShakeIntensity = multiplierScale[i]);
+
+                friendlyBadelineFollowerOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRIENDLYBADELINEFOLLOWER"), Settings.FriendlyBadelineFollower, false)
+                    .Change(b => Settings.FriendlyBadelineFollower = b);
             }
 
             // ======
@@ -603,7 +607,7 @@ namespace ExtendedVariants.UI {
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime}
+                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -636,7 +640,7 @@ namespace ExtendedVariants.UI {
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption};
+                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption};
 
             refreshOptionMenuEnabledStatus();
 
@@ -761,6 +765,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(zoomLevelOption);
                 menu.Add(colorGradingOption);
                 menu.Add(screenShakeIntensityOption);
+                menu.Add(friendlyBadelineFollowerOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
@@ -869,6 +874,7 @@ namespace ExtendedVariants.UI {
             setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
             setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
             setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
+            setValue(friendlyBadelineFollowerOption, Settings.FriendlyBadelineFollower);
         }
 
         private void refreshOptionMenuEnabledStatus() {

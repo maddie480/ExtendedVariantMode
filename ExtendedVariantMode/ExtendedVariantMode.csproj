@@ -110,6 +110,7 @@
     <Compile Include="Entities\ExtendedVariantTheoCrystal.cs" />
     <Compile Include="Entities\ExtendedVariantTheoCrystalGoingOffscreen.cs" />
     <Compile Include="Entities\ExtendedVariantWindSnowFG.cs" />
+    <Compile Include="Entities\FriendlyBaddy.cs" />
     <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Variants\ForceDuckOnGround.cs" />
     <Compile Include="Variants\ForegroundEffectOpacity.cs" />
     <Compile Include="Variants\Friction.cs" />
+    <Compile Include="Variants\FriendlyBadelineFollower.cs" />
     <Compile Include="Variants\GameSpeed.cs" />
     <Compile Include="Variants\GlitchEffect.cs" />
     <Compile Include="Variants\Gravity.cs" />
