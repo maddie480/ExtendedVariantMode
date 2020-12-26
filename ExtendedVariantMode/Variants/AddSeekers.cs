@@ -27,6 +27,10 @@ namespace ExtendedVariants.Variants {
             Settings.AddSeekers = value;
         }
 
+        public override void SetRandomSeed(int seed) {
+            randomGenerator = new Random(seed);
+        }
+
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;

@@ -32,6 +32,10 @@ namespace ExtendedVariants.Variants {
             Settings.WindEverywhere = value;
         }
 
+        public override void SetRandomSeed(int seed) {
+            randomGenerator = new Random(seed);
+        }
+
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;

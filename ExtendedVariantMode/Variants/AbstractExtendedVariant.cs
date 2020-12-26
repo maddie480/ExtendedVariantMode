@@ -31,5 +31,10 @@ namespace ExtendedVariants.Variants {
         /// Sets a new value for the variant.
         /// </summary>
         public abstract void SetValue(int value);
+
+        /// <summary>
+        /// Called whenever a new level starts with the randomizer enabled and a set seed, to seed the variant's randomness as well.
+        /// </summary>
+        public virtual void SetRandomSeed(int seed) { }
     }
 }

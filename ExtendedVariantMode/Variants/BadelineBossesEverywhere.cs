@@ -27,6 +27,11 @@ namespace ExtendedVariants.Variants {
             Settings.BadelineBossesEverywhere = (value != 0);
         }
 
+        public override void SetRandomSeed(int seed) {
+            positionRandomizer = new Random(seed);
+            patternRandomizer = new Random(seed);
+        }
+
         public override void Load() {
             IL.Celeste.FinalBoss.CanChangeMusic += modCanChangeMusic;
             On.Celeste.Level.LoadLevel += modLoadLevel;

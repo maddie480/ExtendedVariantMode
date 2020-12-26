@@ -96,7 +96,8 @@ namespace ExtendedVariants {
 
             onLevelBegin();
 
-            if (ExtendedVariantsModule.Settings.RandoSetSeed != null) {
+            // check if we are starting a set seed randomizer session.
+            if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.RandoSetSeed != null) {
                 // the seed is actually the set seed + starting level seed.
                 // this way, this is consistent when we start the same level, but we don't get the same set of variants all the time either.
                 string setSeedString = ExtendedVariantsModule.Settings.RandoSetSeed + "/" + self.Session.LevelData.LoadSeed.ToString();
@@ -105,6 +106,9 @@ namespace ExtendedVariants {
                 Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Variant randomizer seed is: [{setSeedString}] => {setSeed}");
 
                 randomGenerator = new Random(setSeed);
+                foreach (AbstractExtendedVariant variant in ExtendedVariantsModule.Instance.VariantHandlers.Values) {
+                    variant.SetRandomSeed(setSeed);
+                }
             }
         }
 
