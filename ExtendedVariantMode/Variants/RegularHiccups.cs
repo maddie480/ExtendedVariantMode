@@ -23,16 +23,25 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
+            On.Celeste.Player.Added += onPlayerAdded;
             On.Celeste.Player.Update += modUpdate;
             IL.Celeste.Player.HiccupJump += modHiccupJump;
         }
 
         public override void Unload() {
+            On.Celeste.Player.Added -= onPlayerAdded;
             On.Celeste.Player.Update -= modUpdate;
             IL.Celeste.Player.HiccupJump -= modHiccupJump;
         }
 
         public void UpdateTimerFromSettings() {
+            regularHiccupTimer = Settings.RegularHiccups / 10f;
+        }
+
+        private void onPlayerAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
+            orig(self, scene);
+
+            // reset the hiccup timer when the player respawns, for more consistency.
             regularHiccupTimer = Settings.RegularHiccups / 10f;
         }
 
