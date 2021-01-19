@@ -45,7 +45,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- BadelineLag: The delay between the player and the first Badeline, multiplied by 10, default is 0 (actually 1.55s).
 	- DelayBetweenBadelines: The delay between two Badelines, multiplied by 10, default is 4 (0.4s).
 	- AddSeekers: The number of seekers to add.
-	- DashDirection: 0 = any, 1 = no diagonals, 2 = diagonals only. To toggle individual directions, use the Toggle Dash Direction trigger instead.
+	- DashDirection: 0 = any, 1 = no diagonals, 2 = diagonals only. If you want custom dash directions, check out dash-direction-calculator.html to find out the value to use for the dash direction combination you want.
+		If you want to toggle a single dash direction, use a Toggle Dash Direction trigger instead.
 	- ColorGrading: Use the Color Grade Trigger to change it.
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Revert On Death: Set the variant back to its original value when Madeline dies before she changes rooms or changes respawn points.

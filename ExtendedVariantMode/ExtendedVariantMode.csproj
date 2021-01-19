@@ -238,6 +238,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dash-direction-calculator.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Dialog\Brazilian Portuguese.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

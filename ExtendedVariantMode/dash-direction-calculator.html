@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+    <title>Dash Direction Calculator for Extended Variant Trigger</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="https://max480-random-stuff.appspot.com/celeste/favicon.ico">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous">
+
+    <style>
+        h1, .alert {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #result {
+            font-weight: bold;
+        }
+    </style>
+
+    <script>
+        function isChecked(id) {
+            return document.getElementById(id).checked;
+        }
+
+        function recompute() {
+			var result = 0b11;
+			if (isChecked('top')) 			result += 0b1000000000;
+			if (isChecked('top-right'))		result += 0b0100000000;
+			if (isChecked('right')) 		result += 0b0010000000;
+			if (isChecked('bottom-right')) 	result += 0b0001000000;
+			if (isChecked('bottom')) 		result += 0b0000100000;
+			if (isChecked('bottom-left')) 	result += 0b0000010000;
+			if (isChecked('left')) 			result += 0b0000001000;
+			if (isChecked('top-left')) 		result += 0b0000000100;
+			
+			document.getElementById('result').innerHTML = result;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Dash Direction Calculator for Extended Variant Trigger</h1>
+
+        <p>
+            Check the dash directions you want to allow, copy-paste the value this page gives you in the "New Value" field of your Extended Variant Trigger,
+            <s>and don't question it.</s>
+        </p>
+
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="top" onchange="recompute()">
+            <label class="form-check-label" for="top">Top</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="top-right" onchange="recompute()">
+            <label class="form-check-label" for="top-right">Top-Right</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="right" onchange="recompute()">
+            <label class="form-check-label" for="right">Right</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="bottom-right" onchange="recompute()">
+            <label class="form-check-label" for="bottom-right">Bottom-Right</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="bottom" onchange="recompute()">
+            <label class="form-check-label" for="bottom">Bottom</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="bottom-left" onchange="recompute()">
+            <label class="form-check-label" for="bottom-left">Bottom-Left</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="left" onchange="recompute()">
+            <label class="form-check-label" for="left">Left</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="top-left" onchange="recompute()">
+            <label class="form-check-label" for="top-left">Top-Left</label>
+        </div>
+
+        <div class="alert alert-info">
+            Copy this value into "New Value" for your Extended Variant Trigger: <span id="result">3</span>
+        </div>
+
+        <!-- Now that's convoluted, isn't it? ~ max480 -->
+    </div>
+</body>
+</html>
