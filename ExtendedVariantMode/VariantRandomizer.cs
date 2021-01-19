@@ -481,7 +481,7 @@ namespace ExtendedVariants {
                     string formattedValue = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
 
                     enabledVariantsToDisplay.Add($"{variantName}: {formattedValue}");
-                } else if (variant == ExtendedVariantsModule.Variant.DashDirection) enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ExtendedVariantsModule.Settings.DashDirection}")}");
+                } else if (variant == ExtendedVariantsModule.Variant.DashDirection) enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{Math.Min(ExtendedVariantsModule.Settings.DashDirection, 3)}")}");
                 // multiplier-style variants
                 else if ((ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultValue() == 10))
                     enabledVariantsToDisplay.Add($"{variantName}: {multiplierFormatter(ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue())}");

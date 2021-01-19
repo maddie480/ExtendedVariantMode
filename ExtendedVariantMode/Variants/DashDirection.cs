@@ -3,9 +3,21 @@ using Microsoft.Xna.Framework;
 using System.Reflection;
 using System.Collections;
 using MonoMod.RuntimeDetour;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class DashDirection : AbstractExtendedVariant {
+        // those are all the dash directions; to allow top and bottom-left, set Settings.DashDirection to TOP | BOTTOM_LEFT | BASE
+        public const int TOP = 0b1000000000;
+        public const int TOP_RIGHT = 0b0100000000;
+        public const int RIGHT = 0b0010000000;
+        public const int BOTTOM_RIGHT = 0b0001000000;
+        public const int BOTTOM = 0b0000100000;
+        public const int BOTTOM_LEFT = 0b0000010000;
+        public const int LEFT = 0b0000001000;
+        public const int TOP_LEFT = 0b0000000100;
+        public const int BASE = 0b0000000011;
+
         private static FieldInfo playerLastAim = typeof(Player).GetField("lastAim", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo playerCalledDashEvents = typeof(Player).GetField("calledDashEvents", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo playerBeforeDashSpeed = typeof(Player).GetField("beforeDashSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -46,11 +58,7 @@ namespace ExtendedVariants.Variants {
             Vector2 aim = Input.GetAimVector();
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
-            return orig(self) &&
-                (SaveData.Instance.Assists.DashAssist ||
-                (Settings.DashDirection == 0) ||
-                (Settings.DashDirection == 1 && (aim.X != 0) != (aim.Y != 0)) ||
-                (Settings.DashDirection == 2 && aim.X != 0 && aim.Y != 0));
+            return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim));
         }
 
         private int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
@@ -86,9 +94,7 @@ namespace ExtendedVariants.Variants {
                 direction = (Vector2) playerLastAim.GetValue(self);
             }
 
-            if ((Settings.DashDirection == 1 && direction.X != 0 && direction.Y != 0)
-                || (Settings.DashDirection == 2 && (direction.X == 0 || direction.Y == 0))) {
-
+            if (!isDashDirectionAllowed(direction)) {
                 // forbidden direction! aaa
 
                 // prevent DashEnd from triggering dash events (no dash sound)
@@ -114,6 +120,51 @@ namespace ExtendedVariants.Variants {
                     yield return vanillaCoroutine.Current;
                 }
             }
+        }
+
+        private bool isDashDirectionAllowed(Vector2 direction) {
+            int allowedDirections = Settings.DashDirection;
+            if (allowedDirections == 0) {
+                // all directions allowed! let's skip over everything.
+                return true;
+            } else if (allowedDirections == 1) {
+                // straight only
+                allowedDirections = 0b1010101000;
+            } else if (allowedDirections == 2) {
+                // diagonal only
+                allowedDirections = 0b0101010100;
+            }
+
+            // if directions are not integers, make them integers.
+            direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
+
+            // apply a mask to the current direction to determine if it is allowed or not.
+            if (direction.X == -1) {
+                if (direction.Y == -1) {
+                    return (allowedDirections & TOP_LEFT) != 0;
+                } else if (direction.Y == 0) {
+                    return (allowedDirections & LEFT) != 0;
+                } else if (direction.Y == 1) {
+                    return (allowedDirections & BOTTOM_LEFT) != 0;
+                }
+            } else if (direction.X == 0) {
+                if (direction.Y == -1) {
+                    return (allowedDirections & TOP) != 0;
+                } else if (direction.Y == 1) {
+                    return (allowedDirections & BOTTOM) != 0;
+                }
+            } else if (direction.X == 1) {
+                if (direction.Y == -1) {
+                    return (allowedDirections & TOP_RIGHT) != 0;
+                } else if (direction.Y == 0) {
+                    return (allowedDirections & RIGHT) != 0;
+                } else if (direction.Y == 1) {
+                    return (allowedDirections & BOTTOM_RIGHT) != 0;
+                }
+            }
+
+            // what? I checked all directions though!
+            return false;
         }
     }
 }

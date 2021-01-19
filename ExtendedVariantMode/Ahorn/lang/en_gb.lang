@@ -41,3 +41,9 @@ placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.texture=The dir
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.extraJumps=The number of extra jumps this refill gives when collected.
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.capped=If checked, the player's jump count will never exceed the defined cap.
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.cap=The maximum jump count the player can get. Leave -1 to use the "Jump Count" extended variant setting as a cap.
+
+# Toggle Dash Direction Trigger
+placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.dashDirection=The dash direction to toggle.
+placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.enable=Whether the dash direction should be enabled or disabled by the trigger.
+placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.

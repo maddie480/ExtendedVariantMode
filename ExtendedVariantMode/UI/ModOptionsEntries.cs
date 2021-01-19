@@ -45,6 +45,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> wallBouncingSpeedOption;
         private TextMenu.Option<int> dashLengthOption;
         private TextMenu.Option<int> dashDirectionOption;
+        private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
         private TextMenu.Option<bool> forceDuckOnGroundOption;
         private TextMenu.Option<bool> invertDashesOption;
         private TextMenu.Option<bool> invertGrabOption;
@@ -281,7 +282,34 @@ namespace ExtendedVariants.UI {
                 dashLengthOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.DashLength), indexFromMultiplier(10)).Change(i => Settings.DashLength = multiplierScale[i]);
                 dashDirectionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
-                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 2, Settings.DashDirection, 0).Change(i => Settings.DashDirection = i);
+                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 3, Settings.DashDirection > 2 ? 3 : Settings.DashDirection, 0).Change(i => {
+                        Settings.DashDirection = i;
+                        if (i == 3) {
+                            // all directions allowed by default.
+                            Settings.DashDirection = 0b1111111111;
+                            foreach (TextMenu.OnOff slider in dashDirectionsSubMenu.Items) {
+                                slider.Index = 1;
+                            }
+                        }
+                        refreshOptionMenuEnabledStatus();
+                    });
+
+                // build the dash direction submenu.
+                dashDirectionsSubMenu = new Celeste.TextMenuExt.SubMenu(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_ALLOWED"), enterOnSelect: false);
+
+                // make some arrays so that we can loop over the 8 directions instead of having the same code 8 times. --'
+                int[] directions = new int[] { DashDirection.TOP, DashDirection.TOP_RIGHT, DashDirection.RIGHT, DashDirection.BOTTOM_RIGHT,
+                        DashDirection.BOTTOM, DashDirection.BOTTOM_LEFT, DashDirection.LEFT, DashDirection.TOP_LEFT };
+                string[] directionNames = new string[] { "TOP", "TOPRIGHT", "RIGHT", "BOTTOMRIGHT", "BOTTOM", "BOTTOMLEFT", "LEFT", "TOPLEFT" };
+
+                // build all the options in the submenu.
+                for (int i = 0; i < 8; i++) {
+                    int direction = directions[i];
+                    TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i]), (Settings.DashDirection & direction) != 0);
+                    toggle.Change(value => Settings.DashDirection ^= direction);
+                    dashDirectionsSubMenu.Add(toggle);
+                }
+
                 hyperdashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.HyperdashSpeed), indexFromMultiplier(10)).Change(i => Settings.HyperdashSpeed = multiplierScale[i]);
                 dashCountOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
@@ -640,7 +668,7 @@ namespace ExtendedVariants.UI {
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption};
+                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu};
 
             refreshOptionMenuEnabledStatus();
 
@@ -691,6 +719,7 @@ namespace ExtendedVariants.UI {
                 legacyDashSpeedBehaviorOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR_HINT"));
                 menu.Add(dashLengthOption);
                 menu.Add(dashDirectionOption);
+                menu.Add(dashDirectionsSubMenu);
                 menu.Add(hyperdashSpeedOption);
                 menu.Add(superdashSteeringSpeedOption);
                 menu.Add(dashCountOption);
@@ -893,6 +922,7 @@ namespace ExtendedVariants.UI {
             if (badelineBossNodeCountOption != null) badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
             if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !Settings.TheoCrystalsEverywhere;
             if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !Settings.TheoCrystalsEverywhere;
+            if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = (Settings.DashDirection > 2);
         }
 
         private void setValue(TextMenu.Option<int> option, int min, int newValue) {
