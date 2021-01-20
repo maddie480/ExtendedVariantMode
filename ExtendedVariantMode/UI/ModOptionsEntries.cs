@@ -3,10 +3,12 @@ using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
+using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
@@ -506,9 +508,28 @@ namespace ExtendedVariants.UI {
                 zoomLevelOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ZOOMLEVEL"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ZoomLevel), indexFromMultiplier(10)).Change(i => Settings.ZoomLevel = multiplierScale[i]);
 
+                // go through all Everest mod assets, and list all color grades that exist.
+                List<string> allColorGrades = new List<string>(ColorGrading.ExistingColorGrades);
+                foreach (string colorgrade in Everest.Content.Map.Values
+                    .Where(asset => asset.Type == typeof(Texture2D) && asset.PathVirtual.StartsWith("Graphics/ColorGrading/"))
+                    .Select(asset => asset.PathVirtual.Substring("Graphics/ColorGrading/".Length))) {
+
+                    if (!allColorGrades.Contains(colorgrade)) {
+                        allColorGrades.Add(colorgrade);
+                    }
+                }
+
                 colorGradingOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+
+                        if (i >= ColorGrading.ExistingColorGrades.Count) {
+                            // mod color grade - try formatting it somewhat nicely.
+                            string colorGradeName = allColorGrades[i];
+                            if (colorGradeName.Contains("/")) colorGradeName = colorGradeName.Substring(colorGradeName.LastIndexOf("/") + 1);
+                            if (colorGradeName.Length > 15) colorGradeName = colorGradeName.Substring(0, 15) + "...";
+                            return "Mod - " + colorGradeName.SpacedPascalCase();
+                        }
 
                         // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
                         // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
@@ -516,8 +537,18 @@ namespace ExtendedVariants.UI {
                         if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
                         return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
 
-                    }, -1, ColorGrading.ExistingColorGrades.Count - 1, Settings.ColorGrading, 0)
-                    .Change(i => Settings.ColorGrading = i);
+                    }, -1, allColorGrades.Count - 1, Settings.ModColorGrade != null ? allColorGrades.IndexOf(Settings.ModColorGrade) : Settings.ColorGrading, 0)
+                    .Change(i => {
+                        if (i >= ColorGrading.ExistingColorGrades.Count) {
+                            // mod color grade
+                            Settings.ColorGrading = 0;
+                            Settings.ModColorGrade = allColorGrades[i];
+                        } else {
+                            // base color grade
+                            Settings.ColorGrading = i;
+                            Settings.ModColorGrade = null;
+                        }
+                    });
 
                 screenShakeIntensityOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SCREENSHAKEINTENSITY"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ScreenShakeIntensity), indexFromMultiplier(10)).Change(i => Settings.ScreenShakeIntensity = multiplierScale[i]);

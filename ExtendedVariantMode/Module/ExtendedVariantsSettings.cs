@@ -261,6 +261,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int ColorGrading { get; set; } = -1;
 
+        [SettingIgnore]
+        public string ModColorGrade { get; set; } = null;
+
         // ======================================
 
         [SettingIgnore]

@@ -15,6 +15,7 @@ namespace ExtendedVariants {
         private Dictionary<ExtendedVariantsModule.Variant, int> overridenVariantsInRoomRevertOnLeave = new Dictionary<ExtendedVariantsModule.Variant, int>();
         private Dictionary<ExtendedVariantsModule.Variant, int> oldVariantsInRoom = new Dictionary<ExtendedVariantsModule.Variant, int>();
         private Dictionary<ExtendedVariantsModule.Variant, int> variantValuesBeforeOverride = new Dictionary<ExtendedVariantsModule.Variant, int>();
+        private string modColorGradeBeforeOverride = null;
 
         public void Load() {
             Everest.Events.Level.OnEnter += onLevelEnter;
@@ -46,6 +47,11 @@ namespace ExtendedVariants {
             if (fromSaveData) {
                 foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
+
+                    if (v == ExtendedVariantsModule.Variant.ColorGrading) {
+                        modColorGradeBeforeOverride = ExtendedVariantsModule.Settings.ModColorGrade;
+                    }
+
                     int oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v], out _);
                     variantValuesBeforeOverride[v] = oldValue;
                 }
@@ -62,6 +68,10 @@ namespace ExtendedVariants {
                 foreach (ExtendedVariantsModule.Variant v in oldVariantsInRoom.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Died in room: resetting {v} to {oldVariantsInRoom[v]}");
                     setVariantValue(v, oldVariantsInRoom[v], out _);
+
+                    if (v == ExtendedVariantsModule.Variant.ColorGrading) {
+                        ExtendedVariantsModule.Settings.ModColorGrade = modColorGradeBeforeOverride;
+                    }
                 }
 
                 // clear values
@@ -127,6 +137,10 @@ namespace ExtendedVariants {
                 foreach (ExtendedVariantsModule.Variant v in variantValuesBeforeOverride.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Ending session: resetting {v} to {variantValuesBeforeOverride[v]}");
                     setVariantValue(v, variantValuesBeforeOverride[v], out _);
+
+                    if (v == ExtendedVariantsModule.Variant.ColorGrading) {
+                        ExtendedVariantsModule.Settings.ModColorGrade = modColorGradeBeforeOverride;
+                    }
                 }
             }
 
@@ -136,6 +150,7 @@ namespace ExtendedVariants {
             overridenVariantsInRoomRevertOnLeave.Clear();
             oldVariantsInRoom.Clear();
             variantValuesBeforeOverride.Clear();
+            modColorGradeBeforeOverride = null;
 
             ExtendedVariantsModule.Instance.SaveSettings();
         }
@@ -150,6 +165,10 @@ namespace ExtendedVariants {
 
         public int OnEnteredInTrigger(ExtendedVariantsModule.Variant variantChange, int newValue, bool revertOnLeave, bool isFade, bool revertOnDeath) {
             // change the variant value
+            if (variantChange == ExtendedVariantsModule.Variant.ColorGrading && modColorGradeBeforeOverride == null) {
+                modColorGradeBeforeOverride = ExtendedVariantsModule.Settings.ModColorGrade;
+            }
+
             int oldValue = setVariantValue(variantChange, newValue, out int actualNewValue);
 
             if (!variantValuesBeforeOverride.ContainsKey(variantChange)) {
@@ -187,6 +206,11 @@ namespace ExtendedVariants {
 
         public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, int oldValueToRevertOnLeave) {
             setVariantValue(variantChange, oldValueToRevertOnLeave, out _);
+
+            if (variantChange == ExtendedVariantsModule.Variant.ColorGrading) {
+                ExtendedVariantsModule.Settings.ModColorGrade = modColorGradeBeforeOverride;
+            }
+
             overridenVariantsInRoomRevertOnLeave[variantChange] = oldValueToRevertOnLeave;
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
         }

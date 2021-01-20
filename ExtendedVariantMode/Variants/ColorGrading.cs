@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
 using MonoMod.Cil;
+using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class ColorGrading : AbstractExtendedVariant {
+        private static FieldInfo everestContentLoaded = typeof(Everest).GetField("_ContentLoaded", BindingFlags.NonPublic | BindingFlags.Static);
+
         public static List<string> ExistingColorGrades = new List<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
             "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
@@ -24,6 +28,7 @@ namespace ExtendedVariants.Variants {
 
         public override void SetValue(int value) {
             Settings.ColorGrading = value;
+            Settings.ModColorGrade = null;
 
             // if setting to "trigger", add "trigger" to the list.
             if (value >= ExistingColorGrades.Count && !ExistingColorGrades.Contains("trigger")) {
@@ -34,24 +39,46 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
             Everest.Events.Level.OnExit += onLevelExit;
+            On.Celeste.Celeste.LoadContent += onLoadContent;
 
             // make triple sure the current color grade isn't out of bounds.
             if (Settings.ColorGrading >= ExistingColorGrades.Count) {
                 Settings.ColorGrading = -1;
+                Settings.ModColorGrade = null;
+            }
+
+            // if color grades were loaded, we can check if the mod color grade currently configured still exists.
+            if ((bool) everestContentLoaded.GetValue(null)) {
+                checkModColorGrade();
             }
         }
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
             Everest.Events.Level.OnExit -= onLevelExit;
+            On.Celeste.Celeste.LoadContent -= onLoadContent;
 
             ExistingColorGrades.Remove("trigger");
+        }
+
+        private void onLoadContent(On.Celeste.Celeste.orig_LoadContent orig, Celeste.Celeste self) {
+            orig(self);
+            checkModColorGrade();
+        }
+
+        private void checkModColorGrade() {
+            if (Settings.ModColorGrade != null && !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + Settings.ModColorGrade)) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ColorGrading", "Graphics/ColorGrading/" + Settings.ModColorGrade + " doesn't exist! Resetting color grade setting.");
+                Settings.ColorGrading = -1;
+                Settings.ModColorGrade = null;
+            }
         }
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             ExistingColorGrades.Remove("trigger");
             if (Settings.ColorGrading >= ExistingColorGrades.Count) {
                 Settings.ColorGrading = -1;
+                Settings.ModColorGrade = null;
             }
         }
 
@@ -93,6 +120,7 @@ namespace ExtendedVariants.Variants {
         private string modColorGrading(string vanillaValue) {
             if (Settings.ColorGrading == -1) return vanillaValue;
             if (ExistingColorGrades[Settings.ColorGrading] == "trigger") return ExtendedVariantsModule.Session.TriggerColorGrade;
+            if (Settings.ModColorGrade != null) return Settings.ModColorGrade;
             return ExistingColorGrades[Settings.ColorGrading];
         }
     }
