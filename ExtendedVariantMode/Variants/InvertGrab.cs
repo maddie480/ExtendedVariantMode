@@ -2,11 +2,7 @@
 using Celeste.Mod;
 using MonoMod.Cil;
 using System;
-using System.Collections;
-using System.Linq;
-using Microsoft.Xna.Framework.Input;
 using Monocle;
-using ExtendedVariants.Module;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System.Reflection;
@@ -37,6 +33,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.RedDashUpdate += modInputGrabCheck;
             IL.Celeste.Player.HitSquashUpdate += modInputGrabCheck;
             IL.Celeste.Player.LaunchUpdate += modInputGrabCheck;
+            IL.Celeste.Player.DreamDashUpdate += modInputGrabCheck;
             IL.Celeste.Player.StarFlyUpdate += modInputGrabCheck;
 
             dashCoroutineHook = new ILHook(typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), modInputGrabCheck);
@@ -51,6 +48,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.RedDashUpdate -= modInputGrabCheck;
             IL.Celeste.Player.HitSquashUpdate -= modInputGrabCheck;
             IL.Celeste.Player.LaunchUpdate -= modInputGrabCheck;
+            IL.Celeste.Player.DreamDashUpdate -= modInputGrabCheck;
             IL.Celeste.Player.StarFlyUpdate -= modInputGrabCheck;
 
             if (dashCoroutineHook != null) dashCoroutineHook.Dispose();
