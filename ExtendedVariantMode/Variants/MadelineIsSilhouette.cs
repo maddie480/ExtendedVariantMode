@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
                 // hook Max Helping Hand with sick reflection
                 Assembly assembly = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly;
                 Type madelineSilhouetteTrigger = assembly.GetType("Celeste.Mod.MaxHelpingHand.Triggers.MadelineSilhouetteTrigger");
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetMethod("onPlayerAdded", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineIsSilhouette));
+                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetMethod("onPlayerSpriteConstructor", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineIsSilhouette));
                 doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
                     .GetMethod("<patchPlayerRender>b__4_1", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineIsSilhouette));
                 doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
