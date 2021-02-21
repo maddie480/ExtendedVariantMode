@@ -36,6 +36,7 @@ const Variants = String[
 	"DisableMadelineSpotlight",
 	"DisableNeutralJumping",
 	"DisableOshiroSlowdown",
+	"DisableRefillsOnScreenTransition",
 	"DisableSeekerSlowdown",
 	"DisableWallJumping",
 	"DontRefillDashOnGround",

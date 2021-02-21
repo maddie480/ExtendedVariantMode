@@ -217,6 +217,8 @@ MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER=	Multiplicateur de boost
 
 MODOPTIONS_EXTENDEDVARIANTS_FRIENDLYBADELINEFOLLOWER=	Badeline suit le joueur
 
+MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION=	Ne pas recharger le dash au changement d'écran
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Remettre à zéro les variantes automatiquement
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= lorsque tu entres dans un niveau utilisant des variantes étendues
 

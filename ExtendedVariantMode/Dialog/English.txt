@@ -217,6 +217,8 @@ MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER=	Boost Multiplier
 
 MODOPTIONS_EXTENDEDVARIANTS_FRIENDLYBADELINEFOLLOWER=	Friendly Badeline Follower
 
+MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION=	Disable Refills on Screen Transition
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automatically Reset Variants
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= when entering a map using Extended Variants
 
