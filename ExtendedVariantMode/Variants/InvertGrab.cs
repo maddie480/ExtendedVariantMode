@@ -65,10 +65,20 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/InvertGrab", $"Adding code to apply Invert Grab at index {cursor.Index} in CIL code for Player.{cursor.Method.Name}");
                 cursor.GotoNext().Remove().EmitDelegate<Func<VirtualButton, bool>>(invertButtonCheck);
             }
+
+            cursor.Index = 0;
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall(typeof(Input), "get_GrabCheck"))) {
+                Logger.Log("ExtendedVariantMode/InvertGrab", $"Adding code to apply Invert Grab at index {cursor.Index} in CIL code for Player.{cursor.Method.Name}");
+                cursor.GotoNext().EmitDelegate<Func<bool, bool>>(invertButtonCheck);
+            }
         }
 
         private bool invertButtonCheck(VirtualButton button) {
             return Settings.InvertGrab ? !button.Check : button.Check;
+        }
+
+        private bool invertButtonCheck(bool buttonCheck) {
+            return Settings.InvertGrab ? !buttonCheck : buttonCheck;
         }
     }
 }
