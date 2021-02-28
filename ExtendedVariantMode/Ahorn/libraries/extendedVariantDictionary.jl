@@ -38,6 +38,7 @@ const Variants = String[
 	"DisableOshiroSlowdown",
 	"DisableRefillsOnScreenTransition",
 	"DisableSeekerSlowdown",
+	"DisableSuperBoosts",
 	"DisableWallJumping",
 	"DontRefillDashOnGround",
 	"EverythingIsUnderwater",

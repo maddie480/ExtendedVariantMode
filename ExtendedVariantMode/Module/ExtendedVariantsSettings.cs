@@ -127,6 +127,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int ExplodeLaunchSpeed { get; set; } = 10;
 
+        [SettingIgnore]
+        public bool DisableSuperBoosts { get; set; } = false;
+
         // ======================================
 
         [SettingIgnore]

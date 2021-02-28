@@ -10,6 +10,7 @@ using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     class ExplodeLaunchSpeed : AbstractExtendedVariant {
+        private static FieldInfo playerExplodeLaunchBoostTimer = typeof(Player).GetField("explodeLaunchBoostTimer", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private ILHook seekerRegenerateHook;
 
@@ -52,7 +53,19 @@ namespace ExtendedVariants.Variants {
 
         private void correctExplodeLaunchSpeed() {
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
-            if (player != null) player.Speed *= (Settings.ExplodeLaunchSpeed / 10f);
+            if (player != null) {
+                player.Speed *= (Settings.ExplodeLaunchSpeed / 10f);
+
+                if (Settings.DisableSuperBoosts) {
+                    if (Input.MoveX.Value == Math.Sign(player.Speed.X)) {
+                        // cancel super boost
+                        player.Speed.X /= 1.2f;
+                    } else {
+                        // cancel super boost leniency on the Celeste beta (this field does not exist on stable)
+                        playerExplodeLaunchBoostTimer?.SetValue(player, 0f);
+                    }
+                }
+            }
         }
     }
 }

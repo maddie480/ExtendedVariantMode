@@ -45,7 +45,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -78,6 +78,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();
             VariantHandlers[Variant.ExplodeLaunchSpeed] = new ExplodeLaunchSpeed();
+            // DisableSuperBoosts is not a variant
             VariantHandlers[Variant.WallBouncingSpeed] = new WallbouncingSpeed();
             VariantHandlers[Variant.DashLength] = new DashLength();
             VariantHandlers[Variant.ForceDuckOnGround] = new ForceDuckOnGround();
@@ -476,7 +477,8 @@ namespace ExtendedVariants.Module {
                 || Settings.FirstBadelineSpawnRandom
                 || Settings.BadelineBossCount != 1
                 || Settings.BadelineBossNodeCount != 1
-                || Settings.LegacyDashSpeedBehavior) {
+                || Settings.LegacyDashSpeedBehavior
+                || Settings.DisableSuperBoosts) {
 
                 settingChanged = true;
             }
@@ -502,6 +504,7 @@ namespace ExtendedVariants.Module {
             Settings.BadelineBossCount = 1;
             Settings.BadelineBossNodeCount = 1;
             Settings.LegacyDashSpeedBehavior = false;
+            Settings.DisableSuperBoosts = false;
 
             if (settingChanged && SaveData.Instance != null) {
                 Randomizer.RefreshEnabledVariantsDisplayList();

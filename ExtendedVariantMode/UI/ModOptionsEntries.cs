@@ -44,6 +44,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> upsideDownOption;
         private TextMenu.Option<int> hyperdashSpeedOption;
         private TextMenu.Option<int> explodeLaunchSpeedOption;
+        private TextMenu.Option<bool> disableSuperBoostsOption;
         private TextMenu.Option<int> wallBouncingSpeedOption;
         private TextMenu.Option<int> dashLengthOption;
         private TextMenu.Option<int> dashDirectionOption;
@@ -344,6 +345,8 @@ namespace ExtendedVariants.UI {
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BoostMultiplier), indexFromMultiplier(10)).Change(i => Settings.BoostMultiplier = multiplierScale[i]);
                 explodeLaunchSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ExplodeLaunchSpeed), indexFromMultiplier(10)).Change(i => Settings.ExplodeLaunchSpeed = multiplierScale[i]);
+                disableSuperBoostsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS"), Settings.DisableSuperBoosts, false)
+                    .Change(b => Settings.DisableSuperBoosts = b);
                 frictionOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRICTION"),
                     i => {
                         switch (i) {
@@ -658,7 +661,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
-                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
+                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
@@ -706,7 +709,7 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -773,6 +776,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
                 menu.Add(explodeLaunchSpeedOption);
+                menu.Add(disableSuperBoostsOption);
+                disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
                 menu.Add(boostMultiplierOption);
                 menu.Add(disableClimbingUpOrDownOption);
             }
@@ -886,6 +891,7 @@ namespace ExtendedVariants.UI {
             setValue(upsideDownOption, Settings.UpsideDown);
             setValue(hyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
             setValue(explodeLaunchSpeedOption, 0, indexFromMultiplier(Settings.ExplodeLaunchSpeed));
+            setValue(disableSuperBoostsOption, Settings.DisableSuperBoosts);
             setValue(wallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(dashDirectionOption, 0, Settings.DashDirection);
