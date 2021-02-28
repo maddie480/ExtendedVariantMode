@@ -8,5 +8,7 @@ namespace ExtendedVariants.Module {
         public string TriggerColorGrade { get; set; } = null;
 
         public bool ExtendedVariantsWereUsed { get; set; } = false;
+
+        public int DashCountOnLatestRespawn { get; set; } = -1;
     }
 }

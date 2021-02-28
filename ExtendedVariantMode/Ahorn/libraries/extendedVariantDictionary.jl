@@ -64,6 +64,7 @@ const Variants = String[
 	"OshiroEverywhere",
 	"RefillJumpsOnDashRefill",
 	"RegularHiccups",
+	"RestoreDashesOnRespawn",
 	"ReverseOshiroCount",
 	"RisingLavaEverywhere",
 	"RisingLavaSpeed",

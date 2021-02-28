@@ -156,6 +156,7 @@
     <Compile Include="Variants\DisableClimbJumping.cs" />
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
+    <Compile Include="Variants\RestoreDashesOnRespawn.cs" />
     <Compile Include="Variants\DisableWallJumping.cs" />
     <Compile Include="Variants\DisableRefillsOnScreenTransition.cs" />
     <Compile Include="Variants\DontRefillDashOnGround.cs" />

@@ -371,6 +371,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.DisableClimbingUpOrDown) ExtendedVariantsModule.Settings.DisableClimbingUpOrDown = true;
             else if (variant == ExtendedVariantsModule.Variant.FriendlyBadelineFollower) ExtendedVariantsModule.Settings.FriendlyBadelineFollower = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableRefillsOnScreenTransition) ExtendedVariantsModule.Settings.DisableRefillsOnScreenTransition = true;
+            else if (variant == ExtendedVariantsModule.Variant.RestoreDashesOnRespawn) ExtendedVariantsModule.Settings.RestoreDashesOnRespawn = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];

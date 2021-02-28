@@ -89,6 +89,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> allStrawberriesAreGoldensOption;
         private TextMenu.Option<int> dontRefillDashOnGroundOption;
         private TextMenu.Option<bool> disableRefillsOnScreenTransitionOption;
+        private TextMenu.Option<bool> restoreDashesOnRespawnOption;
         private TextMenu.Option<int> gameSpeedOption;
         private TextMenu.Option<int> colorGradingOption;
         private TextMenu.Option<int> jellyfishEverywhereOption;
@@ -329,6 +330,8 @@ namespace ExtendedVariants.UI {
                     .Change(i => Settings.DashRefillOnGroundState = i);
                 disableRefillsOnScreenTransitionOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION"), Settings.DisableRefillsOnScreenTransition, false)
                     .Change(b => Settings.DisableRefillsOnScreenTransition = b);
+                restoreDashesOnRespawnOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN"), Settings.RestoreDashesOnRespawn, false)
+                    .Change(b => Settings.RestoreDashesOnRespawn = b);
                 superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SuperdashSteeringSpeed), indexFromMultiplier(10)).Change(i => Settings.SuperdashSteeringSpeed = multiplierScale[i]);
 
@@ -653,7 +656,7 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition }
+                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior;
 
@@ -702,7 +705,8 @@ namespace ExtendedVariants.UI {
                 badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption};
+                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
+                restoreDashesOnRespawnOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -760,6 +764,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
                 menu.Add(disableRefillsOnScreenTransitionOption);
+                menu.Add(restoreDashesOnRespawnOption);
+                restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
 
                 menu.Add(movingTitle);
                 menu.Add(speedXOption);
@@ -930,6 +936,7 @@ namespace ExtendedVariants.UI {
             setValue(allStrawberriesAreGoldensOption, Settings.AllStrawberriesAreGoldens);
             setValue(dontRefillDashOnGroundOption, 0, Settings.DashRefillOnGroundState);
             setValue(disableRefillsOnScreenTransitionOption, Settings.DisableRefillsOnScreenTransition);
+            setValue(restoreDashesOnRespawnOption, Settings.RestoreDashesOnRespawn);
             setValue(gameSpeedOption, 0, indexFromMultiplier(Settings.GameSpeed));
             setValue(colorGradingOption, -1, Settings.ColorGrading);
             setValue(jellyfishEverywhereOption, 0, Settings.JellyfishEverywhere);
