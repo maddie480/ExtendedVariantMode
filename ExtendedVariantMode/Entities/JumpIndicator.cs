@@ -13,7 +13,7 @@ namespace ExtendedVariants.Entities {
         private ExtendedVariantsSettings settings;
 
         public JumpIndicator() {
-            Depth = -20000; // appear on top of most things, including (most importantly) fg tiles
+            Depth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
             AddTag(Tags.Persistent); // this entity isn't bound to the screen it was spawned in, keep it when transitioning to another level.
 
             settings = ExtendedVariantsModule.Settings;
