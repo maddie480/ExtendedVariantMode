@@ -11,6 +11,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
+using ExtendedVariants.Entities;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -45,7 +46,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -140,6 +141,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.FriendlyBadelineFollower] = new FriendlyBadelineFollower();
             VariantHandlers[Variant.DisableRefillsOnScreenTransition] = new DisableRefillsOnScreenTransition();
             VariantHandlers[Variant.RestoreDashesOnRespawn] = new RestoreDashesOnRespawn();
+            VariantHandlers[Variant.DisplayDashCount] = new DisplayDashCount();
         }
 
         // ================ Mod options setup ================
@@ -214,6 +216,8 @@ namespace ExtendedVariants.Module {
 
         public override void Initialize() {
             base.Initialize();
+
+            DashCountIndicator.Initialize();
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 7, 10) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");

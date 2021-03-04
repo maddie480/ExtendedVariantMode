@@ -226,6 +226,8 @@ MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE=	Si tu avais 1 dash au d
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Remettre à zéro les variantes automatiquement
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= lorsque tu entres dans un niveau utilisant des variantes étendues
 
+MODOPTIONS_EXTENDEDVARIANTS_DISPLAYDASHCOUNT=	Afficher le nombre de dashes
+
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER=	Options des variantes aléatoires
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE=	VARIANTES ALÉATOIRES
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA=	Choisir les variantes de base à modifier

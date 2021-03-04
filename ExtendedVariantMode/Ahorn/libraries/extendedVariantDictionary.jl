@@ -40,6 +40,7 @@ const Variants = String[
 	"DisableSeekerSlowdown",
 	"DisableSuperBoosts",
 	"DisableWallJumping",
+	"DisplayDashCount",
 	"DontRefillDashOnGround",
 	"EverythingIsUnderwater",
 	"ExplodeLaunchSpeed",
