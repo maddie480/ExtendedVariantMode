@@ -2,15 +2,43 @@
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger")]
     public class ExtendedVariantTrigger : Trigger {
+
+        // === hook on teleport to sync up a variant change with a teleport
+        // since all teleport triggers call UnloadLevel(), we can hook that to detect the instant the teleport happens at.
+
+        private static event Action onTeleport;
+
+        public static void Load() {
+            On.Celeste.Level.UnloadLevel += onUnloadLevel;
+        }
+
+        public static void Unload() {
+            On.Celeste.Level.UnloadLevel -= onUnloadLevel;
+            onTeleport = null;
+        }
+
+        private static void onUnloadLevel(On.Celeste.Level.orig_UnloadLevel orig, Level self) {
+            if (onTeleport != null) {
+                onTeleport();
+                onTeleport = null;
+            }
+
+            orig(self);
+        }
+
+        // === extended variant trigger code
+
         private ExtendedVariantsModule.Variant variantChange;
         private int newValue;
         private bool revertOnLeave;
         private bool revertOnDeath;
         private int oldValueToRevertOnLeave;
+        private bool withTeleport;
 
         public ExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) {
             // parse the trigger parameters
@@ -18,6 +46,7 @@ namespace ExtendedVariants {
             newValue = data.Int("newValue", 10);
             revertOnLeave = data.Bool("revertOnLeave", false);
             revertOnDeath = data.Bool("revertOnDeath", true);
+            withTeleport = data.Bool("withTeleport", false);
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
@@ -58,10 +87,18 @@ namespace ExtendedVariants {
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            int oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath);
+            Action applyVariant = () => {
+                int oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath);
 
-            if (revertOnLeave) {
-                oldValueToRevertOnLeave = oldValue;
+                if (revertOnLeave) {
+                    oldValueToRevertOnLeave = oldValue;
+                }
+            };
+
+            if (withTeleport) {
+                onTeleport += applyVariant;
+            } else {
+                applyVariant();
             }
         }
 

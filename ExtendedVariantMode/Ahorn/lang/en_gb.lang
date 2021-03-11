@@ -4,6 +4,7 @@ placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.enable=I
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.newValue=The new internal value for the variant (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
 placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/ExtendedVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 
 # Extended Variants Fade Trigger
 placements.triggers.ExtendedVariantMode/ExtendedVariantFadeTrigger.tooltips.variantChange=The variant to change.
@@ -26,6 +27,7 @@ placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.toolti
 placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.tooltips.inverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 
 # Color Grade Trigger
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.

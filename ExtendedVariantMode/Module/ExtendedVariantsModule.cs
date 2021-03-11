@@ -317,6 +317,7 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant trigger manager...");
             TriggerManager.Load();
+            ExtendedVariantTrigger.Load();
 
             On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;
@@ -331,6 +332,7 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
+            ExtendedVariantTrigger.Unload();
 
             On.Celeste.LevelEnter.Routine -= addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender -= addForceEnabledVariantsPostcardRendering;
