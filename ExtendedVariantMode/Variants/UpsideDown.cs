@@ -5,11 +5,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class UpsideDown : AbstractExtendedVariant {
+        private static FieldInfo inputFeather = typeof(Input).GetField("Feather"); // only exists on the beta! will be null on 1.3.1.2
+
         private static ZoomLevel zoomLevelVariant;
 
         public UpsideDown(ZoomLevel zoomLevel) {
@@ -37,6 +41,9 @@ namespace ExtendedVariants.Variants {
 
             // be sure the controls are not upside down anymore
             Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
+            if (inputFeather != null) {
+                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = false;
+            }
         }
 
         /// <summary>
@@ -107,6 +114,9 @@ namespace ExtendedVariants.Variants {
 
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
             Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
+            if (inputFeather != null) {
+                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = ExtendedVariantsModule.Settings.UpsideDown;
+            }
 
             paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
