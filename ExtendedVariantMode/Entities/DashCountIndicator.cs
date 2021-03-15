@@ -3,12 +3,17 @@ using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System.Collections.Generic;
 
 namespace ExtendedVariants.Entities {
     /// <summary>
     /// An indicator for the dash count (numbers above Madeline's head).
     /// </summary>
     class DashCountIndicator : Entity {
+        // dash count is hidden during intros and cutscenes, when player doesn't have control.
+        private static readonly HashSet<int> hiddenPlayerStates = new HashSet<int> { Player.StIntroJump, Player.StIntroMoonJump, Player.StIntroRespawn,
+            Player.StIntroThinkForABit, Player.StIntroWakeUp, Player.StIntroWalk, Player.StReflectionFall, Player.StDummy };
+
         private static MTexture[] numbers;
         private ExtendedVariantsSettings settings;
 
@@ -51,6 +56,11 @@ namespace ExtendedVariants.Entities {
 
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
+                if (hiddenPlayerStates.Contains(player.StateMachine.State)) {
+                    // the player is in one of the states that should have the dash count hidden.
+                    return;
+                }
+
                 // compute the jump count so that we can put the dash count above it.
                 int jumpIndicatorsToDraw = settings.JumpCount == 6 ? 0 : JumpCount.GetJumpBuffer();
                 int jumpCountLines = jumpIndicatorsToDraw == 0 ? 0 : 1 + (jumpIndicatorsToDraw - 1) / 5;
