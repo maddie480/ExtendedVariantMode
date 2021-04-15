@@ -63,10 +63,7 @@ namespace ExtendedVariants.Variants {
         }
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
-            IEnumerator origEnum = orig(self, next, direction);
-            while (origEnum.MoveNext()) {
-                yield return origEnum.Current;
-            }
+            yield return orig(self, next, direction);
 
             // Resets the BaseLightingAlpha to its initial value (if modified by modLoadLevel)
             if (initialBaseLightingAlpha != -1f) {

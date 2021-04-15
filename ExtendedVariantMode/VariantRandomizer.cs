@@ -173,12 +173,7 @@ namespace ExtendedVariants {
                 }
             }
 
-            IEnumerator origEnum = orig(self, next, direction);
-            while (origEnum.MoveNext()) {
-                yield return origEnum.Current;
-            }
-
-            yield break;
+            yield return orig(self, next, direction);
         }
 
         private void onUpdate(On.Celeste.Player.orig_Update orig, Player self) {

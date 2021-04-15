@@ -128,10 +128,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
-            IEnumerator coroutine = orig(self, player);
-            while (coroutine.MoveNext()) {
-                yield return coroutine.Current;
-            }
+            yield return orig(self, player);
 
             // apply the dash refill rules here (this does not call RefillDash)
             if (Settings.DashCount != -1) {

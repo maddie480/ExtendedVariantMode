@@ -44,7 +44,7 @@ namespace ExtendedVariants.UI {
             }
 
             // finish running Enter
-            while (enterEnum.MoveNext()) yield return enterEnum.Current;
+            yield return enterEnum;
         }
 
         public override IEnumerator Leave(Oui next) {
