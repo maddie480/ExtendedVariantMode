@@ -108,6 +108,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableClimbingUpOrDownOption;
         private TextMenu.Option<bool> friendlyBadelineFollowerOption;
         private TextMenu.Option<bool> displayDashCountOption;
+        private TextMenu.Option<int> madelineBackpackModeOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -496,6 +497,20 @@ namespace ExtendedVariants.UI {
                 madelineHasPonytailOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEHASPONYTAIL"), Settings.MadelineHasPonytail, false)
                     .Change(b => Settings.MadelineHasPonytail = b);
 
+                madelineBackpackModeOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE"),
+                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_{i}"), 0, 2, Settings.MadelineBackpackMode, 0).Change(i => {
+                        Settings.MadelineBackpackMode = i;
+
+                        Player p = Engine.Scene.Tracker.GetEntity<Player>();
+                        if (p != null) {
+                            if (p.Active) {
+                                p.ResetSpriteNextFrame(p.DefaultSpriteMode);
+                            } else {
+                                p.ResetSprite(p.DefaultSpriteMode);
+                            }
+                        }
+                    });
+
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
                         if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
@@ -682,7 +697,7 @@ namespace ExtendedVariants.UI {
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail }
+                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -716,7 +731,7 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -836,6 +851,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashTrailAllTheTimeOption);
                 if (Instance.MaxHelpingHandInstalled) menu.Add(madelineHasPonytailOption);
                 menu.Add(displayDashCountOption);
+                menu.Add(madelineBackpackModeOption);
 
                 menu.Add(levelTitle);
                 menu.Add(upsideDownOption);
@@ -961,6 +977,7 @@ namespace ExtendedVariants.UI {
             setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
             setValue(madelineHasPonytailOption, Settings.MadelineHasPonytail);
             setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
+            setValue(madelineBackpackModeOption, 0, Settings.MadelineBackpackMode);
             setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
             setValue(friendlyBadelineFollowerOption, Settings.FriendlyBadelineFollower);
             setValue(displayDashCountOption, Settings.DisplayDashCount);

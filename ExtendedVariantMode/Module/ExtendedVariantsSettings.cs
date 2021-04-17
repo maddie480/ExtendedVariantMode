@@ -350,6 +350,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool DashTrailAllTheTime { get; set; } = false;
 
+        [SettingIgnore]
+        public int MadelineBackpackMode { get; set; } = 0;
+
         // ======================================
 
         [SettingIgnore]

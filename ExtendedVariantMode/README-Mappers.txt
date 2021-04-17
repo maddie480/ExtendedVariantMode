@@ -10,7 +10,7 @@ First, add the dependency to your map. For example, everest.yaml will look like 
     - Name: ExtendedVariantMode
       Version: 0.1.0
 
-Since the following list is pretty massive, you can Ctrl+F and type the variant you want to use to find out how to use it!
+Since the following list is pretty massive, you can hit Ctrl+F and type the variant you want to use to find out how to use it!
 
 To enable a variant in a map, you can place an "Extended Variant Trigger" in Ahorn. These have 3 options:
 - Variant: pick the variant you want to change
@@ -55,6 +55,7 @@ The following variants are **not** available in the extended variants trigger dr
 - Room Bloom: use a vanilla Bloom Fade Trigger instead
 - Madeline is a Silhouette: use a Madeline Silhouette Trigger (max480's Helping Hand) instead
 - Madeline has a Ponytail: use a Madeline Ponytail Trigger (max480's Helping Hand) instead
+- Madeline Backpack: use inventory instead
 
 After you placed your first trigger, be sure to exit out of the level and to start it again. Trigger stuff is only initialized when you enter a level with an extended variant trigger in it.
 

@@ -408,6 +408,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.BlurLevel) ExtendedVariantsModule.Settings.BlurLevel = randomGenerator.Next(10) + 1; // random 5~100%
             else if (variant == ExtendedVariantsModule.Variant.DashDirection) ExtendedVariantsModule.Settings.DashDirection = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
             else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DashRefillOnGroundState = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
+            else if (variant == ExtendedVariantsModule.Variant.MadelineBackpackMode) ExtendedVariantsModule.Settings.MadelineBackpackMode = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
         }
 
         private void toggleVanillaVariant(VanillaVariant variant, bool enabled) {
@@ -477,6 +478,7 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.AnxietyEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.BlurLevel) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BlurLevel * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) enabledVariantsToDisplay.Add($"{variantName}: " + (ExtendedVariantsModule.Settings.DashRefillOnGroundState == 2 ? Dialog.Clean("OPTIONS_OFF") : Dialog.Clean("OPTIONS_ON")));
+                else if (variant == ExtendedVariantsModule.Variant.MadelineBackpackMode) enabledVariantsToDisplay.Add($"{variantName}: " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_" + ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue()));
                 else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
                     string resourceName = ColorGrading.ExistingColorGrades[ExtendedVariantsModule.Settings.ColorGrading];
                     if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
