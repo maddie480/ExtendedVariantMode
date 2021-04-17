@@ -10,10 +10,12 @@ First, add the dependency to your map. For example, everest.yaml will look like 
     - Name: ExtendedVariantMode
       Version: 0.1.0
 
+Since the following list is pretty massive, you can Ctrl+F and type the variant you want to use to find out how to use it!
+
 To enable a variant in a map, you can place an "Extended Variant Trigger" in Ahorn. These have 3 options:
 - Variant: pick the variant you want to change
 - New Value: pick the value you want to set the variant to. Those are the internal values used by the mod, and thus, can have kinda convoluted logic:
-	- Gravity, FallSpeed, JumpHeight, SpeedX, DashSpeed, Friction, HyperdashSpeed, ExplodeLaunchSpeed, WallBouncingSpeed, DashLength, SwimmingSpeed,
+	- Gravity, FallSpeed, JumpHeight, SpeedX (Horizontal Speed), DashSpeed, Friction, HyperdashSpeed, ExplodeLaunchSpeed, WallBouncingSpeed, DashLength, SwimmingSpeed,
 		HiccupStrength, GameSpeed, RisingLavaSpeed, SuperdashSteeringSpeed, ScreenShakeIntensity, ZoomLevel, BoostMultiplier: the value is the multiplier * 10 (for example, "12" will set the option to 1.2x).
 		- The only exception is Friction (ground friction) and AirFriction, where 0 is actually 0.05x and -1 is 0x.
 	- Stamina: the value is the max stamina / 10 (for example, "20" will set max stamina to 200, the default value being 110).
@@ -32,13 +34,8 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 	- DontRefillDashOnGround: 0 to use the map's default, 1 to disable dash refills on ground, 2 to force dash refills on ground to be enabled.
 	- OshiroCount, ReverseOshiroCount: the number of Oshiros you want, when OshiroEverywhere is enabled
 	- RegularHiccups: the number of tenths of seconds after which a hiccup should occur (for example 15 for 1.5s), 0 to disable
-	- RoomLighting: the room's lighting in % divided by 10 (9 => 90%), -1 to disable
 	- BackgroundBrightness, ForegroundEffectOpacity: the background brightness / foreground opacity in % divided by 10 (9 => 90%)
 	- BlurLevel: the percentage displayed in-game, divided by 10 (5 => 50%). 50% gives a Gaussian blur with sample scale = 0.5. Don't ask me too many details.
-	- RoomBloom:
-		- -1 = don't change anything
-		- 0 to 10 => bloom base = value / 10, bloom strength = 1. For example, 8 => bloom base = 0.8, bloom strength = 1, displayed as 80% in the menu
-		- 11 to 14 => bloom base = 1, bloom strength = value - 9. For example, 12 => bloom base = 1, bloom strength = 3, displayed as 300% in the menu
 	- GlitchEffect, AnxietyEffect: the value in percent / 5 (for example 19 will give 95%), -1 to disable
 	- WindEverywhere: 0 = disabled, 1 = Left, 2 = Right, 3 = LeftStrong, 4 = RightStrong, 5 = RightCrazy, 6 = LeftOnOff, 7 = RightOnOff, 8 = Alternating, 9 = LeftOnOffFast,
         10 = RightOnOffFast, 11 = Down, 12 = Up, 13 = Random
@@ -52,6 +49,12 @@ To enable a variant in a map, you can place an "Extended Variant Trigger" in Aho
 - Revert On Leave: Set the variant back to its original value when Madeline leaves the trigger.
 - Revert On Death: Set the variant back to its original value when Madeline dies before she changes rooms or changes respawn points.
 - Enable: uncheck this if you want the variant to be reset to its default value, disregarding the "New Value" option.
+
+The following variants are **not** available in the extended variants trigger dropdown, because there are better alternatives:
+- Room Lighting: use a vanilla Light Fade Trigger instead
+- Room Bloom: use a vanilla Bloom Fade Trigger instead
+- Madeline is a Silhouette: use a Madeline Silhouette Trigger (max480's Helping Hand) instead
+- Madeline has a Ponytail: use a Madeline Ponytail Trigger (max480's Helping Hand) instead
 
 After you placed your first trigger, be sure to exit out of the level and to start it again. Trigger stuff is only initialized when you enter a level with an extended variant trigger in it.
 

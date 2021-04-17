@@ -70,8 +70,6 @@ const Variants = String[
 	"ReverseOshiroCount",
 	"RisingLavaEverywhere",
 	"RisingLavaSpeed",
-	"RoomBloom",
-	"RoomLighting",
 	"ScreenShakeIntensity",
 	"SnowballDelay",
 	"SnowballsEverywhere",
