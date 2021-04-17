@@ -362,6 +362,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.BounceEverywhere) ExtendedVariantsModule.Settings.BounceEverywhere = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableMadelineSpotlight) ExtendedVariantsModule.Settings.DisableMadelineSpotlight = true;
             else if (variant == ExtendedVariantsModule.Variant.MadelineIsSilhouette) ExtendedVariantsModule.Settings.MadelineIsSilhouette = true;
+            else if (variant == ExtendedVariantsModule.Variant.MadelineHasPonytail) ExtendedVariantsModule.Settings.MadelineHasPonytail = true;
             else if (variant == ExtendedVariantsModule.Variant.DashTrailAllTheTime) ExtendedVariantsModule.Settings.DashTrailAllTheTime = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableClimbingUpOrDown) ExtendedVariantsModule.Settings.DisableClimbingUpOrDown = true;
             else if (variant == ExtendedVariantsModule.Variant.FriendlyBadelineFollower) ExtendedVariantsModule.Settings.FriendlyBadelineFollower = true;

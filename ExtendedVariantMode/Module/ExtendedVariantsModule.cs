@@ -46,7 +46,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -134,6 +134,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableMadelineSpotlight] = new DisableMadelineSpotlight();
             VariantHandlers[Variant.ForegroundEffectOpacity] = new ForegroundEffectOpacity();
             // MadelineIsSilhouette is instanciated in Initialize
+            // MadelineHasPonytail is instanciated in Initialize
             VariantHandlers[Variant.DashTrailAllTheTime] = new DashTrailAllTheTime();
             VariantHandlers[Variant.DisableClimbingUpOrDown] = new DisableClimbingUpOrDown();
             VariantHandlers[Variant.SwimmingSpeed] = new SwimmingSpeed();
@@ -224,7 +225,7 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");
             SpringCollab2020Installed = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "SpringCollab2020", Version = new Version(1, 0, 0) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Spring Collab 2020 installed = {SpringCollab2020Installed}");
-            MaxHelpingHandInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "MaxHelpingHand", Version = new Version(1, 12, 2) });
+            MaxHelpingHandInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "MaxHelpingHand", Version = new Version(1, 14, 6) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Max Helping Hand installed = {MaxHelpingHandInstalled}");
 
             if (!DJMapHelperInstalled) {
@@ -243,6 +244,19 @@ namespace ExtendedVariants.Module {
                 if (stuffIsHooked) {
                     // and activate it if all others are already active!
                     VariantHandlers[Variant.MadelineIsSilhouette].Load();
+                }
+            }
+            if (!MaxHelpingHandInstalled) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Has Ponytail");
+                Settings.MadelineHasPonytail = false;
+                SaveSettings();
+            } else {
+                // let's add this variant in now.
+                VariantHandlers[Variant.MadelineHasPonytail] = new MadelineHasPonytail();
+
+                if (stuffIsHooked) {
+                    // and activate it if all others are already active!
+                    VariantHandlers[Variant.MadelineHasPonytail].Load();
                 }
             }
         }
@@ -583,6 +597,10 @@ namespace ExtendedVariants.Module {
                 // check if extended variants are used.
                 foreach (Variant variant in Enum.GetValues(typeof(Variant))) {
                     if (variant == Variant.MadelineIsSilhouette && !MaxHelpingHandInstalled && !SpringCollab2020Installed) {
+                        // this variant cannot be enabled, because it does not exist.
+                        continue;
+                    }
+                    if (variant == Variant.MadelineHasPonytail && !MaxHelpingHandInstalled) {
                         // this variant cannot be enabled, because it does not exist.
                         continue;
                     }

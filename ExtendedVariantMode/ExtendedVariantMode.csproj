@@ -158,6 +158,7 @@
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
     <Compile Include="Variants\DisplayDashCount.cs" />
+    <Compile Include="Variants\MadelineHasPonytail.cs" />
     <Compile Include="Variants\RestoreDashesOnRespawn.cs" />
     <Compile Include="Variants\DisableWallJumping.cs" />
     <Compile Include="Variants\DisableRefillsOnScreenTransition.cs" />

@@ -103,6 +103,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableMadelineSpotlightOption;
         private TextMenu.Option<int> foregroundEffectOpacityOption;
         private TextMenu.Option<bool> madelineIsSilhouetteOption;
+        private TextMenu.Option<bool> madelineHasPonytailOption;
         private TextMenu.Option<bool> dashTrailAllTheTimeOption;
         private TextMenu.Option<bool> disableClimbingUpOrDownOption;
         private TextMenu.Option<bool> friendlyBadelineFollowerOption;
@@ -492,6 +493,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.MadelineIsSilhouette = b);
                 dashTrailAllTheTimeOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTRAILALLTHETIME"), Settings.DashTrailAllTheTime, false)
                     .Change(b => Settings.DashTrailAllTheTime = b);
+                madelineHasPonytailOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEHASPONYTAIL"), Settings.MadelineHasPonytail, false)
+                    .Change(b => Settings.MadelineHasPonytail = b);
 
                 roomBloomOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM"),
                     i => {
@@ -679,7 +682,7 @@ namespace ExtendedVariants.UI {
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount }
+                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -713,7 +716,7 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -831,6 +834,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(disableMadelineSpotlightOption);
                 if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(madelineIsSilhouetteOption);
                 menu.Add(dashTrailAllTheTimeOption);
+                if (Instance.MaxHelpingHandInstalled) menu.Add(madelineHasPonytailOption);
                 menu.Add(displayDashCountOption);
 
                 menu.Add(levelTitle);
@@ -955,6 +959,7 @@ namespace ExtendedVariants.UI {
             setValue(superdashSteeringSpeedOption, 0, indexFromMultiplier(Settings.SuperdashSteeringSpeed));
             setValue(screenShakeIntensityOption, 0, Settings.ScreenShakeIntensity);
             setValue(madelineIsSilhouetteOption, Settings.MadelineIsSilhouette);
+            setValue(madelineHasPonytailOption, Settings.MadelineHasPonytail);
             setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
             setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
             setValue(friendlyBadelineFollowerOption, Settings.FriendlyBadelineFollower);

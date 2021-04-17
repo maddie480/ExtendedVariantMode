@@ -344,6 +344,8 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public bool MadelineIsSilhouette { get; set; } = false;
+        [SettingIgnore]
+        public bool MadelineHasPonytail { get; set; } = false;
 
         [SettingIgnore]
         public bool DashTrailAllTheTime { get; set; } = false;
