@@ -430,7 +430,8 @@ namespace ExtendedVariants.Module {
             }
 
             // just go on with vanilla behavior (other postcards, B-side intro, etc)
-            yield return orig(self);
+            IEnumerator origEnum = orig(self);
+            while (origEnum.MoveNext()) yield return origEnum.Current;
         }
 
         private void addForceEnabledVariantsPostcardRendering(On.Celeste.LevelEnter.orig_BeforeRender orig, LevelEnter self) {
@@ -702,7 +703,10 @@ namespace ExtendedVariants.Module {
 
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
             badelineBoosting = true;
-            yield return orig(self, player);
+            IEnumerator coroutine = orig(self, player);
+            while (coroutine.MoveNext()) {
+                yield return coroutine.Current;
+            }
             badelineBoosting = false;
         }
 

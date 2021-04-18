@@ -134,7 +134,10 @@ namespace ExtendedVariants.Variants {
         /// <returns></returns>
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
-            yield return orig(self, next, direction);
+            IEnumerator origEnum = orig(self, next, direction);
+            while (origEnum.MoveNext()) {
+                yield return origEnum.Current;
+            }
 
             // then decide whether to add Badeline or not
             injectBadelineChasers(self);
@@ -302,7 +305,10 @@ namespace ExtendedVariants.Variants {
             UsingWatchtower = true;
             float timeStartedUsing = Engine.Scene.TimeActive;
 
-            yield return orig(self, player);
+            IEnumerator origRoutine = orig(self, player);
+            while (origRoutine.MoveNext()) {
+                yield return origRoutine.Current;
+            }
 
             UsingWatchtower = false;
 

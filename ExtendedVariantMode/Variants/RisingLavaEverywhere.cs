@@ -46,7 +46,10 @@ namespace ExtendedVariants.Variants {
 
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             // just make sure the whole transition routine is over
-            yield return orig(self, next, direction);
+            IEnumerator origEnum = orig(self, next, direction);
+            while (origEnum.MoveNext()) {
+                yield return origEnum.Current;
+            }
 
             addRisingLavaToLevel(self);
 

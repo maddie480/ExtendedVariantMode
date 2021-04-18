@@ -116,7 +116,9 @@ namespace ExtendedVariants.Variants {
                 self.StateMachine.State = 0;
             } else {
                 // continue with the dash like normal.
-                yield return vanillaCoroutine;
+                while (vanillaCoroutine.MoveNext()) {
+                    yield return vanillaCoroutine.Current;
+                }
             }
         }
 

@@ -1,17 +1,13 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
 using System;
 using System.Collections;
-using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     class DontRefillDashOnGround : AbstractExtendedVariant {
         private ILHook patchOrigUpdate;
-        private ILHook patchSeekerRegenerateRoutine;
 
         public override int GetDefaultValue() {
             return 0;
@@ -37,9 +33,9 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Bumper.OnPlayer += patchBumperOnPlayer;
             On.Celeste.Puffer.Explode += patchPufferExplode;
             On.Celeste.TempleBigEyeball.OnPlayer += patchTempleBigEyeballOnPlayer;
+            On.Celeste.Seeker.RegenerateCoroutine += patchSeekerRegenerateCoroutine;
 
             patchOrigUpdate = new ILHook(typeof(Player).GetMethod("orig_Update"), patchNoRefills);
-            patchSeekerRegenerateRoutine = new ILHook(typeof(Seeker).GetMethod("RegenerateCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchSeekerRegenerateCoroutine);
         }
 
         public override void Unload() {
@@ -51,12 +47,10 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Bumper.OnPlayer -= patchBumperOnPlayer;
             On.Celeste.Puffer.Explode -= patchPufferExplode;
             On.Celeste.TempleBigEyeball.OnPlayer -= patchTempleBigEyeballOnPlayer;
+            On.Celeste.Seeker.RegenerateCoroutine -= patchSeekerRegenerateCoroutine;
 
             patchOrigUpdate?.Dispose();
             patchOrigUpdate = null;
-
-            patchSeekerRegenerateRoutine?.Dispose();
-            patchSeekerRegenerateRoutine = null;
         }
 
         private void patchNoRefills(ILContext il) {
@@ -96,36 +90,21 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void patchSeekerRegenerateCoroutine(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
+        private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
+            IEnumerator original = orig(self);
 
-            bool origNoRefills = false;
+            Session session = self.SceneAs<Level>().Session;
+            bool origNoRefills = session.Inventory.NoRefills;
 
-            // position the cursor just after yield return 0.15f;
-            if (cursor.TryGotoNext(instr => instr.MatchLdcR4(0.15f))
-                && cursor.TryGotoNext(instr => instr.MatchRet())
-                && cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchLdarg(0))) {
-
-                Logger.Log("ExtendedVariantMode/DontRefillDashOnGround", $"Patching in no refills at {cursor.Index} in IL for Seeker.RegenerateCoroutine");
-
-                FieldInfo f_this = typeof(Seeker).GetMethod("RegenerateCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget().DeclaringType.GetField("<>4__this");
-
-                // take away refills if needed.
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.Emit(OpCodes.Ldfld, f_this);
-                cursor.EmitDelegate<Action<Seeker>>(self => {
-                    origNoRefills = self.SceneAs<Level>().Session.Inventory.NoRefills;
-                    self.SceneAs<Level>().Session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
-                });
-
-                // jump just before the following yield return
-                cursor.GotoNext(instr => instr.MatchRet());
-
-                // restore the normal no refills value.
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.Emit(OpCodes.Ldfld, f_this);
-                cursor.EmitDelegate<Action<Seeker>>(self => self.SceneAs<Level>().Session.Inventory.NoRefills = origNoRefills);
+            while (original.MoveNext()) {
+                yield return original.Current;
+                if (original.Current != null && original.Current.GetType() == typeof(float) && (float) original.Current == 0.15f) {
+                    // modify dash refills between the last "yield return" and the end of the method.
+                    origNoRefills = session.Inventory.NoRefills;
+                    session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
+                }
             }
+            session.Inventory.NoRefills = origNoRefills;
         }
     }
 }
