@@ -152,11 +152,26 @@ namespace ExtendedVariants.UI {
             25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 250, 500, 1000
         };
 
+        private static int[] multiplierScaleWithNegatives = new int[] {
+            -1000, -500, -250, -100, -90, -80, -70, -60, -50, -45, -40, -35, -30, -25,
+            -20, -19, -18, -17, -16, -15, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 250, 500, 1000
+        };
+
         /// <summary>
         /// Formats a multiplier (with no decimal point if not required).
         /// </summary>
         private Func<int, string> multiplierFormatter = option => {
             option = multiplierScale[option];
+            if (option % 10 == 0) {
+                return $"{option / 10f:n0}x";
+            }
+            return $"{option / 10f:n1}x";
+        };
+
+        private Func<int, string> multiplierFormatterWithNegatives = option => {
+            option = multiplierScaleWithNegatives[option];
             if (option % 10 == 0) {
                 return $"{option / 10f:n0}x";
             }
@@ -178,6 +193,16 @@ namespace ExtendedVariants.UI {
             }
 
             return multiplierScale.Length - 1;
+        }
+
+        private int indexFromMultiplierWithNegatives(int option) {
+            for (int index = 0; index < multiplierScaleWithNegatives.Length - 1; index++) {
+                if (multiplierScaleWithNegatives[index + 1] > option) {
+                    return index;
+                }
+            }
+
+            return multiplierScaleWithNegatives.Length - 1;
         }
 
         public enum VariantCategory {
@@ -345,7 +370,7 @@ namespace ExtendedVariants.UI {
                 swimmingSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SwimmingSpeed), indexFromMultiplier(10)).Change(i => Settings.SwimmingSpeed = multiplierScale[i]);
                 boostMultiplierOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER"),
-                    multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.BoostMultiplier), indexFromMultiplier(10)).Change(i => Settings.BoostMultiplier = multiplierScale[i]);
+                    multiplierFormatterWithNegatives, 0, multiplierScaleWithNegatives.Length - 1, indexFromMultiplierWithNegatives(Settings.BoostMultiplier), indexFromMultiplierWithNegatives(10)).Change(i => Settings.BoostMultiplier = multiplierScaleWithNegatives[i]);
                 explodeLaunchSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ExplodeLaunchSpeed), indexFromMultiplier(10)).Change(i => Settings.ExplodeLaunchSpeed = multiplierScale[i]);
                 disableSuperBoostsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS"), Settings.DisableSuperBoosts, false)

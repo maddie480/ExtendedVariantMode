@@ -2,6 +2,7 @@
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
@@ -53,8 +54,14 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/BoostMultiplier", $"Modding lift boost at {cursor.Index} in IL for {il.Method.FullName}");
 
                 // turn LiftBoost into LiftBoost * (Settings.BoostMultiplier / 10f)
-                cursor.EmitDelegate<Func<float>>(() => Settings.BoostMultiplier / 10f);
-                cursor.Emit(OpCodes.Call, typeof(Vector2).GetMethod("op_Multiply", new Type[] { typeof(Vector2), typeof(float) }));
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Func<Vector2, Player, Vector2>>((orig, self) => {
+                    if (Settings.BoostMultiplier < 0f) {
+                        // capping has to be flipped around too!
+                        orig.Y = Calc.Clamp(self.LiftSpeed.Y, 0f, 130f);
+                    }
+                    return orig * (Settings.BoostMultiplier / 10f);
+                });
             }
         }
     }
