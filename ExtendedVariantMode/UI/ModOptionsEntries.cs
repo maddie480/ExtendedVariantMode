@@ -53,6 +53,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> invertDashesOption;
         private TextMenu.Option<bool> invertGrabOption;
         private TextMenu.Option<bool> invertHorizontalControlsOption;
+        private TextMenu.Option<bool> invertVerticalControlsOption;
         private TextMenu.Option<bool> disableNeutralJumpingOption;
         private TextMenu.Option<bool> changeVariantsRandomlyOption;
         private TextMenu.Option<bool> badelineChasersEverywhereOption;
@@ -646,6 +647,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.InvertGrab = b);
                 invertHorizontalControlsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTHORIZONTALCONTROLS"), Settings.InvertHorizontalControls, false)
                     .Change(b => Settings.InvertHorizontalControls = b);
+                invertVerticalControlsOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTVERTICALCONTROLS"), Settings.InvertVerticalControls, false)
+                    .Change(b => Settings.InvertVerticalControls = b);
                 bounceEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOUNCEEVERYWHERE"), Settings.BounceEverywhere, false)
                     .Change(b => Settings.BounceEverywhere = b);
             }
@@ -727,7 +730,7 @@ namespace ExtendedVariants.UI {
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.GameSpeed, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.BounceEverywhere }
+                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.HiccupStrength != 10;
             }
@@ -756,7 +759,7 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -907,6 +910,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(invertDashesOption);
                 menu.Add(invertGrabOption);
                 menu.Add(invertHorizontalControlsOption);
+                menu.Add(invertVerticalControlsOption);
                 menu.Add(bounceEverywhereOption);
             }
 
@@ -949,6 +953,7 @@ namespace ExtendedVariants.UI {
             setValue(invertDashesOption, Settings.InvertDashes);
             setValue(invertGrabOption, Settings.InvertGrab);
             setValue(invertHorizontalControlsOption, Settings.InvertHorizontalControls);
+            setValue(invertVerticalControlsOption, Settings.InvertVerticalControls);
             setValue(heldDashOption, Settings.HeldDash);
             setValue(disableNeutralJumpingOption, Settings.DisableNeutralJumping);
             setValue(badelineChasersEverywhereOption, Settings.BadelineChasersEverywhere);

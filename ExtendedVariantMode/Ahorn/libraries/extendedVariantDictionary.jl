@@ -59,6 +59,7 @@ const Variants = String[
 	"InvertDashes",
 	"InvertGrab",
 	"InvertHorizontalControls",
+	"InvertVerticalControls",
 	"JellyfishEverywhere",
 	"JumpCount",
 	"JumpHeight",

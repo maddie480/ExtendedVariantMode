@@ -46,7 +46,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -126,6 +126,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
             VariantHandlers[Variant.InvertHorizontalControls] = new InvertHorizontalControls();
+            VariantHandlers[Variant.InvertVerticalControls] = new InvertVerticalControls();
             VariantHandlers[Variant.BounceEverywhere] = new BounceEverywhere();
             VariantHandlers[Variant.SuperdashSteeringSpeed] = new SuperdashSteeringSpeed();
             VariantHandlers[Variant.ScreenShakeIntensity] = new ScreenShakeIntensity();

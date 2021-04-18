@@ -284,6 +284,8 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public bool InvertHorizontalControls { get; set; } = false;
+        [SettingIgnore]
+        public bool InvertVerticalControls { get; set; } = false;
 
         // ======================================
 
