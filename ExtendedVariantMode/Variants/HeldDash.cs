@@ -5,9 +5,13 @@ using MonoMod.Cil;
 using MonoMod.Utils;
 using System;
 using System.Collections;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     class HeldDash : AbstractExtendedVariant {
+        // allows to check with reflection that Input.CrouchDash exists before using it.
+        private static FieldInfo crouchDash = typeof(Input).GetField("CrouchDash");
+
         public override int GetDefaultValue() {
             return 0;
         }
@@ -38,7 +42,7 @@ namespace ExtendedVariants.Variants {
                 object o = coroutine.Current;
                 if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while (Input.Dash.Check && hasHeldDash(self)) {
+                    while (hasHeldDash(self) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
                         yield return null;
                     }
                 } else {
@@ -47,6 +51,10 @@ namespace ExtendedVariants.Variants {
             }
 
             yield break;
+        }
+
+        private bool crouchDashCheck() {
+            return Input.CrouchDash.Check;
         }
 
         /// <summary>
