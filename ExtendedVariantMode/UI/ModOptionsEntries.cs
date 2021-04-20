@@ -45,6 +45,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> hyperdashSpeedOption;
         private TextMenu.Option<int> explodeLaunchSpeedOption;
         private TextMenu.Option<bool> disableSuperBoostsOption;
+        private TextMenu.Option<bool> dontRefillStaminaOnGroundOption;
         private TextMenu.Option<int> wallBouncingSpeedOption;
         private TextMenu.Option<int> dashLengthOption;
         private TextMenu.Option<int> dashDirectionOption;
@@ -360,6 +361,8 @@ namespace ExtendedVariants.UI {
                     .Change(i => Settings.DashRefillOnGroundState = i);
                 disableRefillsOnScreenTransitionOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION"), Settings.DisableRefillsOnScreenTransition, false)
                     .Change(b => Settings.DisableRefillsOnScreenTransition = b);
+                dontRefillStaminaOnGroundOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLSTAMINAONGROUND"), Settings.DontRefillStaminaOnGround, false)
+                    .Change(b => Settings.DontRefillStaminaOnGround = b);
                 restoreDashesOnRespawnOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN"), Settings.RestoreDashesOnRespawn, false)
                     .Change(b => Settings.RestoreDashesOnRespawn = b);
                 superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
@@ -711,7 +714,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
-                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts;
+                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DontRefillStaminaOnGround;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
@@ -759,7 +762,7 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -817,6 +820,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
                 menu.Add(disableRefillsOnScreenTransitionOption);
+                menu.Add(dontRefillStaminaOnGroundOption);
                 menu.Add(restoreDashesOnRespawnOption);
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
 
@@ -946,6 +950,7 @@ namespace ExtendedVariants.UI {
             setValue(hyperdashSpeedOption, 0, indexFromMultiplier(Settings.HyperdashSpeed));
             setValue(explodeLaunchSpeedOption, 0, indexFromMultiplier(Settings.ExplodeLaunchSpeed));
             setValue(disableSuperBoostsOption, Settings.DisableSuperBoosts);
+            setValue(dontRefillStaminaOnGroundOption, Settings.DontRefillStaminaOnGround);
             setValue(wallBouncingSpeedOption, 0, indexFromMultiplier(Settings.WallBouncingSpeed));
             setValue(dashLengthOption, 0, indexFromMultiplier(Settings.DashLength));
             setValue(dashDirectionOption, 0, Settings.DashDirection);

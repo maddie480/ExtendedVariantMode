@@ -42,6 +42,7 @@ const Variants = String[
 	"DisableWallJumping",
 	"DisplayDashCount",
 	"DontRefillDashOnGround",
+	"DontRefillStaminaOnGround",
 	"EverythingIsUnderwater",
 	"ExplodeLaunchSpeed",
 	"FallSpeed",

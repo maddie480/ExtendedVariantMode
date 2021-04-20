@@ -46,7 +46,8 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
+            DontRefillStaminaOnGround
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -122,6 +123,7 @@ namespace ExtendedVariants.Module {
             // DelayBetweenBadelines is not a variant
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
+            // DontRefillStaminaOnGround is not a variant
             VariantHandlers[Variant.GameSpeed] = new GameSpeed();
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
@@ -501,7 +503,8 @@ namespace ExtendedVariants.Module {
                 || Settings.BadelineBossCount != 1
                 || Settings.BadelineBossNodeCount != 1
                 || Settings.LegacyDashSpeedBehavior
-                || Settings.DisableSuperBoosts) {
+                || Settings.DisableSuperBoosts
+                || Settings.DontRefillStaminaOnGround) {
 
                 settingChanged = true;
             }
@@ -528,6 +531,7 @@ namespace ExtendedVariants.Module {
             Settings.BadelineBossNodeCount = 1;
             Settings.LegacyDashSpeedBehavior = false;
             Settings.DisableSuperBoosts = false;
+            Settings.DontRefillStaminaOnGround = false;
 
             if (settingChanged && SaveData.Instance != null) {
                 Randomizer.RefreshEnabledVariantsDisplayList();

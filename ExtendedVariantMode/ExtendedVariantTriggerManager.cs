@@ -254,6 +254,7 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.AllowThrowingTheoOffscreen: return ExtendedVariantsModule.Settings.AllowThrowingTheoOffscreen ? 1 : 0;
                 case ExtendedVariantsModule.Variant.AllowLeavingTheoBehind: return ExtendedVariantsModule.Settings.AllowLeavingTheoBehind ? 1 : 0;
                 case ExtendedVariantsModule.Variant.DisableSuperBoosts: return ExtendedVariantsModule.Settings.DisableSuperBoosts ? 1 : 0;
+                case ExtendedVariantsModule.Variant.DontRefillStaminaOnGround: return ExtendedVariantsModule.Settings.DontRefillStaminaOnGround ? 1 : 0;
                 default: return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue();
             }
         }
@@ -366,6 +367,11 @@ namespace ExtendedVariants {
                 case ExtendedVariantsModule.Variant.DisableSuperBoosts:
                     oldValue = ExtendedVariantsModule.Settings.DisableSuperBoosts ? 1 : 0;
                     ExtendedVariantsModule.Settings.DisableSuperBoosts = (newValue != 0);
+                    actualNewValue = (newValue != 0 ? 1 : 0);
+                    break;
+                case ExtendedVariantsModule.Variant.DontRefillStaminaOnGround:
+                    oldValue = ExtendedVariantsModule.Settings.DontRefillStaminaOnGround ? 1 : 0;
+                    ExtendedVariantsModule.Settings.DontRefillStaminaOnGround = (newValue != 0);
                     actualNewValue = (newValue != 0 ? 1 : 0);
                     break;
                 default:

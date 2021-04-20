@@ -376,6 +376,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.RestoreDashesOnRespawn) ExtendedVariantsModule.Settings.RestoreDashesOnRespawn = true;
             else if (variant == ExtendedVariantsModule.Variant.DisableSuperBoosts) ExtendedVariantsModule.Settings.DisableSuperBoosts = true;
             else if (variant == ExtendedVariantsModule.Variant.DisplayDashCount) ExtendedVariantsModule.Settings.DisplayDashCount = true;
+            else if (variant == ExtendedVariantsModule.Variant.DontRefillStaminaOnGround) ExtendedVariantsModule.Settings.DontRefillStaminaOnGround = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];
