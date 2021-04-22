@@ -714,7 +714,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
-                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DontRefillStaminaOnGround;
+                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,

@@ -51,10 +51,10 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DreamDashBegin -= patchOutStamina;
             IL.Celeste.Player.ctor -= patchOutStamina;
             On.Celeste.Player.RefillStamina -= modRefillStamina;
-            On.Celeste.Player.UseRefill -= modPlayerUseRefill;
 
             On.Celeste.Player.OnTransition -= modOnTransition;
             On.Celeste.Player.ctor -= modPlayerConstructor;
+            On.Celeste.Player.UseRefill -= modPlayerUseRefill;
 
             if (playerUpdateHook != null) playerUpdateHook.Dispose();
             if (summitGemSmashRoutineHook != null) summitGemSmashRoutineHook.Dispose();
@@ -104,7 +104,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        // transitioning and spawning are the 2 conditions when we **want** to refill stamina no matter what.
+        // transitioning, spawning and using refills are the 3 conditions when we **want** to refill stamina no matter what.
 
         private void modOnTransition(On.Celeste.Player.orig_OnTransition orig, Player self) {
             forceRefillStamina = true;
