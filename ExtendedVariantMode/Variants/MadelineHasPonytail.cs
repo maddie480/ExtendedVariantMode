@@ -35,8 +35,13 @@ namespace ExtendedVariants.Variants {
             doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetMethod("hookParticleColor", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineHasPonytail));
             doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
                 .GetMethod("<hookHairCount>b__8_0", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineHasPonytail));
-            doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetNestedType("<>c__DisplayClass6_0", BindingFlags.NonPublic)
-                .GetMethod("<hookHairScaleAndHairCount>b__1", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineHasPonytail));
+
+            // this one depends on helping hand's compilation mode :maddyS:
+            MethodInfo toHook = madelinePonytailTrigger.GetNestedType("<>c__DisplayClass6_0", BindingFlags.NonPublic).GetMethod("<hookHairScaleAndHairCount>b__1", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (toHook == null) {
+                toHook = madelinePonytailTrigger.GetNestedType("<>c__DisplayClass6_0", BindingFlags.NonPublic).GetMethod("<hookHairScaleAndHairCount>b__2", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+            doneILHooks.Add(new ILHook(toHook, hookMadelineHasPonytail));
         }
 
         public override void Unload() {
