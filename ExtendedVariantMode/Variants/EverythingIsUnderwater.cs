@@ -25,7 +25,6 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Level.LoadLevel += onLoadLevel;
-            On.Celeste.Level.TransitionRoutine += onTransitionRoutine;
             IL.Celeste.Player.NormalUpdate += addNullChecksToWaterTopSurface;
             IL.Celeste.WaterFall.Update += addNullChecksToWaterTopSurface;
 
@@ -38,7 +37,6 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= onLoadLevel;
-            On.Celeste.Level.TransitionRoutine -= onTransitionRoutine;
             IL.Celeste.Player.NormalUpdate -= addNullChecksToWaterTopSurface;
             IL.Celeste.WaterFall.Update -= addNullChecksToWaterTopSurface;
         }

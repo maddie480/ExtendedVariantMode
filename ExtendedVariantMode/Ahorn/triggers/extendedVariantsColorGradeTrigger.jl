@@ -3,7 +3,7 @@ module ExtendedVariantModeColorGradeTrigger
 using ..Ahorn, Maple
 
 @mapdef Trigger "ExtendedVariantMode/ColorGradeTrigger" ColorGradeTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	colorGrade::String="none", revertOnDeath::Bool=true)
+	colorGrade::String="none", revertOnDeath::Bool=true, onlyOnce::Bool=false)
 
 const colorGrades = String["none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
 	"max480/extendedvariants/celsius/tetris",
