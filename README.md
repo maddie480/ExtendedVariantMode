@@ -97,8 +97,6 @@ This mod also includes a **Variant Randomizer**. You get a big bunch of options 
 *   have the list of enabled variants displayed on-screen while you play
 
   
-More to come if I get more ideas. If you have some, just ping me on the Discord server!  
-  
 Also includes entities and triggers for use with maps:  
 
 *   trigger the variant you want when you want on your map by using the **Extended Variants Trigger**. Check the `README-Mappers.txt` in the zip file for more details. **Please read it if you want to use the trigger**, as some of the settings work in a rather counterintuitive way.
