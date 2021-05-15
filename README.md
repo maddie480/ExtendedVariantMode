@@ -99,7 +99,7 @@ This mod also includes a **Variant Randomizer**. You get a big bunch of options 
   
 Also includes entities and triggers for use with maps:  
 
-*   trigger the variant you want when you want on your map by using the **Extended Variants Trigger**. Check the `README-Mappers.txt` in the zip file for more details. **Please read it if you want to use the trigger**, as some of the settings work in a rather counterintuitive way.
+*   trigger the variant you want when you want on your map by using the **Extended Variants Trigger**. [Check the `README-Mappers.txt`](https://github.com/max4805/Everest-ExtendedVariants/blob/master/ExtendedVariantMode/README-Mappers.txt) for more details. **Please read it if you want to use the trigger**, as some of the settings work in a rather counterintuitive way.
 *   give the player extra midair jumps with **Jump Refills**. Recover Jump Refills give the player back their midair jumps (much like vanilla refills do with dashes), while Extra Jump Refills gives more jumps to the player, even if that exceeds the Jump Count variant setting.
 
 ## How to install
