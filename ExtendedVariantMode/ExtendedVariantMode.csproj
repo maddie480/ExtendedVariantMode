@@ -158,6 +158,7 @@
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
     <Compile Include="Variants\DisplayDashCount.cs" />
+    <Compile Include="Variants\EveryJumpIsUltra.cs" />
     <Compile Include="Variants\InvertVerticalControls.cs" />
     <Compile Include="Variants\MadelineBackpackMode.cs" />
     <Compile Include="Variants\MadelineHasPonytail.cs" />

@@ -110,6 +110,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> disableClimbingUpOrDownOption;
         private TextMenu.Option<bool> friendlyBadelineFollowerOption;
         private TextMenu.Option<bool> displayDashCountOption;
+        private TextMenu.Option<bool> everyJumpIsUltraOption;
         private TextMenu.Option<int> madelineBackpackModeOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
@@ -301,6 +302,8 @@ namespace ExtendedVariants.UI {
                     });
                 refillJumpsOnDashRefillOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
                     .Change(b => Settings.RefillJumpsOnDashRefill = b);
+                everyJumpIsUltraOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA"), Settings.EveryJumpIsUltra, false)
+                    .Change(b => Settings.EveryJumpIsUltra = b);
 
                 // Dashing
                 dashSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED"),
@@ -712,7 +715,7 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn }
+                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround;
 
@@ -762,7 +765,8 @@ namespace ExtendedVariants.UI {
                 bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption };
+                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
+                everyJumpIsUltraOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -806,6 +810,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(disableNeutralJumpingOption);
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
+                menu.Add(everyJumpIsUltraOption);
+                everyJumpIsUltraOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC"));
 
                 menu.Add(dashingTitle);
                 menu.Add(dashSpeedOption);
@@ -1016,6 +1022,7 @@ namespace ExtendedVariants.UI {
             setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
             setValue(friendlyBadelineFollowerOption, Settings.FriendlyBadelineFollower);
             setValue(displayDashCountOption, Settings.DisplayDashCount);
+            setValue(everyJumpIsUltraOption, Settings.EveryJumpIsUltra);
         }
 
         private void refreshOptionMenuEnabledStatus() {
