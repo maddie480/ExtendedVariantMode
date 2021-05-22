@@ -4,12 +4,16 @@ using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using System.Linq;
 
 namespace ExtendedVariants.Entities {
     /// <summary>
     /// An indicator for extra jumps (dots above Madeline's head).
     /// </summary>
     class JumpIndicator : Entity {
+        private const int normalDepth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
+        private const int depthInFrontOfSolids = Depths.FakeWalls - 1; // in front of fake walls
+
         private ExtendedVariantsSettings settings;
 
         public JumpIndicator() {
@@ -26,10 +30,20 @@ namespace ExtendedVariants.Entities {
                 // extended variants were turned off, the jump indicator should kick itself out.
                 RemoveSelf();
             }
+
+            // if the indicator overlaps with a solid that's in front of everything (exit blocks etc), send it in front of them.
+            // otherwise, have it between fg decals and fg tiles
+            if (Collider != null && CollideAll<Solid>().Any(solid => solid.Depth < normalDepth)) {
+                Depth = depthInFrontOfSolids;
+            } else {
+                Depth = normalDepth;
+            }
         }
 
         public override void Render() {
             base.Render();
+
+            float minX = float.MaxValue, maxX = float.MaxValue, minY = float.MaxValue, maxY = float.MaxValue;
 
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
@@ -44,10 +58,27 @@ namespace ExtendedVariants.Entities {
                     int jumpIndicatorsToDrawOnLine = Math.Min(jumpIndicatorsToDraw, 5);
                     int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
                     for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
-                        jumpIndicator.DrawJustified(player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6), new Vector2(0f, 0.5f));
+                        Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6);
+                        jumpIndicator.DrawJustified(position, new Vector2(0f, 0.5f));
+
+                        if (minX == float.MaxValue) {
+                            minX = maxX = position.X;
+                            minY = maxY = position.Y;
+                        } else {
+                            minX = Math.Min(minX, position.X);
+                            maxX = Math.Max(maxX, position.X);
+                            minY = Math.Min(minY, position.Y);
+                            maxY = Math.Max(maxY, position.Y);
+                        }
                     }
                     jumpIndicatorsToDraw -= jumpIndicatorsToDrawOnLine;
                 }
+            }
+
+            if (minX != float.MaxValue) {
+                Collider = new Hitbox(maxX - minX + 4, maxY - minY + 3, minX, minY - 2);
+            } else {
+                Collider = null;
             }
         }
     }

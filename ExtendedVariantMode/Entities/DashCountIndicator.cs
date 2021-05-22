@@ -3,13 +3,18 @@ using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExtendedVariants.Entities {
     /// <summary>
     /// An indicator for the dash count (numbers above Madeline's head).
     /// </summary>
     class DashCountIndicator : Entity {
+        private const int normalDepth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
+        private const int depthInFrontOfSolids = Depths.FakeWalls - 1; // in front of fake walls
+
         // dash count is hidden during intros and cutscenes, when player doesn't have control.
         private static readonly HashSet<int> hiddenPlayerStates = new HashSet<int> { Player.StIntroJump, Player.StIntroMoonJump, Player.StIntroRespawn,
             Player.StIntroThinkForABit, Player.StIntroWakeUp, Player.StIntroWalk, Player.StReflectionFall, Player.StDummy };
@@ -31,7 +36,6 @@ namespace ExtendedVariants.Entities {
         }
 
         public DashCountIndicator() {
-            Depth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
             AddTag(Tags.Persistent); // this entity isn't bound to the screen it was spawned in, keep it when transitioning to another level.
 
             settings = ExtendedVariantsModule.Settings;
@@ -44,6 +48,14 @@ namespace ExtendedVariants.Entities {
                 // extended variants were turned off, the dash count indicator should kick itself out.
                 RemoveSelf();
             }
+
+            // if the indicator overlaps with a solid that's in front of everything (exit blocks etc), send it in front of them.
+            // otherwise, have it between fg decals and fg tiles
+            if (Collider != null && CollideAll<Solid>().Any(solid => solid.Depth < normalDepth)) {
+                Depth = depthInFrontOfSolids;
+            } else {
+                Depth = normalDepth;
+            }
         }
 
         public override void Render() {
@@ -53,6 +65,8 @@ namespace ExtendedVariants.Entities {
             }
 
             base.Render();
+
+            float minX = float.MaxValue, maxX = float.MaxValue, minY = float.MaxValue, maxY = float.MaxValue;
 
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
@@ -69,8 +83,25 @@ namespace ExtendedVariants.Entities {
                 string dashCount = player.Dashes.ToString();
                 int totalWidth = dashCount.Length * 4 - 1;
                 for (int i = 0; i < dashCount.Length; i++) {
-                    numbers[dashCount.ToCharArray()[i] - '0'].DrawOutline(player.Center + new Vector2(-totalWidth / 2 + i * 4, -18f - jumpCountLines * 6f), new Vector2(0f, 0.5f));
+                    Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 4, -18f - jumpCountLines * 6f);
+                    numbers[dashCount.ToCharArray()[i] - '0'].DrawOutline(position, new Vector2(0f, 0.5f));
+
+                    if (minX == float.MaxValue) {
+                        minX = maxX = position.X;
+                        minY = maxY = position.Y;
+                    } else {
+                        minX = Math.Min(minX, position.X);
+                        maxX = Math.Max(maxX, position.X);
+                        minY = Math.Min(minY, position.Y);
+                        maxY = Math.Max(maxY, position.Y);
+                    }
                 }
+            }
+
+            if (minX != float.MaxValue) {
+                Collider = new Hitbox(maxX - minX + 5, maxY - minY + 6, minX - 1, minY - 1);
+            } else {
+                Collider = null;
             }
         }
     }
