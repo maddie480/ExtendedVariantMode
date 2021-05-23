@@ -77,7 +77,8 @@ Adds some options to the Mod Options menu:
 *   **Jellyfish Everywhere**: Have a jellyfish spawn above you on each screen if you don't already have one.
 *   **Steering Speed for Super Dashes**: turn quicker or slower in the air when you have the Super Dashing variant enabled.
 *   **Screen Shake Intensity**: just in case you want super screen shake for some reason. _Seizure warning on this one!_  
-    
+*   **Every Jump is an Ultra**: when you jump or climb jump, Madeline will automatically duck and get a 1.2x horizontal speed boost, like an "ultra" (a speed tech you can do to go fast).
+
 
   
 This can be extended by downloading other mods:  
@@ -104,7 +105,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/566493)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/576922)
 
 To build the project yourself:
 * Clone or download the repo
