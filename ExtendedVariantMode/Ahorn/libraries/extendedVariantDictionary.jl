@@ -43,6 +43,7 @@ const Variants = String[
 	"DisplayDashCount",
 	"DontRefillDashOnGround",
 	"DontRefillStaminaOnGround",
+	"EveryJumpIsUltra",
 	"EverythingIsUnderwater",
 	"ExplodeLaunchSpeed",
 	"FallSpeed",
