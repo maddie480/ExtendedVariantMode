@@ -32,6 +32,7 @@ namespace ExtendedVariants.Entities {
         private JumpCount jumpCountVariant;
         private bool capped;
         private int cap;
+        private float respawnTime;
 
         public JumpRefill(EntityData data, Vector2 offset, bool extraJumpRefill)
             : base(data, offset) {
@@ -40,6 +41,7 @@ namespace ExtendedVariants.Entities {
             extraJumps = data.Int("extraJumps", 1);
             capped = data.Bool("capped", false);
             cap = data.Int("cap", -1);
+            respawnTime = data.Float("respawnTime", defaultValue: 2.5f);
             jumpCountVariant = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount;
 
             string texture = data.Attr("texture", "ExtendedVariantMode/jumprefill");
@@ -102,7 +104,7 @@ namespace ExtendedVariants.Entities {
 
                 // prepare for respawning using vanilla code
                 Add(new Coroutine((IEnumerator) m_RefillRoutine.Invoke(this, new object[] { player })));
-                f_respawnTimer.SetValue(this, 2.5f);
+                f_respawnTimer.SetValue(this, respawnTime);
             }
         }
 

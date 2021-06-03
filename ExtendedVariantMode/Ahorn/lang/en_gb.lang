@@ -37,6 +37,7 @@ placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.onlyOnce=If c
 # Recover Jump Refill
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.texture=The directory, relative to Graphics/Atlases/Gameplay/objects, the refill textures are read from.
+placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.respawnTime=The time (in seconds) the crystal will take to respawn (vanilla is 2.5 seconds).
 
 # Extra Jump Refill
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
@@ -44,6 +45,7 @@ placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.texture=The dir
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.extraJumps=The number of extra jumps this refill gives when collected.
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.capped=If checked, the player's jump count will never exceed the defined cap.
 placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.cap=The maximum jump count the player can get. Leave -1 to use the "Jump Count" extended variant setting as a cap.
+placements.entities.ExtendedVariantMode/ExtraJumpRefill.tooltips.respawnTime=The time (in seconds) the crystal will take to respawn (vanilla is 2.5 seconds).
 
 # Toggle Dash Direction Trigger
 placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.dashDirection=The dash direction to toggle.

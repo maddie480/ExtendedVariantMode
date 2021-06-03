@@ -2,7 +2,7 @@
 
 using ..Ahorn, Maple
 
-@mapdef Entity "ExtendedVariantMode/RecoverJumpRefill" RecoverJumpRefill(x::Integer, y::Integer, oneUse::Bool=false, texture::String="ExtendedVariantMode/jumprefill")
+@mapdef Entity "ExtendedVariantMode/RecoverJumpRefill" RecoverJumpRefill(x::Integer, y::Integer, oneUse::Bool=false, texture::String="ExtendedVariantMode/jumprefill", respawnTime::Number=2.5)
 @mapdef Entity "ExtendedVariantMode/JumpRefill" LegacyJumpRefill(x::Integer, y::Integer, oneUse::Bool=false, texture::String="ExtendedVariantMode/jumprefill")
 
 recoverJumpRefills = Union{RecoverJumpRefill, LegacyJumpRefill}
