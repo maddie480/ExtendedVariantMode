@@ -43,6 +43,10 @@ namespace ExtendedVariants.Variants {
                 if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
                     while (hasHeldDash(self) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
+                        DynData<Player> selfData = new DynData<Player>(self);
+                        selfData["dashAttackTimer"] = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
+                        selfData["gliderBoostTimer"] = 0.30f; // hold the glider boost timer to still get boosted by jellies.
+
                         yield return null;
                     }
                 } else {

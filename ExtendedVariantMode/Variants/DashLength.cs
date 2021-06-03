@@ -27,7 +27,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.Player.DashBegin += modDashLength;
+            On.Celeste.Player.DashBegin += modDashBegin;
 
             MethodInfo dashCoroutine = typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget();
             dashCoroutineHookForTimer = new ILHook(dashCoroutine, modDashLength);
@@ -35,10 +35,27 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Unload() {
-            IL.Celeste.Player.DashBegin -= modDashLength;
+            On.Celeste.Player.DashBegin -= modDashBegin;
 
             if (dashCoroutineHookForTimer != null) dashCoroutineHookForTimer.Dispose();
             if (dashCoroutineHookForCounter != null) dashCoroutineHookForCounter.Dispose();
+        }
+
+        private void modDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
+            orig(self);
+
+            if (Settings.DashLength != 10) {
+                DynData<Player> selfData = new DynData<Player>(self);
+                bool superDash = SaveData.Instance.Assists.SuperDashing;
+
+                // vanilla dash is 0.15, 0.3 with superdash
+
+                // vanilla is 0.3, 0.45 with superdash => in 2x, you get 0.45, 0.75 with superdash
+                selfData["dashAttackTimer"] = (superDash ? 0.3f : 0.15f) * Settings.DashLength / 10f + 0.15f;
+
+                // vanilla is 0.55 all the time => in 2x, you get 0.7, 0.85 with superdash
+                selfData["gliderBoostTimer"] = (superDash ? 0.3f : 0.15f) * Settings.DashLength / 10f + (superDash ? 0.25f : 0.4f);
+            }
         }
 
         private void modDashLength(ILContext il) {
