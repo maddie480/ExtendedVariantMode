@@ -12,6 +12,8 @@ First, add the dependency to your map. For example, everest.yaml will look like 
 
 Since the following list is pretty massive, you can hit Ctrl+F and type the variant you want to use to find out how to use it!
 
+((Yes that "everything is an integer even multipliers and toggles" is pretty stupid and I am hoping to refactor it when I get some time))
+
 To enable a variant in a map, you can place an "Extended Variant Trigger" in Ahorn. These have 3 options:
 - Variant: pick the variant you want to change
 - New Value: pick the value you want to set the variant to. Those are the internal values used by the mod, and thus, can have kinda convoluted logic:
