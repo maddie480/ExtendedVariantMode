@@ -8,59 +8,58 @@ using System.Reflection;
 
 namespace ExtendedVariants {
     // a leak prevention patch that's way too hacky to have its place in Everest.
-    // instead of fixing the root issue, it tries to mitigate it by cutting references to the level in all things leaking in the NLua reference maps.
-    // but hey, it can make the collab benefit at least.
+    // instead of fixing the root issue, it tries to mitigate it by making NLua forget about any entity that isn't in the scene anymore.
     internal static class LeakPreventionHack {
         private static Dictionary<object, int> nluaReferenceMap;
+
+        private static ObjectTranslator nluaObjectTranslator;
+        private static MethodInfo nluaCollectObject;
+
         static LeakPreventionHack() {
             if (Everest.LuaLoader.Context != null) {
                 // break NLua open and get its reference map. it stays the same, so we only have to do that once.
-                nluaReferenceMap = new DynData<ObjectTranslator>(new DynData<Lua>(Everest.LuaLoader.Context).Get<ObjectTranslator>("_translator"))
-                    .Get<Dictionary<object, int>>("_objectsBackMap");
+                nluaObjectTranslator = new DynData<Lua>(Everest.LuaLoader.Context).Get<ObjectTranslator>("_translator");
+                nluaReferenceMap = new DynData<ObjectTranslator>(nluaObjectTranslator).Get<Dictionary<object, int>>("_objectsBackMap");
+                nluaCollectObject = typeof(ObjectTranslator).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance, null,
+                    CallingConventions.Any, new Type[] { typeof(int) }, null);
             }
         }
 
         public static void Load() {
             On.Monocle.Entity.Removed += onEntityRemoved;
-            On.Monocle.Entity.DissociateFromScene += onEntityDissociatedFromScene;
+            On.Celeste.Level.End += onLevelEnd;
         }
 
         public static void Unload() {
             On.Monocle.Entity.Removed -= onEntityRemoved;
-            On.Monocle.Entity.DissociateFromScene -= onEntityDissociatedFromScene;
+            On.Celeste.Level.End -= onLevelEnd;
         }
 
         private static void onEntityRemoved(On.Monocle.Entity.orig_Removed orig, Entity self, Scene scene) {
             orig(self, scene);
-            clearUpReferencesToLevel(self);
+            clearUpReferencesToEntity(self);
         }
 
-        private static void onEntityDissociatedFromScene(On.Monocle.Entity.orig_DissociateFromScene orig, Entity self) {
+        private static void clearUpReferencesToEntity(Entity self) {
+            if (nluaReferenceMap != null && nluaReferenceMap.TryGetValue(self, out int entityRef)) {
+                // it seems NLua can't dispose entities by itself, so we need to help it a bit.
+                Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {self.GetType().FullName} {entityRef}");
+                nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { entityRef });
+            }
+        }
+
+        private static void onLevelEnd(On.Celeste.Level.orig_End orig, Celeste.Level self) {
+            foreach (Entity entity in self.Entities) {
+                // we're quitting the level, so we need to get rid of all of its entities.
+                clearUpReferencesToEntity(entity);
+            }
+
             orig(self);
-            clearUpReferencesToLevel(self);
-        }
 
-        private static void clearUpReferencesToLevel(Entity self) {
-            if (nluaReferenceMap?.ContainsKey(self) ?? false) {
-                Type type = self.GetType();
-                Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"=== Entity of type {type} is getting checked");
-                while (type != typeof(object)) {
-                    Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Check of type {type}");
-
-                    // look for a public Level field, or a private level field, and set it to null.
-                    FieldInfo level = type.GetField("level", BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (level != null) {
-                        Logger.Log(LogLevel.Debug, "ExtendedVariantMode/LeakPreventionHack", $"=> Field level in type {type} is getting set to null");
-                        level.SetValue(self, null);
-                    }
-                    level = type.GetField("Level", BindingFlags.Instance | BindingFlags.Public);
-                    if (level != null) {
-                        Logger.Log(LogLevel.Debug, "ExtendedVariantMode/LeakPreventionHack", $"=> Field Level in type {type} is getting set to null");
-                        level.SetValue(self, null);
-                    }
-
-                    type = type.BaseType;
-                }
+            if (nluaReferenceMap != null && nluaReferenceMap.TryGetValue(self, out int levelRef)) {
+                // it seems NLua can't dispose entities by itself, so we need to help it a bit.
+                Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {self.GetType().FullName} {levelRef}");
+                nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { levelRef });
             }
         }
     }
