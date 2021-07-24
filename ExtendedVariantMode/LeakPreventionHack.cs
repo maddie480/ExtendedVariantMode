@@ -41,6 +41,16 @@ namespace ExtendedVariants {
         }
 
         private static void clearUpReferencesToEntity(Entity self) {
+            clearUpReferencesToObject(self);
+
+            // also clear up reference to any of this entity's components.
+            // for example, it happens that Player.StateMachine is leaked by NLua as well.
+            foreach (Component c in self.Components) {
+                clearUpReferencesToObject(c);
+            }
+        }
+
+        private static void clearUpReferencesToObject(object self) {
             if (nluaReferenceMap != null && nluaReferenceMap.TryGetValue(self, out int entityRef)) {
                 // it seems NLua can't dispose entities by itself, so we need to help it a bit.
                 Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {self.GetType().FullName} {entityRef}");
