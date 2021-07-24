@@ -52,3 +52,6 @@ placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.dash
 placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.enable=Whether the dash direction should be enabled or disabled by the trigger.
 placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
 placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+
+# Extended Variant On-Screen Display Trigger
+placements.triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.tooltips.enable=Whether this trigger should enable or disable the on-screen display of extended variants.

@@ -365,7 +365,8 @@ namespace ExtendedVariants.Module {
         private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
             "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/ColorGradeTrigger",
             "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill",
-            "ExtendedVariantMode/ExtendedVariantFadeTrigger", "ExtendedVariantMode/ExtendedVariantController", "ExtendedVariantMode/ToggleDashDirectionTrigger"
+            "ExtendedVariantMode/ExtendedVariantFadeTrigger", "ExtendedVariantMode/ExtendedVariantController", "ExtendedVariantMode/ToggleDashDirectionTrigger",
+            "ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger"
         };
 
         // this one is for the normal case (entering a level from the overworld or opening a save)

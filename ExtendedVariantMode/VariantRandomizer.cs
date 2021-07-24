@@ -143,7 +143,10 @@ namespace ExtendedVariants {
         private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
             orig(self, scene);
 
-            if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen
+            if ((
+                    (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen) ||
+                    (ExtendedVariantsModule.Session != null && ExtendedVariantsModule.Session.ExtendedVariantsDisplayedOnScreenViaTrigger)
+                )
                 && !((scene as Level)?.Paused ?? false)) {
 
                 Draw.SpriteBatch.Begin();

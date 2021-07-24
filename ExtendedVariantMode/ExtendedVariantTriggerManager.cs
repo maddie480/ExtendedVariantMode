@@ -382,6 +382,8 @@ namespace ExtendedVariants {
                     break;
             }
 
+            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+
             return oldValue;
         }
     }

@@ -116,6 +116,7 @@
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
     <Compile Include="ExtendedVariantFadeTrigger.cs" />
+    <Compile Include="ExtendedVariantOnScreenDisplayTrigger.cs" />
     <Compile Include="ToggleDashDirectionTrigger.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
     <Compile Include="FlagToggledExtendedVariantTrigger.cs" />
@@ -219,6 +220,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\triggers\extendedVariantsExtendedVariantFadeTrigger.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ahorn\triggers\extendedVariantsExtendedVariantOnScreenDisplayTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\triggers\extendedVariantsToggleDashDirectionTrigger.jl">
