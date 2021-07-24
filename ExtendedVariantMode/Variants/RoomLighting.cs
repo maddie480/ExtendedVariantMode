@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using Microsoft.Xna.Framework;
+using Monocle;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
@@ -18,6 +19,12 @@ namespace ExtendedVariants.Variants {
 
         public override void SetValue(int value) {
             Settings.RoomLighting = value;
+
+            if (Engine.Scene.GetType() == typeof(Level)) {
+                // currently in level, change lighting right away
+                Level lvl = (Engine.Scene as Level);
+                lvl.Lighting.Alpha = (Settings.RoomLighting == -1 ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - (Settings.RoomLighting / 10f));
+            }
         }
 
         public override void Load() {
