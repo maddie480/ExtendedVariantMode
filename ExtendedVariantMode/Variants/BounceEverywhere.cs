@@ -29,6 +29,11 @@ namespace ExtendedVariants.Variants {
             if (Settings.BounceEverywhere && newState == 0) {
                 // we are still in the Normal state.
 
+                // no bounce if the player is going to climb! Climbing should already take priority over bouncing.
+                if (!SaveData.Instance.Assists.NoGrabbing && !self.Ducking && self.Stamina >= 20f && Input.GrabCheck && self.ClimbCheck((int) self.Facing)) {
+                    return newState;
+                }
+
                 Level level = self.SceneAs<Level>();
                 Rectangle hitbox = self.Collider.Bounds;
 
