@@ -72,7 +72,7 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/Stamina", $"Patching stamina at index {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
                 cursor.EmitDelegate<Func<float, float>>(orig => {
-                    if (Settings.DontRefillStaminaOnGround && !forceRefillStamina) {
+                    if (Settings.DontRefillStaminaOnGround && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
                         // return the player stamina: this will result in player.Stamina = player.Stamina, thus doing absolutely nothing.
                         return Engine.Scene.Tracker.GetEntity<Player>()?.Stamina ?? determineBaseStamina();
                     }
@@ -91,7 +91,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original RefillStamina method</param>
         /// <param name="self">The Player instance</param>
         private void modRefillStamina(On.Celeste.Player.orig_RefillStamina orig, Player self) {
-            if (Settings.DontRefillStaminaOnGround && !forceRefillStamina) {
+            if (Settings.DontRefillStaminaOnGround && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
                 // we don't want to refill stamina at all.
                 return;
             }
