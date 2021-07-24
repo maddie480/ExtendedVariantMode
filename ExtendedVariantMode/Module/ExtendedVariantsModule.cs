@@ -541,13 +541,15 @@ namespace ExtendedVariants.Module {
         }
 
         public static void ResetVanillaVariants() {
+            bool wasPlayAsBadeline = SaveData.Instance.Assists.PlayAsBadeline;
+
             // from SaveData.AssistModeChecks() when both assist and variant mode are disabled
             SaveData.Instance.Assists = default(Assists);
             SaveData.Instance.Assists.GameSpeed = 10;
 
-            // apply the Other Self variant right now.
+            // apply the Other Self variant right now, if the Other Self variant was enabled before the reset.
             Player p = Engine.Scene.Tracker.GetEntity<Player>();
-            if (p != null) {
+            if (wasPlayAsBadeline && p != null) {
                 PlayerSpriteMode mode = p.DefaultSpriteMode;
                 if (p.Active) {
                     p.ResetSpriteNextFrame(mode);
