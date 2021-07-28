@@ -204,6 +204,9 @@
     <Compile Include="Variants\ZoomLevel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Ahorn\entities\extendedVariantsExtendedVariantTheoCrystal.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ahorn\entities\extendedVariantsExtraJumpRefill.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -55,3 +55,7 @@ placements.triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.tooltips.reve
 
 # Extended Variant On-Screen Display Trigger
 placements.triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.tooltips.enable=Whether this trigger should enable or disable the on-screen display of extended variants.
+
+# Extended Variant Theo Crystal
+placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowThrowingOffscreen=Whether Theo can be thrown off-screen, allowing the player to exit in the direction he was thrown in.\nIf unchecked, Theo will bounce on the edges of the screen.
+placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowLeavingBehind=Whether the player can leave the room without grabbing Theo.

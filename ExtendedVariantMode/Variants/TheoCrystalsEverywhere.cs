@@ -1,7 +1,9 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
+using Monocle;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
@@ -77,7 +79,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
-            if (Settings.TheoCrystalsEverywhere && !Settings.AllowLeavingTheoBehind &&
+            if (isTheoCrystalsEverywhere() && !isAllowLeavingTheoBehind() &&
                 // the player is holding nothing...
                 (player.Holding == null || player.Holding.Entity == null || !player.Holding.IsHeld ||
                 // or this thing is not a Theo crystal (f.e. jellyfish)
@@ -115,6 +117,26 @@ namespace ExtendedVariants.Variants {
             } else {
                 // the variant is disabled, we are allowed to leave Theo behind, or the player is holding Theo => we have no business here.
                 orig(self, player);
+            }
+        }
+
+        private bool isTheoCrystalsEverywhere() {
+            // the variant is on, or an Extended Variant Theo crystal is in the level.
+            return Settings.TheoCrystalsEverywhere ||
+                Engine.Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>().OfType<ExtendedVariantTheoCrystal>().Any(t => t.SpawnedAsEntity);
+        }
+
+        private bool isAllowLeavingTheoBehind() {
+            // get all Theo crystals in the level that were placed in Ahorn.
+            IEnumerable<ExtendedVariantTheoCrystal> entities =
+                Engine.Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>().OfType<ExtendedVariantTheoCrystal>().Where(t => t.SpawnedAsEntity);
+
+            if (entities.Count() == 0) {
+                // there is none! just use the extended variant setting.
+                return Settings.AllowLeavingTheoBehind;
+            } else {
+                // allow leaving Theo behind of all Theos on the screen can be left behind.
+                return entities.All(t => t.AllowLeavingBehind);
             }
         }
     }
