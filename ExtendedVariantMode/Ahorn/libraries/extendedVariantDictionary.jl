@@ -25,6 +25,7 @@ const Variants = String[
 	"ChangeVariantsRandomly",
 	"ChaserCount",
 	"ColorGrading",
+	"CoyoteTime",
 	"DashCount",
 	"DashDirection",
 	"DashLength",
