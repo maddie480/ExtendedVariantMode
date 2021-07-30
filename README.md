@@ -48,6 +48,7 @@ Adds some options to the Mod Options menu:
     *   **Anxiety Effect**: That's the effect that is used when Oshiro is attacking, among other things. Here, Madeline is the anxiety source! (Yeah, literally. That's a thing in code.)  
         
     *   **Blur Effect**: Just blur out the whole screen.
+    *   **Background Blur Effect**: Blur out the game's backgrounds.
     *   **Zoom Level**: Zooms the game in or out for more challenge!  
         
     *   **Color Grading**: Apply any of the "color grades" from the game (for example, the ones from Core, or from the credits), but also the "Tetris" color grade from the "Celsius" map by 0x0ade, and some _special_ original ones. You can also use color grades from any mod you have installed!  
@@ -78,6 +79,7 @@ Adds some options to the Mod Options menu:
 *   **Steering Speed for Super Dashes**: turn quicker or slower in the air when you have the Super Dashing variant enabled.
 *   **Screen Shake Intensity**: just in case you want super screen shake for some reason. _Seizure warning on this one!_  
 *   **Every Jump is an Ultra**: when you jump or climb jump, Madeline will automatically duck and get a 1.2x horizontal speed boost, like an "ultra" (a speed tech you can do to go fast).
+*   **Coyote Time**: allows you to modify the time during which you can jump after walking off a platform (0.1 second by default).
 
 
   
@@ -102,10 +104,11 @@ Also includes entities and triggers for use with maps:
 
 *   trigger the variant you want when you want on your map by using the **Extended Variants Trigger**. [Check the `README-Mappers.txt`](https://github.com/max4805/Everest-ExtendedVariants/blob/master/ExtendedVariantMode/README-Mappers.txt) for more details. **Please read it if you want to use the trigger**, as some of the settings work in a rather counterintuitive way.
 *   give the player extra midair jumps with **Jump Refills**. Recover Jump Refills give the player back their midair jumps (much like vanilla refills do with dashes), while Extra Jump Refills gives more jumps to the player, even if that exceeds the Jump Count variant setting.
+*   if you want to get a Theo Crystal with the same properties as the extended variant (doesn't crash when moving up, can be left behind, or can be thrown offscreen in any direction), you can either use an Extended Variants Trigger or place an **Extended Variant Theo Crystal**.
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/584528)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/626452)
 
 To build the project yourself:
 * Clone or download the repo
