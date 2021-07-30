@@ -191,8 +191,6 @@ namespace ExtendedVariants.Module {
 
         public override void Load() {
             Logger.SetLogLevel("ExtendedVariantMode", LogLevel.Info);
-            Logger.SetLogLevel("ExtendedVariantMode/ExtendedVariantTriggerManager", LogLevel.Verbose);
-            Logger.SetLogLevel("ExtendedVariantMode/ExtendedVariantTriggerManager-fade", LogLevel.Info);
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
