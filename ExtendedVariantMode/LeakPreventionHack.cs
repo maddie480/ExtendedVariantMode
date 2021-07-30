@@ -29,13 +29,11 @@ namespace ExtendedVariants {
         public static void Load() {
             On.Monocle.Entity.Removed += onEntityRemoved;
             On.Celeste.Level.End += onLevelEnd;
-            On.Celeste.Level.LoadLevel += onLoadLevel;
         }
 
         public static void Unload() {
             On.Monocle.Entity.Removed -= onEntityRemoved;
             On.Celeste.Level.End -= onLevelEnd;
-            On.Celeste.Level.LoadLevel -= onLoadLevel;
         }
 
         private static void onEntityRemoved(On.Monocle.Entity.orig_Removed orig, Entity self, Scene scene) {
@@ -61,27 +59,13 @@ namespace ExtendedVariants {
             }
         }
 
-        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Celeste.Player.IntroTypes playerIntro, bool isFromLoader) {
-            // we're entering a new screen: we can safely discard everything we want now!
-            cleanUpReferencesToQueuedObjects();
-
-            orig(self, playerIntro, isFromLoader);
-        }
-
-        private static void cleanUpReferencesToQueuedObjects() {
-            foreach (int reference in discardQueue) {
-                // it seems NLua can't dispose entities by itself, so we need to help it a bit.
-                Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {reference}");
-                nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { reference });
-            }
-            discardQueue.Clear();
-        }
-
         private static void onLevelEnd(On.Celeste.Level.orig_End orig, Celeste.Level self) {
             // we're quitting the level, so we need to get rid of all of its entities.
             foreach (Entity entity in self.Entities) {
                 queueReferenceToEntity(entity);
             }
+
+            // now we can terminate all queued objects.
             cleanUpReferencesToQueuedObjects();
 
             orig(self);
@@ -91,6 +75,15 @@ namespace ExtendedVariants {
                 Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {self.GetType().FullName} {levelRef}");
                 nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { levelRef });
             }
+        }
+
+        private static void cleanUpReferencesToQueuedObjects() {
+            foreach (int reference in discardQueue) {
+                // it seems NLua can't dispose entities by itself, so we need to help it a bit.
+                Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {reference}");
+                nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { reference });
+            }
+            discardQueue.Clear();
         }
     }
 }
