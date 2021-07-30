@@ -73,6 +73,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> glitchEffectOption;
         private TextMenu.Option<int> anxietyEffectOption;
         private TextMenu.Option<int> blurLevelOption;
+        private TextMenu.Option<int> backgroundBlurLevelOption;
         private TextMenu.Option<int> zoomLevelOption;
         private TextMenu.Option<bool> everythingIsUnderwaterOption;
         private TextMenu.Option<bool> oshiroEverywhereOption;
@@ -568,6 +569,9 @@ namespace ExtendedVariants.UI {
                 blurLevelOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BLURLEVEL"),
                     i => $"{i * 10}%", 0, 20, Settings.BlurLevel, 0).Change(i => Settings.BlurLevel = i);
 
+                backgroundBlurLevelOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBLURLEVEL"),
+                    i => $"{i * 10}%", 0, 20, Settings.BackgroundBlurLevel, 0).Change(i => Settings.BackgroundBlurLevel = i);
+
                 zoomLevelOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ZOOMLEVEL"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.ZoomLevel), indexFromMultiplier(10)).Change(i => Settings.ZoomLevel = multiplierScale[i]);
 
@@ -734,7 +738,7 @@ namespace ExtendedVariants.UI {
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode }
+                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -769,7 +773,7 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -905,6 +909,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(glitchEffectOption);
                 menu.Add(anxietyEffectOption);
                 menu.Add(blurLevelOption);
+                menu.Add(backgroundBlurLevelOption);
                 menu.Add(zoomLevelOption);
                 menu.Add(colorGradingOption);
                 menu.Add(screenShakeIntensityOption);
@@ -992,6 +997,7 @@ namespace ExtendedVariants.UI {
             setValue(glitchEffectOption, -1, Settings.GlitchEffect);
             setValue(anxietyEffectOption, -1, Settings.AnxietyEffect);
             setValue(blurLevelOption, 0, Settings.BlurLevel);
+            setValue(backgroundBlurLevelOption, 0, Settings.BackgroundBlurLevel);
             setValue(zoomLevelOption, 0, indexFromMultiplier(Settings.ZoomLevel));
             setValue(everythingIsUnderwaterOption, Settings.EverythingIsUnderwater);
             setValue(oshiroEverywhereOption, Settings.OshiroEverywhere);

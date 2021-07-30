@@ -319,6 +319,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int BlurLevel { get; set; } = 0;
 
+        [SettingIgnore]
+        public int BackgroundBlurLevel { get; set; } = 0;
+
         // ======================================
 
         [SettingIgnore]

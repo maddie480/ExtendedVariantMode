@@ -394,6 +394,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.ZoomLevel) ExtendedVariantsModule.Settings.ZoomLevel = multiplierScale[randomGenerator.Next(22) + 1]; // don't set game speed to 0x for obvious reasons
             else if (variant == ExtendedVariantsModule.Variant.SuperdashSteeringSpeed) ExtendedVariantsModule.Settings.SuperdashSteeringSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.ScreenShakeIntensity) ExtendedVariantsModule.Settings.ScreenShakeIntensity = multiplierScale[randomGenerator.Next(23)];
+            else if (variant == ExtendedVariantsModule.Variant.CoyoteTime) ExtendedVariantsModule.Settings.CoyoteTime = multiplierScale[randomGenerator.Next(23)];
             // more specific variants
             else if (variant == ExtendedVariantsModule.Variant.JumpCount) ExtendedVariantsModule.Settings.JumpCount = randomGenerator.Next(7); // random 0~infinite
             else if (variant == ExtendedVariantsModule.Variant.DashCount) ExtendedVariantsModule.Settings.DashCount = randomGenerator.Next(6); // random 0~5
@@ -412,6 +413,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) ExtendedVariantsModule.Settings.GlitchEffect = randomGenerator.Next(3) + 1; // random 5~15%
             else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) ExtendedVariantsModule.Settings.AnxietyEffect = randomGenerator.Next(3) + 1; // random 5~15%
             else if (variant == ExtendedVariantsModule.Variant.BlurLevel) ExtendedVariantsModule.Settings.BlurLevel = randomGenerator.Next(10) + 1; // random 5~100%
+            else if (variant == ExtendedVariantsModule.Variant.BackgroundBlurLevel) ExtendedVariantsModule.Settings.BackgroundBlurLevel = randomGenerator.Next(10) + 1; // random 5~100%
             else if (variant == ExtendedVariantsModule.Variant.DashDirection) ExtendedVariantsModule.Settings.DashDirection = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
             else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) ExtendedVariantsModule.Settings.DashRefillOnGroundState = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
             else if (variant == ExtendedVariantsModule.Variant.MadelineBackpackMode) ExtendedVariantsModule.Settings.MadelineBackpackMode = randomGenerator.Next(2) + 1; // random between the 2 modes (1~2)
@@ -483,6 +485,7 @@ namespace ExtendedVariants {
                 else if (variant == ExtendedVariantsModule.Variant.GlitchEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.GlitchEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.AnxietyEffect) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.AnxietyEffect * 5}%");
                 else if (variant == ExtendedVariantsModule.Variant.BlurLevel) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BlurLevel * 10}%");
+                else if (variant == ExtendedVariantsModule.Variant.BackgroundBlurLevel) enabledVariantsToDisplay.Add($"{variantName}: {ExtendedVariantsModule.Settings.BackgroundBlurLevel * 10}%");
                 else if (variant == ExtendedVariantsModule.Variant.DontRefillDashOnGround) enabledVariantsToDisplay.Add($"{variantName}: " + (ExtendedVariantsModule.Settings.DashRefillOnGroundState == 2 ? Dialog.Clean("OPTIONS_OFF") : Dialog.Clean("OPTIONS_ON")));
                 else if (variant == ExtendedVariantsModule.Variant.MadelineBackpackMode) enabledVariantsToDisplay.Add($"{variantName}: " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_" + ExtendedVariantsModule.Instance.VariantHandlers[variant].GetValue()));
                 else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {

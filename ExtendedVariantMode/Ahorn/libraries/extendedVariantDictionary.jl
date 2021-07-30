@@ -10,6 +10,7 @@ const Variants = String[
 	"AllowLeavingTheoBehind",
 	"AllowThrowingTheoOffscreen",
 	"AnxietyEffect",
+	"BackgroundBlurLevel",
 	"BackgroundBrightness",
 	"BadelineAttackPattern",
 	"BadelineBossCount",

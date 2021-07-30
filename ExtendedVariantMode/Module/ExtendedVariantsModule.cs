@@ -47,7 +47,7 @@ namespace ExtendedVariants.Module {
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
-            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime
+            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -104,6 +104,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.GlitchEffect] = new GlitchEffect();
             VariantHandlers[Variant.AnxietyEffect] = new AnxietyEffect();
             VariantHandlers[Variant.BlurLevel] = new BlurLevel();
+            VariantHandlers[Variant.BackgroundBlurLevel] = new BackgroundBlurLevel();
             VariantHandlers[Variant.EverythingIsUnderwater] = new EverythingIsUnderwater();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
             // OshiroCount is not a variant
