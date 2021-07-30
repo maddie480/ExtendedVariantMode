@@ -65,9 +65,6 @@ namespace ExtendedVariants {
                 queueReferenceToEntity(entity);
             }
 
-            // now we can terminate all queued objects.
-            cleanUpReferencesToQueuedObjects();
-
             orig(self);
 
             if (nluaReferenceMap != null && nluaReferenceMap.TryGetValue(self, out int levelRef)) {
@@ -75,6 +72,9 @@ namespace ExtendedVariants {
                 Logger.Log("ExtendedVariantMode/LeakPreventionHack", $"Cleaning up reference of NLua to {self.GetType().FullName} {levelRef}");
                 nluaCollectObject.Invoke(nluaObjectTranslator, new object[] { levelRef });
             }
+
+            // now we can terminate all queued objects.
+            cleanUpReferencesToQueuedObjects();
         }
 
         private static void cleanUpReferencesToQueuedObjects() {
