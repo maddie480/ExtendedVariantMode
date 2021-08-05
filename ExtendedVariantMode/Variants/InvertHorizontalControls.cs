@@ -47,6 +47,7 @@ namespace ExtendedVariants.Variants {
 
             Input.Aim.InvertedX = expectedValue;
             Input.MoveX.Inverted = expectedValue;
+            Input.Feather.InvertedX = expectedValue;
         }
     }
 }

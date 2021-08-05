@@ -429,6 +429,7 @@ namespace ExtendedVariants {
                 SaveData.Instance.Assists.MirrorMode = enabled;
                 Input.Aim.InvertedX = enabled;
                 Input.MoveX.Inverted = enabled;
+                Input.Feather.InvertedX = enabled;
             } else if (variant == VanillaVariant.NoGrabbing) SaveData.Instance.Assists.NoGrabbing = enabled;
             else if (variant == VanillaVariant.SuperDashing) SaveData.Instance.Assists.SuperDashing = enabled;
             else if (variant == VanillaVariant.ThreeSixtyDashing) SaveData.Instance.Assists.ThreeSixtyDashing = enabled;
