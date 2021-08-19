@@ -34,15 +34,35 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
+            On.Celeste.Level.Update += modLevelUpdate;
         }
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
+            On.Celeste.Level.Update -= modLevelUpdate;
 
             // be sure the controls are not upside down anymore
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
+            SetInvertedY(false);
+        }
+
+        private void modLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+            orig(self);
+            
+            // for compatibility with tas
+            // since the render method is ignored when tas is fast-forwarding
+            SetInvertedY(Settings.UpsideDown);
+        }
+
+        private static void SetInvertedY(bool invertedY) {
+            // it seems that every frame the invertedY will be reset to false (why?)
+            // so we only need to deal with the case where UpsideDown is true
+            if (!invertedY) {
+                return;
+            }
+
+            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = invertedY));
             if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = false;
+                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = invertedY;
             }
         }
 
@@ -113,11 +133,8 @@ namespace ExtendedVariants.Variants {
         private delegate void TwoRefVectorParameters(ref Vector2 one, ref Vector2 two);
 
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
-            if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = ExtendedVariantsModule.Settings.UpsideDown;
-            }
-
+            SetInvertedY(ExtendedVariantsModule.Settings.UpsideDown);
+            
             paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
             if (ExtendedVariantsModule.Settings.UpsideDown) {
