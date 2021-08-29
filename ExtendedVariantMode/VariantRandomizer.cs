@@ -376,6 +376,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.DisplayDashCount) ExtendedVariantsModule.Settings.DisplayDashCount = true;
             else if (variant == ExtendedVariantsModule.Variant.DontRefillStaminaOnGround) ExtendedVariantsModule.Settings.DontRefillStaminaOnGround = true;
             else if (variant == ExtendedVariantsModule.Variant.EveryJumpIsUltra) ExtendedVariantsModule.Settings.EveryJumpIsUltra = true;
+            else if (variant == ExtendedVariantsModule.Variant.NoFreezeFrames) ExtendedVariantsModule.Settings.NoFreezeFrames = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];

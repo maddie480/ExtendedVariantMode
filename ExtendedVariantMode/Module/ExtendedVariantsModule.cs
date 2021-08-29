@@ -47,7 +47,7 @@ namespace ExtendedVariants.Module {
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
-            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel
+            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -150,6 +150,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.MadelineBackpackMode] = new MadelineBackpackMode();
             VariantHandlers[Variant.EveryJumpIsUltra] = new EveryJumpIsUltra();
             VariantHandlers[Variant.CoyoteTime] = new CoyoteTime();
+            VariantHandlers[Variant.NoFreezeFrames] = new NoFreezeFrames();
         }
 
         // ================ Mod options setup ================

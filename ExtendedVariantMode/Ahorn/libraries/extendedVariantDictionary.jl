@@ -67,6 +67,7 @@ const Variants = String[
 	"JellyfishEverywhere",
 	"JumpCount",
 	"JumpHeight",
+	"NoFreezeFrames",
 	"OshiroCount",
 	"OshiroEverywhere",
 	"RefillJumpsOnDashRefill",
