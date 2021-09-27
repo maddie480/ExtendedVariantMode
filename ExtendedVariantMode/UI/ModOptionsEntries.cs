@@ -114,6 +114,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> everyJumpIsUltraOption;
         private TextMenu.Option<int> madelineBackpackModeOption;
         private TextMenu.Option<int> coyoteTimeOption;
+        private TextMenu.Option<bool> noFreezeFramesOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -633,6 +634,9 @@ namespace ExtendedVariants.UI {
                 gameSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.GameSpeed), indexFromMultiplier(10)).Change(i => Settings.GameSpeed = multiplierScale[i]);
 
+                noFreezeFramesOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES"), Settings.NoFreezeFrames, false)
+                    .Change(b => Settings.NoFreezeFrames = b);
+
                 everythingIsUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
                     .Change(b => Settings.EverythingIsUnderwater = b);
 
@@ -742,7 +746,7 @@ namespace ExtendedVariants.UI {
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.GameSpeed, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
+                    new List<Variant> { Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                         Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.HiccupStrength != 10;
@@ -773,7 +777,7 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -919,6 +923,8 @@ namespace ExtendedVariants.UI {
             if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
                 menu.Add(otherTitle);
                 menu.Add(gameSpeedOption);
+                menu.Add(noFreezeFramesOption);
+                noFreezeFramesOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC"));
                 menu.Add(everythingIsUnderwaterOption);
                 menu.Add(staminaOption);
                 menu.Add(regularHiccupsOption);
@@ -1035,6 +1041,7 @@ namespace ExtendedVariants.UI {
             setValue(displayDashCountOption, Settings.DisplayDashCount);
             setValue(everyJumpIsUltraOption, Settings.EveryJumpIsUltra);
             setValue(coyoteTimeOption, 0, indexFromMultiplier(Settings.CoyoteTime));
+            setValue(noFreezeFramesOption, Settings.NoFreezeFrames);
         }
 
         private void refreshOptionMenuEnabledStatus() {

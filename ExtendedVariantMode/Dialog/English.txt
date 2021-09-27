@@ -241,6 +241,9 @@ MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC=	Get a 1.2x horizontal speed b
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME=	Coyote Time
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=	Time during which you can jump in midair after walking off a platform
 
+MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES=	No Freeze Frames
+MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC=	Don't freeze the game for a few frames when dashing, collecting a refill, etc.
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automatically Reset Variants
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= when entering a map using Extended Variants
 
