@@ -34,10 +34,12 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
+            On.Celeste.Level.Update += onLevelUpdate;
         }
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
+            On.Celeste.Level.Update -= onLevelUpdate;
 
             // be sure the controls are not upside down anymore
             Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
@@ -113,17 +115,21 @@ namespace ExtendedVariants.Variants {
         private delegate void TwoRefVectorParameters(ref Vector2 one, ref Vector2 two);
 
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
-            if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = ExtendedVariantsModule.Settings.UpsideDown;
-            }
-
             paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
             if (ExtendedVariantsModule.Settings.UpsideDown) {
                 paddingVector.Y = -paddingVector.Y;
                 positionVector.Y = 90f - (positionVector.Y - 90f);
             }
+        }
+
+        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
+            if (inputFeather != null) {
+                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = ExtendedVariantsModule.Settings.UpsideDown;
+            }
+
+            orig(self);
         }
 
         private SpriteEffects applyUpsideDownEffectToSprites() {

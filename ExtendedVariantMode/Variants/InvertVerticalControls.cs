@@ -19,15 +19,15 @@ namespace ExtendedVariants.Variants {
             using (new DetourContext {
                 After = { "*" } // we want to be extra sure we're applied after other mods here.
             }) {
-                On.Celeste.Level.Render += onLevelRender;
+                On.Celeste.Level.Update += onLevelUpdate;
             }
         }
 
         public override void Unload() {
-            On.Celeste.Level.Render -= onLevelRender;
+            On.Celeste.Level.Update -= onLevelUpdate;
         }
 
-        private void onLevelRender(On.Celeste.Level.orig_Render orig, Level self) {
+        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             if (Input.Aim == null || Input.GliderMoveY == null || Input.MoveY == null) {
                 orig(self);
                 return;
