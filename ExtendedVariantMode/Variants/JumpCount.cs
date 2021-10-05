@@ -40,6 +40,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.UseRefill += modUseRefill;
             On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
             On.Celeste.Level.LoadLevel += modLoadLevel;
+            IL.Celeste.Player.DreamDashUpdate += preventDreamJumping;
 
             // if already in a map, add the jump indicator right away.
             if (Engine.Scene is Level level) {
@@ -54,6 +55,25 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.UseRefill -= modUseRefill;
             On.Celeste.Player.DreamDashEnd -= modDreamDashEnd;
             On.Celeste.Level.LoadLevel -= modLoadLevel;
+            IL.Celeste.Player.DreamDashUpdate -= preventDreamJumping;
+        }
+
+        private void preventDreamJumping(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            // the strategy here is "let's pretend the player didn't press Jump if their Jump Count is 0".
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Jump"), instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
+                Logger.Log("ExtendedVariantMode/JumpCount", $"Preventing dream jumping with 0 jumps at {cursor.Index} in IL for Player.DreamDashUpdate");
+
+                cursor.EmitDelegate<Func<bool, bool>>(orig => {
+                    if (Settings.JumpCount == 0) {
+                        // no dream jumping!
+                        return false;
+                    }
+                    // we have at least 1 jump so don't change the value.
+                    return true;
+                });
+            }
         }
 
         private void patchJumpGraceTimer(ILContext il) {
