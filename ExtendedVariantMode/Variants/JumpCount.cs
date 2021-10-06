@@ -71,7 +71,7 @@ namespace ExtendedVariants.Variants {
                         return false;
                     }
                     // we have at least 1 jump so don't change the value.
-                    return true;
+                    return orig;
                 });
             }
         }
