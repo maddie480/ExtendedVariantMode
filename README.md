@@ -75,6 +75,7 @@ Adds some options to the Mod Options menu:
 *   **Restore Dashes on Respawn**: saves your dash count when you hit a respawn point, and restores it when you respawn. Makes sense when used with no ground refills.  
     
 *   **Game Speed**: Like the vanilla assist/variant, but it goes down to 0x and up to 100x! This stacks up with the vanilla variant if you enable both.
+*   **No Freeze Frames**: disables the freeze frames that happen when you dash, collect crystals, etc.
 *   **Jellyfish Everywhere**: Have a jellyfish spawn above you on each screen if you don't already have one.
 *   **Steering Speed for Super Dashes**: turn quicker or slower in the air when you have the Super Dashing variant enabled.
 *   **Screen Shake Intensity**: just in case you want super screen shake for some reason. _Seizure warning on this one!_  
