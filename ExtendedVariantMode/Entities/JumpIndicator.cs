@@ -59,7 +59,7 @@ namespace ExtendedVariants.Entities {
                     int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
                     for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
                         Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6);
-                        jumpIndicator.DrawJustified(position, new Vector2(0f, 0.5f));
+                        jumpIndicator.DrawJustified(new Vector2((float) Math.Round(position.X), (float) Math.Round(position.Y)), new Vector2(0f, 0.5f));
 
                         if (minX == float.MaxValue) {
                             minX = maxX = position.X;
