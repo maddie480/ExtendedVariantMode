@@ -70,6 +70,7 @@ const Variants = String[
 	"NoFreezeFrames",
 	"OshiroCount",
 	"OshiroEverywhere",
+	"PreserveExtraDashesUnderwater",
 	"RefillJumpsOnDashRefill",
 	"RegularHiccups",
 	"RestoreDashesOnRespawn",

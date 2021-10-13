@@ -244,6 +244,8 @@ MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=	Time during which you can jump in m
 MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES=	No Freeze Frames
 MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC=	Don't freeze the game for a few frames when dashing, collecting a refill, etc.
 
+MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER=	Preserve Extra Dashes Underwater
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automatically Reset Variants
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= when entering a map using Extended Variants
 

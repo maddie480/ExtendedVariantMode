@@ -115,6 +115,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> madelineBackpackModeOption;
         private TextMenu.Option<int> coyoteTimeOption;
         private TextMenu.Option<bool> noFreezeFramesOption;
+        private TextMenu.Option<bool> preserveExtraDashesUnderwaterOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -375,6 +376,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.RestoreDashesOnRespawn = b);
                 superdashSteeringSpeedOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED"),
                     multiplierFormatter, 0, multiplierScale.Length - 1, indexFromMultiplier(Settings.SuperdashSteeringSpeed), indexFromMultiplier(10)).Change(i => Settings.SuperdashSteeringSpeed = multiplierScale[i]);
+                preserveExtraDashesUnderwaterOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER"), Settings.PreserveExtraDashesUnderwater, true)
+                    .Change(b => Settings.PreserveExtraDashesUnderwater = b);
 
                 // Moving
                 speedXOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX"),
@@ -726,7 +729,8 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime }
+                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
+                        Variant.PreserveExtraDashesUnderwater }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround;
 
@@ -777,7 +781,7 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -842,6 +846,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dontRefillStaminaOnGroundOption);
                 menu.Add(restoreDashesOnRespawnOption);
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
+                menu.Add(preserveExtraDashesUnderwaterOption);
 
                 menu.Add(movingTitle);
                 menu.Add(speedXOption);
@@ -1042,6 +1047,7 @@ namespace ExtendedVariants.UI {
             setValue(everyJumpIsUltraOption, Settings.EveryJumpIsUltra);
             setValue(coyoteTimeOption, 0, indexFromMultiplier(Settings.CoyoteTime));
             setValue(noFreezeFramesOption, Settings.NoFreezeFrames);
+            setValue(preserveExtraDashesUnderwaterOption, Settings.PreserveExtraDashesUnderwater);
         }
 
         private void refreshOptionMenuEnabledStatus() {

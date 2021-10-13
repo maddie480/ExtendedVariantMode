@@ -411,6 +411,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool PreserveExtraDashesUnderwater { get; set; } = true;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool ChangeVariantsRandomly { get; set; } = false;
 
         [SettingIgnore]

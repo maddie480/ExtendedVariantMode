@@ -166,6 +166,7 @@
     <Compile Include="Variants\InvertVerticalControls.cs" />
     <Compile Include="Variants\MadelineBackpackMode.cs" />
     <Compile Include="Variants\MadelineHasPonytail.cs" />
+    <Compile Include="Variants\PreserveExtraDashesUnderwater.cs" />
     <Compile Include="Variants\RestoreDashesOnRespawn.cs" />
     <Compile Include="Variants\DisableWallJumping.cs" />
     <Compile Include="Variants\DisableRefillsOnScreenTransition.cs" />
