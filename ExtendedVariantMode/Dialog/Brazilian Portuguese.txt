@@ -244,6 +244,8 @@ MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=	Tempo em que se pode pular no ar de
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automaticamente restaurar variáveis
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= Quando entrar num mapa usando Variáveis Estendidas
 
+MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER=	Preservar dashes extra embaixo de água
+
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER=	Opções de randomizador
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZERTITLE=	OPÇÕES DE RANDOMIZADOR
 MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA=	Selecionar variáveis vanilla randomizadas
