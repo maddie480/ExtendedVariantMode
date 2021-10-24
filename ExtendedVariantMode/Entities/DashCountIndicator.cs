@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
@@ -22,6 +23,8 @@ namespace ExtendedVariants.Entities {
         private static MTexture[] numbers;
         private ExtendedVariantsSettings settings;
 
+        private static Type strawberrySeedIndicator = null;
+
         public static void Initialize() {
             // extract numbers from the PICO-8 font that ships with the game.
             MTexture source = GFX.Game["pico8/font"];
@@ -32,6 +35,12 @@ namespace ExtendedVariants.Entities {
             }
             for (int i = 0; index < 10; i += 4) {
                 numbers[index++] = source.GetSubtexture(i, 6, 3, 5);
+            }
+
+            // extract a reference to the Max Helping Hand strawberry seed indicator.
+            EverestModule mod = Everest.Modules.FirstOrDefault(m => m.Metadata?.Name == "MaxHelpingHand");
+            if (mod != null) {
+                strawberrySeedIndicator = mod.GetType().Assembly.GetType("Celeste.Mod.MaxHelpingHand.Entities.MultiRoomStrawberryCounter");
             }
         }
 
@@ -68,6 +77,12 @@ namespace ExtendedVariants.Entities {
 
             float minX = float.MaxValue, maxX = float.MaxValue, minY = float.MaxValue, maxY = float.MaxValue;
 
+            // if the strawberry seed indicator is present, we should shift ourselves up.
+            float offsetY = 0f;
+            if (strawberrySeedIndicator != null && Scene.Tracker.Entities[strawberrySeedIndicator].Count > 0) {
+                offsetY = 8f;
+            }
+
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
                 if (hiddenPlayerStates.Contains(player.StateMachine.State)) {
@@ -83,7 +98,7 @@ namespace ExtendedVariants.Entities {
                 string dashCount = player.Dashes.ToString();
                 int totalWidth = dashCount.Length * 4 - 1;
                 for (int i = 0; i < dashCount.Length; i++) {
-                    Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 4, -18f - jumpCountLines * 6f);
+                    Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 4, -18f - jumpCountLines * 6f - offsetY);
                     numbers[dashCount.ToCharArray()[i] - '0'].DrawOutline(position, new Vector2(0f, 0.5f));
 
                     if (minX == float.MaxValue) {

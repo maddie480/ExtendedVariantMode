@@ -227,6 +227,7 @@ namespace ExtendedVariants.Module {
             base.Initialize();
 
             DashCountIndicator.Initialize();
+            JumpIndicator.Initialize();
             (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 8, 35) });

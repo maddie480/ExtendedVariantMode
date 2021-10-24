@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,16 @@ namespace ExtendedVariants.Entities {
     class JumpIndicator : Entity {
         private const int normalDepth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
         private const int depthInFrontOfSolids = Depths.FakeWalls - 1; // in front of fake walls
+
+        private static Type strawberrySeedIndicator = null;
+
+        public static void Initialize() {
+            // extract a reference to the Max Helping Hand strawberry seed indicator.
+            EverestModule mod = Everest.Modules.FirstOrDefault(m => m.Metadata?.Name == "MaxHelpingHand");
+            if (mod != null) {
+                strawberrySeedIndicator = mod.GetType().Assembly.GetType("Celeste.Mod.MaxHelpingHand.Entities.MultiRoomStrawberryCounter");
+            }
+        }
 
         private ExtendedVariantsSettings settings;
 
@@ -45,6 +56,12 @@ namespace ExtendedVariants.Entities {
 
             float minX = float.MaxValue, maxX = float.MaxValue, minY = float.MaxValue, maxY = float.MaxValue;
 
+            // if the strawberry seed indicator is present, we should shift ourselves up.
+            float offsetY = 0f;
+            if (strawberrySeedIndicator != null && Scene.Tracker.Entities[strawberrySeedIndicator].Count > 0) {
+                offsetY = 8f;
+            }
+
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
                 MTexture jumpIndicator = GFX.Game["ExtendedVariantMode/jumpindicator"];
@@ -58,7 +75,7 @@ namespace ExtendedVariants.Entities {
                     int jumpIndicatorsToDrawOnLine = Math.Min(jumpIndicatorsToDraw, 5);
                     int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
                     for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
-                        Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6);
+                        Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6 - offsetY);
                         jumpIndicator.DrawJustified(new Vector2((float) Math.Round(position.X), (float) Math.Round(position.Y)), new Vector2(0f, 0.5f));
 
                         if (minX == float.MaxValue) {
