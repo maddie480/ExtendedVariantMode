@@ -116,6 +116,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<int> coyoteTimeOption;
         private TextMenu.Option<bool> noFreezeFramesOption;
         private TextMenu.Option<bool> preserveExtraDashesUnderwaterOption;
+        private TextMenu.Option<bool> alwaysInvisibleOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -671,6 +672,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.InvertVerticalControls = b);
                 bounceEverywhereOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOUNCEEVERYWHERE"), Settings.BounceEverywhere, false)
                     .Change(b => Settings.BounceEverywhere = b);
+                alwaysInvisibleOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALWAYSINVISIBLE"), Settings.AlwaysInvisible, false)
+                    .Change(b => Settings.AlwaysInvisible = b);
             }
 
             if (includeRandomizer) {
@@ -751,7 +754,7 @@ namespace ExtendedVariants.UI {
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere }
+                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere, Variant.AlwaysInvisible }
                         .Exists(variant => Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue())
                         || Settings.HiccupStrength != 10;
             }
@@ -781,7 +784,7 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -935,6 +938,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(regularHiccupsOption);
                 menu.Add(hiccupStrengthOption);
                 menu.Add(allStrawberriesAreGoldensOption);
+                menu.Add(alwaysInvisibleOption);
 
                 menu.Add(trollTitle);
                 menu.Add(forceDuckOnGroundOption);
@@ -1048,6 +1052,7 @@ namespace ExtendedVariants.UI {
             setValue(coyoteTimeOption, 0, indexFromMultiplier(Settings.CoyoteTime));
             setValue(noFreezeFramesOption, Settings.NoFreezeFrames);
             setValue(preserveExtraDashesUnderwaterOption, Settings.PreserveExtraDashesUnderwater);
+            setValue(alwaysInvisibleOption, Settings.AlwaysInvisible);
         }
 
         private void refreshOptionMenuEnabledStatus() {

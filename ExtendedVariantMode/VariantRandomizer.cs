@@ -378,6 +378,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.EveryJumpIsUltra) ExtendedVariantsModule.Settings.EveryJumpIsUltra = true;
             else if (variant == ExtendedVariantsModule.Variant.NoFreezeFrames) ExtendedVariantsModule.Settings.NoFreezeFrames = true;
             else if (variant == ExtendedVariantsModule.Variant.PreserveExtraDashesUnderwater) ExtendedVariantsModule.Settings.PreserveExtraDashesUnderwater = false;
+            else if (variant == ExtendedVariantsModule.Variant.AlwaysInvisible) ExtendedVariantsModule.Settings.AlwaysInvisible = true;
             // multiplier-style variants (random 0~3x)
             else if (variant == ExtendedVariantsModule.Variant.Gravity) ExtendedVariantsModule.Settings.Gravity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.FallSpeed) ExtendedVariantsModule.Settings.FallSpeed = multiplierScale[randomGenerator.Next(23)];
@@ -393,7 +394,7 @@ namespace ExtendedVariants {
             else if (variant == ExtendedVariantsModule.Variant.Friction) ExtendedVariantsModule.Settings.Friction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.AirFriction) ExtendedVariantsModule.Settings.AirFriction = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.GameSpeed) ExtendedVariantsModule.Settings.GameSpeed = multiplierScale[randomGenerator.Next(22) + 1]; // don't set game speed to 0x for obvious reasons
-            else if (variant == ExtendedVariantsModule.Variant.ZoomLevel) ExtendedVariantsModule.Settings.ZoomLevel = multiplierScale[randomGenerator.Next(22) + 1]; // don't set game speed to 0x for obvious reasons
+            else if (variant == ExtendedVariantsModule.Variant.ZoomLevel) ExtendedVariantsModule.Settings.ZoomLevel = multiplierScale[randomGenerator.Next(22) + 1]; // don't set zoom level to 0x for obvious reasons
             else if (variant == ExtendedVariantsModule.Variant.SuperdashSteeringSpeed) ExtendedVariantsModule.Settings.SuperdashSteeringSpeed = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.ScreenShakeIntensity) ExtendedVariantsModule.Settings.ScreenShakeIntensity = multiplierScale[randomGenerator.Next(23)];
             else if (variant == ExtendedVariantsModule.Variant.CoyoteTime) ExtendedVariantsModule.Settings.CoyoteTime = multiplierScale[randomGenerator.Next(23)];

@@ -246,6 +246,8 @@ MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC=	Don't freeze the game for a few
 
 MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER=	Preserve Extra Dashes Underwater
 
+MODOPTIONS_EXTENDEDVARIANTS_ALWAYSINVISIBLE= Madeline is Always Invisible
+
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automatically Reset Variants
 MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= when entering a map using Extended Variants
 

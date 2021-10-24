@@ -139,6 +139,7 @@
     <Compile Include="Variants\AbstractExtendedVariant.cs" />
     <Compile Include="Variants\AirFriction.cs" />
     <Compile Include="Variants\AllStrawberriesAreGoldens.cs" />
+    <Compile Include="Variants\AlwaysInvisible.cs" />
     <Compile Include="Variants\AnxietyEffect.cs" />
     <Compile Include="Variants\BackgroundBrightness.cs" />
     <Compile Include="Variants\BadelineBossesEverywhere.cs" />

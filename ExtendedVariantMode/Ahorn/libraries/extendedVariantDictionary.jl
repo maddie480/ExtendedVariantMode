@@ -9,6 +9,7 @@ const Variants = String[
 	"AllStrawberriesAreGoldens",
 	"AllowLeavingTheoBehind",
 	"AllowThrowingTheoOffscreen",
+	"AlwaysInvisible",
 	"AnxietyEffect",
 	"BackgroundBlurLevel",
 	"BackgroundBrightness",
