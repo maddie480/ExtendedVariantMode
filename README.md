@@ -82,6 +82,7 @@ Adds some options to the Mod Options menu:
 *   **Every Jump is an Ultra**: when you jump or climb jump, Madeline will automatically duck and get a 1.2x horizontal speed boost, like an "ultra" (a speed tech you can do to go fast).
 *   **Coyote Time**: allows you to modify the time during which you can jump after walking off a platform (0.1 second by default).
 *   **Preserve Extra Dashes Underwater**: if you have 2 dashes with a max of 1 (like in Farewell with double dash crystals), dashing in water would usually make you keep this second dash. this setting allows you to turn that behavior off.
+*   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
 
   
 This can be extended by downloading other mods:  
