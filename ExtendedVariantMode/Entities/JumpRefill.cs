@@ -33,6 +33,7 @@ namespace ExtendedVariants.Entities {
         private bool capped;
         private int cap;
         private float respawnTime;
+        private bool breakEvenWhenFull;
 
         public JumpRefill(EntityData data, Vector2 offset, bool extraJumpRefill)
             : base(data, offset) {
@@ -42,6 +43,7 @@ namespace ExtendedVariants.Entities {
             capped = data.Bool("capped", false);
             cap = data.Int("cap", -1);
             respawnTime = data.Float("respawnTime", defaultValue: 2.5f);
+            breakEvenWhenFull = data.Bool("breakEvenWhenFull", false);
             jumpCountVariant = ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.JumpCount] as JumpCount;
 
             string texture = data.Attr("texture", "ExtendedVariantMode/jumprefill");
@@ -97,7 +99,7 @@ namespace ExtendedVariants.Entities {
         }
 
         private void OnPlayer(Player player) {
-            if (refillJumps()) {
+            if (refillJumps() || breakEvenWhenFull) {
                 Audio.Play("event:/game/general/diamond_touch", Position);
                 Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);
                 Collidable = false;

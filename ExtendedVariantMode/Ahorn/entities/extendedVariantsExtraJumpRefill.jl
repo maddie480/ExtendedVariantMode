@@ -3,7 +3,7 @@
 using ..Ahorn, Maple
 
 @mapdef Entity "ExtendedVariantMode/ExtraJumpRefill" ExtraJumpRefill(x::Integer, y::Integer,
-    extraJumps::Int=1, capped::Bool=false, cap::Int=-1, oneUse::Bool=false, texture::String="ExtendedVariantMode/jumprefillblue", respawnTime::Number=2.5)
+    extraJumps::Int=1, capped::Bool=false, cap::Int=-1, oneUse::Bool=false, texture::String="ExtendedVariantMode/jumprefillblue", respawnTime::Number=2.5, breakEvenWhenFull::Bool=false)
 
 const placements = Ahorn.PlacementDict(
     "Extra Jump Refill (Extended Variant Mode)" => Ahorn.EntityPlacement(
