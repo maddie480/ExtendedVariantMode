@@ -370,7 +370,7 @@ namespace ExtendedVariants.Module {
             "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/ColorGradeTrigger",
             "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill",
             "ExtendedVariantMode/ExtendedVariantFadeTrigger", "ExtendedVariantMode/ExtendedVariantController", "ExtendedVariantMode/ToggleDashDirectionTrigger",
-            "ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger", "ExtendedVariantMode/TheoCrystal"
+            "ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger", "ExtendedVariantMode/TheoCrystal", "ExtendedVariantMode/SetJumpCountTrigger"
         };
 
         // this one is for the normal case (entering a level from the overworld or opening a save)

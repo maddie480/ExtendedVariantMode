@@ -195,6 +195,19 @@ namespace ExtendedVariants.Variants {
         }
 
         /// <summary>
+        /// Sets or caps the jump count.
+        /// </summary>
+        /// <param name="jumpCount">The jump count</param>
+        /// <param name="cap">If true, the jump count will be capped to the given value; otherwise, it will be set to the given value</param>
+        public static void SetJumpCount(int jumpCount, bool cap) {
+            if (cap) {
+                jumpBuffer = Math.Min(jumpBuffer, jumpCount);
+            } else {
+                jumpBuffer = jumpCount;
+            }
+        }
+
+        /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
         private float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {

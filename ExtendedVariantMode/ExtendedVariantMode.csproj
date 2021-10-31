@@ -114,6 +114,7 @@
     <Compile Include="Entities\DashCountIndicator.cs" />
     <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />
+    <Compile Include="Entities\SetJumpCountTrigger.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
     <Compile Include="ExtendedVariantFadeTrigger.cs" />
     <Compile Include="ExtendedVariantOnScreenDisplayTrigger.cs" />
@@ -222,6 +223,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\libraries\extendedVariantDictionary.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Ahorn\triggers\extendedVariantsSetJumpCountTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Ahorn\triggers\extendedVariantsColorGradeTrigger.jl">
