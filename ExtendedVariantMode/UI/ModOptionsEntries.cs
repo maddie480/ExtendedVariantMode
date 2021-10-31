@@ -117,6 +117,7 @@ namespace ExtendedVariants.UI {
         private TextMenu.Option<bool> noFreezeFramesOption;
         private TextMenu.Option<bool> preserveExtraDashesUnderwaterOption;
         private TextMenu.Option<bool> alwaysInvisibleOption;
+        private TextMenu.Option<int> displaySpeedometerOption;
         private TextMenu.Item resetExtendedToDefaultOption;
         private TextMenu.Item resetVanillaToDefaultOption;
         private TextMenu.Item randomizerOptions;
@@ -630,6 +631,9 @@ namespace ExtendedVariants.UI {
 
                 displayDashCountOption = new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYDASHCOUNT"), Settings.DisplayDashCount, false)
                     .Change(b => Settings.DisplayDashCount = b);
+
+                displaySpeedometerOption = new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER"),
+                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER_{i}"), 0, 3, Settings.DisplaySpeedometer, 0).Change(i => Settings.DisplaySpeedometer = i);
             }
 
             // ======
@@ -749,7 +753,8 @@ namespace ExtendedVariants.UI {
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel }
+                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
+                        Variant.DisplaySpeedometer }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetValue() != Instance.VariantHandlers[variant].GetDefaultValue());
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -784,7 +789,7 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -910,6 +915,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashTrailAllTheTimeOption);
                 if (Instance.MaxHelpingHandInstalled) menu.Add(madelineHasPonytailOption);
                 menu.Add(displayDashCountOption);
+                menu.Add(displaySpeedometerOption);
                 menu.Add(madelineBackpackModeOption);
 
                 menu.Add(levelTitle);
@@ -1045,6 +1051,7 @@ namespace ExtendedVariants.UI {
             setValue(madelineHasPonytailOption, Settings.MadelineHasPonytail);
             setValue(dashTrailAllTheTimeOption, Settings.DashTrailAllTheTime);
             setValue(madelineBackpackModeOption, 0, Settings.MadelineBackpackMode);
+            setValue(displaySpeedometerOption, 0, Settings.DisplaySpeedometer);
             setValue(disableClimbingUpOrDownOption, Settings.DisableClimbingUpOrDown);
             setValue(friendlyBadelineFollowerOption, Settings.FriendlyBadelineFollower);
             setValue(displayDashCountOption, Settings.DisplayDashCount);

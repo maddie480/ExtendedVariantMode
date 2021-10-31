@@ -115,6 +115,7 @@
     <Compile Include="Entities\JumpIndicator.cs" />
     <Compile Include="Entities\JumpRefill.cs" />
     <Compile Include="Entities\SetJumpCountTrigger.cs" />
+    <Compile Include="Entities\Speedometer.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
     <Compile Include="ExtendedVariantFadeTrigger.cs" />
     <Compile Include="ExtendedVariantOnScreenDisplayTrigger.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Variants\DisableClimbJumping.cs" />
     <Compile Include="Variants\DisableMadelineSpotlight.cs" />
     <Compile Include="Variants\DisableNeutralJumping.cs" />
+    <Compile Include="Variants\DisplaySpeedometer.cs" />
     <Compile Include="Variants\DisplayDashCount.cs" />
     <Compile Include="Variants\EveryJumpIsUltra.cs" />
     <Compile Include="Variants\NoFreezeFrames.cs" />

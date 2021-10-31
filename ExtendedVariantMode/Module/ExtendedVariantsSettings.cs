@@ -421,6 +421,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int DisplaySpeedometer { get; set; } = 0;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool ChangeVariantsRandomly { get; set; } = false;
 
         [SettingIgnore]

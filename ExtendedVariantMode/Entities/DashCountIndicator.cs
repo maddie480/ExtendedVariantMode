@@ -21,7 +21,7 @@ namespace ExtendedVariants.Entities {
             Player.StIntroThinkForABit, Player.StIntroWakeUp, Player.StIntroWalk, Player.StReflectionFall, Player.StDummy };
 
         private static MTexture[] numbers;
-        private ExtendedVariantsSettings settings;
+        protected ExtendedVariantsSettings settings;
 
         private static Type strawberrySeedIndicator = null;
 
@@ -68,7 +68,7 @@ namespace ExtendedVariants.Entities {
         }
 
         public override void Render() {
-            if (!settings.DisplayDashCount) {
+            if (!shouldShowCounter()) {
                 // hide the dash count.
                 return;
             }
@@ -82,6 +82,7 @@ namespace ExtendedVariants.Entities {
             if (strawberrySeedIndicator != null && Scene.Tracker.Entities[strawberrySeedIndicator].Count > 0) {
                 offsetY = 8f;
             }
+            offsetY += getExtraOffset();
 
             Player player = Scene.Tracker.GetEntity<Player>();
             if (player != null) {
@@ -95,11 +96,11 @@ namespace ExtendedVariants.Entities {
                 int jumpCountLines = jumpIndicatorsToDraw == 0 ? 0 : 1 + (jumpIndicatorsToDraw - 1) / 5;
 
                 // draw Madeline's dash count, digit by digit.
-                string dashCount = player.Dashes.ToString();
-                int totalWidth = dashCount.Length * 4 - 1;
-                for (int i = 0; i < dashCount.Length; i++) {
+                string number = getNumberToDisplay(player);
+                int totalWidth = number.Length * 4 - 1;
+                for (int i = 0; i < number.Length; i++) {
                     Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 4, -18f - jumpCountLines * 6f - offsetY);
-                    numbers[dashCount.ToCharArray()[i] - '0'].DrawOutline(position, new Vector2(0f, 0.5f));
+                    numbers[number.ToCharArray()[i] - '0'].DrawOutline(position, new Vector2(0f, 0.5f));
 
                     if (minX == float.MaxValue) {
                         minX = maxX = position.X;
@@ -118,6 +119,18 @@ namespace ExtendedVariants.Entities {
             } else {
                 Collider = null;
             }
+        }
+
+        protected virtual bool shouldShowCounter() {
+            return settings.DisplayDashCount;
+        }
+
+        protected virtual float getExtraOffset() {
+            return 0f;
+        }
+
+        protected virtual string getNumberToDisplay(Player player) {
+            return player.Dashes.ToString();
         }
     }
 }

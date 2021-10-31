@@ -2,17 +2,17 @@
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class DisplayDashCount : AbstractExtendedVariant {
+    class DisplaySpeedometer : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }
 
         public override int GetValue() {
-            return Settings.DisplayDashCount ? 1 : 0;
+            return Settings.DisplaySpeedometer;
         }
 
         public override void SetValue(int value) {
-            Settings.DisplayDashCount = (value != 0);
+            Settings.DisplaySpeedometer = value;
         }
 
         public override void Load() {
@@ -26,9 +26,9 @@ namespace ExtendedVariants.Variants {
         private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Celeste.Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
-            if (!self.Entities.Any(entity => entity is DashCountIndicator && !(entity is Speedometer))) {
-                // add the entity showing the dash count (it will be invisible unless the option is enabled)
-                self.Add(new DashCountIndicator());
+            if (!self.Entities.Any(entity => entity is Speedometer)) {
+                // add the entity showing the speedometer (it will be invisible unless the option is enabled)
+                self.Add(new Speedometer());
                 self.Entities.UpdateLists();
             }
         }

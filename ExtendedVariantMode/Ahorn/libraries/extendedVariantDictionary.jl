@@ -44,6 +44,7 @@ const Variants = String[
 	"DisableSuperBoosts",
 	"DisableWallJumping",
 	"DisplayDashCount",
+	"DisplaySpeedometer",
 	"DontRefillDashOnGround",
 	"DontRefillStaminaOnGround",
 	"EveryJumpIsUltra",
