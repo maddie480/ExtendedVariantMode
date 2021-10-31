@@ -42,6 +42,7 @@ Adds some options to the Mod Options menu:
         
     *   **Disable Madeline Spotlight**: Prevents Madeline from emiting light. That's some way to spice up the Invisible Motion variant for example.
     *   **Display Dash Count**: displays how many dashes Madeline has with a number floating over her head. Useful if you are in a map with a lot of dashes and can't use hair colors to tell how many dashes you have left... or if you just gave yourself 10 dashes through the Dash Count variant.  
+	*   **Display Speedometer**: shows Madeline's horizontal, vertical or overall speed over her head.
         
     *   **Room Bloom**: Gives all rooms the "bloom" effect, or remove it. If you don't know what bloom is (I didn't either), check the screenshots
     *   **Glitch Effect**: That's the effect used when hitting a Badeline boss or in the "void" section of Mirror Temple (where you control a seeker).
@@ -110,7 +111,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/630885)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/684835)
 
 To build the project yourself:
 * Clone or download the repo
