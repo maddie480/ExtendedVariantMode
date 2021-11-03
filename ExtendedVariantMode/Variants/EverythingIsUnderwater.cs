@@ -10,7 +10,7 @@ using Mono.Cecil;
 using Celeste.Mod;
 
 namespace ExtendedVariants.Variants {
-    class EverythingIsUnderwater : AbstractExtendedVariant {
+    public class EverythingIsUnderwater : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

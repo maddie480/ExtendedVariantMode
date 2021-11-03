@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class AirFriction : AbstractExtendedVariant {
+    public class AirFriction : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 10;
         }

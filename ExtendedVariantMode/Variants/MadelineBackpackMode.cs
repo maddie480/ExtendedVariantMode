@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 
 namespace ExtendedVariants.Variants {
-    class MadelineBackpackMode : AbstractExtendedVariant {
+    public class MadelineBackpackMode : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

@@ -9,7 +9,7 @@ using System.Collections;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class RisingLavaEverywhere : AbstractExtendedVariant {
+    public class RisingLavaEverywhere : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

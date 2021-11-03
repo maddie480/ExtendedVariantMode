@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
-    class BoostMultiplier : AbstractExtendedVariant {
+    public class BoostMultiplier : AbstractExtendedVariant {
         private static ILHook playerOrigWallJumpHook;
 
         public override int GetDefaultValue() {

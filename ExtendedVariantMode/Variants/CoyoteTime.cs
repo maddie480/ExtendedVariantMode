@@ -7,7 +7,7 @@ using MonoMod.Utils;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class CoyoteTime : AbstractExtendedVariant {
+    public class CoyoteTime : AbstractExtendedVariant {
         private ILHook hookOrigUpdate;
 
         public override int GetDefaultValue() {

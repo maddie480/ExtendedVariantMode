@@ -10,7 +10,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
-    class AllStrawberriesAreGoldens : AbstractExtendedVariant {
+    public class AllStrawberriesAreGoldens : AbstractExtendedVariant {
         private static FieldInfo wiggler = typeof(Strawberry).GetField("wiggler", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo rotateWiggler = typeof(Strawberry).GetField("rotateWiggler", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo bloom = typeof(Strawberry).GetField("bloom", BindingFlags.NonPublic | BindingFlags.Instance);

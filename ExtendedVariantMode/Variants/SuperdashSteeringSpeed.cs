@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class SuperdashSteeringSpeed : AbstractExtendedVariant {
+    public class SuperdashSteeringSpeed : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 10;
         }

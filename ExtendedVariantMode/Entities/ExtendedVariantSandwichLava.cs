@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 
 namespace ExtendedVariants.Entities {
-    class ExtendedVariantSandwichLava : SandwichLava {
+    public class ExtendedVariantSandwichLava : SandwichLava {
         private static FieldInfo iceMode = typeof(SandwichLava).GetField("iceMode", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo topRect = typeof(SandwichLava).GetField("topRect", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo bottomRect = typeof(SandwichLava).GetField("bottomRect", BindingFlags.NonPublic | BindingFlags.Instance);

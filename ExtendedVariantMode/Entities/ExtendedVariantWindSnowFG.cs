@@ -3,7 +3,7 @@ using Monocle;
 
 namespace ExtendedVariants.Entities {
 
-    class ExtendedVariantWindSnowFG : WindSnowFG {
+    public class ExtendedVariantWindSnowFG : WindSnowFG {
 
         public override void Update(Scene scene) {
             // update the alpha with the same fade as vanilla (except we can't just override IsVisible)

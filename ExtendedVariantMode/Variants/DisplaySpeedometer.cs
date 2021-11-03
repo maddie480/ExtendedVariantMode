@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class DisplaySpeedometer : AbstractExtendedVariant {
+    public class DisplaySpeedometer : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

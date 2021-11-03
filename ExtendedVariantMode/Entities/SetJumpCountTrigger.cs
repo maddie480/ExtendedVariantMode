@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities {
     [CustomEntity("ExtendedVariantMode/SetJumpCountTrigger")]
-    class SetJumpCountTrigger : Trigger {
+    public class SetJumpCountTrigger : Trigger {
         private enum Mode { Cap, Set }
 
         private readonly int jumpCount;

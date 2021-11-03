@@ -2,7 +2,7 @@
 using System;
 
 namespace ExtendedVariants.Variants {
-    class EveryJumpIsUltra : AbstractExtendedVariant {
+    public class EveryJumpIsUltra : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

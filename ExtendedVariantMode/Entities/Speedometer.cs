@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ExtendedVariants.Entities {
-    class Speedometer : DashCountIndicator {
+    public class Speedometer : DashCountIndicator {
         private LinkedList<int> lastSpeeds = new LinkedList<int>();
 
         protected override bool shouldShowCounter() {

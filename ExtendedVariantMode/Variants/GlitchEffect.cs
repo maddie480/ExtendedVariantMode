@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class GlitchEffect : AbstractExtendedVariant {
+    public class GlitchEffect : AbstractExtendedVariant {
 
         public override int GetDefaultValue() {
             return -1;

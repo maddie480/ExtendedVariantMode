@@ -10,7 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace ExtendedVariants.Variants {
-    class BadelineBossesEverywhere : AbstractExtendedVariant {
+    public class BadelineBossesEverywhere : AbstractExtendedVariant {
 
         private Random positionRandomizer = new Random();
         private Random patternRandomizer = new Random();

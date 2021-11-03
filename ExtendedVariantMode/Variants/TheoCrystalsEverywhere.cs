@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class TheoCrystalsEverywhere : AbstractExtendedVariant {
+    public class TheoCrystalsEverywhere : AbstractExtendedVariant {
 
         public override int GetDefaultValue() {
             return 0;

@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class DisplayDashCount : AbstractExtendedVariant {
+    public class DisplayDashCount : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

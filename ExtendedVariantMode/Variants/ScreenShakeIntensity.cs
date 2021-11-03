@@ -2,7 +2,7 @@
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
-    class ScreenShakeIntensity : AbstractExtendedVariant {
+    public class ScreenShakeIntensity : AbstractExtendedVariant {
         private PropertyInfo shakeVectorInfo = typeof(Level).GetProperty("ShakeVector",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 

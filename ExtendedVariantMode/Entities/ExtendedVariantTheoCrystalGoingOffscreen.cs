@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ExtendedVariants.Entities {
-    class ExtendedVariantTheoCrystalGoingOffscreen : ExtendedVariantTheoCrystal {
+    public class ExtendedVariantTheoCrystalGoingOffscreen : ExtendedVariantTheoCrystal {
         public ExtendedVariantTheoCrystalGoingOffscreen(Vector2 position) : base(position) { }
 
         public override void Update() {

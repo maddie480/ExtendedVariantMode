@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Variants {
-    class BounceEverywhere : AbstractExtendedVariant {
+    public class BounceEverywhere : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

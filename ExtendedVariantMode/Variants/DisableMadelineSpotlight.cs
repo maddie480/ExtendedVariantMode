@@ -4,7 +4,7 @@ using MonoMod.Utils;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
-    class DisableMadelineSpotlight : AbstractExtendedVariant {
+    public class DisableMadelineSpotlight : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

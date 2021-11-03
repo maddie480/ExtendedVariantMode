@@ -3,7 +3,7 @@ using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities {
-    class AutoDestroyingBadelineBoss : FinalBoss {
+    public class AutoDestroyingBadelineBoss : FinalBoss {
         public AutoDestroyingBadelineBoss(EntityData e, Vector2 offset) : base(e, offset) {
             // ... I don't want to lock the camera though
             CameraLocker cameraLocker = Components.Get<CameraLocker>();

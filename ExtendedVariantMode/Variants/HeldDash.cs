@@ -8,7 +8,7 @@ using System.Collections;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
-    class HeldDash : AbstractExtendedVariant {
+    public class HeldDash : AbstractExtendedVariant {
         // allows to check with reflection that Input.CrouchDash exists before using it.
         private static FieldInfo crouchDash = typeof(Input).GetField("CrouchDash");
 

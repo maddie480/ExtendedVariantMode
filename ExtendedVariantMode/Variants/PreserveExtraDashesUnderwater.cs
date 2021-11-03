@@ -1,7 +1,7 @@
 ﻿using Celeste;
 
 namespace ExtendedVariants.Variants {
-    class PreserveExtraDashesUnderwater : AbstractExtendedVariant {
+    public class PreserveExtraDashesUnderwater : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 1;
         }

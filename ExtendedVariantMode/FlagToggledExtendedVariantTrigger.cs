@@ -6,7 +6,7 @@ using System;
 
 namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantMode/FlagToggledExtendedVariantTrigger")]
-    static class FlagToggledExtendedVariantTrigger {
+    public static class FlagToggledExtendedVariantTrigger {
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {
             Trigger trigger = new ExtendedVariantTrigger(entityData, offset);
             trigger.Add(new FlagToggleComponent(entityData.Attr("flag"), entityData.Bool("inverted")));

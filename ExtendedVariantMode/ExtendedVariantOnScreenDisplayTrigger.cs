@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger")]
-    class ExtendedVariantOnScreenDisplayTrigger : Trigger {
+    public class ExtendedVariantOnScreenDisplayTrigger : Trigger {
         private readonly bool enable;
 
         public ExtendedVariantOnScreenDisplayTrigger(EntityData data, Vector2 offset) : base(data, offset) {

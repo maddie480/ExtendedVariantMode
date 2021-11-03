@@ -1,6 +1,6 @@
 ﻿
 namespace ExtendedVariants.Variants {
-    class AlwaysInvisible : AbstractExtendedVariant {
+    public class AlwaysInvisible : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

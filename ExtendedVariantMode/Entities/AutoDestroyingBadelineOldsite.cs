@@ -4,7 +4,7 @@ using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities {
-    class AutoDestroyingBadelineOldsite : BadelineOldsite {
+    public class AutoDestroyingBadelineOldsite : BadelineOldsite {
         private bool waitingForWatchtower = false;
 
         public AutoDestroyingBadelineOldsite(EntityData data, Vector2 position, int index) : base(data, position, index) { }

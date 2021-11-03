@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
-    class DontRefillDashOnGround : AbstractExtendedVariant {
+    public class DontRefillDashOnGround : AbstractExtendedVariant {
         private ILHook patchOrigUpdate;
 
         public override int GetDefaultValue() {

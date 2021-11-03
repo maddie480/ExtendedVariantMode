@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace ExtendedVariants.Entities {
     // we can't extend AngryOshiroRight for a thousand reasons. So, we'll make a component that will mess around with the AngryOshiroRight, and attach that to the ones we spawn.
-    class AutoDestroyingReverseOshiroModder : Component {
+    public class AutoDestroyingReverseOshiroModder : Component {
         // cached accessor for AngryOshiroRight's "state" private field.
         private static FieldInfo stateMachine = typeof(AngryOshiroRight).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
 

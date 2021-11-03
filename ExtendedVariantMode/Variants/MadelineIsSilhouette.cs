@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
-    class MadelineIsSilhouette : AbstractExtendedVariant {
+    public class MadelineIsSilhouette : AbstractExtendedVariant {
         private static List<ILHook> doneILHooks = new List<ILHook>();
         private static MethodInfo refreshPlayerSpriteMode = null;
         private static bool previouslyEnabled = false;

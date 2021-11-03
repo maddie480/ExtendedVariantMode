@@ -3,7 +3,7 @@ using Celeste;
 using ExtendedVariants.Module;
 
 namespace ExtendedVariants.Entities {
-    class AutoDestroyingSnowball : Snowball {
+    public class AutoDestroyingSnowball : Snowball {
         public AutoDestroyingSnowball() : base() { }
 
         public override void Update() {

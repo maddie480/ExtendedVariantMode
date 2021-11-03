@@ -12,7 +12,7 @@ namespace ExtendedVariants.Entities {
     /// <summary>
     /// An indicator for the dash count (numbers above Madeline's head).
     /// </summary>
-    class DashCountIndicator : Entity {
+    public class DashCountIndicator : Entity {
         private const int normalDepth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
         private const int depthInFrontOfSolids = Depths.FakeWalls - 1; // in front of fake walls
 

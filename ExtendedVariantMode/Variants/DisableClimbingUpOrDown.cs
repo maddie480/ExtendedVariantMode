@@ -5,7 +5,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class DisableClimbingUpOrDown : AbstractExtendedVariant {
+    public class DisableClimbingUpOrDown : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

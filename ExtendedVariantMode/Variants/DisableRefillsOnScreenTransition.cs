@@ -1,6 +1,6 @@
 ﻿
 namespace ExtendedVariants.Variants {
-    class DisableRefillsOnScreenTransition : AbstractExtendedVariant {
+    public class DisableRefillsOnScreenTransition : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

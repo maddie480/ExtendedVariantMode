@@ -16,7 +16,7 @@ namespace ExtendedVariants.Entities {
         "ExtendedVariantMode/JumpRefill = RecoverJumpRefill",
         "ExtendedVariantMode/RecoverJumpRefill = RecoverJumpRefill",
         "ExtendedVariantMode/ExtraJumpRefill = ExtraJumpRefill")]
-    class JumpRefill : Refill {
+    public class JumpRefill : Refill {
         private static FieldInfo f_sprite = typeof(Refill).GetField("sprite", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo f_flash = typeof(Refill).GetField("flash", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo f_outline = typeof(Refill).GetField("outline", BindingFlags.NonPublic | BindingFlags.Instance);

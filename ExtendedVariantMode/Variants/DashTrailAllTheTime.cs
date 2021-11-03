@@ -4,7 +4,7 @@ using Monocle;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class DashTrailAllTheTime : AbstractExtendedVariant {
+    public class DashTrailAllTheTime : AbstractExtendedVariant {
         private float dashTrailTimer = 0f;
 
         public override int GetDefaultValue() {

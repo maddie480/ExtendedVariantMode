@@ -3,7 +3,7 @@ using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Variants {
-    class FriendlyBadelineFollower : AbstractExtendedVariant {
+    public class FriendlyBadelineFollower : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

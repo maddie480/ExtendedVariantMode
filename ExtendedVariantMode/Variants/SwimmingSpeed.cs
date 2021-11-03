@@ -3,7 +3,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class SwimmingSpeed : AbstractExtendedVariant {
+    public class SwimmingSpeed : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 10;
         }

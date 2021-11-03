@@ -2,7 +2,7 @@
 using MonoMod.RuntimeDetour;
 
 namespace ExtendedVariants.Variants {
-    class InvertVerticalControls : AbstractExtendedVariant {
+    public class InvertVerticalControls : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

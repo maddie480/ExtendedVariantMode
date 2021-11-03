@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantMode/ColorGradeTrigger")]
-    class ColorGradeTrigger : Trigger {
+    public class ColorGradeTrigger : Trigger {
         private string colorGrade;
         private bool revertOnDeath;
         private bool onlyOnce;

@@ -8,7 +8,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class BackgroundBrightness : AbstractExtendedVariant {
+    public class BackgroundBrightness : AbstractExtendedVariant {
         private VirtualRenderTarget blackMask;
 
         public override int GetDefaultValue() {

@@ -9,7 +9,7 @@ using System;
 using System.Collections;
 
 namespace ExtendedVariants.Variants {
-    class RestoreDashesOnRespawn : AbstractExtendedVariant {
+    public class RestoreDashesOnRespawn : AbstractExtendedVariant {
         public override int GetDefaultValue() {
             return 0;
         }

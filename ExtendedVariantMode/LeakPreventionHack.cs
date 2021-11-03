@@ -9,7 +9,7 @@ using System.Reflection;
 namespace ExtendedVariants {
     // a leak prevention patch that's way too hacky to have its place in Everest.
     // instead of fixing the root issue, it tries to mitigate it by making NLua forget about any entity that isn't in the scene anymore.
-    internal static class LeakPreventionHack {
+    public static class LeakPreventionHack {
         private static Dictionary<object, int> nluaReferenceMap;
         private static List<int> discardQueue = new List<int>();
 

@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
-    class MadelineHasPonytail : AbstractExtendedVariant {
+    public class MadelineHasPonytail : AbstractExtendedVariant {
         private static List<ILHook> doneILHooks = new List<ILHook>();
 
         public override int GetDefaultValue() {

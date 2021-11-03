@@ -8,7 +8,7 @@ namespace ExtendedVariants.UI {
     /// A dedicated submenu containing all extended variants options. Parameters =
     /// 0 = (bool) true if invoked from in-game, false otherwise
     /// </summary>
-    class OuiExtendedVariantsSubmenu : AbstractSubmenu {
+    public class OuiExtendedVariantsSubmenu : AbstractSubmenu {
         private int savedMenuIndex = -1;
         private TextMenu currentMenu;
 

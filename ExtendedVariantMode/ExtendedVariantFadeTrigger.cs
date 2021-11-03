@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ExtendedVariants {
     [CustomEntity("ExtendedVariantMode/ExtendedVariantFadeTrigger")]
-    class ExtendedVariantFadeTrigger : Trigger {
+    public class ExtendedVariantFadeTrigger : Trigger {
         private readonly ExtendedVariantsModule.Variant variantChange;
         private readonly int valueA;
         private readonly int valueB;

@@ -8,7 +8,7 @@ using MonoMod.Cil;
 using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
-    class GameSpeed : AbstractExtendedVariant {
+    public class GameSpeed : AbstractExtendedVariant {
         private int previousGameSpeed = 10;
 
         public override int GetDefaultValue() {

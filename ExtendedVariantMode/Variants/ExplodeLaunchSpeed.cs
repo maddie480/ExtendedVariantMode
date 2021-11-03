@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
-    class ExplodeLaunchSpeed : AbstractExtendedVariant {
+    public class ExplodeLaunchSpeed : AbstractExtendedVariant {
         // a surely-non-exhaustive list of all methods from helpers calling ExplodeLaunch. :theoreticalwoke:
         private static readonly Dictionary<string, List<string>> modExplodeLaunchDictionary = new Dictionary<string, List<string>> {
             { "Anonhelper", new List<string> { "Celeste.Mod.Anonhelper.FeatherBumper.OnPlayer" } },

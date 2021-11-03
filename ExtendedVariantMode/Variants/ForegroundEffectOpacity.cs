@@ -7,7 +7,7 @@ using MonoMod.Cil;
 using System;
 
 namespace ExtendedVariants.Variants {
-    class ForegroundEffectOpacity : AbstractExtendedVariant {
+    public class ForegroundEffectOpacity : AbstractExtendedVariant {
         private VirtualRenderTarget foregroundEffectBuffer;
 
         public override int GetDefaultValue() {

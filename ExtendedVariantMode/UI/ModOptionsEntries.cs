@@ -17,7 +17,7 @@ namespace ExtendedVariants.UI {
     /// This is called to build every menu or submenu containing extended variants options (parts to display or hide
     /// are managed by the various menus / submenus depending on where you are and your display preferences).
     /// </summary>
-    class ModOptionsEntries {
+    public class ModOptionsEntries {
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
         private TextMenu.Option<bool> masterSwitchOption;

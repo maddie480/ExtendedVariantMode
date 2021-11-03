@@ -10,7 +10,7 @@ namespace ExtendedVariants.Entities {
     /// Heavily based on https://github.com/EverestAPI/SpringCollab2020/blob/master/Entities/UnderwaterSwitchController.cs,
     /// except controlled by the extended variant setting instead of a session flag.
     /// </summary>
-    class UnderwaterSwitchController : Entity {
+    public class UnderwaterSwitchController : Entity {
         private static FieldInfo waterFill = typeof(Water).GetField("fill", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private ExtendedVariantsSettings settings;
