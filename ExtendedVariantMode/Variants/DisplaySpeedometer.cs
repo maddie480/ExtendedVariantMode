@@ -1,18 +1,29 @@
 ﻿using ExtendedVariants.Entities;
+using System;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class DisplaySpeedometer : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+        public enum SpeedometerConfiguration { DISABLED, HORIZONTAL, VERTICAL, BOTH }
+
+        public override Type GetVariantType() {
+            return typeof(SpeedometerConfiguration);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return SpeedometerConfiguration.DISABLED;
+        }
+
+        public override object GetVariantValue() {
             return Settings.DisplaySpeedometer;
         }
 
-        public override void SetValue(int value) {
-            Settings.DisplaySpeedometer = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.DisplaySpeedometer = (SpeedometerConfiguration) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.DisplaySpeedometer = (SpeedometerConfiguration) value;
         }
 
         public override void Load() {

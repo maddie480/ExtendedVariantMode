@@ -16,16 +16,24 @@ namespace ExtendedVariants.Variants {
     public class BoostMultiplier : AbstractExtendedVariant {
         private static ILHook playerOrigWallJumpHook;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.BoostMultiplier;
         }
 
-        public override void SetValue(int value) {
-            Settings.BoostMultiplier = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.BoostMultiplier = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.BoostMultiplier = (value / 10f);
         }
 
         public override void Load() {
@@ -60,7 +68,7 @@ namespace ExtendedVariants.Variants {
                         // capping has to be flipped around too!
                         orig.Y = Calc.Clamp(self.LiftSpeed.Y, 0f, 130f);
                     }
-                    return orig * (Settings.BoostMultiplier / 10f);
+                    return orig * (Settings.BoostMultiplier);
                 });
             }
         }

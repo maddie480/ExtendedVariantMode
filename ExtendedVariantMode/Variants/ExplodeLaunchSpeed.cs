@@ -30,16 +30,24 @@ namespace ExtendedVariants.Variants {
         private bool initialized = false;
         private List<ILHook> appliedILHooks = new List<ILHook>();
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.ExplodeLaunchSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.ExplodeLaunchSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.ExplodeLaunchSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.ExplodeLaunchSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -121,7 +129,7 @@ namespace ExtendedVariants.Variants {
         private void correctExplodeLaunchSpeed() {
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
             if (player != null) {
-                player.Speed *= (Settings.ExplodeLaunchSpeed / 10f);
+                player.Speed *= Settings.ExplodeLaunchSpeed;
 
                 if (Settings.DisableSuperBoosts) {
                     if (Input.MoveX.Value == Math.Sign(player.Speed.X)) {

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 
-namespace ExtendedVariants {
+namespace ExtendedVariants.Entities.Legacy {
     [CustomEntity("ExtendedVariantMode/FlagToggledExtendedVariantTrigger")]
     public static class FlagToggledExtendedVariantTrigger {
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {

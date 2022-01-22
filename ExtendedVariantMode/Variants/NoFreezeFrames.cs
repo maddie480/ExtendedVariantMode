@@ -6,15 +6,23 @@ using Monocle;
 namespace ExtendedVariants.Variants {
     public class NoFreezeFrames : AbstractExtendedVariant {
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.NoFreezeFrames ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.NoFreezeFrames;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.NoFreezeFrames = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.NoFreezeFrames = (value != 0);
         }
 
@@ -50,6 +58,5 @@ namespace ExtendedVariants.Variants {
                 });
             }
         }
-
     }
 }

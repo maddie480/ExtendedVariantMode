@@ -7,16 +7,32 @@ using System;
 namespace ExtendedVariants.Variants {
     public class RoomBloom : AbstractExtendedVariant {
 
-        public override int GetDefaultValue() {
-            return -1;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return -1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.RoomBloom;
         }
 
-        public override void SetValue(int value) {
-            Settings.RoomBloom = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.RoomBloom = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            if (value == -1) {
+                Settings.RoomBloom = -1f;
+            } else if (value < 10f) {
+                // 8 means 80% bloom...
+                Settings.RoomBloom = (value / 10f);
+            } else {
+                // ... but 14 means 500% bloom, not 140%. Legacy values ftw
+                Settings.RoomBloom = (value - 9f);
+            }
         }
 
         public override void Load() {
@@ -46,13 +62,13 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modBloomBase(float vanilla) {
-            if (Settings.RoomBloom == -1) return vanilla;
-            return Math.Min(Settings.RoomBloom, 10) / 10f;
+            if (Settings.RoomBloom == -1f) return vanilla;
+            return Math.Min(Settings.RoomBloom, 1f);
         }
 
         private float modBloomStrength(float vanilla) {
-            if (Settings.RoomBloom == -1) return vanilla;
-            return Math.Max(1, Settings.RoomBloom - 9);
+            if (Settings.RoomBloom == -1f) return vanilla;
+            return Math.Max(1, Settings.RoomBloom);
         }
     }
 }

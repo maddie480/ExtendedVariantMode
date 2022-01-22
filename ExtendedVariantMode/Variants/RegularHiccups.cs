@@ -10,16 +10,24 @@ namespace ExtendedVariants.Variants {
 
         private float regularHiccupTimer = 0f;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 0f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.RegularHiccups;
         }
 
-        public override void SetValue(int value) {
-            Settings.RegularHiccups = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.RegularHiccups = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.RegularHiccups = (value / 10f);
         }
 
         public override void Load() {
@@ -35,27 +43,27 @@ namespace ExtendedVariants.Variants {
         }
 
         public void UpdateTimerFromSettings() {
-            regularHiccupTimer = Settings.RegularHiccups / 10f;
+            regularHiccupTimer = Settings.RegularHiccups;
         }
 
         private void onPlayerAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
             orig(self, scene);
 
             // reset the hiccup timer when the player respawns, for more consistency.
-            regularHiccupTimer = Settings.RegularHiccups / 10f;
+            regularHiccupTimer = Settings.RegularHiccups;
         }
 
         private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
-            if (Settings.RegularHiccups != 0) {
+            if (Settings.RegularHiccups != 0f) {
                 regularHiccupTimer -= Engine.DeltaTime;
 
-                if (regularHiccupTimer > Settings.RegularHiccups / 10f) {
-                    regularHiccupTimer = Settings.RegularHiccups / 10f;
+                if (regularHiccupTimer > Settings.RegularHiccups) {
+                    regularHiccupTimer = Settings.RegularHiccups;
                 }
                 if (regularHiccupTimer <= 0) {
-                    regularHiccupTimer = Settings.RegularHiccups / 10f;
+                    regularHiccupTimer = Settings.RegularHiccups;
                     self.HiccupJump();
                 }
             }
@@ -73,7 +81,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineHiccupStrengthFactor() {
-            return Settings.HiccupStrength / 10f;
+            return Settings.HiccupStrength;
         }
     }
 }

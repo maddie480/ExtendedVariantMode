@@ -5,16 +5,25 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class HyperdashSpeed : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 10;
+
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.HyperdashSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.HyperdashSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.HyperdashSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.HyperdashSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -45,7 +54,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
         private float determineHyperdashSpeedFactor() {
-            return Settings.HyperdashSpeed / 10f;
+            return Settings.HyperdashSpeed;
         }
     }
 }

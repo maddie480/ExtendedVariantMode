@@ -10,15 +10,24 @@ using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class SnowballsEverywhere : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.SnowballsEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.SnowballsEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.SnowballsEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.SnowballsEverywhere = (value != 0);
         }
 
@@ -78,7 +87,7 @@ namespace ExtendedVariants.Variants {
         private float determineInitialResetTimer() {
             // we want the first snowball to be issued with a minimum delay of 0.8 seconds whatever the setting to avoid softlocks.
             // to do that, we will initialize the resetTimer to -0.5f if the snowball delay is of 0.3 seconds for example.
-            return Math.Min(0, Settings.SnowballDelay / 10f - 0.8f);
+            return Math.Min(0, Settings.SnowballDelay - 0.8f);
         }
 
         private void modSnowballUpdate(ILContext il) {
@@ -98,7 +107,7 @@ namespace ExtendedVariants.Variants {
             if (ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings()) {
                 return 0.8f;
             }
-            return Settings.SnowballDelay / 10f;
+            return Settings.SnowballDelay;
         }
     }
 }

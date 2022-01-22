@@ -10,16 +10,24 @@ namespace ExtendedVariants.Variants {
         private Vector2 previousDiff;
         private float transitionPercent = 1f;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.ZoomLevel;
         }
 
-        public override void SetValue(int value) {
-            Settings.ZoomLevel = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.ZoomLevel = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.ZoomLevel = (value / 10f);
         }
 
         public override void Load() {
@@ -52,21 +60,21 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modZoom(float zoom) {
-            return zoom * Settings.ZoomLevel / 10f;
+            return zoom * Settings.ZoomLevel;
         }
 
         public Vector2 getScreenPosition(Vector2 originalPosition) {
-            if (Settings.ZoomLevel == 10) {
+            if (Settings.ZoomLevel == 1f) {
                 // nothing to do, spare us some processing.
                 return originalPosition;
             }
 
             // compute the size difference between regular screen and zoomed in screen
-            Vector2 screenSize = new Vector2(320f, 180f) * Settings.ZoomLevel / 10f;
+            Vector2 screenSize = new Vector2(320f, 180f) * Settings.ZoomLevel;
             Vector2 diff = screenSize - new Vector2(320f, 180f);
 
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
-            if (Settings.ZoomLevel > 10 && player != null) {
+            if (Settings.ZoomLevel > 1f && player != null) {
                 // if the player is on the left of the screen, we shouldn't move the screen (left is aligned with left side of the screen).
                 // if they are on the right, we should move it left by the difference (right is aligned with right side of the screen).
                 // in between, just lerp

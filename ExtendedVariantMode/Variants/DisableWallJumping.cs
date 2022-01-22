@@ -12,15 +12,23 @@ namespace ExtendedVariants.Variants {
 
         private ILHook wallJumpHook;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.DisableWallJumping ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.DisableWallJumping;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.DisableWallJumping = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DisableWallJumping = (value != 0);
         }
 

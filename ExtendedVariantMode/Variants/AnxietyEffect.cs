@@ -8,16 +8,28 @@ namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
         private bool anxietyCustomized = false;
 
-        public override int GetDefaultValue() {
-            return -1;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return -1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.AnxietyEffect;
         }
 
-        public override void SetValue(int value) {
-            Settings.AnxietyEffect = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.AnxietyEffect = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            if (value == -1) {
+                Settings.AnxietyEffect = -1f;
+            } else {
+                Settings.AnxietyEffect = (value / 5f);
+            }
         }
 
         public override void Load() {
@@ -42,7 +54,7 @@ namespace ExtendedVariants.Variants {
                 anxietyCustomized = true;
 
                 // set the anxiety intensity
-                GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : Settings.AnxietyEffect / 5f);
+                GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : Settings.AnxietyEffect);
 
                 Vector2 camera = self.Camera.Position;
                 Player player = self.Tracker.GetEntity<Player>();
@@ -74,7 +86,7 @@ namespace ExtendedVariants.Variants {
         private float transformAnxietyValue(float originalValue) {
             if (Settings.AnxietyEffect != -1) {
                 // anxiety is modded
-                return Settings.AnxietyEffect / 5f;
+                return Settings.AnxietyEffect;
             }
             // anxiety is vanilla
             return originalValue;

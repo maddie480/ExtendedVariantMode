@@ -15,15 +15,23 @@ namespace ExtendedVariants.Variants {
 
         private bool killSeekerSlowdownToFixHeart = false;
 
-        public override int GetDefaultValue() {
+        public override Type GetVariantType() {
+            return typeof(int);
+        }
+
+        public override object GetDefaultVariantValue() {
             return 0;
         }
 
-        public override int GetValue() {
+        public override object GetVariantValue() {
             return Settings.AddSeekers;
         }
 
-        public override void SetValue(int value) {
+        protected override void DoSetVariantValue(object value) {
+            Settings.AddSeekers = (int) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.AddSeekers = value;
         }
 

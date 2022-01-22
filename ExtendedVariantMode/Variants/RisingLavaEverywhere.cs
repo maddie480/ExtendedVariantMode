@@ -10,15 +10,24 @@ using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class RisingLavaEverywhere : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.RisingLavaEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.RisingLavaEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.RisingLavaEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.RisingLavaEverywhere = (value != 0);
         }
 
@@ -83,7 +92,7 @@ namespace ExtendedVariants.Variants {
             }
 
             // otherwise (or if the player did not just respawn), just return the factor.
-            return Settings.RisingLavaSpeed / 10f;
+            return Settings.RisingLavaSpeed;
         }
     }
 }

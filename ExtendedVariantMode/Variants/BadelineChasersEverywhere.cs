@@ -18,15 +18,23 @@ namespace ExtendedVariants.Variants {
 
         private float lastChaserLag = 0f;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.BadelineChasersEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.BadelineChasersEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.BadelineChasersEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.BadelineChasersEverywhere = (value != 0);
         }
 
@@ -91,11 +99,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineBadelineLag() {
-            return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() || Settings.BadelineLag == 0 ? 1.55f : Settings.BadelineLag / 10f;
+            return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() ? 1.55f : Settings.BadelineLag;
         }
 
         private float determineDelayBetweenBadelines() {
-            return Settings.DelayBetweenBadelines / 10f;
+            return Settings.DelayBetweenBadelines;
         }
 
         /// <summary>

@@ -14,22 +14,57 @@ namespace ExtendedVariants.Variants {
 
         private bool snowBackdropAddedByEVM = false;
 
-        public static readonly WindController.Patterns[] AvailableWindPatterns = new WindController.Patterns[] {
-            WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
-                WindController.Patterns.LeftOnOff, WindController.Patterns.RightOnOff, WindController.Patterns.Alternating, WindController.Patterns.LeftOnOffFast,
-                WindController.Patterns.RightOnOffFast, WindController.Patterns.Down, WindController.Patterns.Up
-        };
-
-        public override int GetDefaultValue() {
-            return 0;
+        public enum WindPattern {
+            Default,
+            Left = WindController.Patterns.Left,
+            Right = WindController.Patterns.Right,
+            LeftStrong = WindController.Patterns.LeftStrong,
+            RightStrong = WindController.Patterns.RightStrong,
+            RightCrazy = WindController.Patterns.RightCrazy,
+            LeftOnOff = WindController.Patterns.LeftOnOff,
+            RightOnOff = WindController.Patterns.RightOnOff,
+            Alternating = WindController.Patterns.Alternating,
+            LeftOnOffFast = WindController.Patterns.LeftOnOffFast,
+            RightOnOffFast = WindController.Patterns.RightOnOffFast,
+            Down = WindController.Patterns.Down,
+            Up = WindController.Patterns.Up,
+            Random
         }
 
-        public override int GetValue() {
+        public override Type GetVariantType() {
+            return typeof(WindPattern);
+        }
+
+        public override object GetDefaultVariantValue() {
+            return WindPattern.Default;
+        }
+
+        public override object GetVariantValue() {
             return Settings.WindEverywhere;
         }
 
-        public override void SetValue(int value) {
-            Settings.WindEverywhere = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.WindEverywhere = (WindPattern) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            // you know, 5 obviously means RightCrazy :a:
+            WindController.Patterns[] allPatterns = new WindController.Patterns[] {
+                WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
+                WindController.Patterns.LeftOnOff, WindController.Patterns.RightOnOff, WindController.Patterns.Alternating, WindController.Patterns.LeftOnOffFast,
+                WindController.Patterns.RightOnOffFast, WindController.Patterns.Down, WindController.Patterns.Up
+            };
+
+            if (value == 0) {
+                // default pattern
+                Settings.WindEverywhere = WindPattern.Default;
+            } else if (value == allPatterns.Length + 1) {
+                // random wind
+                Settings.WindEverywhere = WindPattern.Random;
+            } else {
+                // chosen wind pattern
+                Settings.WindEverywhere = (WindPattern) allPatterns[value - 1];
+            }
         }
 
         public override void SetRandomSeed(int seed) {
@@ -74,7 +109,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void applyWind(Level level) {
-            if (Settings.WindEverywhere != 0) {
+            if (Settings.WindEverywhere != WindPattern.Default) {
                 if (!snowBackdropAddedByEVM) {
                     // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
                     // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
@@ -87,12 +122,18 @@ namespace ExtendedVariants.Variants {
                 Audio.SetAmbience("event:/env/amb/04_main", true);
 
                 WindController.Patterns selectedPattern;
-                if (Settings.WindEverywhere == AvailableWindPatterns.Length + 1) {
+                if (Settings.WindEverywhere == WindPattern.Random) {
                     // pick up random wind
-                    selectedPattern = AvailableWindPatterns[randomGenerator.Next(AvailableWindPatterns.Length)];
+                    WindController.Patterns[] allPatterns = new WindController.Patterns[] {
+                        WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
+                            WindController.Patterns.LeftOnOff, WindController.Patterns.RightOnOff, WindController.Patterns.Alternating, WindController.Patterns.LeftOnOffFast,
+                            WindController.Patterns.RightOnOffFast, WindController.Patterns.Down, WindController.Patterns.Up
+                    };
+
+                    selectedPattern = allPatterns[randomGenerator.Next(allPatterns.Length)];
                 } else {
                     // pick up the chosen wind pattern
-                    selectedPattern = AvailableWindPatterns[Settings.WindEverywhere - 1];
+                    selectedPattern = (WindController.Patterns) Settings.WindEverywhere;
                 }
 
                 // and apply it; this is basically what Wind Trigger does
@@ -128,7 +169,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformVisualWind(float vanilla) {
-            if (Settings.WindEverywhere == 0) {
+            if (Settings.WindEverywhere == WindPattern.Default) {
                 // variant disabled: don't affect vanilla.
                 return vanilla;
             }

@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using ExtendedVariants.Variants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace ExtendedVariants.Entities {
         private LinkedList<int> lastSpeeds = new LinkedList<int>();
 
         protected override bool shouldShowCounter() {
-            return settings.DisplaySpeedometer != 0;
+            return settings.DisplaySpeedometer != DisplaySpeedometer.SpeedometerConfiguration.DISABLED;
         }
 
         protected override float getExtraOffset() {
@@ -18,13 +19,13 @@ namespace ExtendedVariants.Entities {
         protected override string getNumberToDisplay(Player player) {
             int mostRecentNumber;
             switch (settings.DisplaySpeedometer) {
-                case 1:
+                case DisplaySpeedometer.SpeedometerConfiguration.HORIZONTAL:
                     mostRecentNumber = (int) Math.Abs(Math.Round(player.Speed.X));
                     break;
-                case 2:
+                case DisplaySpeedometer.SpeedometerConfiguration.VERTICAL:
                     mostRecentNumber = (int) Math.Abs(Math.Round(player.Speed.Y));
                     break;
-                case 3:
+                case DisplaySpeedometer.SpeedometerConfiguration.BOTH:
                     mostRecentNumber = (int) Math.Round(player.Speed.Length());
                     break;
                 default:

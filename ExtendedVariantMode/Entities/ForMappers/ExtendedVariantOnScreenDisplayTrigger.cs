@@ -3,7 +3,7 @@ using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 
-namespace ExtendedVariants {
+namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger")]
     public class ExtendedVariantOnScreenDisplayTrigger : Trigger {
         private readonly bool enable;

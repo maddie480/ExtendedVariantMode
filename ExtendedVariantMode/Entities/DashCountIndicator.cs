@@ -92,7 +92,7 @@ namespace ExtendedVariants.Entities {
                 }
 
                 // compute the jump count so that we can put the dash count above it.
-                int jumpIndicatorsToDraw = settings.JumpCount == 6 ? 0 : JumpCount.GetJumpBuffer();
+                int jumpIndicatorsToDraw = settings.JumpCount == int.MaxValue ? 0 : JumpCount.GetJumpBuffer();
                 int jumpCountLines = jumpIndicatorsToDraw == 0 ? 0 : 1 + (jumpIndicatorsToDraw - 1) / 5;
 
                 // draw Madeline's dash count, digit by digit.

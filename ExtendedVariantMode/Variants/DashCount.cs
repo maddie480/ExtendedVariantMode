@@ -14,15 +14,23 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         public event Action OnDashRefill;
 
-        public override int GetDefaultValue() {
+        public override Type GetVariantType() {
+            return typeof(int);
+        }
+
+        public override object GetDefaultVariantValue() {
             return -1;
         }
 
-        public override int GetValue() {
+        public override object GetVariantValue() {
             return Settings.DashCount;
         }
 
-        public override void SetValue(int value) {
+        protected override void DoSetVariantValue(object value) {
+            Settings.DashCount = (int) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DashCount = value;
         }
 
@@ -159,6 +167,5 @@ namespace ExtendedVariants.Variants {
 
             return Settings.DashCount;
         }
-
     }
 }

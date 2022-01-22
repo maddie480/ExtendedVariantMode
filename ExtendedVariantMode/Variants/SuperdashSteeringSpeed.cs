@@ -5,16 +5,25 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class SuperdashSteeringSpeed : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 10;
+
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.SuperdashSteeringSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.SuperdashSteeringSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.SuperdashSteeringSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.SuperdashSteeringSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -37,7 +46,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineSuperdashSteeringFactor() {
-            return Settings.SuperdashSteeringSpeed / 10f;
+            return Settings.SuperdashSteeringSpeed;
         }
     }
 }

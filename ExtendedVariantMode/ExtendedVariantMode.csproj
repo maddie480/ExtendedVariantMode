@@ -98,12 +98,12 @@
     <None Include="Ahorn\entities\extendedVariantsExtendedVariantController.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="ColorGradeTrigger.cs" />
+    <Compile Include="Entities\ForMappers\ColorGradeTrigger.cs" />
     <Compile Include="Entities\AutoDestroyingReverseOshiroModder.cs" />
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineBoss.cs" />
     <Compile Include="Entities\AutoDestroyingBadelineOldsite.cs" />
-    <Compile Include="Entities\ExtendedVariantController.cs" />
+    <Compile Include="Entities\Legacy\ExtendedVariantController.cs" />
     <Compile Include="Entities\ExtendedVariantSandwichLava.cs" />
     <Compile Include="Entities\AutoDestroyingSeeker.cs" />
     <Compile Include="Entities\AutoDestroyingSnowball.cs" />
@@ -117,15 +117,15 @@
     <Compile Include="Entities\SetJumpCountTrigger.cs" />
     <Compile Include="Entities\Speedometer.cs" />
     <Compile Include="Entities\UnderwaterSwitchController.cs" />
-    <Compile Include="ExtendedVariantFadeTrigger.cs" />
-    <Compile Include="ExtendedVariantOnScreenDisplayTrigger.cs" />
-    <Compile Include="ToggleDashDirectionTrigger.cs" />
+    <Compile Include="Entities\Legacy\ExtendedVariantFadeTrigger.cs" />
+    <Compile Include="Entities\ForMappers\ExtendedVariantOnScreenDisplayTrigger.cs" />
+    <Compile Include="Entities\ForMappers\ToggleDashDirectionTrigger.cs" />
     <Compile Include="ExtendedVariantTriggerManager.cs" />
-    <Compile Include="FlagToggledExtendedVariantTrigger.cs" />
+    <Compile Include="Entities\Legacy\FlagToggledExtendedVariantTrigger.cs" />
     <Compile Include="LeakPreventionHack.cs" />
     <Compile Include="Module\ExtendedVariantsModule.cs" />
     <Compile Include="Module\ExtendedVariantsSession.cs" />
-    <Compile Include="ExtendedVariantTrigger.cs" />
+    <Compile Include="Entities\Legacy\ExtendedVariantTrigger.cs" />
     <Compile Include="UI\AbstractSubmenu.cs" />
     <Compile Include="UI\InfoPanel.cs" />
     <Compile Include="UI\ModOptionsEntries.cs" />

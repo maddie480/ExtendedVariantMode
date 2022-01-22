@@ -7,16 +7,6 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class DashDirection : AbstractExtendedVariant {
-        // those are all the dash directions; to allow top and bottom-left, set Settings.DashDirection to TOP | BOTTOM_LEFT | BASE
-        public const int TOP = 0b1000000000;
-        public const int TOP_RIGHT = 0b0100000000;
-        public const int RIGHT = 0b0010000000;
-        public const int BOTTOM_RIGHT = 0b0001000000;
-        public const int BOTTOM = 0b0000100000;
-        public const int BOTTOM_LEFT = 0b0000010000;
-        public const int LEFT = 0b0000001000;
-        public const int TOP_LEFT = 0b0000000100;
-        public const int BASE = 0b0000000011;
 
         private static FieldInfo playerLastAim = typeof(Player).GetField("lastAim", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo playerCalledDashEvents = typeof(Player).GetField("calledDashEvents", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -26,16 +16,49 @@ namespace ExtendedVariants.Variants {
         private Hook canDashHook;
         private int dashCountBeforeDash;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool[,]);
         }
 
-        public override int GetValue() {
-            return Settings.DashDirection;
+        public override object GetDefaultVariantValue() {
+            return new bool[,] { { true, true, true }, { true, true, true }, { true, true, true } };
         }
 
-        public override void SetValue(int value) {
-            Settings.DashDirection = value;
+        public override object GetVariantValue() {
+            return Settings.AllowedDashDirections;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.AllowedDashDirections = (bool[,]) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            // how the H did people deal with bit math in extended variant triggers???
+            int TOP = 0b1000000000;
+            int TOP_RIGHT = 0b0100000000;
+            int RIGHT = 0b0010000000;
+            int BOTTOM_RIGHT = 0b0001000000;
+            int BOTTOM = 0b0000100000;
+            int BOTTOM_LEFT = 0b0000010000;
+            int LEFT = 0b0000001000;
+            int TOP_LEFT = 0b0000000100;
+
+            if (value == 0) {
+                // all directions allowed
+                value = 0b1111111111;
+            } else if (value == 1) {
+                // straight only
+                value = 0b1010101000;
+            } else if (value == 2) {
+                // diagonal only
+                value = 0b0101010100;
+            }
+
+            Settings.AllowedDashDirections = new bool[,] {
+                { (value & TOP_LEFT) != 0, (value & TOP) != 0, (value & TOP_RIGHT) != 0 },
+                { (value & LEFT) != 0, true, (value & RIGHT) != 0 },
+                { (value & BOTTOM_LEFT) != 0, (value & BOTTOM) != 0, (value & BOTTOM_RIGHT) != 0 },
+            };
         }
 
         public override void Load() {
@@ -67,14 +90,14 @@ namespace ExtendedVariants.Variants {
         }
 
         private IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
-            if (Settings.DashDirection == 0) {
+            if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
         }
 
         private IEnumerator onRedDashCoroutine(On.Celeste.Player.orig_RedDashCoroutine orig, Player self) {
-            if (Settings.DashDirection == 0) {
+            if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
@@ -122,49 +145,19 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool isDashDirectionAllowed(Vector2 direction) {
-            int allowedDirections = Settings.DashDirection;
-            if (allowedDirections == 0) {
-                // all directions allowed! let's skip over everything.
-                return true;
-            } else if (allowedDirections == 1) {
-                // straight only
-                allowedDirections = 0b1010101000;
-            } else if (allowedDirections == 2) {
-                // diagonal only
-                allowedDirections = 0b0101010100;
+        private bool areAllDirectionsAllowed() {
+            foreach (bool b in Settings.AllowedDashDirections) {
+                if (!b) return false;
             }
+            return true;
+        }
 
+        private bool isDashDirectionAllowed(Vector2 direction) {
             // if directions are not integers, make them integers.
             direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
-            // apply a mask to the current direction to determine if it is allowed or not.
-            if (direction.X == -1) {
-                if (direction.Y == -1) {
-                    return (allowedDirections & TOP_LEFT) != 0;
-                } else if (direction.Y == 0) {
-                    return (allowedDirections & LEFT) != 0;
-                } else if (direction.Y == 1) {
-                    return (allowedDirections & BOTTOM_LEFT) != 0;
-                }
-            } else if (direction.X == 0) {
-                if (direction.Y == -1) {
-                    return (allowedDirections & TOP) != 0;
-                } else if (direction.Y == 1) {
-                    return (allowedDirections & BOTTOM) != 0;
-                }
-            } else if (direction.X == 1) {
-                if (direction.Y == -1) {
-                    return (allowedDirections & TOP_RIGHT) != 0;
-                } else if (direction.Y == 0) {
-                    return (allowedDirections & RIGHT) != 0;
-                } else if (direction.Y == 1) {
-                    return (allowedDirections & BOTTOM_RIGHT) != 0;
-                }
-            }
-
-            // what? I checked all directions though!
-            return false;
+            // bottom-left (-1, 1) is row 2, column 0.
+            return Settings.AllowedDashDirections[(int) (direction.Y + 1), (int) (direction.X + 1)];
         }
     }
 }

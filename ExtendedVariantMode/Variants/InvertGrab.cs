@@ -12,16 +12,24 @@ namespace ExtendedVariants.Variants {
 
         private ILHook dashCoroutineHook;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.InvertGrab ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
-            Settings.InvertGrab = value != 0;
+        public override object GetVariantValue() {
+            return Settings.InvertGrab;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.InvertGrab = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.InvertGrab = (value != 0);
         }
 
         public override void Load() {

@@ -5,16 +5,25 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class WallbouncingSpeed : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 10;
+
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.WallBouncingSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.WallBouncingSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.WallBouncingSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.WallBouncingSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -45,7 +54,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The wallbounce speed factor (1 = default wallbounce speed)</returns>
         private float determineWallBouncingSpeedFactor() {
-            return Settings.WallBouncingSpeed / 10f;
+            return Settings.WallBouncingSpeed;
         }
     }
 }

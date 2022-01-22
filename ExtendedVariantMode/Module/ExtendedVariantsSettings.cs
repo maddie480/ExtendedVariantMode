@@ -1,7 +1,9 @@
 ﻿using Celeste.Mod;
-using System;
 using System.Collections.Generic;
-using YamlDotNet.Serialization;
+using static ExtendedVariants.Variants.DisplaySpeedometer;
+using static ExtendedVariants.Variants.DontRefillDashOnGround;
+using static ExtendedVariants.Variants.MadelineBackpackMode;
+using static ExtendedVariants.Variants.WindEverywhere;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsSettings : EverestModuleSettings {
@@ -19,32 +21,32 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int Gravity { get; set; } = 10;
+        public float Gravity { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int FallSpeed { get; set; } = 10;
+        public float FallSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int JumpHeight { get; set; } = 10;
+        public float JumpHeight { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int SpeedX { get; set; } = 10;
+        public float SpeedX { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int Stamina { get; set; } = 11;
+        public int Stamina { get; set; } = 110;
 
         // ======================================
 
         [SettingIgnore]
-        public int DashSpeed { get; set; } = 10;
+        public float DashSpeed { get; set; } = 1f;
 
         [SettingIgnore]
         public bool LegacyDashSpeedBehavior { get; set; } = false;
@@ -57,12 +59,12 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int Friction { get; set; } = 10;
+        public float Friction { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int AirFriction { get; set; } = 10;
+        public float AirFriction { get; set; } = 1f;
 
         // ======================================
 
@@ -90,17 +92,17 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int HyperdashSpeed { get; set; } = 10;
+        public float HyperdashSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int WallBouncingSpeed { get; set; } = 10;
+        public float WallBouncingSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int DashLength { get; set; } = 10;
+        public float DashLength { get; set; } = 1f;
 
         // ======================================
 
@@ -125,7 +127,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int ExplodeLaunchSpeed { get; set; } = 10;
+        public float ExplodeLaunchSpeed { get; set; } = 1f;
 
         [SettingIgnore]
         public bool DisableSuperBoosts { get; set; } = false;
@@ -142,28 +144,28 @@ namespace ExtendedVariants.Module {
         public bool AffectExistingChasers { get; set; } = false;
 
         [SettingIgnore]
-        public int BadelineLag { get; set; } = 0;
+        public float BadelineLag { get; set; } = 1.55f;
 
         [SettingIgnore]
-        public int DelayBetweenBadelines { get; set; } = 4;
+        public float DelayBetweenBadelines { get; set; } = 0.4f;
 
         // ======================================
 
         [SettingIgnore]
-        public int RegularHiccups { get; set; } = 0;
+        public float RegularHiccups { get; set; } = 0f;
 
         [SettingIgnore]
-        public int HiccupStrength { get; set; } = 10;
+        public float HiccupStrength { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int RoomLighting { get; set; } = -1;
+        public float RoomLighting { get; set; } = -1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int RoomBloom { get; set; } = -1;
+        public float RoomBloom { get; set; } = -1f;
 
         // ======================================
 
@@ -183,7 +185,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int WindEverywhere { get; set; } = 0;
+        public WindPattern WindEverywhere { get; set; } = WindPattern.Default;
 
 
         // ======================================
@@ -192,7 +194,7 @@ namespace ExtendedVariants.Module {
         public bool SnowballsEverywhere { get; set; } = false;
 
         [SettingIgnore]
-        public int SnowballDelay { get; set; } = 8;
+        public float SnowballDelay { get; set; } = 0.8f;
 
 
         // ======================================
@@ -227,7 +229,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int DashRefillOnGroundState { get; set; } = 0;
+        public DashRefillOnGroundConfiguration DashRefillOnGroundState { get; set; } = DashRefillOnGroundConfiguration.DEFAULT;
         [SettingIgnore]
         public bool DontRefillStaminaOnGround { get; set; } = false;
 
@@ -259,15 +261,12 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int GameSpeed { get; set; } = 10;
+        public float GameSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int ColorGrading { get; set; } = -1;
-
-        [SettingIgnore]
-        public string ModColorGrade { get; set; } = null;
+        public string ColorGrading { get; set; } = "";
 
         // ======================================
 
@@ -280,7 +279,7 @@ namespace ExtendedVariants.Module {
         public bool RisingLavaEverywhere { get; set; } = false;
 
         [SettingIgnore]
-        public int RisingLavaSpeed { get; set; } = 10;
+        public float RisingLavaSpeed { get; set; } = 1;
 
         // ======================================
 
@@ -297,50 +296,50 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int GlitchEffect { get; set; } = -1;
+        public float GlitchEffect { get; set; } = -1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int SuperdashSteeringSpeed { get; set; } = 10;
+        public float SuperdashSteeringSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int ScreenShakeIntensity { get; set; } = 10;
+        public float ScreenShakeIntensity { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int AnxietyEffect { get; set; } = -1;
+        public float AnxietyEffect { get; set; } = -1;
 
         // ======================================
 
         [SettingIgnore]
-        public int BlurLevel { get; set; } = 0;
+        public float BlurLevel { get; set; } = 0;
 
         [SettingIgnore]
-        public int BackgroundBlurLevel { get; set; } = 0;
+        public float BackgroundBlurLevel { get; set; } = 0;
 
         // ======================================
 
         [SettingIgnore]
-        public int ZoomLevel { get; set; } = 10;
+        public float ZoomLevel { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int DashDirection { get; set; } = 0;
+        public bool[,] AllowedDashDirections { get; set; } = new bool[,] { { true, true, true }, { true, true, true }, { true, true, true } };
 
         // ======================================
 
         [SettingIgnore]
-        public int BackgroundBrightness { get; set; } = 10;
+        public float BackgroundBrightness { get; set; } = 1;
 
         // ======================================
 
         [SettingIgnore]
-        public int ForegroundEffectOpacity { get; set; } = 10;
+        public float ForegroundEffectOpacity { get; set; } = 1f;
 
         // ======================================
 
@@ -358,7 +357,7 @@ namespace ExtendedVariants.Module {
         public bool DashTrailAllTheTime { get; set; } = false;
 
         [SettingIgnore]
-        public int MadelineBackpackMode { get; set; } = 0;
+        public MadelineBackpackModes MadelineBackpackMode { get; set; } = MadelineBackpackModes.Default;
 
         // ======================================
 
@@ -368,12 +367,12 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int SwimmingSpeed { get; set; } = 10;
+        public float SwimmingSpeed { get; set; } = 1f;
 
         // ======================================
 
         [SettingIgnore]
-        public int BoostMultiplier { get; set; } = 10;
+        public float BoostMultiplier { get; set; } = 1;
 
         // ======================================
 
@@ -401,7 +400,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int CoyoteTime { get; set; } = 10;
+        public float CoyoteTime { get; set; } = 1f;
 
         // ======================================
 
@@ -421,7 +420,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public int DisplaySpeedometer { get; set; } = 0;
+        public SpeedometerConfiguration DisplaySpeedometer { get; set; } = SpeedometerConfiguration.DISABLED;
 
         // ======================================
 

@@ -12,15 +12,24 @@ using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class OshiroEverywhere : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.OshiroEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.OshiroEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.OshiroEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.OshiroEverywhere = (value != 0);
         }
 

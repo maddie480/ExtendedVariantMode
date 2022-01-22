@@ -10,16 +10,24 @@ namespace ExtendedVariants.Variants {
     public class ForegroundEffectOpacity : AbstractExtendedVariant {
         private VirtualRenderTarget foregroundEffectBuffer;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.ForegroundEffectOpacity;
         }
 
-        public override void SetValue(int value) {
-            Settings.ForegroundEffectOpacity = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.ForegroundEffectOpacity = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.ForegroundEffectOpacity = (value / 10f);
         }
 
         public override void Load() {
@@ -52,7 +60,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void prepareForegroundOpacityEffect() {
-            if (Settings.ForegroundEffectOpacity < 10) {
+            if (Settings.ForegroundEffectOpacity < 1f) {
                 // redirect the foreground rendering to our render target.
                 Engine.Graphics.GraphicsDevice.SetRenderTarget(foregroundEffectBuffer);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -60,13 +68,13 @@ namespace ExtendedVariants.Variants {
         }
 
         private void finishForegroundOpacityEffect() {
-            if (Settings.ForegroundEffectOpacity < 10) {
+            if (Settings.ForegroundEffectOpacity < 1f) {
                 // redirect the rendering back to the level buffer.
                 Engine.Graphics.GraphicsDevice.SetRenderTarget(GameplayBuffers.Level);
 
                 // render the foreground ourselves with the opacity we want.
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null);
-                Draw.SpriteBatch.Draw(foregroundEffectBuffer, Vector2.Zero, Color.White * (Settings.ForegroundEffectOpacity / 10f));
+                Draw.SpriteBatch.Draw(foregroundEffectBuffer, Vector2.Zero, Color.White * Settings.ForegroundEffectOpacity);
                 Draw.SpriteBatch.End();
             }
         }

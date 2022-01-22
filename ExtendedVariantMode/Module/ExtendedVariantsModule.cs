@@ -342,7 +342,7 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant trigger manager...");
             TriggerManager.Load();
-            ExtendedVariantTrigger.Load();
+            Entities.Legacy.ExtendedVariantTrigger.Load();
 
             On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;
@@ -357,7 +357,7 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
-            ExtendedVariantTrigger.Unload();
+            Entities.Legacy.ExtendedVariantTrigger.Unload();
 
             On.Celeste.LevelEnter.Routine -= addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender -= addForceEnabledVariantsPostcardRendering;
@@ -482,23 +482,23 @@ namespace ExtendedVariants.Module {
 
             // reset all proper variants to their default values
             foreach (AbstractExtendedVariant variant in VariantHandlers.Values) {
-                if (variant.GetDefaultValue() != variant.GetValue()) {
+                if (variant.GetDefaultVariantValue() != variant.GetVariantValue()) {
                     settingChanged = true;
                 }
 
-                variant.SetValue(variant.GetDefaultValue());
+                variant.SetVariantValue(variant.GetDefaultVariantValue());
             }
 
             if (Settings.ChaserCount != 1
                 || Settings.AffectExistingChasers
-                || Settings.HiccupStrength != 10
+                || Settings.HiccupStrength != 1
                 || Settings.RefillJumpsOnDashRefill
                 || Settings.AllowThrowingTheoOffscreen
                 || Settings.AllowLeavingTheoBehind
-                || Settings.SnowballDelay != 8
-                || Settings.BadelineLag != 0
-                || Settings.DelayBetweenBadelines != 4
-                || Settings.RisingLavaSpeed != 10
+                || Settings.SnowballDelay != 0.8f
+                || Settings.BadelineLag != 1.55f
+                || Settings.DelayBetweenBadelines != 0.4f
+                || Settings.RisingLavaSpeed != 1
                 || Settings.OshiroCount != 1
                 || Settings.ReverseOshiroCount != 0
                 || Settings.DisableOshiroSlowdown
@@ -518,14 +518,14 @@ namespace ExtendedVariants.Module {
             // reset variant customization options as well
             Settings.ChaserCount = 1;
             Settings.AffectExistingChasers = false;
-            Settings.HiccupStrength = 10;
+            Settings.HiccupStrength = 1f;
             Settings.RefillJumpsOnDashRefill = false;
             Settings.AllowThrowingTheoOffscreen = false;
             Settings.AllowLeavingTheoBehind = false;
-            Settings.SnowballDelay = 8;
-            Settings.BadelineLag = 0;
-            Settings.DelayBetweenBadelines = 4;
-            Settings.RisingLavaSpeed = 10;
+            Settings.SnowballDelay = 0.8f;
+            Settings.BadelineLag = 1.55f;
+            Settings.DelayBetweenBadelines = 0.4f;
+            Settings.RisingLavaSpeed = 1;
             Settings.OshiroCount = 1;
             Settings.ReverseOshiroCount = 0;
             Settings.DisableOshiroSlowdown = false;
@@ -619,8 +619,8 @@ namespace ExtendedVariants.Module {
                         // this variant cannot be enabled, because it does not exist.
                         continue;
                     }
-                    int expectedValue = TriggerManager.GetExpectedVariantValue(variant);
-                    int actualValue = TriggerManager.GetCurrentVariantValue(variant);
+                    object expectedValue = TriggerManager.GetExpectedVariantValue(variant);
+                    object actualValue = TriggerManager.GetCurrentVariantValue(variant);
                     if (expectedValue != actualValue) {
                         Logger.Log(LogLevel.Warn, "ExtendedVariantTrigger/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
                         Session.ExtendedVariantsWereUsed = true;

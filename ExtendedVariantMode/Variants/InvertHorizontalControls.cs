@@ -1,17 +1,27 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class InvertHorizontalControls : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.InvertHorizontalControls ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.InvertHorizontalControls;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.InvertHorizontalControls = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.InvertHorizontalControls = (value != 0);
         }
 

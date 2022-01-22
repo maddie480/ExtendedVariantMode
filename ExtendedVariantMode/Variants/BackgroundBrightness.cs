@@ -11,16 +11,24 @@ namespace ExtendedVariants.Variants {
     public class BackgroundBrightness : AbstractExtendedVariant {
         private VirtualRenderTarget blackMask;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.BackgroundBrightness;
         }
 
-        public override void SetValue(int value) {
-            Settings.BackgroundBrightness = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.BackgroundBrightness = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.BackgroundBrightness = (value / 10f);
         }
 
         public override void Load() {
@@ -73,10 +81,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private void renderBackgroundLighting(Level self) {
-            if (Settings.BackgroundBrightness < 10) {
+            if (Settings.BackgroundBrightness < 1f) {
                 // Apply a mask over the background layer, but behind the gameplay layer.
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, GFX.DestinationTransparencySubtract, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GFX.FxDither, Matrix.Identity);
-                Draw.SpriteBatch.Draw(blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - Settings.BackgroundBrightness / 10f, 0f, 1f));
+                Draw.SpriteBatch.Draw(blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - Settings.BackgroundBrightness, 0f, 1f));
                 Draw.SpriteBatch.End();
             }
         }

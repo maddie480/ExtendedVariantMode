@@ -1,18 +1,27 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class FriendlyBadelineFollower : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
+        }
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override int GetValue() {
-            return Settings.FriendlyBadelineFollower ? 1 : 0;
+        public override object GetVariantValue() {
+            return Settings.FriendlyBadelineFollower;
         }
 
-        public override void SetValue(int value) {
+        protected override void DoSetVariantValue(object value) {
+            Settings.FriendlyBadelineFollower = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.FriendlyBadelineFollower = (value != 0);
         }
 

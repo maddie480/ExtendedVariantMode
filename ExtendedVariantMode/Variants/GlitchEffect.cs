@@ -6,16 +6,28 @@ using System;
 namespace ExtendedVariants.Variants {
     public class GlitchEffect : AbstractExtendedVariant {
 
-        public override int GetDefaultValue() {
-            return -1;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return -1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.GlitchEffect;
         }
 
-        public override void SetValue(int value) {
-            Settings.GlitchEffect = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.GlitchEffect = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            if (value == -1) {
+                Settings.GlitchEffect = -1f;
+            } else {
+                Settings.GlitchEffect = (value / 20f);
+            }
         }
 
         public override void Load() {
@@ -38,8 +50,8 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modGlitchValue(float vanilla) {
-            if (Settings.GlitchEffect == -1) return vanilla;
-            return Settings.GlitchEffect / 20f;
+            if (Settings.GlitchEffect == -1f) return vanilla;
+            return Settings.GlitchEffect;
         }
     }
 }

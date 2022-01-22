@@ -33,6 +33,13 @@ namespace ExtendedVariants.UI {
             sine += Engine.RawDeltaTime;
         }
 
+        public void ResetToDefault() {
+            // replicate the vanilla behaviour
+            PreviousIndex = Index;
+            Index = defaultIndex;
+            ValueWiggler.Start();
+        }
+
 
         /// <summary>
         /// This is essentially the base method, but with a twist: the non-selected color is not always white.

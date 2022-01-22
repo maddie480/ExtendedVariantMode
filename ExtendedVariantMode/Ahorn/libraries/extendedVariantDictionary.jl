@@ -93,4 +93,16 @@ const Variants = String[
 	"ZoomLevel"
 ]
 
+const IntegerVariants = [
+	
+]
+
+const FloatVariants = [
+	
+]
+
+const BooleanVariants = [
+	
+]
+
 end

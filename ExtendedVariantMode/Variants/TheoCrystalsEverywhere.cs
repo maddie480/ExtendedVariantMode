@@ -9,15 +9,23 @@ using System.Linq;
 namespace ExtendedVariants.Variants {
     public class TheoCrystalsEverywhere : AbstractExtendedVariant {
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.TheoCrystalsEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.TheoCrystalsEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.TheoCrystalsEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.TheoCrystalsEverywhere = (value != 0);
         }
 

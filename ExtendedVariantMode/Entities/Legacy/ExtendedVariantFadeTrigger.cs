@@ -4,12 +4,8 @@ using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ExtendedVariants {
+namespace ExtendedVariants.Entities.Legacy {
     [CustomEntity("ExtendedVariantMode/ExtendedVariantFadeTrigger")]
     public class ExtendedVariantFadeTrigger : Trigger {
         private readonly ExtendedVariantsModule.Variant variantChange;
@@ -30,7 +26,7 @@ namespace ExtendedVariants {
             base.OnStay(player);
 
             float targetValue = Calc.ClampedMap(GetPositionLerp(player, positionMode), 0, 1, valueA, valueB);
-            ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, (int) Math.Round(targetValue), revertOnLeave: false, isFade: true, revertOnDeath);
+            ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, (int) Math.Round(targetValue), revertOnLeave: false, isFade: true, revertOnDeath, legacy: true);
         }
     }
 }

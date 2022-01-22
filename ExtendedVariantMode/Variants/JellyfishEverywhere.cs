@@ -10,15 +10,24 @@ using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class JellyfishEverywhere : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
+
+        public override Type GetVariantType() {
+            return typeof(int);
+        }
+
+        public override object GetDefaultVariantValue() {
             return 0;
         }
 
-        public override int GetValue() {
+        public override object GetVariantValue() {
             return Settings.JellyfishEverywhere;
         }
 
-        public override void SetValue(int value) {
+        protected override void DoSetVariantValue(object value) {
+            Settings.JellyfishEverywhere = (int) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.JellyfishEverywhere = value;
         }
 

@@ -5,16 +5,35 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class AirFriction : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.AirFriction;
         }
 
-        public override void SetValue(int value) {
-            Settings.AirFriction = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.AirFriction = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            // what even is this?
+            switch (value) {
+                case -1:
+                    Settings.AirFriction = 0f;
+                    break;
+                case 0:
+                    Settings.AirFriction = 0.05f;
+                    break;
+                default:
+                    Settings.AirFriction = value / 10f;
+                    break;
+            }
         }
 
         public override void Load() {
@@ -43,11 +62,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineFrictionFactor() {
-            switch (Settings.AirFriction) {
-                case -1: return 0f;
-                case 0: return 0.05f;
-                default: return Settings.AirFriction / 10f;
-            }
+            return Settings.AirFriction;
         }
     }
 }

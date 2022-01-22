@@ -12,16 +12,24 @@ namespace ExtendedVariants.Variants {
 
         private ILHook wallJumpHook;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.JumpHeight;
         }
 
-        public override void SetValue(int value) {
-            Settings.JumpHeight = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.JumpHeight = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.JumpHeight = (value / 10f);
         }
 
         public override void Load() {
@@ -105,7 +113,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The jump height factor (1 = default jump height)</returns>
         private float determineJumpHeightFactor() {
-            return Settings.JumpHeight / 10f;
+            return Settings.JumpHeight;
         }
     }
 }

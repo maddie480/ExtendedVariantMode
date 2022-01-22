@@ -1,17 +1,27 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class InvertVerticalControls : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.InvertVerticalControls ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.InvertVerticalControls;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.InvertVerticalControls = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.InvertVerticalControls = (value != 0);
         }
 

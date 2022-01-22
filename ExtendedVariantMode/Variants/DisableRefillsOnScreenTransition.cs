@@ -1,15 +1,26 @@
 ﻿
+using System;
+
 namespace ExtendedVariants.Variants {
     public class DisableRefillsOnScreenTransition : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.DisableRefillsOnScreenTransition ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.DisableRefillsOnScreenTransition;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.DisableRefillsOnScreenTransition = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DisableRefillsOnScreenTransition = (value != 0);
         }
 

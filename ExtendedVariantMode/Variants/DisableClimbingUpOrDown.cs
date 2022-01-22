@@ -6,15 +6,24 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class DisableClimbingUpOrDown : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.DisableClimbingUpOrDown ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.DisableClimbingUpOrDown;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.DisableClimbingUpOrDown = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DisableClimbingUpOrDown = (value != 0);
         }
 

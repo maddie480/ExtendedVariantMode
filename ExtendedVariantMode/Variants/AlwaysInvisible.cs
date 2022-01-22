@@ -1,15 +1,24 @@
 ﻿
+using System;
+
 namespace ExtendedVariants.Variants {
     public class AlwaysInvisible : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
+        }
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override int GetValue() {
-            return Settings.AlwaysInvisible ? 1 : 0;
+        public override object GetVariantValue() {
+            return Settings.AlwaysInvisible;
         }
 
-        public override void SetValue(int value) {
+        protected override void DoSetVariantValue(object value) {
+            Settings.AlwaysInvisible = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.AlwaysInvisible = (value != 0);
         }
 

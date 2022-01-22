@@ -10,16 +10,24 @@ namespace ExtendedVariants.Variants {
     public class BackgroundBlurLevel : AbstractExtendedVariant {
         private VirtualRenderTarget tempBuffer;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 0f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.BackgroundBlurLevel;
         }
 
-        public override void SetValue(int value) {
-            Settings.BackgroundBlurLevel = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.BackgroundBlurLevel = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.BackgroundBlurLevel = value / 10f;
         }
 
         public override void Load() {
@@ -60,7 +68,7 @@ namespace ExtendedVariants.Variants {
         private void BackgroundBlurLevelBuffer() {
             if (Settings.BackgroundBlurLevel > 0) {
                 // what if... I just gaussian blur the level buffer
-                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, Settings.BackgroundBlurLevel / 10f);
+                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, Settings.BackgroundBlurLevel);
             }
         }
 

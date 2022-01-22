@@ -12,16 +12,24 @@ namespace ExtendedVariants.Variants {
 
         private ILHook wallJumpHook;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 10f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.SpeedX;
         }
 
-        public override void SetValue(int value) {
-            Settings.SpeedX = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.SpeedX = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.SpeedX = (value / 10f);
         }
 
         public override void Load() {
@@ -124,7 +132,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The speed factor (1 = default speed)</returns>
         private float determineSpeedXFactor() {
-            return Settings.SpeedX / 10f;
+            return Settings.SpeedX;
         }
 
         // NOTE: X speed also comes in play for the UpdateSprite patch in Friction.

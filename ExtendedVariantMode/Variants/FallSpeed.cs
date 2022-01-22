@@ -11,16 +11,24 @@ namespace ExtendedVariants.Variants {
 
         private ILHook hookUpdateSprite;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.FallSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.FallSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.FallSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.FallSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -119,11 +127,11 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The fall speed factor (1 = default fall speed)</returns>
         private float determineFallSpeedFactor() {
-            return Settings.FallSpeed / 10f;
+            return Settings.FallSpeed;
         }
 
         private float mixFallSpeedAndGravity() {
-            return Math.Min(Settings.FallSpeed / 10f, Settings.Gravity / 10f);
+            return Math.Min(Settings.FallSpeed, Settings.Gravity);
         }
     }
 }

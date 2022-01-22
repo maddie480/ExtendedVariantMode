@@ -9,18 +9,26 @@ using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class GameSpeed : AbstractExtendedVariant {
-        private int previousGameSpeed = 10;
+        private float previousGameSpeed = 1f;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            throw new NotImplementedException();
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.GameSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.GameSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.GameSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.GameSpeed = (value / 10f);
         }
 
         public override void Load() {
@@ -105,7 +113,7 @@ namespace ExtendedVariants.Variants {
             }
             previousGameSpeed = Settings.GameSpeed;
 
-            return gameSpeed * Settings.GameSpeed / 10;
+            return (int) (gameSpeed * Settings.GameSpeed);
         }
 
         private int modSpeedSoundSnapshot(int originalSnapshot) {

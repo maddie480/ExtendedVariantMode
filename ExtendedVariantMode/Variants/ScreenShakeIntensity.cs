@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using System;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
@@ -9,16 +10,24 @@ namespace ExtendedVariants.Variants {
         private FieldInfo rumbleInfo = typeof(RumbleTrigger).GetField("rumble",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.ScreenShakeIntensity;
         }
 
-        public override void SetValue(int value) {
-            Settings.ScreenShakeIntensity = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.ScreenShakeIntensity = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.ScreenShakeIntensity = (value / 10f);
         }
 
         public override void Load() {
@@ -32,23 +41,23 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
-            if (Settings.ScreenShakeIntensity == 10) {
+            if (Settings.ScreenShakeIntensity == 1f) {
                 orig(self);
                 return;
             }
 
-            shakeVectorInfo.SetValue(self, self.ShakeVector * Settings.ScreenShakeIntensity / 10f, null);
+            shakeVectorInfo.SetValue(self, self.ShakeVector * Settings.ScreenShakeIntensity, null);
             orig(self);
         }
 
         private void onRumbleTriggerRenderDisplacement(On.Celeste.RumbleTrigger.orig_RenderDisplacement orig, RumbleTrigger self) {
-            if (Settings.ScreenShakeIntensity == 10) {
+            if (Settings.ScreenShakeIntensity == 1f) {
                 orig(self);
                 return;
             }
 
             float tempRumble = (float) rumbleInfo.GetValue(self);
-            rumbleInfo.SetValue(self, tempRumble * Settings.ScreenShakeIntensity / 10f);
+            rumbleInfo.SetValue(self, tempRumble * Settings.ScreenShakeIntensity);
             orig(self);
             rumbleInfo.SetValue(self, tempRumble);
         }

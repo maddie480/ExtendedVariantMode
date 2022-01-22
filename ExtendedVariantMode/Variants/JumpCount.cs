@@ -22,16 +22,29 @@ namespace ExtendedVariants.Variants {
             dashCount.OnDashRefill += dashRefilled;
         }
 
-        public override int GetDefaultValue() {
+        public override Type GetVariantType() {
+            return typeof(int);
+        }
+
+        public override object GetDefaultVariantValue() {
             return 1;
         }
 
-        public override int GetValue() {
+        public override object GetVariantValue() {
             return Settings.JumpCount;
         }
 
-        public override void SetValue(int value) {
-            Settings.JumpCount = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.JumpCount = (int) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            if (value == 6) {
+                // having "infinite jumps" be int.MaxValue makes so much more sense than having it be 6...
+                Settings.JumpCount = int.MaxValue;
+            } else {
+                Settings.JumpCount = value;
+            }
         }
 
         public override void Load() {
@@ -220,7 +233,7 @@ namespace ExtendedVariants.Variants {
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
-            if (initialJumpGraceTimer > 0f || (Settings.JumpCount != 6 && jumpBuffer <= 0)) {
+            if (initialJumpGraceTimer > 0f || (Settings.JumpCount != int.MaxValue && jumpBuffer <= 0)) {
                 // return the default value because we don't want to change anything 
                 // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;

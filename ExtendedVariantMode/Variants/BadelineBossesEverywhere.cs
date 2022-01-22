@@ -15,15 +15,24 @@ namespace ExtendedVariants.Variants {
         private Random positionRandomizer = new Random();
         private Random patternRandomizer = new Random();
 
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.BadelineBossesEverywhere ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.BadelineBossesEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.BadelineBossesEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.BadelineBossesEverywhere = (value != 0);
         }
 

@@ -31,6 +31,7 @@ placements.triggers.ExtendedVariantMode/FlagToggledExtendedVariantTrigger.toolti
 
 # Color Grade Trigger
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnLeave=If checked, the previous color grade will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnDeath=If checked, the previous value for the Color Grading variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.onlyOnce=If checked, the trigger will only change the color grade once, until the player dies or changes rooms.
 

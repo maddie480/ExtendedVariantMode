@@ -18,16 +18,25 @@ namespace ExtendedVariants.Variants {
 
         private bool forceRefillStamina;
 
-        public override int GetDefaultValue() {
-            return 11;
+        public override Type GetVariantType() {
+            return typeof(int);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 110;
+        }
+
+        public override object GetVariantValue() {
             return Settings.Stamina;
         }
 
-        public override void SetValue(int value) {
-            Settings.Stamina = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.Stamina = (int) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            // "type 15 to get 150 stamina", of course. :p
+            Settings.Stamina = (value * 10);
         }
 
         public override void Load() {
@@ -76,7 +85,7 @@ namespace ExtendedVariants.Variants {
                         // return the player stamina: this will result in player.Stamina = player.Stamina, thus doing absolutely nothing.
                         return Engine.Scene.Tracker.GetEntity<Player>()?.Stamina ?? determineBaseStamina();
                     }
-                    if (Settings.Stamina != 11) {
+                    if (Settings.Stamina != 110) {
                         // mod the stamina amount to refill.
                         return determineBaseStamina();
                     }
@@ -99,7 +108,7 @@ namespace ExtendedVariants.Variants {
             // invoking the original method is not really useful, but another mod may try to hook it, so don't break it if the Stamina variant is disabled
             orig.Invoke(self);
 
-            if (Settings.Stamina != 11) {
+            if (Settings.Stamina != 110) {
                 self.Stamina = determineBaseStamina();
             }
         }
@@ -130,7 +139,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The max stamina (default 110)</returns>
         private float determineBaseStamina() {
-            return Settings.Stamina * 10f;
+            return Settings.Stamina;
         }
     }
 }

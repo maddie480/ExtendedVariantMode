@@ -3,15 +3,24 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class EveryJumpIsUltra : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.EveryJumpIsUltra ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.EveryJumpIsUltra;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.EveryJumpIsUltra = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.EveryJumpIsUltra = (value != 0);
         }
 

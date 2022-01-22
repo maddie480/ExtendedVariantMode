@@ -21,15 +21,24 @@ namespace ExtendedVariants.Variants {
 
         private bool strawberriesWereMadeGolden;
 
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.AllStrawberriesAreGoldens ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.AllStrawberriesAreGoldens;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.AllStrawberriesAreGoldens = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.AllStrawberriesAreGoldens = (value != 0);
         }
 

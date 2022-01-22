@@ -1,17 +1,26 @@
 ﻿using Celeste;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class BounceEverywhere : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
+        public override object GetDefaultVariantValue() {
             return 0;
         }
 
-        public override int GetValue() {
-            return Settings.BounceEverywhere ? 1 : 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.BounceEverywhere;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.BounceEverywhere = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.BounceEverywhere = (value != 0);
         }
 

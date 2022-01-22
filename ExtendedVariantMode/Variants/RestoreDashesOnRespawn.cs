@@ -10,15 +10,24 @@ using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class RestoreDashesOnRespawn : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.RestoreDashesOnRespawn ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.RestoreDashesOnRespawn;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.RestoreDashesOnRespawn = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.RestoreDashesOnRespawn = (value != 0);
         }
 

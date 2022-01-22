@@ -1,4 +1,5 @@
 ﻿using ExtendedVariants.Module;
+using System;
 
 namespace ExtendedVariants.Variants {
     /// <summary>
@@ -18,19 +19,37 @@ namespace ExtendedVariants.Variants {
         public abstract void Unload();
 
         /// <summary>
+        /// Returns the parameter type of the variant.
+        /// </summary>
+        public abstract Type GetVariantType();
+
+        /// <summary>
         /// Returns the default value for the variant.
         /// </summary>
-        public abstract int GetDefaultValue();
+        public abstract object GetDefaultVariantValue();
 
         /// <summary>
         /// Returns the current value for the variant.
         /// </summary>
-        public abstract int GetValue();
+        public abstract object GetVariantValue();
 
         /// <summary>
         /// Sets a new value for the variant.
         /// </summary>
-        public abstract void SetValue(int value);
+        public void SetVariantValue(object value) {
+            if (value.GetType() != GetVariantType()) {
+                throw new Exception("Variant should be of type " + value + "! Please report this to max480.");
+            }
+
+            DoSetVariantValue(value);
+        }
+
+        protected abstract void DoSetVariantValue(object value);
+
+        /// <summary>
+        /// Sets the variant according to the old "everything is an integer" rule.
+        /// </summary>
+        public abstract void SetLegacyVariantValue(int value);
 
         /// <summary>
         /// Called whenever a new level starts with the randomizer enabled and a set seed, to seed the variant's randomness as well.

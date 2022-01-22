@@ -10,16 +10,24 @@ namespace ExtendedVariants.Variants {
     /// Restored because the "teleport mode" TASes heavily rely on its behavior.
     /// </summary>
     public class DashSpeedOld : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 10;
+
+        public override Type GetVariantType() {
+            return typeof(float);
+        }
+        public override object GetDefaultVariantValue() {
+            return 1f;
         }
 
-        public override int GetValue() {
+        public override object GetVariantValue() {
             return Settings.DashSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.DashSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.DashSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.DashSpeed = value / 10f;
         }
 
         public override void Load() {
@@ -53,7 +61,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="self">A reference to the player</param>
         private void modifyDashSpeed(Player self) {
-            self.Speed *= Settings.DashSpeed / 10f;
+            self.Speed *= Settings.DashSpeed;
         }
     }
 }

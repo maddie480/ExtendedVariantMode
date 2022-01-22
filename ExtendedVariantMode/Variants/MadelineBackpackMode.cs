@@ -6,16 +6,26 @@ using System.Collections.Generic;
 
 namespace ExtendedVariants.Variants {
     public class MadelineBackpackMode : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+        public enum MadelineBackpackModes { Default, NoBackpack, Backpack }
+
+        public override Type GetVariantType() {
+            return typeof(MadelineBackpackModes);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return MadelineBackpackModes.Default;
+        }
+
+        public override object GetVariantValue() {
             return Settings.MadelineBackpackMode;
         }
 
-        public override void SetValue(int value) {
-            Settings.MadelineBackpackMode = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.MadelineBackpackMode = (MadelineBackpackModes) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.MadelineBackpackMode = (MadelineBackpackModes) value;
         }
 
         public override void Load() {
@@ -36,9 +46,9 @@ namespace ExtendedVariants.Variants {
         private void onPlayerSpriteConstructor(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode) {
             // modify Madeline or MadelineNoBackpack as needed, if the variant is enabled.
             if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack) {
-                if (Settings.MadelineBackpackMode == 1) {
+                if (Settings.MadelineBackpackMode == MadelineBackpackModes.Backpack) {
                     mode = PlayerSpriteMode.Madeline;
-                } else if (Settings.MadelineBackpackMode == 2) {
+                } else if (Settings.MadelineBackpackMode == MadelineBackpackModes.NoBackpack) {
                     mode = PlayerSpriteMode.MadelineNoBackpack;
                 }
             }

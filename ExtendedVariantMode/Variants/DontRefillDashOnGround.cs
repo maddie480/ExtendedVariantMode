@@ -7,18 +7,28 @@ using System.Collections;
 
 namespace ExtendedVariants.Variants {
     public class DontRefillDashOnGround : AbstractExtendedVariant {
+        public enum DashRefillOnGroundConfiguration { DEFAULT, ON, OFF }
+
         private ILHook patchOrigUpdate;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(DashRefillOnGroundConfiguration);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return DashRefillOnGroundConfiguration.DEFAULT;
+        }
+
+        public override object GetVariantValue() {
             return Settings.DashRefillOnGroundState;
         }
 
-        public override void SetValue(int value) {
-            Settings.DashRefillOnGroundState = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.DashRefillOnGroundState = (DashRefillOnGroundConfiguration) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.DashRefillOnGroundState = (DashRefillOnGroundConfiguration) value;
         }
 
         public override void Load() {
@@ -84,9 +94,9 @@ namespace ExtendedVariants.Variants {
 
         private bool areRefillsOnGroundDisabled(bool vanilla) {
             switch (Settings.DashRefillOnGroundState) {
-                case 0: return vanilla;
-                case 2: return false;
-                default: return true;
+                case DashRefillOnGroundConfiguration.ON: return true;
+                case DashRefillOnGroundConfiguration.OFF: return false;
+                default: return vanilla;
             }
         }
 

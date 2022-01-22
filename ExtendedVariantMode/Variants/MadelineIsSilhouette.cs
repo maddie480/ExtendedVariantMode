@@ -19,15 +19,23 @@ namespace ExtendedVariants.Variants {
         private static MethodInfo refreshPlayerSpriteMode = null;
         private static bool previouslyEnabled = false;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.MadelineIsSilhouette ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.MadelineIsSilhouette;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.MadelineIsSilhouette = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.MadelineIsSilhouette = (value != 0);
         }
 

@@ -3,7 +3,7 @@ using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace ExtendedVariants.Entities {
+namespace ExtendedVariants.Entities.Legacy {
     // An Extended Variant Controller is a controller that behaves like an Extended Variant Trigger that would cover the entire screen--
     // actually no, it _is_ an Extended Variant Trigger that covers the entire screen.
     [CustomEntity("ExtendedVariantMode/ExtendedVariantController")]

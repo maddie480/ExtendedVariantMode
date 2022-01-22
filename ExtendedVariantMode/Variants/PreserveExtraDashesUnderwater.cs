@@ -1,16 +1,26 @@
 ﻿using Celeste;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class PreserveExtraDashesUnderwater : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 1;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.PreserveExtraDashesUnderwater ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return true;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.PreserveExtraDashesUnderwater;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.PreserveExtraDashesUnderwater = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.PreserveExtraDashesUnderwater = (value != 0);
         }
 

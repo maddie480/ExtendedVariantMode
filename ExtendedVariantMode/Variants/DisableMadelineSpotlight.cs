@@ -1,19 +1,29 @@
 ﻿using Celeste;
 using Monocle;
 using MonoMod.Utils;
+using System;
 using System.Linq;
 
 namespace ExtendedVariants.Variants {
     public class DisableMadelineSpotlight : AbstractExtendedVariant {
-        public override int GetDefaultValue() {
-            return 0;
+
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.DisableMadelineSpotlight ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.DisableMadelineSpotlight;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.DisableMadelineSpotlight = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DisableMadelineSpotlight = (value != 0);
         }
 

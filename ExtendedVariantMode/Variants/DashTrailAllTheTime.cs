@@ -7,15 +7,23 @@ namespace ExtendedVariants.Variants {
     public class DashTrailAllTheTime : AbstractExtendedVariant {
         private float dashTrailTimer = 0f;
 
-        public override int GetDefaultValue() {
-            return 0;
+        public override Type GetVariantType() {
+            return typeof(bool);
         }
 
-        public override int GetValue() {
-            return Settings.DashTrailAllTheTime ? 1 : 0;
+        public override object GetDefaultVariantValue() {
+            return false;
         }
 
-        public override void SetValue(int value) {
+        public override object GetVariantValue() {
+            return Settings.DashTrailAllTheTime;
+        }
+
+        protected override void DoSetVariantValue(object value) {
+            Settings.DashTrailAllTheTime = (bool) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
             Settings.DashTrailAllTheTime = (value != 0);
         }
 

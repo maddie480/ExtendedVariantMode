@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -13,16 +12,24 @@ namespace ExtendedVariants.Variants {
         private static ILHook dashCoroutineHook;
         private static ILHook redDashCoroutineHook;
 
-        public override int GetDefaultValue() {
-            return 10;
+        public override Type GetVariantType() {
+            return typeof(float);
         }
 
-        public override int GetValue() {
+        public override object GetDefaultVariantValue() {
+            return 1f;
+        }
+
+        public override object GetVariantValue() {
             return Settings.DashSpeed;
         }
 
-        public override void SetValue(int value) {
-            Settings.DashSpeed = value;
+        protected override void DoSetVariantValue(object value) {
+            Settings.DashSpeed = (float) value;
+        }
+
+        public override void SetLegacyVariantValue(int value) {
+            Settings.DashSpeed = value / 10f;
         }
 
         public override void Load() {
@@ -51,7 +58,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float getDashSpeedMultiplier() {
-            return Settings.DashSpeed / 10f;
+            return Settings.DashSpeed;
         }
     }
 }
