@@ -36,7 +36,13 @@ namespace ExtendedVariants.Entities.ForMappers {
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            bool[,] newValue = ExtendedVariantsModule.Settings.AllowedDashDirections;
+            // the new value is a copy of the old value with one boolean flipped.
+            bool[,] newValue = new bool[3,3];
+            for (int i = 0; i < 3; i++) {
+                for (int j  = 0; j < 3; j++) {
+                    newValue[i, j] = ExtendedVariantsModule.Settings.AllowedDashDirections[i, j];
+                }
+            }
 
             int x = 0, y = 0;
             switch (dashDirection) {
