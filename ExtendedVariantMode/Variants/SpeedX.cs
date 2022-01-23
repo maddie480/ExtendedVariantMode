@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -17,7 +16,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override object GetDefaultVariantValue() {
-            return 10f;
+            return 1f;
         }
 
         public override object GetVariantValue() {

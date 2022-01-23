@@ -180,7 +180,7 @@ namespace ExtendedVariants.UI {
 
             // go forward until choices[position] is higher or equal to our value
             int position = 0;
-            while (position < choices.Count && value.CompareTo(choices[position]) < 0) {
+            while (position < choices.Count && value.CompareTo(choices[position]) > 0) {
                 position++;
             }
 
@@ -191,6 +191,11 @@ namespace ExtendedVariants.UI {
             } else if (value.CompareTo(choices[position]) != 0) {
                 // we stopped on a value that is higher than us (not equal) => insert ourselves there
                 choices.Insert(position, value);
+
+                if (position <= defIndex) {
+                    // we pushed the default index to the right!
+                    defIndex++;
+                }
             }
 
             TextMenuExt.Slider slider = new TextMenuExt.Slider(Dialog.Clean(name),
@@ -289,16 +294,15 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableClimbJumping = b);
                 disableNeutralJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
                     .Change(b => Settings.DisableNeutralJumping = b);
-                jumpCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT"),
-                    i => {
-                        if (i == int.MaxValue) {
-                            return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
-                        }
-                        return i.ToString();
-                    }, 0, 6, Settings.JumpCount, 1).Change(i => {
-                        Settings.JumpCount = i == 6 ? int.MaxValue : i;
-                        refreshOptionMenuEnabledStatus();
-                    });
+                jumpCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT", "", Settings.JumpCount, 1, new int[] { 0, 1, 2, 3, 4, 5, int.MaxValue }, i => {
+                    Settings.JumpCount = i;
+                    refreshOptionMenuEnabledStatus();
+                }, i => {
+                    if (i == int.MaxValue) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
+                    }
+                    return i.ToString();
+                });
                 refillJumpsOnDashRefillOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
                     .Change(b => Settings.RefillJumpsOnDashRefill = b);
                 everyJumpIsUltraOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA"), Settings.EveryJumpIsUltra, false)
@@ -321,24 +325,35 @@ namespace ExtendedVariants.UI {
                     i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 3, GetDashDirectionIndex(), 0).Change(i => {
                         switch (i) {
                             case 1:
-                                Settings.AllowedDashDirections = new bool[,] {
-                                    { false, true, false },
-                                    { true, true, true },
-                                    { false, true, false }
+                                Settings.AllowedDashDirections = new bool[][] {
+                                    new bool[] { false, true, false },
+                                    new bool[] { true, true, true },
+                                    new bool[] { false, true, false }
                                 };
                                 break;
                             case 2:
-                                Settings.AllowedDashDirections = new bool[,] {
-                                    { true, false, true },
-                                    { false, true, false },
-                                    { true, false, true }
+                                Settings.AllowedDashDirections = new bool[][] {
+                                    new bool[] { true, false, true },
+                                    new bool[] { false, true, false },
+                                    new bool[] { true, false, true }
+                                };
+                                break;
+                            case 3:
+                                Settings.AllowedDashDirections = new bool[][] {
+                                    new bool[] { false, false, false },
+                                    new bool[] { false, true, false },
+                                    new bool[] { false, false, false }
                                 };
                                 break;
                             default:
-                                Settings.AllowedDashDirections = new bool[,] { { true, true, true }, { true, true, true }, { true, true, true } };
+                                Settings.AllowedDashDirections = new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
                                 break;
                         }
                         refreshOptionMenuEnabledStatus();
+
+                        if (i == 3) {
+                            Settings.AllowedDashDirections = new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
+                        }
                     });
 
                 // build the dash direction submenu.
@@ -347,19 +362,23 @@ namespace ExtendedVariants.UI {
 
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i, j]), Settings.AllowedDashDirections[i, j]);
-                        toggle.Change(value => Settings.AllowedDashDirections[i, j] = value);
+                        if (i == 1 && j == 1) continue;
+
+                        int a = i, b = j;
+
+                        TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i, j]), Settings.AllowedDashDirections[i][j]);
+                        toggle.Change(value => Settings.AllowedDashDirections[a][b] = value);
                         dashDirectionsSubMenu.Add(toggle);
                     }
                 }
 
                 hyperdashSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED", "x", Settings.HyperdashSpeed, 10, multiplierScale, f => Settings.HyperdashSpeed = f);
-                dashCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT"), i => {
+                dashCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT", "", Settings.DashCount, 0, new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => Settings.DashCount = i, i => {
                     if (i == -1) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     }
                     return i.ToString();
-                }, -1, 10, Settings.DashCount, 0).Change(i => Settings.DashCount = i);
+                });
                 heldDashOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
                     .Change(b => Settings.HeldDash = b);
 
@@ -395,12 +414,11 @@ namespace ExtendedVariants.UI {
                 // Badeline Chasers
                 badelineChasersEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
                     .Change(b => Settings.BadelineChasersEverywhere = b);
-                chaserCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT"),
-                    i => i.ToString(), 1, 10, Settings.ChaserCount, 0).Change(i => Settings.ChaserCount = i);
+                chaserCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT", "", Settings.ChaserCount, 0, new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => Settings.ChaserCount = i);
                 affectExistingChasersOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AFFECTEXISTINGCHASERS"), Settings.AffectExistingChasers, false)
                     .Change(b => Settings.AffectExistingChasers = b);
                 badelineLagOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG", "s", Settings.BadelineLag, 16, multiplierScaleBadelineLag, f => Settings.BadelineLag = f);
-                delayBetweenBadelinesOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES", "s", Settings.DelayBetweenBadelines, 5, multiplierScale, f => Settings.DelayBetweenBadelines = f);
+                delayBetweenBadelinesOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES", "s", Settings.DelayBetweenBadelines, 4, multiplierScale, f => Settings.DelayBetweenBadelines = f);
 
                 // Badeline Bosses
                 badelineBossesEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
@@ -419,10 +437,8 @@ namespace ExtendedVariants.UI {
                 firstBadelineSpawnRandomOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM"),
                     i => i == 1 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF"),
                     0, 1, Settings.FirstBadelineSpawnRandom ? 1 : 0, 0).Change(i => Settings.FirstBadelineSpawnRandom = (i != 0));
-                badelineBossCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT"),
-                    i => i.ToString(), 1, 5, Settings.BadelineBossCount, 0).Change(i => Settings.BadelineBossCount = i);
-                badelineBossNodeCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT"),
-                    i => i.ToString(), 1, 5, Settings.BadelineBossNodeCount, 0).Change(i => Settings.BadelineBossNodeCount = i);
+                badelineBossCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT", "", Settings.BadelineBossCount, 0, new int[] { 1, 2, 3, 4, 5 }, i => Settings.BadelineBossCount = i);
+                badelineBossNodeCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT", "", Settings.BadelineBossNodeCount, 0, new int[] { 1, 2, 3, 4, 5 }, i => Settings.BadelineBossNodeCount = i);
 
                 // Oshiro
                 oshiroEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
@@ -430,17 +446,15 @@ namespace ExtendedVariants.UI {
                         Settings.OshiroEverywhere = b;
                         refreshOptionMenuEnabledStatus();
                     });
-                oshiroCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT"),
-                    i => i.ToString(), 0, 5, Settings.OshiroCount, 1).Change(i => Settings.OshiroCount = i);
-                reverseOshiroCountOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REVERSEOSHIROCOUNT"),
-                    i => i.ToString(), 0, 5, Settings.ReverseOshiroCount, 0).Change(i => Settings.ReverseOshiroCount = i);
+                oshiroCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT", "", Settings.OshiroCount, 1, new int[] { 0, 1, 2, 3, 4, 5 }, i => Settings.OshiroCount = i);
+                reverseOshiroCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_REVERSEOSHIROCOUNT", "", Settings.ReverseOshiroCount, 0, new int[] { 0, 1, 2, 3, 4, 5 }, i => Settings.ReverseOshiroCount = i);
                 disableOshiroSlowdownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
                     .Change(b => Settings.DisableOshiroSlowdown = b);
 
                 // Other elements
                 windEverywhereOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_" + Enum.GetNames(typeof(WindEverywhere.WindPattern))[i]),
-                    0, Enum.GetNames(typeof(WindEverywhere.WindPattern)).Length, (int) Settings.WindEverywhere, 0)
+                    i => Dialog.Clean(i == 0 ? "MODOPTIONS_EXTENDEDVARIANTS_DISABLED" : "MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_" + Enum.GetNames(typeof(WindEverywhere.WindPattern))[i]),
+                    0, Enum.GetNames(typeof(WindEverywhere.WindPattern)).Length - 1, (int) Settings.WindEverywhere, 0)
                     .Change(i => Settings.WindEverywhere = (WindEverywhere.WindPattern) i);
                 snowballsEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
                     .Change(b => Settings.SnowballsEverywhere = b);
@@ -463,8 +477,7 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.AllowThrowingTheoOffscreen = b);
                 allowLeavingTheoBehindOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_allowLeavingTheoBehind"), Settings.AllowLeavingTheoBehind, false)
                     .Change(b => Settings.AllowLeavingTheoBehind = b);
-                jellyfishEverywhereOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE"), i => i.ToString(), 0, 3, Settings.JellyfishEverywhere, 0)
-                    .Change(i => Settings.JellyfishEverywhere = i);
+                jellyfishEverywhereOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE", "", Settings.JellyfishEverywhere, 0, new int[] { 0, 1, 2, 3 }, i => Settings.JellyfishEverywhere = i);
                 risingLavaEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVAEVERYWHERE"), Settings.RisingLavaEverywhere, false)
                     .Change(b => Settings.RisingLavaEverywhere = b);
                 risingLavaSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVASPEED", "x", Settings.RisingLavaSpeed, 10, multiplierScale, f => Settings.RisingLavaSpeed = f);
@@ -509,7 +522,7 @@ namespace ExtendedVariants.UI {
 
                 madelineBackpackModeOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE"),
                     i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_" + Enum.GetNames(typeof(MadelineBackpackMode.MadelineBackpackModes))[i]),
-                    0, Enum.GetNames(typeof(MadelineBackpackMode.MadelineBackpackModes)).Length, (int) Settings.MadelineBackpackMode, 0)
+                    0, Enum.GetNames(typeof(MadelineBackpackMode.MadelineBackpackModes)).Length - 1, (int) Settings.MadelineBackpackMode, 0)
                     .Change(i => {
                         Settings.MadelineBackpackMode = (MadelineBackpackMode.MadelineBackpackModes) i;
 
@@ -525,21 +538,21 @@ namespace ExtendedVariants.UI {
 
                 roomBloomOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM", "", Settings.RoomBloom, 0, new float[] {
                     -1f, 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f, 2f, 3f, 4f, 5f
-                }, f => Settings.RoomBloom = f, f => $"{f * 100}%");
+                }, f => Settings.RoomBloom = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
 
                 glitchEffectOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_GLITCHEFFECT", "", Settings.GlitchEffect, 0, new float[] {
                     -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.GlitchEffect = f, f => $"{f * 100}%");
+                }, f => Settings.GlitchEffect = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
 
                 anxietyEffectOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ANXIETYEFFECT", "", Settings.AnxietyEffect, 0, new float[] {
                     -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.AnxietyEffect = f, f => $"{f * 100}%");
+                }, f => Settings.AnxietyEffect = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
 
-                blurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BLURLEVEL", "", Settings.BlurLevel, 20, new float[] {
+                blurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BLURLEVEL", "", Settings.BlurLevel, 0, new float[] {
                     0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
                 }, f => Settings.BlurLevel = f, f => $"{f * 100}%");
 
-                backgroundBlurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBLURLEVEL", "", Settings.BackgroundBlurLevel, 20, new float[] {
+                backgroundBlurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBLURLEVEL", "", Settings.BackgroundBlurLevel, 0, new float[] {
                     0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
                 }, f => Settings.BackgroundBlurLevel = f, f => $"{f * 100}%");
 
@@ -574,7 +587,7 @@ namespace ExtendedVariants.UI {
                         if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
                         return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
 
-                    }, -1, allColorGrades.Count, string.IsNullOrEmpty(Settings.ColorGrading) ? -1 : allColorGrades.IndexOf(Settings.ColorGrading), 0)
+                    }, -1, allColorGrades.Count - 1, string.IsNullOrEmpty(Settings.ColorGrading) ? -1 : allColorGrades.IndexOf(Settings.ColorGrading), 0)
                     .Change(i => Settings.ColorGrading = (i == -1 ? "" : allColorGrades[i]));
 
                 screenShakeIntensityOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SCREENSHAKEINTENSITY", "x", Settings.ScreenShakeIntensity, 10, multiplierScale, f => Settings.ScreenShakeIntensity = f);
@@ -588,7 +601,7 @@ namespace ExtendedVariants.UI {
 
                 displaySpeedometerOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER"),
                     i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER_" + Enum.GetNames(typeof(DisplaySpeedometer.SpeedometerConfiguration))[i]),
-                    0, Enum.GetNames(typeof(DisplaySpeedometer.SpeedometerConfiguration)).Length, (int) Settings.DisplaySpeedometer, 0)
+                    0, Enum.GetNames(typeof(DisplaySpeedometer.SpeedometerConfiguration)).Length - 1, (int) Settings.DisplaySpeedometer, 0)
                     .Change(i => Settings.DisplaySpeedometer = (DisplaySpeedometer.SpeedometerConfiguration) i);
             }
 
@@ -607,10 +620,10 @@ namespace ExtendedVariants.UI {
                     0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
                     310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
                 }, i => Settings.Stamina = i);
-                regularHiccupsOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS", "s", Settings.RegularHiccups, 10, multiplierScale, f => {
+                regularHiccupsOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS", "", Settings.RegularHiccups, 0, multiplierScale, f => {
                     Settings.RegularHiccups = f;
                     (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
-                });
+                }, f => f == 0f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : $"{f}s");
                 hiccupStrengthOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH", "x", Settings.HiccupStrength, 10, multiplierScale, f => Settings.HiccupStrength = f);
 
                 allStrawberriesAreGoldensOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
@@ -687,20 +700,20 @@ namespace ExtendedVariants.UI {
 
                 movementSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
-                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.DashDirection, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
+                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater }
-                        .Exists(variant => Instance.VariantHandlers[variant].GetVariantValue() != Instance.VariantHandlers[variant].GetDefaultVariantValue())
-                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround;
+                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
+                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
                         Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere }
-                        .Exists(variant => Instance.VariantHandlers[variant].GetVariantValue() != Instance.VariantHandlers[variant].GetDefaultVariantValue())
+                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
                         || Settings.ChaserCount != 1 || Settings.AffectExistingChasers || Settings.BadelineLag != 1.55f || Settings.DelayBetweenBadelines != 0.4f
                         || Settings.BadelineAttackPattern != 0 || Settings.ChangePatternsOfExistingBosses || Settings.FirstBadelineSpawnRandom || Settings.BadelineBossCount != 1
-                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.ReverseOshiroCount != 0 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 0.8
+                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.ReverseOshiroCount != 0 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 0.8f
                         || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 1f || Settings.AllowThrowingTheoOffscreen || Settings.AllowLeavingTheoBehind;
 
                 visualSubmenu.GetHighlight = () =>
@@ -708,12 +721,12 @@ namespace ExtendedVariants.UI {
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
                         Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
                         Variant.DisplaySpeedometer }
-                        .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && Instance.VariantHandlers[variant].GetVariantValue() != Instance.VariantHandlers[variant].GetDefaultVariantValue());
+                        .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                         Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere, Variant.AlwaysInvisible }
-                        .Exists(variant => Instance.VariantHandlers[variant].GetVariantValue() != Instance.VariantHandlers[variant].GetDefaultVariantValue())
+                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
                         || Settings.HiccupStrength != 1f;
             }
 
@@ -920,99 +933,99 @@ namespace ExtendedVariants.UI {
         }
 
         private void resetAllOptionsToDefault() {
-            gravityOption.ResetToDefault();
-            fallSpeedOption.ResetToDefault();
-            jumpHeightOption.ResetToDefault();
-            speedXOption.ResetToDefault();
-            swimmingSpeedOption.ResetToDefault();
-            boostMultiplierOption.ResetToDefault();
-            staminaOption.ResetToDefault();
-            dashSpeedOption.ResetToDefault();
-            legacyDashSpeedBehaviorOption.ResetToDefault();
-            dashCountOption.ResetToDefault();
-            frictionOption.ResetToDefault();
-            airFrictionOption.ResetToDefault();
-            disableWallJumpingOption.ResetToDefault();
-            disableClimbJumpingOption.ResetToDefault();
-            jumpCountOption.ResetToDefault();
-            refillJumpsOnDashRefillOption.ResetToDefault();
-            upsideDownOption.ResetToDefault();
-            hyperdashSpeedOption.ResetToDefault();
-            explodeLaunchSpeedOption.ResetToDefault();
-            disableSuperBoostsOption.ResetToDefault();
-            dontRefillStaminaOnGroundOption.ResetToDefault();
-            wallBouncingSpeedOption.ResetToDefault();
-            dashLengthOption.ResetToDefault();
-            dashDirectionOption.ResetToDefault();
-            forceDuckOnGroundOption.ResetToDefault();
-            invertDashesOption.ResetToDefault();
-            invertGrabOption.ResetToDefault();
-            invertHorizontalControlsOption.ResetToDefault();
-            invertVerticalControlsOption.ResetToDefault();
-            heldDashOption.ResetToDefault();
-            disableNeutralJumpingOption.ResetToDefault();
-            badelineChasersEverywhereOption.ResetToDefault();
-            chaserCountOption.ResetToDefault();
-            affectExistingChasersOption.ResetToDefault();
-            badelineBossesEverywhereOption.ResetToDefault();
-            badelineAttackPatternOption.ResetToDefault();
-            changePatternOfExistingBossesOption.ResetToDefault();
-            firstBadelineSpawnRandomOption.ResetToDefault();
-            badelineBossCountOption.ResetToDefault();
-            badelineBossNodeCountOption.ResetToDefault();
-            changeVariantsRandomlyOption.ResetToDefault();
-            regularHiccupsOption.ResetToDefault();
-            hiccupStrengthOption.ResetToDefault();
-            roomLightingOption.ResetToDefault();
-            backgroundBrightnessOption.ResetToDefault();
-            foregroundEffectOpacityOption.ResetToDefault();
-            disableMadelineSpotlightOption.ResetToDefault();
-            roomBloomOption.ResetToDefault();
-            glitchEffectOption.ResetToDefault();
-            anxietyEffectOption.ResetToDefault();
-            blurLevelOption.ResetToDefault();
-            backgroundBlurLevelOption.ResetToDefault();
-            zoomLevelOption.ResetToDefault();
-            everythingIsUnderwaterOption.ResetToDefault();
-            oshiroEverywhereOption.ResetToDefault();
-            oshiroCountOption.ResetToDefault();
-            reverseOshiroCountOption.ResetToDefault();
-            disableOshiroSlowdownOption.ResetToDefault();
-            windEverywhereOption.ResetToDefault();
-            snowballsEverywhereOption.ResetToDefault();
-            snowballDelayOption.ResetToDefault();
-            addSeekersOption.ResetToDefault();
-            disableSeekerSlowdownOption.ResetToDefault();
-            theoCrystalsEverywhereOption.ResetToDefault();
-            allowThrowingTheoOffscreenOption.ResetToDefault();
-            allowLeavingTheoBehindOption.ResetToDefault();
-            risingLavaEverywhereOption.ResetToDefault();
-            risingLavaSpeedOption.ResetToDefault();
-            badelineLagOption.ResetToDefault();
-            delayBetweenBadelinesOption.ResetToDefault();
-            allStrawberriesAreGoldensOption.ResetToDefault();
-            dontRefillDashOnGroundOption.ResetToDefault();
-            disableRefillsOnScreenTransitionOption.ResetToDefault();
-            restoreDashesOnRespawnOption.ResetToDefault();
-            gameSpeedOption.ResetToDefault();
-            colorGradingOption.ResetToDefault();
-            jellyfishEverywhereOption.ResetToDefault();
-            bounceEverywhereOption.ResetToDefault();
-            superdashSteeringSpeedOption.ResetToDefault();
-            screenShakeIntensityOption.ResetToDefault();
-            madelineIsSilhouetteOption.ResetToDefault();
-            madelineHasPonytailOption.ResetToDefault();
-            dashTrailAllTheTimeOption.ResetToDefault();
-            madelineBackpackModeOption.ResetToDefault();
-            displaySpeedometerOption.ResetToDefault();
-            disableClimbingUpOrDownOption.ResetToDefault();
-            friendlyBadelineFollowerOption.ResetToDefault();
-            displayDashCountOption.ResetToDefault();
-            everyJumpIsUltraOption.ResetToDefault();
-            coyoteTimeOption.ResetToDefault();
-            noFreezeFramesOption.ResetToDefault();
-            preserveExtraDashesUnderwaterOption.ResetToDefault();
-            alwaysInvisibleOption.ResetToDefault();
+            gravityOption?.ResetToDefault();
+            fallSpeedOption?.ResetToDefault();
+            jumpHeightOption?.ResetToDefault();
+            speedXOption?.ResetToDefault();
+            swimmingSpeedOption?.ResetToDefault();
+            boostMultiplierOption?.ResetToDefault();
+            staminaOption?.ResetToDefault();
+            dashSpeedOption?.ResetToDefault();
+            legacyDashSpeedBehaviorOption?.ResetToDefault();
+            dashCountOption?.ResetToDefault();
+            frictionOption?.ResetToDefault();
+            airFrictionOption?.ResetToDefault();
+            disableWallJumpingOption?.ResetToDefault();
+            disableClimbJumpingOption?.ResetToDefault();
+            jumpCountOption?.ResetToDefault();
+            refillJumpsOnDashRefillOption?.ResetToDefault();
+            upsideDownOption?.ResetToDefault();
+            hyperdashSpeedOption?.ResetToDefault();
+            explodeLaunchSpeedOption?.ResetToDefault();
+            disableSuperBoostsOption?.ResetToDefault();
+            dontRefillStaminaOnGroundOption?.ResetToDefault();
+            wallBouncingSpeedOption?.ResetToDefault();
+            dashLengthOption?.ResetToDefault();
+            dashDirectionOption?.ResetToDefault();
+            forceDuckOnGroundOption?.ResetToDefault();
+            invertDashesOption?.ResetToDefault();
+            invertGrabOption?.ResetToDefault();
+            invertHorizontalControlsOption?.ResetToDefault();
+            invertVerticalControlsOption?.ResetToDefault();
+            heldDashOption?.ResetToDefault();
+            disableNeutralJumpingOption?.ResetToDefault();
+            badelineChasersEverywhereOption?.ResetToDefault();
+            chaserCountOption?.ResetToDefault();
+            affectExistingChasersOption?.ResetToDefault();
+            badelineBossesEverywhereOption?.ResetToDefault();
+            badelineAttackPatternOption?.ResetToDefault();
+            changePatternOfExistingBossesOption?.ResetToDefault();
+            firstBadelineSpawnRandomOption?.ResetToDefault();
+            badelineBossCountOption?.ResetToDefault();
+            badelineBossNodeCountOption?.ResetToDefault();
+            changeVariantsRandomlyOption?.ResetToDefault();
+            regularHiccupsOption?.ResetToDefault();
+            hiccupStrengthOption?.ResetToDefault();
+            roomLightingOption?.ResetToDefault();
+            backgroundBrightnessOption?.ResetToDefault();
+            foregroundEffectOpacityOption?.ResetToDefault();
+            disableMadelineSpotlightOption?.ResetToDefault();
+            roomBloomOption?.ResetToDefault();
+            glitchEffectOption?.ResetToDefault();
+            anxietyEffectOption?.ResetToDefault();
+            blurLevelOption?.ResetToDefault();
+            backgroundBlurLevelOption?.ResetToDefault();
+            zoomLevelOption?.ResetToDefault();
+            everythingIsUnderwaterOption?.ResetToDefault();
+            oshiroEverywhereOption?.ResetToDefault();
+            oshiroCountOption?.ResetToDefault();
+            reverseOshiroCountOption?.ResetToDefault();
+            disableOshiroSlowdownOption?.ResetToDefault();
+            windEverywhereOption?.ResetToDefault();
+            snowballsEverywhereOption?.ResetToDefault();
+            snowballDelayOption?.ResetToDefault();
+            addSeekersOption?.ResetToDefault();
+            disableSeekerSlowdownOption?.ResetToDefault();
+            theoCrystalsEverywhereOption?.ResetToDefault();
+            allowThrowingTheoOffscreenOption?.ResetToDefault();
+            allowLeavingTheoBehindOption?.ResetToDefault();
+            risingLavaEverywhereOption?.ResetToDefault();
+            risingLavaSpeedOption?.ResetToDefault();
+            badelineLagOption?.ResetToDefault();
+            delayBetweenBadelinesOption?.ResetToDefault();
+            allStrawberriesAreGoldensOption?.ResetToDefault();
+            dontRefillDashOnGroundOption?.ResetToDefault();
+            disableRefillsOnScreenTransitionOption?.ResetToDefault();
+            restoreDashesOnRespawnOption?.ResetToDefault();
+            gameSpeedOption?.ResetToDefault();
+            colorGradingOption?.ResetToDefault();
+            jellyfishEverywhereOption?.ResetToDefault();
+            bounceEverywhereOption?.ResetToDefault();
+            superdashSteeringSpeedOption?.ResetToDefault();
+            screenShakeIntensityOption?.ResetToDefault();
+            madelineIsSilhouetteOption?.ResetToDefault();
+            madelineHasPonytailOption?.ResetToDefault();
+            dashTrailAllTheTimeOption?.ResetToDefault();
+            madelineBackpackModeOption?.ResetToDefault();
+            displaySpeedometerOption?.ResetToDefault();
+            disableClimbingUpOrDownOption?.ResetToDefault();
+            friendlyBadelineFollowerOption?.ResetToDefault();
+            displayDashCountOption?.ResetToDefault();
+            everyJumpIsUltraOption?.ResetToDefault();
+            coyoteTimeOption?.ResetToDefault();
+            noFreezeFramesOption?.ResetToDefault();
+            preserveExtraDashesUnderwaterOption?.ResetToDefault();
+            alwaysInvisibleOption?.ResetToDefault();
         }
 
         private void refreshOptionMenuEnabledStatus() {
@@ -1036,31 +1049,31 @@ namespace ExtendedVariants.UI {
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
         public static int GetDashDirectionIndex() {
-            bool[,] settings = ExtendedVariantsModule.Settings.AllowedDashDirections;
+            bool[][] settings = ExtendedVariantsModule.Settings.AllowedDashDirections;
 
             // first option: everything allowed
             if (
-                settings[0, 0] && settings[0, 1] && settings[0, 2] &&
-                settings[1, 0] && settings[1, 1] && settings[1, 2] &&
-                settings[2, 0] && settings[2, 1] && settings[2, 2]
+                settings[0][0] && settings[0][1] && settings[0][2] &&
+                settings[1][0] && settings[1][1] && settings[1][2] &&
+                settings[2][0] && settings[2][1] && settings[2][2]
             ) {
                 return 0;
             }
 
             // second option: no diagonals
             if (
-                !settings[0, 0] && settings[0, 1] && !settings[0, 2] &&
-                settings[1, 0] && settings[1, 1] && settings[1, 2] &&
-                !settings[2, 0] && settings[2, 1] && !settings[2, 2]
+                !settings[0][0] && settings[0][1] && !settings[0][2] &&
+                settings[1][0] && settings[1][1] && settings[1][2] &&
+                !settings[2][0] && settings[2][1] && !settings[2][2]
             ) {
                 return 1;
             }
 
             // third option: diagonals only
             if (
-                settings[0, 0] && !settings[0, 1] && settings[0, 2] &&
-                !settings[1, 0] && settings[1, 1] && !settings[1, 2] &&
-                settings[2, 0] && !settings[2, 1] && settings[2, 2]
+                settings[0][0] && !settings[0][1] && settings[0][2] &&
+                !settings[1][0] && settings[1][1] && !settings[1][2] &&
+                settings[2][0] && !settings[2][1] && settings[2][2]
             ) {
                 return 2;
             }

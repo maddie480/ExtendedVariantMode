@@ -329,7 +329,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool[,] AllowedDashDirections { get; set; } = new bool[,] { { true, true, true }, { true, true, true }, { true, true, true } };
+        public bool[][] AllowedDashDirections { get; set; } = new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
 
         // ======================================
 

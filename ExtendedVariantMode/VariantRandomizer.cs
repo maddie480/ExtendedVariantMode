@@ -314,8 +314,11 @@ namespace ExtendedVariants {
         }
 
         private bool isDefaultValue(ExtendedVariantsModule.Variant variant) {
+            // Equals() doesn't work on 2D boolean arrays, surprisingly
+            if (variant == ExtendedVariantsModule.Variant.DashDirection) return ModOptionsEntries.GetDashDirectionIndex() == 0;
+
             AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
-            return variantHandler.GetVariantValue() == variantHandler.GetDefaultVariantValue();
+            return variantHandler.GetVariantValue().Equals(variantHandler.GetDefaultVariantValue());
         }
 
         private void disableVariant(VanillaVariant variant) {
@@ -424,18 +427,18 @@ namespace ExtendedVariants {
                 DisplaySpeedometer.SpeedometerConfiguration.HORIZONTAL, DisplaySpeedometer.SpeedometerConfiguration.VERTICAL, DisplaySpeedometer.SpeedometerConfiguration.BOTH }[randomGenerator.Next(3)]; // random between the 3 modes (1~3)
         }
 
-        private bool[,] getRandomDashDirection() {
+        private bool[][] getRandomDashDirection() {
             if (randomGenerator.Next(2) == 0) {
-                return new bool[,] {
-                    { false, true, false },
-                    { true, true, true },
-                    { false, true, false }
+                return new bool[][] {
+                    new bool[] { false, true, false },
+                    new bool[] { true, true, true },
+                    new bool[] { false, true, false }
                 };
             } else {
-                return new bool[,] {
-                    { true, false, true },
-                    { false, true, false },
-                    { true, false, true }
+                return new bool[][] {
+                    new bool[] { true, false, true },
+                    new bool[] { false, true, false },
+                    new bool[] { true, false, true }
                 };
             }
         }

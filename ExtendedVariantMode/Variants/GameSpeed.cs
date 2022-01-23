@@ -12,7 +12,7 @@ namespace ExtendedVariants.Variants {
         private float previousGameSpeed = 1f;
 
         public override Type GetVariantType() {
-            throw new NotImplementedException();
+            return typeof(float);
         }
 
         public override object GetDefaultVariantValue() {

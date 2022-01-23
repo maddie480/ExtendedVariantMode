@@ -14,7 +14,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override object GetDefaultVariantValue() {
-            return 0;
+            return 0f;
         }
 
         public override object GetVariantValue() {

@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         public void SetVariantValue(object value) {
             if (value.GetType() != GetVariantType()) {
-                throw new Exception("Variant should be of type " + value + "! Please report this to max480.");
+                throw new Exception("Variant should be of type " + GetVariantType() + ", passed value of type " + value.GetType() + " for variant " + GetType() + "! Please report this to max480.");
             }
 
             DoSetVariantValue(value);

@@ -10,7 +10,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         private bool enable;
         private bool revertOnLeave;
         private bool revertOnDeath;
-        private bool[,] oldValueToRevertOnLeave;
+        private bool[][] oldValueToRevertOnLeave;
 
         // we are using bit fields for backwards compatibility, but this can otherwise be seen as an enum.
         private const int TOP = 0b1000000000;
@@ -37,10 +37,10 @@ namespace ExtendedVariants.Entities.ForMappers {
             base.OnEnter(player);
 
             // the new value is a copy of the old value with one boolean flipped.
-            bool[,] newValue = new bool[3,3];
+            bool[][] newValue = new bool[][] { new bool[3], new bool[3], new bool[3] };
             for (int i = 0; i < 3; i++) {
                 for (int j  = 0; j < 3; j++) {
-                    newValue[i, j] = ExtendedVariantsModule.Settings.AllowedDashDirections[i, j];
+                    newValue[i][j] = ExtendedVariantsModule.Settings.AllowedDashDirections[i][j];
                 }
             }
 
@@ -56,9 +56,9 @@ namespace ExtendedVariants.Entities.ForMappers {
                 case TOP_LEFT:      x = 0; y = 0; break;
             }
 
-            newValue[x, y] = enable;
+            newValue[y][x] = enable;
 
-            bool[,] oldValue = (bool[,]) ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
+            bool[][] oldValue = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
 
             if (revertOnLeave) {
                 oldValueToRevertOnLeave = oldValue;

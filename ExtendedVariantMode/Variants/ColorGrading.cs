@@ -63,7 +63,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void checkColorGrade() {
-            if (!Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + Settings.ColorGrading)) {
+            if (!string.IsNullOrEmpty(Settings.ColorGrading) && !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + Settings.ColorGrading)) {
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ColorGrading", "Graphics/ColorGrading/" + Settings.ColorGrading + " doesn't exist! Resetting color grade setting.");
                 Settings.ColorGrading = "";
             }

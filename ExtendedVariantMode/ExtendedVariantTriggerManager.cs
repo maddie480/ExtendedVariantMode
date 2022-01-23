@@ -338,7 +338,7 @@ namespace ExtendedVariants {
                     actualNewValue = newValue;
                     break;
                 case ExtendedVariantsModule.Variant.FirstBadelineSpawnRandom:
-                    oldValue = ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom ? 1 : 0;
+                    oldValue = ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom;
                     ExtendedVariantsModule.Settings.FirstBadelineSpawnRandom = (bool) newValue;
                     actualNewValue = newValue;
                     break;

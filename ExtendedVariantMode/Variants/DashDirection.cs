@@ -17,11 +17,11 @@ namespace ExtendedVariants.Variants {
         private int dashCountBeforeDash;
 
         public override Type GetVariantType() {
-            return typeof(bool[,]);
+            return typeof(bool[][]);
         }
 
         public override object GetDefaultVariantValue() {
-            return new bool[,] { { true, true, true }, { true, true, true }, { true, true, true } };
+            return new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
         }
 
         public override object GetVariantValue() {
@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
         }
 
         protected override void DoSetVariantValue(object value) {
-            Settings.AllowedDashDirections = (bool[,]) value;
+            Settings.AllowedDashDirections = (bool[][]) value;
         }
 
         public override void SetLegacyVariantValue(int value) {
@@ -54,10 +54,10 @@ namespace ExtendedVariants.Variants {
                 value = 0b0101010100;
             }
 
-            Settings.AllowedDashDirections = new bool[,] {
-                { (value & TOP_LEFT) != 0, (value & TOP) != 0, (value & TOP_RIGHT) != 0 },
-                { (value & LEFT) != 0, true, (value & RIGHT) != 0 },
-                { (value & BOTTOM_LEFT) != 0, (value & BOTTOM) != 0, (value & BOTTOM_RIGHT) != 0 },
+            Settings.AllowedDashDirections = new bool[][] {
+                new bool[] { (value & TOP_LEFT) != 0, (value & TOP) != 0, (value & TOP_RIGHT) != 0 },
+                new bool[] { (value & LEFT) != 0, true, (value & RIGHT) != 0 },
+                new bool[] { (value & BOTTOM_LEFT) != 0, (value & BOTTOM) != 0, (value & BOTTOM_RIGHT) != 0 },
             };
         }
 
@@ -146,8 +146,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool areAllDirectionsAllowed() {
-            foreach (bool b in Settings.AllowedDashDirections) {
-                if (!b) return false;
+            foreach (bool[] ba in Settings.AllowedDashDirections) {
+                foreach (bool b in ba) {
+                    if (!b) return false;
+                }
             }
             return true;
         }
@@ -157,7 +159,7 @@ namespace ExtendedVariants.Variants {
             direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
             // bottom-left (-1, 1) is row 2, column 0.
-            return Settings.AllowedDashDirections[(int) (direction.Y + 1), (int) (direction.X + 1)];
+            return Settings.AllowedDashDirections[(int) (direction.Y + 1)][(int) (direction.X + 1)];
         }
     }
 }
