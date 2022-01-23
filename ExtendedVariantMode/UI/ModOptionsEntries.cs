@@ -973,7 +973,6 @@ namespace ExtendedVariants.UI {
             firstBadelineSpawnRandomOption?.ResetToDefault();
             badelineBossCountOption?.ResetToDefault();
             badelineBossNodeCountOption?.ResetToDefault();
-            changeVariantsRandomlyOption?.ResetToDefault();
             regularHiccupsOption?.ResetToDefault();
             hiccupStrengthOption?.ResetToDefault();
             roomLightingOption?.ResetToDefault();
