@@ -621,12 +621,31 @@ namespace ExtendedVariants.Module {
                         // this variant cannot be enabled, because it does not exist.
                         continue;
                     }
+
                     object expectedValue = TriggerManager.GetExpectedVariantValue(variant);
                     object actualValue = TriggerManager.GetCurrentVariantValue(variant);
-                    if (expectedValue != actualValue) {
-                        Logger.Log(LogLevel.Warn, "ExtendedVariantTrigger/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
-                        Session.ExtendedVariantsWereUsed = true;
-                        break;
+
+                    if (variant == Variant.DashDirection) {
+                        bool equal = true;
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 3; j++) {
+                                if (((bool[][]) expectedValue)[i][j] != ((bool[][]) actualValue)[i][j]) {
+                                    equal = false;
+                                }
+                            }
+                        }
+
+                        if (!equal) {
+                            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
+                            Session.ExtendedVariantsWereUsed = true;
+                            break;
+                        }
+                    } else {
+                        if (!expectedValue.Equals(actualValue)) {
+                            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
+                            Session.ExtendedVariantsWereUsed = true;
+                            break;
+                        }
                     }
                 }
             }
