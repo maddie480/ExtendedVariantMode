@@ -3,7 +3,7 @@ using Celeste.Mod.Entities;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 
-namespace ExtendedVariants.Entities {
+namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/SetJumpCountTrigger")]
     public class SetJumpCountTrigger : Trigger {
         private enum Mode { Cap, Set }

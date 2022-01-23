@@ -1,39 +1,65 @@
 ﻿module ExtendedVariantDictionary
 
-export Variants
+export IntegerVariants, FloatVariants, BooleanVariants
 
-const Variants = String[
+const IntegerVariants = [
 	"AddSeekers",
-	"AffectExistingChasers",
+	"BadelineBossCount",
+	"BadelineBossNodeCount",
+	"ChaserCount",
+	"DashCount",
+	"JellyfishEverywhere",
+	"OshiroCount",
+	"ReverseOshiroCount",
+	"Stamina"
+]
+
+const FloatVariants = [
 	"AirFriction",
+	"AnxietyEffect",
+	"BackgroundBlurLevel",
+	"BackgroundBrightness",
+	"BadelineLag",
+	"BlurLevel",
+	"BoostMultiplier",
+	"CoyoteTime",
+	"DashLength",
+	"DashSpeed",
+	"DelayBetweenBadelines",
+	"ExplodeLaunchSpeed",
+	"FallSpeed",
+	"ForegroundEffectOpacity",
+	"Friction",
+	"GameSpeed",
+	"GlitchEffect",
+	"Gravity",
+	"HiccupStrength",
+	"HyperdashSpeed",
+	"JumpHeight",
+	"RegularHiccups",
+	"RisingLavaSpeed",
+	"RoomLighting",
+	"RoomBloom",
+	"ScreenShakeIntensity",
+	"SnowballDelay",
+	"SpeedX",
+	"SuperdashSteeringSpeed",
+	"SwimmingSpeed",
+	"WallBouncingSpeed",
+	"ZoomLevel"
+]
+
+const BooleanVariants = [
+	"AffectExistingChasers",
 	"AllStrawberriesAreGoldens",
 	"AllowLeavingTheoBehind",
 	"AllowThrowingTheoOffscreen",
 	"AlwaysInvisible",
-	"AnxietyEffect",
-	"BackgroundBlurLevel",
-	"BackgroundBrightness",
-	"BadelineAttackPattern",
-	"BadelineBossCount",
-	"BadelineBossNodeCount",
 	"BadelineBossesEverywhere",
 	"BadelineChasersEverywhere",
-	"BadelineLag",
-	"BlurLevel",
-	"BoostMultiplier",
 	"BounceEverywhere",
 	"ChangePatternsOfExistingBosses",
-	"ChangeVariantsInterval",
-	"ChangeVariantsRandomly",
-	"ChaserCount",
-	"ColorGrading",
-	"CoyoteTime",
-	"DashCount",
-	"DashDirection",
-	"DashLength",
-	"DashSpeed",
 	"DashTrailAllTheTime",
-	"DelayBetweenBadelines",
 	"DisableClimbJumping",
 	"DisableClimbingUpOrDown",
 	"DisableMadelineSpotlight",
@@ -44,65 +70,42 @@ const Variants = String[
 	"DisableSuperBoosts",
 	"DisableWallJumping",
 	"DisplayDashCount",
-	"DisplaySpeedometer",
-	"DontRefillDashOnGround",
 	"DontRefillStaminaOnGround",
 	"EveryJumpIsUltra",
 	"EverythingIsUnderwater",
-	"ExplodeLaunchSpeed",
-	"FallSpeed",
 	"FirstBadelineSpawnRandom",
 	"ForceDuckOnGround",
-	"ForegroundEffectOpacity",
-	"Friction",
 	"FriendlyBadelineFollower",
-	"GameSpeed",
-	"GlitchEffect",
-	"Gravity",
 	"HeldDash",
-	"HiccupStrength",
-	"HyperdashSpeed",
 	"InvertDashes",
 	"InvertGrab",
 	"InvertHorizontalControls",
 	"InvertVerticalControls",
-	"JellyfishEverywhere",
-	"JumpCount",
-	"JumpHeight",
 	"NoFreezeFrames",
-	"OshiroCount",
 	"OshiroEverywhere",
 	"PreserveExtraDashesUnderwater",
 	"RefillJumpsOnDashRefill",
-	"RegularHiccups",
 	"RestoreDashesOnRespawn",
-	"ReverseOshiroCount",
 	"RisingLavaEverywhere",
-	"RisingLavaSpeed",
-	"ScreenShakeIntensity",
-	"SnowballDelay",
 	"SnowballsEverywhere",
-	"SpeedX",
-	"Stamina",
-	"SuperdashSteeringSpeed",
-	"SwimmingSpeed",
 	"TheoCrystalsEverywhere",
-	"UpsideDown",
-	"WallBouncingSpeed",
-	"WindEverywhere",
-	"ZoomLevel"
+	"UpsideDown"
 ]
 
-const IntegerVariants = [
-	
+const SpecialHandlingVariants = [
+	"BadelineAttackPattern", // technically integer, but not easy to use
+	"DashDirection", // bool[][]
+	"ColorGrading", // string
+	"DisplaySpeedometer", // enum
+	"DontRefillDashOnGround", // enum
+	"JumpCount", // integer but with special "infinite" value
+	"MadelineBackpackMode", // enum
+	"WindEverywhere" // enum
 ]
 
-const FloatVariants = [
-	
-]
-
-const BooleanVariants = [
-	
+const UnavailableVariants = [
+	"MadelineIsSilhouette", // use Madeline Silhouette Trigger instead
+	"MadelineHasPonytail" // use Madeline Ponytail Trigger instead
 ]
 
 end

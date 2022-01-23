@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ExtendedVariants.Entities {
+namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity(
         "ExtendedVariantMode/JumpRefill = RecoverJumpRefill",
         "ExtendedVariantMode/RecoverJumpRefill = RecoverJumpRefill",

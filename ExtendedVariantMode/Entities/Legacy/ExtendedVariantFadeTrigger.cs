@@ -6,6 +6,8 @@ using Monocle;
 using System;
 
 namespace ExtendedVariants.Entities.Legacy {
+    // extended variant trigger that can fade _any_ variant (yes, even Color Grading) by fading its legacy integer value.
+    // obsoleted by Float Extended Variant Fade Trigger, that fades float variants way more smoothly (that is, not by 0.1x / 10% steps).
     [CustomEntity("ExtendedVariantMode/ExtendedVariantFadeTrigger")]
     public class ExtendedVariantFadeTrigger : Trigger {
         private readonly ExtendedVariantsModule.Variant variantChange;

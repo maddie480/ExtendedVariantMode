@@ -4,7 +4,7 @@ using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace ExtendedVariants.Entities {
+namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/TheoCrystal")]
     [Tracked(true)]
     public class ExtendedVariantTheoCrystal : TheoCrystal {

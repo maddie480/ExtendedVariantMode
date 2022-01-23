@@ -345,6 +345,7 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant trigger manager...");
             TriggerManager.Load();
             Entities.Legacy.ExtendedVariantTrigger.Load();
+            Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Load();
 
             On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
             On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;

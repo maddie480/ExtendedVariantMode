@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework;
 using System;
 
 namespace ExtendedVariants.Entities.Legacy {
+    // legacy extended variant trigger that can set any variant by taking an integer as an input.
+    // this used tricks such as multiplying by 10 for multipliers, using a list for color grades, or taking a bit field as an input for dash directions.
+    // ... it was bad, and is obsoleted by the new typed extended variant triggers.
     [CustomEntity("ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger")]
     public class ExtendedVariantTrigger : Trigger {
 

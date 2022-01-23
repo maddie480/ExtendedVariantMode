@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
+using ExtendedVariants.Entities.ForMappers;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;

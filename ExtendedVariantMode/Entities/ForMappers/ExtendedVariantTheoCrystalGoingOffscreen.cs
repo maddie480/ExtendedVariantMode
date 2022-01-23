@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExtendedVariants.Entities {
+namespace ExtendedVariants.Entities.ForMappers {
     public class ExtendedVariantTheoCrystalGoingOffscreen : ExtendedVariantTheoCrystal {
         public ExtendedVariantTheoCrystalGoingOffscreen(Vector2 position) : base(position) { }
 
