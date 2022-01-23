@@ -238,6 +238,8 @@ namespace ExtendedVariants.Module {
             MaxHelpingHandInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "MaxHelpingHand", Version = new Version(1, 14, 6) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Max Helping Hand installed = {MaxHelpingHandInstalled}");
 
+            UpsideDown.Initialize();
+
             if (!DJMapHelperInstalled) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
                 Settings.ReverseOshiroCount = 0;

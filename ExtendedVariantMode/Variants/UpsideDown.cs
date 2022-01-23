@@ -7,7 +7,9 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
@@ -15,6 +17,8 @@ namespace ExtendedVariants.Variants {
         private static FieldInfo inputFeather = typeof(Input).GetField("Feather"); // only exists on the beta! will be null on 1.3.1.2
 
         private static ZoomLevel zoomLevelVariant;
+
+        private static ILHook hdParallaxHook;
 
         public UpsideDown(ZoomLevel zoomLevel) {
             zoomLevelVariant = zoomLevel;
@@ -53,6 +57,20 @@ namespace ExtendedVariants.Variants {
             Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
             if (inputFeather != null) {
                 (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = false;
+            }
+
+            hdParallaxHook?.Dispose();
+            hdParallaxHook = null;
+        }
+
+        public static void Initialize() {
+            if (ExtendedVariantsModule.Instance.MaxHelpingHandInstalled) {
+                // flip HD stylegrounds upside-down
+                MethodInfo renderMethod = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly
+                    .GetType("Celeste.Mod.MaxHelpingHand.Effects.HdParallax")
+                    .GetMethod("renderForReal", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                hdParallaxHook = new ILHook(renderMethod, patchHDStylegroundsRendering);
             }
         }
 
@@ -145,6 +163,23 @@ namespace ExtendedVariants.Variants {
             if (Settings.UpsideDown) effects |= SpriteEffects.FlipVertically;
             if (SaveData.Instance.Assists.MirrorMode) effects |= SpriteEffects.FlipHorizontally;
             return effects;
+        }
+
+        private static void patchHDStylegroundsRendering(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld<Engine>("ScreenMatrix"))) {
+                Logger.Log("ExtendedVariantMode/UpsideDown", $"Flipping HD stylegrounds upside down at {cursor.Index} in IL for HdParallax.renderForReal");
+
+                cursor.EmitDelegate<Func<Matrix, Matrix>>(orig => {
+                    if (ExtendedVariantsModule.Settings.UpsideDown) {
+                        orig *= Matrix.CreateTranslation(0f, -Engine.Viewport.Height, 0f);
+                        orig *= Matrix.CreateScale(1f, -1f, 1f);
+                    }
+
+                    return orig;
+                });
+            }
         }
     }
 }
