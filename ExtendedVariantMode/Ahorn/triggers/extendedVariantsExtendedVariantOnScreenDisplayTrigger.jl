@@ -6,7 +6,7 @@ using ..Ahorn, Maple
 	enable::Bool=true)
 
 const placements = Ahorn.PlacementDict(
-	"ExtendedVariant On-Screen Display Trigger\n(Extended Variant Mode)" => Ahorn.EntityPlacement(
+	"Extended Variant On-Screen Display Trigger\n(Extended Variant Mode)" => Ahorn.EntityPlacement(
 		ExtendedVariantOnScreenDisplayTrigger,
 		"rectangle"
 	)

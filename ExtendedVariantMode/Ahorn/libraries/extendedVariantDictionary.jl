@@ -93,19 +93,19 @@ const BooleanVariants = [
 ]
 
 const SpecialHandlingVariants = [
-	"BadelineAttackPattern", // technically integer, but not easy to use
-	"DashDirection", // bool[][]
-	"ColorGrading", // string
-	"DisplaySpeedometer", // enum
-	"DontRefillDashOnGround", // enum
-	"JumpCount", // integer but with special "infinite" value
-	"MadelineBackpackMode", // enum
-	"WindEverywhere" // enum
+	"BadelineAttackPattern", # technically integer, but not easy to use
+	"DashDirection", # bool[][]
+	"ColorGrading", # string
+	"DisplaySpeedometer", # enum
+	"DontRefillDashOnGround", # enum
+	"JumpCount", # integer but with special "infinite" value
+	"MadelineBackpackMode", # enum
+	"WindEverywhere" # enum
 ]
 
 const UnavailableVariants = [
-	"MadelineIsSilhouette", // use Madeline Silhouette Trigger instead
-	"MadelineHasPonytail" // use Madeline Ponytail Trigger instead
+	"MadelineIsSilhouette", # use Madeline Silhouette Trigger instead
+	"MadelineHasPonytail" # use Madeline Ponytail Trigger instead
 ]
 
 end

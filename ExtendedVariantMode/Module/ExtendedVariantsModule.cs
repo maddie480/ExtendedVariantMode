@@ -485,8 +485,14 @@ namespace ExtendedVariants.Module {
 
             // reset all proper variants to their default values
             foreach (AbstractExtendedVariant variant in VariantHandlers.Values) {
-                if (variant.GetDefaultVariantValue() != variant.GetVariantValue()) {
-                    settingChanged = true;
+                if (variant.GetType() == typeof(DashDirection)) {
+                    if (ModOptionsEntries.GetDashDirectionIndex() != 0) {
+                        settingChanged = true;
+                    }
+                } else {
+                    if (!variant.GetDefaultVariantValue().Equals(variant.GetVariantValue())) {
+                        settingChanged = true;
+                    }
                 }
 
                 variant.SetVariantValue(variant.GetDefaultVariantValue());

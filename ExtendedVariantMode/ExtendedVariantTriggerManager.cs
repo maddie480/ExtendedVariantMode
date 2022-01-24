@@ -48,6 +48,7 @@ namespace ExtendedVariants {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
 
                     object oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v], out _);
+
                     variantValuesBeforeOverride[v] = oldValue;
                 }
             }
@@ -159,7 +160,7 @@ namespace ExtendedVariants {
                 // store the fact that the variant was changed within the room
                 // so that it can be reverted if we die, or saved if we save & quit later
                 // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
-                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave}) => variant set to {actualNewValue}");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave}, legacy = {legacy}) => variant set to {actualNewValue}");
 
                 if (!oldVariantsInRoom.ContainsKey(variantChange)) {
                     oldVariantsInRoom[variantChange] = oldValue;
