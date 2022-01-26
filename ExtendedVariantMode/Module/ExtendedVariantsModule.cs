@@ -12,6 +12,7 @@ using MonoMod.RuntimeDetour;
 using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
 using ExtendedVariants.Entities;
+using System.Linq;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -691,6 +692,114 @@ namespace ExtendedVariants.Module {
                 return "ExtendedVariantMode/complete_screen_stamp";
             }
             return orig;
+        }
+
+        // ================ Fix types for deserialized sessions ================
+
+        // when you save an array of objects with YamlDotNet and load them back...
+        // they all turn into strings. aaaaaaaaaaaaaaaa
+
+        public override byte[] SerializeSession(int index) {
+            foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys.ToList()) {
+                object value = Session.VariantsEnabledViaTrigger[v];
+
+                switch (value) {
+                    case string castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "string:" + castValue;
+                        break;
+                    case int castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "int:" + castValue;
+                        break;
+                    case float castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "float:" + castValue;
+                        break;
+                    case bool castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "bool:" + castValue;
+                        break;
+                    case bool[][] castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "DashDirection:" +
+                            castValue[0][0] + "," + castValue[0][1] + "," + castValue[0][2] + "," +
+                            castValue[1][0] + "," + castValue[1][1] + "," + castValue[1][2] + "," +
+                            castValue[2][0] + "," + castValue[2][1] + "," + castValue[2][2];
+                        break;
+                    case DisplaySpeedometer.SpeedometerConfiguration castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "DisplaySpeedometer:" + castValue;
+                        break;
+                    case DontRefillDashOnGround.DashRefillOnGroundConfiguration castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "DontRefillDashOnGround:" + castValue;
+                        break;
+                    case MadelineBackpackMode.MadelineBackpackModes castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "MadelineBackpackMode:" + castValue;
+                        break;
+                    case WindEverywhere.WindPattern castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "WindEverywhere:" + castValue;
+                        break;
+                    default:
+                        Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
+                        break;
+                }
+            }
+
+            byte[] result = base.SerializeSession(index);
+            turnTypesIntoTheirRealCounterparts();
+
+            return result;
+        }
+
+        public override void DeserializeSession(int index, byte[] data) {
+            base.DeserializeSession(index, data);
+            turnTypesIntoTheirRealCounterparts();
+        }
+
+        private void turnTypesIntoTheirRealCounterparts() {
+            try {
+                foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys.ToList()) {
+                    string value = Session.VariantsEnabledViaTrigger[v].ToString();
+
+                    string type = value.Substring(0, value.IndexOf(":"));
+                    value = value.Substring(type.Length + 1);
+
+                    switch (type) {
+                        case "string":
+                            Session.VariantsEnabledViaTrigger[v] = value;
+                            break;
+                        case "int":
+                            Session.VariantsEnabledViaTrigger[v] = int.Parse(value);
+                            break;
+                        case "float":
+                            Session.VariantsEnabledViaTrigger[v] = float.Parse(value);
+                            break;
+                        case "bool":
+                            Session.VariantsEnabledViaTrigger[v] = bool.Parse(value);
+                            break;
+                        case "DashDirection":
+                            string[] split = value.Split(',');
+                            Session.VariantsEnabledViaTrigger[v] = new bool[][] {
+                                new bool[] { bool.Parse(split[0]),bool.Parse(split[1]),bool.Parse(split[2]) },
+                                new bool[] { bool.Parse(split[3]),bool.Parse(split[4]),bool.Parse(split[5]) },
+                                new bool[] { bool.Parse(split[6]),bool.Parse(split[7]),bool.Parse(split[8]) }
+                            };
+                            break;
+                        case "DisplaySpeedometer":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DisplaySpeedometer.SpeedometerConfiguration), value);
+                            break;
+                        case "DontRefillDashOnGround":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DontRefillDashOnGround.DashRefillOnGroundConfiguration), value);
+                            break;
+                        case "MadelineBackpackMode":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(MadelineBackpackMode.MadelineBackpackModes), value);
+                            break;
+                        case "WindEverywhere":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(WindEverywhere.WindPattern), value);
+                            break;
+                        default:
+                            throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
+                    }
+                }
+            } catch (Exception e) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantModule", $"Failed to parse a value in session!");
+                Logger.LogDetailed(e);
+            }
         }
 
         // ================ Common methods for multiple variants ================
