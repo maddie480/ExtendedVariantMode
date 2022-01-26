@@ -1,48 +1,50 @@
 ﻿# Boolean Extended Variants Trigger
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.variantChange=The variant to change.
-placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.newValue=Whether the variant should be enabled or disabled when entering the trigger.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Integer Extended Variants Trigger
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.newValue=The new value for the variant. Should be an integer number.
-placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Float Extended Variants Trigger
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.newValue=The new value for the variant. Should be a number. For percentage variants, type the percentage divided by 100 (for example, 60% is 0.6).
-placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Badeline Attack Pattern Trigger
-placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.newValue=The Badeline attack pattern to use.
-placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/BadelineAttackPatternTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Dash Direction Trigger
-placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.topLeft=Whether Madeline can dash to the top-left.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.top=Whether Madeline can dash to the top.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.topRight=Whether Madeline can dash to the top-right.
@@ -51,63 +53,74 @@ placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.right=Whet
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.bottomLeft=Whether Madeline can dash to the bottom-left.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.bottom=Whether Madeline can dash to the bottom.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.bottomRight=Whether Madeline can dash to the bottom-right.
-placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/DashDirectionTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Display Speedometer Trigger
-placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.newValue=The new value for the variant.
-placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/DisplaySpeedometerTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Don't Refill Dash On Ground Trigger
-placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.newValue=The new value for the variant.
-placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Jump Count Trigger
-placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.variantChange=The variant to change.
-placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.newValue=The new jump count for the variant.
-placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.infinite=Whether the player should have infinite jumps.
-placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.newValue=The new jump count.
+placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.infinite=Whether the player should have infinite jumps. If checked, the "New Value" field will be ignored.
+placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Madeline Backpack Mode Trigger
-placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.newValue=The new value for the variant.
-placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Wind Everywhere Trigger
-placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.variantChange=The variant to change.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.newValue=The new value for the variant.
-placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
+placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.flag=The flag this trigger should react to.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/WindEverywhereTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Color Grade Trigger
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The new color grade to use.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Extended Variants Fade Trigger
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.variantChange=The variant to change.
@@ -115,12 +128,6 @@ placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.valueB=The internal value for the variant to fade to (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
-
-# Color Grade Trigger
-placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.colorGrade=The color grade to apply. You can add your own one by dropping it in Graphics/ColorGrading in your mod folder.
-placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnLeave=If checked, the previous color grade will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
-placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.revertOnDeath=If checked, the previous value for the Color Grading variant will be restored if the player dies before changing rooms or changing respawn points.
-placements.triggers.ExtendedVariantMode/ColorGradeTrigger.tooltips.onlyOnce=If checked, the trigger will only change the color grade once, until the player dies or changes rooms.
 
 # Recover Jump Refill
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.

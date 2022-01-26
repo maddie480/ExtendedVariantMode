@@ -8,7 +8,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         public IntegerExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override int getNewValue(EntityData data) {
-            if (data.Bool("infinite")) return int.MaxValue; // infinite jumps 
+            if (data.Bool("infinite")) return int.MaxValue;
             return data.Int("newValue");
         }
     }

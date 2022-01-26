@@ -5,27 +5,15 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/ColorGradeTrigger")]
-    public class ColorGradeTrigger : Trigger {
-        private string colorGrade;
-        private bool revertOnLeave;
-        private bool revertOnDeath;
-        private bool onlyOnce;
+    public class ColorGradeTrigger : AbstractExtendedVariantTrigger<string> {
+        public ColorGradeTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
-        public ColorGradeTrigger(EntityData data, Vector2 offset) : base(data, offset) {
-            colorGrade = data.Attr("colorGrade", "none");
-            revertOnLeave = data.Bool("revertOnLeave", false);
-            revertOnDeath = data.Bool("revertOnDeath", true);
-            onlyOnce = data.Bool("onlyOnce", false);
+        protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {
+            return ExtendedVariantsModule.Variant.ColorGrading;
         }
 
-        public override void OnEnter(Player player) {
-            base.OnEnter(player);
-
-            ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.ColorGrading, colorGrade, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
-
-            if (onlyOnce) {
-                RemoveSelf();
-            }
+        protected override string getNewValue(EntityData data) {
+            return data.Attr("colorGrade", "none");
         }
     }
 }

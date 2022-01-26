@@ -39,6 +39,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         private T oldValueToRevertOnLeave;
         private bool withTeleport;
         private bool coversScreen;
+        private bool onlyOnce;
 
         public AbstractExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) {
             // parse the trigger parameters
@@ -48,6 +49,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             revertOnDeath = data.Bool("revertOnDeath", true);
             withTeleport = data.Bool("withTeleport", false);
             coversScreen = data.Bool("coversScreen", false);
+            onlyOnce = data.Bool("onlyOnce", false);
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
@@ -98,6 +100,10 @@ namespace ExtendedVariants.Entities.ForMappers {
                 AbstractExtendedVariantTriggerTeleportHandler.onTeleport += applyVariant;
             } else {
                 applyVariant();
+            }
+
+            if (onlyOnce) {
+                RemoveSelf();
             }
         }
 

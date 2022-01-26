@@ -4,45 +4,48 @@ using ..Ahorn, Maple
 
 # obsolete
 @mapdef Trigger "ExtendedVariantMode/ExtendedVariantTrigger" ExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false)
+	variantChange::String="Gravity", enable::Bool=true, newValue::Integer=10, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/BooleanExtendedVariantTrigger" BooleanExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="DisableNeutralJumping", newValue::Bool=true, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/IntegerExtendedVariantTrigger" IntegerExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="DashCount", enable::Bool=true, newValue::Int=1, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/FloatExtendedVariantTrigger" FloatExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="Gravity", enable::Bool=true, newValue::Number=1.0, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/BadelineAttackPatternTrigger" BadelineAttackPatternTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="BadelineAttackPattern", enable::Bool=true, newValue::Int=1, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/DashDirectionTrigger" DashDirectionTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
 	topLeft::Bool=true, top::Bool=true, topRight::Bool=true, left::Bool=true, right::Bool=true, bottomLeft::Bool=true, bottom::Bool=true, bottomRight::Bool=true,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/DisplaySpeedometerTrigger" DisplaySpeedometerTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	newValue::String="BOTH", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	newValue::String="BOTH", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/DontRefillDashOnGroundTrigger" DontRefillDashOnGroundTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	newValue::String="ON", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	newValue::String="ON", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/JumpCountTrigger" JumpCountTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="JumpCount", newValue::Int=1, infinite::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false,
-	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/MadelineBackpackModeTrigger" MadelineBackpackModeTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	newValue::String="NoBackpack", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	newValue::String="NoBackpack", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/WindEverywhereTrigger" WindEverywhereTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-	newValue::String="Left", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false)
+	newValue::String="Left", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
+@mapdef Trigger "ExtendedVariantMode/ColorGradeTrigger" ColorGradeTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	colorGrade::String="none", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
 	"Extended Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanExtendedVariantTrigger,
@@ -84,6 +87,10 @@ const placements = Ahorn.PlacementDict(
 		WindEverywhereTrigger,
 		"rectangle"
 	),
+	"Extended Variant Trigger (Color Grading) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		ColorGradeTrigger,
+		"rectangle"
+	),
 )
 
 Ahorn.editingOptions(trigger::BooleanExtendedVariantTrigger) = Dict{String, Any}(
@@ -96,7 +103,7 @@ Ahorn.editingOptions(trigger::FloatExtendedVariantTrigger) = Dict{String, Any}(
 	"variantChange" => Ahorn.ExtendedVariantDictionary.FloatVariants
 )
 Ahorn.editingOptions(trigger::BadelineAttackPatternTrigger) = Dict{String, Any}(
-	"variantChange" => Dict{String, Int}(
+	"newValue" => Dict{String, Int}(
 		"Slow Shots" => 1,
 		"Beam > Shot" => 2,
 		"Fast double-shots" => 3,
@@ -109,7 +116,7 @@ Ahorn.editingOptions(trigger::BadelineAttackPatternTrigger) = Dict{String, Any}(
 	)
 )
 Ahorn.editingOptions(trigger::DisplaySpeedometerTrigger) = Dict{String, Any}(
-	"variantChange" => Dict{String, Int}(
+	"newValue" => Dict{String, String}(
 		"Disabled" => "DISABLED",
 		"Horizontal" => "HORIZONTAL",
 		"Vertical" => "VERTICAL",
@@ -117,36 +124,63 @@ Ahorn.editingOptions(trigger::DisplaySpeedometerTrigger) = Dict{String, Any}(
 	)
 )
 Ahorn.editingOptions(trigger::DontRefillDashOnGroundTrigger) = Dict{String, Any}(
-	"variantChange" => Dict{String, Int}(
+	"newValue" => Dict{String, String}(
 		"Default" => "DEFAULT",
 		"On" => "ON",
 		"Off" => "OFF"
 	)
 )
 Ahorn.editingOptions(trigger::MadelineBackpackModeTrigger) = Dict{String, Any}(
-	"variantChange" => Dict{String, Int}(
+	"newValue" => Dict{String, String}(
 		"Default" => "Default",
-		"NoBackpack" => "No Backpack",
-		"Backpack" => "With Backpack"
+		"No Backpack" => "NoBackpack",
+		"With Backpack" => "Backpack"
 	)
 )
 Ahorn.editingOptions(trigger::WindEverywhereTrigger) = Dict{String, Any}(
-	"variantChange" => Dict{String, Int}(
+	"newValue" => Dict{String, String}(
 		"Default" => "Default",
 		"Left" => "Left",
 		"Right" => "Right",
-		"LeftStrong" => "Left Strong",
-		"RightStrong" => "Right Strong",
-		"RightCrazy" => "Right Crazy",
-		"LeftOnOff" => "Left On-Off",
-		"RightOnOff" => "Right On-Off",
+		"Left Strong" => "LeftStrong",
+		"Right Strong" => "RightStrong",
+		"Right Crazy" => "RightCrazy",
+		"Left On-Off" => "LeftOnOff",
+		"Right On-Off" => "RightOnOff",
 		"Alternating" => "Alternating",
-		"LeftOnOffFast" => "Left On-Off Fast",
-		"RightOnOffFast" => "Right On-Off Fast",
+		"Left On-Off Fast" => "LeftOnOffFast",
+		"Right On-Off Fast" => "RightOnOffFast",
 		"Down" => "Down",
 		"Up" => "Up",
 		"Random" => "Random"
 	)
 )
+Ahorn.editingOptions(trigger::ColorGradeTrigger) = Dict{String, Any}(
+	"colorGrade" => [
+		"none",
+		"oldsite",
+		"panicattack",
+		"templevoid",
+		"reflection",
+		"credits",
+		"cold",
+		"hot",
+		"feelingdown",
+		"golden",
+		"max480/extendedvariants/celsius/tetris",
+		"max480/extendedvariants/greyscale",
+		"max480/extendedvariants/sepia",
+		"max480/extendedvariants/inverted",
+		"max480/extendedvariants/rgbshift1",
+		"max480/extendedvariants/rgbshift2",
+		"max480/extendedvariants/hollys_randomnoise"
+	]
+)
+
+Ahorn.editingOrder(trigger::DashDirectionTrigger) = String["x", "y", "width", "height", "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"]
+
+# those are internally Integer Extended Variant Triggers that render differently: Jump Count has the "infinite" checkbox, and Badeline Attack Pattern has a dropdown.
+Ahorn.editingIgnored(trigger::JumpCountTrigger, multiple::Bool=false) = String["variantChange"]
+Ahorn.editingIgnored(trigger::BadelineAttackPatternTrigger, multiple::Bool=false) = String["variantChange"]
 
 end

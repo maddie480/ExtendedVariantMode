@@ -371,13 +371,6 @@ namespace ExtendedVariants.Module {
             triggerIsHooked = false;
         }
 
-        private static HashSet<string> extendedVariantsEntities = new HashSet<string> {
-            "ExtendedVariantTrigger", "ExtendedVariantMode/ExtendedVariantTrigger", "ExtendedVariantMode/ColorGradeTrigger",
-            "ExtendedVariantMode/JumpRefill", "ExtendedVariantMode/RecoverJumpRefill", "ExtendedVariantMode/ExtraJumpRefill",
-            "ExtendedVariantMode/ExtendedVariantFadeTrigger", "ExtendedVariantMode/ExtendedVariantController", "ExtendedVariantMode/ToggleDashDirectionTrigger",
-            "ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger", "ExtendedVariantMode/TheoCrystal", "ExtendedVariantMode/SetJumpCountTrigger"
-        };
-
         // this one is for the normal case (entering a level from the overworld or opening a save)
         private void checkForceEnableVariantsOnLevelEnter(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
             checkForceEnableVariants(session);
@@ -402,12 +395,16 @@ namespace ExtendedVariants.Module {
             orig(self, session, startPosition);
         }
 
+        private bool isExtendedVariantEntity(string name) {
+            return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
+        }
+
         private void checkForceEnableVariants(Session session) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
-                levelData.Triggers.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)) ||
-                levelData.Entities.Exists(entityData => extendedVariantsEntities.Contains(entityData.Name)))) {
+                levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
+                levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
                 hookTrigger();
