@@ -703,18 +703,17 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
-                        Variant.PreserveExtraDashesUnderwater }
-                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
-                        || Settings.RefillJumpsOnDashRefill || Settings.LegacyDashSpeedBehavior || Settings.DisableSuperBoosts || Settings.DontRefillStaminaOnGround || GetDashDirectionIndex() != 0;
+                        Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround }
+                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
-                        Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere }
-                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
-                        || Settings.ChaserCount != 1 || Settings.AffectExistingChasers || Settings.BadelineLag != 1.55f || Settings.DelayBetweenBadelines != 0.4f
-                        || Settings.BadelineAttackPattern != 0 || Settings.ChangePatternsOfExistingBosses || Settings.FirstBadelineSpawnRandom || Settings.BadelineBossCount != 1
-                        || Settings.BadelineBossNodeCount != 1 || Settings.OshiroCount != 1 || Settings.ReverseOshiroCount != 0 || Settings.DisableOshiroSlowdown || Settings.SnowballDelay != 0.8f
-                        || Settings.DisableSeekerSlowdown || Settings.RisingLavaSpeed != 1f || Settings.AllowThrowingTheoOffscreen || Settings.AllowLeavingTheoBehind;
+                        Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere,
+                        Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag, Variant.DelayBetweenBadelines, Variant.BadelineAttackPattern,
+                        Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom, Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroCount,
+                        Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown, Variant.SnowballDelay, Variant.DisableSeekerSlowdown, Variant.RisingLavaSpeed,
+                        Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind }
+                        .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
 
                 visualSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
@@ -725,9 +724,9 @@ namespace ExtendedVariants.UI {
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
                     new List<Variant> { Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere, Variant.AlwaysInvisible }
-                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()))
-                        || Settings.HiccupStrength != 1f;
+                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
+                        Variant.AlwaysInvisible, Variant.HiccupStrength }
+                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
             }
 
             TextMenu.Item openSubmenuButton = null;

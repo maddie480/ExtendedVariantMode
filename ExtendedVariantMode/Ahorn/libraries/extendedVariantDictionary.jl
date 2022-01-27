@@ -81,6 +81,7 @@ const BooleanVariants = [
 	"InvertGrab",
 	"InvertHorizontalControls",
 	"InvertVerticalControls",
+	"LegacyDashSpeedBehavior",
 	"NoFreezeFrames",
 	"OshiroEverywhere",
 	"PreserveExtraDashesUnderwater",

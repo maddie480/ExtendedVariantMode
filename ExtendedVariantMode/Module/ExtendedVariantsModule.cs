@@ -40,7 +40,7 @@ namespace ExtendedVariants.Module {
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
-            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom,
+            AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom, LegacyDashSpeedBehavior,
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
             WindEverywhere, SnowballsEverywhere, SnowballDelay, AddSeekers, DisableSeekerSlowdown, TheoCrystalsEverywhere, AllowThrowingTheoOffscreen, AllowLeavingTheoBehind,
             Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround,
@@ -81,7 +81,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();
             VariantHandlers[Variant.ExplodeLaunchSpeed] = new ExplodeLaunchSpeed();
-            // DisableSuperBoosts is not a variant
+            VariantHandlers[Variant.DisableSuperBoosts] = new DisableSuperBoosts();
             VariantHandlers[Variant.WallBouncingSpeed] = new WallbouncingSpeed();
             VariantHandlers[Variant.DashLength] = new DashLength();
             VariantHandlers[Variant.ForceDuckOnGround] = new ForceDuckOnGround();
@@ -89,17 +89,17 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.InvertGrab] = new InvertGrab();
             VariantHandlers[Variant.DisableNeutralJumping] = new DisableNeutralJumping();
             VariantHandlers[Variant.BadelineChasersEverywhere] = new BadelineChasersEverywhere();
-            // ChaserCount is not a variant
-            // AffectExistingChasers is not a variant
+            VariantHandlers[Variant.ChaserCount] = new ChaserCount();
+            VariantHandlers[Variant.AffectExistingChasers] = new AffectExistingChasers();
             VariantHandlers[Variant.BadelineBossesEverywhere] = new BadelineBossesEverywhere();
-            // BadelineAttackPattern is not a variant
-            // ChangePatternsOfExistingBosses is not a variant
-            // FirstBadelineSpawnRandom is not a variant
-            // BadelineBossCount is not a variant
-            // BadelineBossNodeCount is not a variant
+            VariantHandlers[Variant.BadelineAttackPattern] = new BadelineAttackPattern();
+            VariantHandlers[Variant.ChangePatternsOfExistingBosses] = new ChangePatternsOfExistingBosses();
+            VariantHandlers[Variant.FirstBadelineSpawnRandom] = new FirstBadelineSpawnRandom();
+            VariantHandlers[Variant.BadelineBossCount] = new BadelineBossCount();
+            VariantHandlers[Variant.BadelineBossNodeCount] = new BadelineBossNodeCount();
             VariantHandlers[Variant.RegularHiccups] = new RegularHiccups();
-            // HiccupStrength is not a variant
-            // RefillJumpsOnDashRefill is not a variant
+            VariantHandlers[Variant.HiccupStrength] = new HiccupStrength();
+            VariantHandlers[Variant.RefillJumpsOnDashRefill] = new RefillJumpsOnDashRefill();
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.RoomBloom] = new RoomBloom();
             VariantHandlers[Variant.GlitchEffect] = new GlitchEffect();
@@ -108,24 +108,24 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.BackgroundBlurLevel] = new BackgroundBlurLevel();
             VariantHandlers[Variant.EverythingIsUnderwater] = new EverythingIsUnderwater();
             VariantHandlers[Variant.OshiroEverywhere] = new OshiroEverywhere();
-            // OshiroCount is not a variant
-            // ReverseOshiroCount is not a variant
-            // DisableOshiroSlowdown is not a variant
+            VariantHandlers[Variant.OshiroCount] = new OshiroCount();
+            // ReverseOshiroCount is instanciated in Initialize
+            VariantHandlers[Variant.DisableOshiroSlowdown] = new DisableOshiroSlowdown();
             VariantHandlers[Variant.WindEverywhere] = new WindEverywhere();
             VariantHandlers[Variant.SnowballsEverywhere] = new SnowballsEverywhere();
-            // SnowballDelay is not a variant
+            VariantHandlers[Variant.SnowballDelay] = new SnowballDelay();
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
-            // DisableSeekerSlowdown is not a variant
+            VariantHandlers[Variant.DisableSeekerSlowdown] = new DisableSeekerSlowdown();
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
-            // AllowThrowingTheoOffscreen is not a variant
-            // AllowLeavingTheoBehind is not a variant
+            VariantHandlers[Variant.AllowThrowingTheoOffscreen] = new AllowThrowingTheoOffscreen();
+            VariantHandlers[Variant.AllowLeavingTheoBehind] = new AllowLeavingTheoBehind();
             VariantHandlers[Variant.RisingLavaEverywhere] = new RisingLavaEverywhere();
-            // RisingLavaSpeed is not a variant
-            // BadelineLag is not a variant
-            // DelayBetweenBadelines is not a variant
+            VariantHandlers[Variant.RisingLavaSpeed] = new RisingLavaSpeed();
+            VariantHandlers[Variant.BadelineLag] = new BadelineLag();
+            VariantHandlers[Variant.DelayBetweenBadelines] = new DelayBetweenBadelines();
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
-            // DontRefillStaminaOnGround is not a variant
+            VariantHandlers[Variant.DontRefillStaminaOnGround] = new DontRefillStaminaOnGround();
             VariantHandlers[Variant.GameSpeed] = new GameSpeed();
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
@@ -155,6 +155,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.PreserveExtraDashesUnderwater] = new PreserveExtraDashesUnderwater();
             VariantHandlers[Variant.AlwaysInvisible] = new AlwaysInvisible();
             VariantHandlers[Variant.DisplaySpeedometer] = new DisplaySpeedometer();
+            VariantHandlers[Variant.LegacyDashSpeedBehavior] = new LegacyDashSpeedBehavior();
         }
 
         // ================ Mod options setup ================
@@ -241,11 +242,15 @@ namespace ExtendedVariants.Module {
 
             UpsideDown.Initialize();
 
-            if (!DJMapHelperInstalled) {
+            if (DJMapHelperInstalled) {
+                // let's add this variant in now.
+                VariantHandlers[Variant.ReverseOshiroCount] = new ReverseOshiroCount();
+            } else {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
                 Settings.ReverseOshiroCount = 0;
                 SaveSettings();
             }
+
             if (!SpringCollab2020Installed && !MaxHelpingHandInstalled) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Is Silhouette");
                 Settings.MadelineIsSilhouette = false;
@@ -496,56 +501,6 @@ namespace ExtendedVariants.Module {
                 variant.SetVariantValue(variant.GetDefaultVariantValue());
             }
 
-            if (Settings.ChaserCount != 1
-                || Settings.AffectExistingChasers
-                || Settings.HiccupStrength != 1
-                || Settings.RefillJumpsOnDashRefill
-                || Settings.AllowThrowingTheoOffscreen
-                || Settings.AllowLeavingTheoBehind
-                || Settings.SnowballDelay != 0.8f
-                || Settings.BadelineLag != 1.55f
-                || Settings.DelayBetweenBadelines != 0.4f
-                || Settings.RisingLavaSpeed != 1
-                || Settings.OshiroCount != 1
-                || Settings.ReverseOshiroCount != 0
-                || Settings.DisableOshiroSlowdown
-                || Settings.DisableSeekerSlowdown
-                || Settings.BadelineAttackPattern != 0
-                || Settings.ChangePatternsOfExistingBosses
-                || Settings.FirstBadelineSpawnRandom
-                || Settings.BadelineBossCount != 1
-                || Settings.BadelineBossNodeCount != 1
-                || Settings.LegacyDashSpeedBehavior
-                || Settings.DisableSuperBoosts
-                || Settings.DontRefillStaminaOnGround) {
-
-                settingChanged = true;
-            }
-
-            // reset variant customization options as well
-            Settings.ChaserCount = 1;
-            Settings.AffectExistingChasers = false;
-            Settings.HiccupStrength = 1f;
-            Settings.RefillJumpsOnDashRefill = false;
-            Settings.AllowThrowingTheoOffscreen = false;
-            Settings.AllowLeavingTheoBehind = false;
-            Settings.SnowballDelay = 0.8f;
-            Settings.BadelineLag = 1.55f;
-            Settings.DelayBetweenBadelines = 0.4f;
-            Settings.RisingLavaSpeed = 1;
-            Settings.OshiroCount = 1;
-            Settings.ReverseOshiroCount = 0;
-            Settings.DisableOshiroSlowdown = false;
-            Settings.DisableSeekerSlowdown = false;
-            Settings.BadelineAttackPattern = 0;
-            Settings.ChangePatternsOfExistingBosses = false;
-            Settings.FirstBadelineSpawnRandom = false;
-            Settings.BadelineBossCount = 1;
-            Settings.BadelineBossNodeCount = 1;
-            Settings.LegacyDashSpeedBehavior = false;
-            Settings.DisableSuperBoosts = false;
-            Settings.DontRefillStaminaOnGround = false;
-
             if (settingChanged && SaveData.Instance != null) {
                 Randomizer.RefreshEnabledVariantsDisplayList();
             }
@@ -623,6 +578,10 @@ namespace ExtendedVariants.Module {
                         continue;
                     }
                     if (variant == Variant.MadelineHasPonytail && !MaxHelpingHandInstalled) {
+                        // this variant cannot be enabled, because it does not exist.
+                        continue;
+                    }
+                    if (variant == Variant.ReverseOshiroCount && !DJMapHelperInstalled) {
                         // this variant cannot be enabled, because it does not exist.
                         continue;
                     }
