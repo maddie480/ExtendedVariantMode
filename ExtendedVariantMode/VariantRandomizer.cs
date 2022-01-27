@@ -358,6 +358,10 @@ namespace ExtendedVariants {
                 // random 1-3
                 extendedVariant.SetVariantValue(randomGenerator.Next(3) + 1);
 
+            } else if (variant == ExtendedVariantsModule.Variant.JumpCount) {
+                // random 0-5
+                extendedVariant.SetVariantValue(randomGenerator.Next(6));
+
             } else if (variant == ExtendedVariantsModule.Variant.Stamina) {
                 // random 0-220 (so 0x to 2x the vanilla value)
                 extendedVariant.SetVariantValue(randomGenerator.Next(220));
@@ -390,8 +394,8 @@ namespace ExtendedVariants {
                 extendedVariant.SetVariantValue(!((bool) extendedVariant.GetDefaultVariantValue()));
 
             } else if (extendedVariant.GetVariantType() == typeof(int)) {
-                // 0-5 is good for most variants.
-                extendedVariant.SetVariantValue(randomGenerator.Next(6));
+                // 1-5 is good for most variants.
+                extendedVariant.SetVariantValue(randomGenerator.Next(5) + 1);
 
             } else if (extendedVariant.GetVariantType() == typeof(float)) {
                 // this is for multiplier variants!
