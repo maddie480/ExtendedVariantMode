@@ -471,23 +471,10 @@ namespace ExtendedVariants.Module {
         }
 
         public bool ResetToDefaultSettings() {
-            if (Settings.RoomLighting != -1 && Engine.Scene.GetType() == typeof(Level)) {
-                // currently in level, change lighting right away
-                Level lvl = (Engine.Scene as Level);
-                lvl.Lighting.Alpha = (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd);
-            }
-
-            if (Settings.LegacyDashSpeedBehavior) {
-                // restore the "new" dash speed behavior
-                Instance.VariantHandlers[Variant.DashSpeed].Unload();
-                Instance.VariantHandlers[Variant.DashSpeed] = new DashSpeed();
-                Instance.VariantHandlers[Variant.DashSpeed].Load();
-            }
-
             bool settingChanged = false;
 
             // reset all proper variants to their default values
-            foreach (AbstractExtendedVariant variant in VariantHandlers.Values) {
+            foreach (AbstractExtendedVariant variant in VariantHandlers.Values.ToList()) {
                 if (variant.GetType() == typeof(DashDirection)) {
                     if (ModOptionsEntries.GetDashDirectionIndex() != 0) {
                         settingChanged = true;
