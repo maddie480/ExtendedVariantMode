@@ -12,6 +12,10 @@ namespace ExtendedVariants.Module {
 
         // ======================================
 
+        public bool AutoResetVariantsOnFirstStartup = true;
+
+        // ======================================
+
         public bool OptionsOutOfModOptionsMenuEnabled = true;
 
         public bool SubmenusForEachCategoryEnabled = true;

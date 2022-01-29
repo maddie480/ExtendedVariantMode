@@ -277,6 +277,15 @@ namespace ExtendedVariants.Module {
                     VariantHandlers[Variant.MadelineHasPonytail].Load();
                 }
             }
+
+            if (Settings.AutoResetVariantsOnFirstStartup) {
+                // this means the settings were never saved in version 0.22.2+ and are potentially in the older format: reset them!
+                // we will then set ShouldAutoResetVariants to false to record we did that, and won't do it ever again.
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Automatically resetting settings to default!");
+
+                ResetToDefaultSettings();
+                Settings.AutoResetVariantsOnFirstStartup = false;
+            }
         }
 
         private ILHook hookOnVersionNumberAndVariants;

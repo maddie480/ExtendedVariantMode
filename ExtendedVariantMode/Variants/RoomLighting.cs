@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void applyRightAway() {
-            if (Engine.Scene.GetType() == typeof(Level)) {
+            if (Engine.Scene?.GetType() == typeof(Level)) {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
                 lvl.Lighting.Alpha = (Settings.RoomLighting == -1f ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - (Settings.RoomLighting));

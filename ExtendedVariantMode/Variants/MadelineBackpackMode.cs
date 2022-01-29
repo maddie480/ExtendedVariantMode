@@ -23,7 +23,7 @@ namespace ExtendedVariants.Variants {
         protected override void DoSetVariantValue(object value) {
             Settings.MadelineBackpackMode = (MadelineBackpackModes) value;
 
-            Player p = Engine.Scene.Tracker.GetEntity<Player>();
+            Player p = Engine.Scene?.Tracker.GetEntity<Player>();
             if (p != null) {
                 if (p.Active) {
                     p.ResetSpriteNextFrame(p.DefaultSpriteMode);
