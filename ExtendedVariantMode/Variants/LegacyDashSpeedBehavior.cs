@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExtendedVariants.Module;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class LegacyDashSpeedBehavior : AbstractExtendedVariant {
@@ -20,6 +21,11 @@ namespace ExtendedVariants.Variants {
 
         protected override void DoSetVariantValue(object value) {
             Settings.LegacyDashSpeedBehavior = (bool) value;
+
+            // hot swap the "dash speed" variant handler
+            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed].Unload();
+            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed] = Settings.LegacyDashSpeedBehavior ? (AbstractExtendedVariant) new DashSpeedOld() : new DashSpeed();
+            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed].Load();
         }
 
         public override void Load() {

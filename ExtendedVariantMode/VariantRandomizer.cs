@@ -223,7 +223,7 @@ namespace ExtendedVariants {
             if (!disableOnly && ExtendedVariantsModule.Settings.RerollMode) {
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Rerolling: disabling all variants");
                 foreach (VanillaVariant variant in enabledVanillaVariants) disableVariant(variant);
-                foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants) disableVariant(variant);
+                foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants.ToList()) disableVariant(variant);
 
                 Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Rerolling: enabling {ExtendedVariantsModule.Settings.MaxEnabledVariants} variants");
 
@@ -240,7 +240,7 @@ namespace ExtendedVariants {
                 int index = 0;
                 foreach (VanillaVariant variant in changeableVanillaVariants)
                     if (variantNumbers.Contains(index++)) enableVariant(variant);
-                foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants)
+                foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants.ToList())
                     if (variantNumbers.Contains(index++)) enableVariant(variant);
             } else {
                 // pick a random variant (if disableOnly or the max variant count has been reached, pick from the enabled ones)
@@ -257,7 +257,7 @@ namespace ExtendedVariants {
                     int drawnVariant = randomGenerator.Next(enabledVanillaVariants.Count() + enabledExtendedVariants.Count());
                     foreach (VanillaVariant variant in enabledVanillaVariants)
                         if (drawnVariant-- == 0) disableVariant(variant);
-                    foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants)
+                    foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants.ToList())
                         if (drawnVariant-- == 0) disableVariant(variant);
                 } else {
                     Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Randomizing: picking a variant at random " +
@@ -275,7 +275,7 @@ namespace ExtendedVariants {
                             if (isDefaultValue(variant)) enableVariant(variant);
                             else disableVariant(variant);
                         }
-                    foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants)
+                    foreach (ExtendedVariantsModule.Variant variant in changeableExtendedVariants.ToList())
                         if (drawnVariant-- == 0) {
                             if (isDefaultValue(variant)) enableVariant(variant);
                             else disableVariant(variant);

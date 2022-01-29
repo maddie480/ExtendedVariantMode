@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Celeste;
+using Monocle;
+using System;
 
 namespace ExtendedVariants.Variants {
     public class DisableSeekerSlowdown : AbstractExtendedVariant {
@@ -20,6 +22,11 @@ namespace ExtendedVariants.Variants {
 
         protected override void DoSetVariantValue(object value) {
             Settings.DisableSeekerSlowdown = (bool) value;
+
+            if (Settings.DisableSeekerSlowdown && Engine.Scene is Level level && level.Tracker.CountEntities<Seeker>() != 0) {
+                // since we are in a map with seekers and we are killing slowdown, set speed to 1 to be sure we aren't making the current slowdown permanent. :maddyS:
+                Engine.TimeRate = 1f;
+            }
         }
 
         public override void Load() {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Celeste;
 using Celeste.Mod;
+using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
@@ -24,6 +25,8 @@ namespace ExtendedVariants.Variants {
 
         protected override void DoSetVariantValue(object value) {
             Settings.RegularHiccups = (float) value;
+
+            (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
         }
 
         public override void SetLegacyVariantValue(int value) {
