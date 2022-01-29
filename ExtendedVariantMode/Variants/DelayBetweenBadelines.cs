@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class DelayBetweenBadelines : AbstractExtendedVariant {
+    public class DelayBetweenBadelines : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(float);
         }

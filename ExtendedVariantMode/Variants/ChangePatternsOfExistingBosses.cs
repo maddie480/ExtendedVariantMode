@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class ChangePatternsOfExistingBosses : AbstractExtendedVariant {
+    public class ChangePatternsOfExistingBosses : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

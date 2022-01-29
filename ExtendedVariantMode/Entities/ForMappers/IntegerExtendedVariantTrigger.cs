@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/IntegerExtendedVariantTrigger", "ExtendedVariantMode/BadelineAttackPatternTrigger", "ExtendedVariantMode/JumpCountTrigger")]
-    class IntegerExtendedVariantTrigger : AbstractExtendedVariantTrigger<int> {
+    public class IntegerExtendedVariantTrigger : AbstractExtendedVariantTrigger<int> {
         public IntegerExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override int getNewValue(EntityData data) {

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class DontRefillStaminaOnGround : AbstractExtendedVariant {
+    public class DontRefillStaminaOnGround : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

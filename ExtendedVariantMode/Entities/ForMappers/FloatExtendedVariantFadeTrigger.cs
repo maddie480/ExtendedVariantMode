@@ -4,7 +4,7 @@ using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 
-namespace ExtendedVariants.Entities.Legacy {
+namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/FloatExtendedVariantFadeTrigger")]
     public class FloatExtendedVariantFadeTrigger : Trigger {
         private readonly ExtendedVariantsModule.Variant variantChange;

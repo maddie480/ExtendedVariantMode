@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/WindEverywhereTrigger")]
-    class WindEverywhereTrigger : AbstractExtendedVariantTrigger<WindEverywhere.WindPattern> {
+    public class WindEverywhereTrigger : AbstractExtendedVariantTrigger<WindEverywhere.WindPattern> {
         public WindEverywhereTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {

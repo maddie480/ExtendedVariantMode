@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class BadelineAttackPattern : AbstractExtendedVariant {
+    public class BadelineAttackPattern : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(int);
         }

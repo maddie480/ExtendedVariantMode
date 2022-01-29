@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/FloatExtendedVariantTrigger")]
-    class FloatExtendedVariantTrigger : AbstractExtendedVariantTrigger<float> {
+    public class FloatExtendedVariantTrigger : AbstractExtendedVariantTrigger<float> {
         public FloatExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override float getNewValue(EntityData data) {

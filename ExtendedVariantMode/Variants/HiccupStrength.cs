@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class HiccupStrength : AbstractExtendedVariant {
+    public class HiccupStrength : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(float);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class LegacyDashSpeedBehavior : AbstractExtendedVariant {
+    public class LegacyDashSpeedBehavior : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

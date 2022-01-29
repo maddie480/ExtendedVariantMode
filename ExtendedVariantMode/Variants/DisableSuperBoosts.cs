@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class DisableSuperBoosts : AbstractExtendedVariant {
+    public class DisableSuperBoosts : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

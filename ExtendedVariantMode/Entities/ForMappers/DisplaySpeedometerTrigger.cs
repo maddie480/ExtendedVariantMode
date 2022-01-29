@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/DisplaySpeedometerTrigger")]
-    class DisplaySpeedometerTrigger : AbstractExtendedVariantTrigger<DisplaySpeedometer.SpeedometerConfiguration> {
+    public class DisplaySpeedometerTrigger : AbstractExtendedVariantTrigger<DisplaySpeedometer.SpeedometerConfiguration> {
         public DisplaySpeedometerTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {

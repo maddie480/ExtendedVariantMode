@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class AllowThrowingTheoOffscreen : AbstractExtendedVariant {
+    public class AllowThrowingTheoOffscreen : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

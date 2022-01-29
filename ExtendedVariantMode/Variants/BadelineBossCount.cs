@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class BadelineBossCount : AbstractExtendedVariant {
+    public class BadelineBossCount : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(int);
         }

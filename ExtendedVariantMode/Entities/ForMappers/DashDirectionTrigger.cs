@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/DashDirectionTrigger")]
-    class DashDirectionTrigger : AbstractExtendedVariantTrigger<bool[][]> {
+    public class DashDirectionTrigger : AbstractExtendedVariantTrigger<bool[][]> {
         public DashDirectionTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {

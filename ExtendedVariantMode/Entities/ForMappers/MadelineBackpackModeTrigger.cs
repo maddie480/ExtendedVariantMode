@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/MadelineBackpackModeTrigger")]
-    class MadelineBackpackModeTrigger : AbstractExtendedVariantTrigger<MadelineBackpackMode.MadelineBackpackModes> {
+    public class MadelineBackpackModeTrigger : AbstractExtendedVariantTrigger<MadelineBackpackMode.MadelineBackpackModes> {
         public MadelineBackpackModeTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {

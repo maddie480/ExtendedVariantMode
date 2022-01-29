@@ -8,7 +8,7 @@ namespace ExtendedVariants.Entities.Legacy {
     // actually no, it _is_ an Extended Variant Trigger that covers the entire screen.
     // Obsoleted by the "flag" options on the new Extended Variant Triggers.
     [CustomEntity("ExtendedVariantMode/ExtendedVariantController")]
-    static class ExtendedVariantController {
+    public static class ExtendedVariantController {
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) =>
             new ExtendedVariantTrigger(new EntityData {
                 Position = new Vector2(0, -24f), // the trigger should stick out on the top because the player can go offscreen by up to 24px when there is no screen above.

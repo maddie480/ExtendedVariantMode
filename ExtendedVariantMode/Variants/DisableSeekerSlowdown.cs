@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class DisableSeekerSlowdown : AbstractExtendedVariant {
+    public class DisableSeekerSlowdown : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

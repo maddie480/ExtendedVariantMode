@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class AllowLeavingTheoBehind : AbstractExtendedVariant {
+    public class AllowLeavingTheoBehind : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

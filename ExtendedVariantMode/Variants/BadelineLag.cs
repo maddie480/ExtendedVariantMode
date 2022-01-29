@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class BadelineLag : AbstractExtendedVariant {
+    public class BadelineLag : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(float);
         }

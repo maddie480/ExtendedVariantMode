@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class RisingLavaSpeed : AbstractExtendedVariant {
+    public class RisingLavaSpeed : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(float);
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class RefillJumpsOnDashRefill : AbstractExtendedVariant {
+    public class RefillJumpsOnDashRefill : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(bool);
         }

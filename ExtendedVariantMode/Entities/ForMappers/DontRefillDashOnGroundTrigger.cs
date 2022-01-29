@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/DontRefillDashOnGroundTrigger")]
-    class DontRefillDashOnGroundTrigger : AbstractExtendedVariantTrigger<DontRefillDashOnGround.DashRefillOnGroundConfiguration> {
+    public class DontRefillDashOnGroundTrigger : AbstractExtendedVariantTrigger<DontRefillDashOnGround.DashRefillOnGroundConfiguration> {
         public DontRefillDashOnGroundTrigger(EntityData data, Vector2 offset) : base(data, offset) { }
 
         protected override ExtendedVariantsModule.Variant getVariant(EntityData data) {

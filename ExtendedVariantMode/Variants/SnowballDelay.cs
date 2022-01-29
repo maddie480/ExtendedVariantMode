@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class SnowballDelay : AbstractExtendedVariant {
+    public class SnowballDelay : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(float);
         }

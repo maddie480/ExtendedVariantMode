@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class OshiroCount : AbstractExtendedVariant {
+    public class OshiroCount : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(int);
         }

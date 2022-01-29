@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ExtendedVariants.Variants {
-    class ChaserCount : AbstractExtendedVariant {
+    public class ChaserCount : AbstractExtendedVariant {
         public override Type GetVariantType() {
             return typeof(int);
         }
