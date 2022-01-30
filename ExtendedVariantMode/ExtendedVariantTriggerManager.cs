@@ -7,6 +7,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
@@ -44,10 +45,11 @@ namespace ExtendedVariants {
                 ExtendedVariantsModule.Instance._Session = new ExtendedVariantsSession();
             }
             if (fromSaveData) {
-                foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys) {
+                foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys.ToList()) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Loading save: restoring {v} to {ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v]}");
 
-                    object oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v], out _);
+                    object oldValue = setVariantValue(v, ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v], out object fixedValue);
+                    ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[v] = fixedValue;
 
                     variantValuesBeforeOverride[v] = oldValue;
                 }
@@ -217,6 +219,14 @@ namespace ExtendedVariants {
             return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetVariantValue();
         }
 
+        internal class LegacyVariantValue {
+            public int Value { get; }
+
+            public LegacyVariantValue(int value) {
+                Value = value;
+            }
+        }
+
         /// <summary>
         /// Sets a variant value.
         /// </summary>
@@ -224,6 +234,13 @@ namespace ExtendedVariants {
         /// <param name="newValue">The new value</param>
         /// <returns>The old value for this variant</returns>
         private object setVariantValue(ExtendedVariantsModule.Variant variantChange, object newValue, out object actualNewValue) {
+            if (newValue is LegacyVariantValue legacyVariantValue) {
+                object oldVal = setLegacyVariantValue(variantChange, legacyVariantValue.Value, out actualNewValue);
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantTriggerManager", "setVariantValue was called with a LegacyVariantValue of " + legacyVariantValue.Value + " for " + variantChange
+                    + "! It was turned into a " + actualNewValue.GetType() + " with value " + actualNewValue + ".");
+                return oldVal;
+            }
+
             AbstractExtendedVariant variant = ExtendedVariantsModule.Instance.VariantHandlers[variantChange];
             object oldValue = variant.GetVariantValue();
             variant.SetVariantValue(newValue);

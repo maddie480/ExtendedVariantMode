@@ -708,6 +708,13 @@ namespace ExtendedVariants.Module {
                 foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys.ToList()) {
                     string value = Session.VariantsEnabledViaTrigger[v].ToString();
 
+                    // handle sessions created by older Extended Variants versions (no prefix, and everything is an integer)
+                    if (!value.Contains(":") && int.TryParse(value, out int legacyValue)) {
+                        Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Encountered a legacy variant value in session: " + v + " = " + legacyValue);
+                        Session.VariantsEnabledViaTrigger[v] = new ExtendedVariantTriggerManager.LegacyVariantValue(legacyValue);
+                        continue;
+                    }
+
                     string type = value.Substring(0, value.IndexOf(":"));
                     value = value.Substring(type.Length + 1);
 
