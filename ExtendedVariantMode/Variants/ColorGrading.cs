@@ -33,7 +33,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void SetLegacyVariantValue(int value) {
-            if (value == -1 || ExistingColorGrades.Count >= value) {
+            if (value == -1 || ExistingColorGrades.Count <= value) {
                 Settings.ColorGrading = "";
             } else {
                 Settings.ColorGrading = ExistingColorGrades[value];
@@ -53,8 +53,6 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
             On.Celeste.Celeste.LoadContent -= onLoadContent;
-
-            ExistingColorGrades.Remove("trigger");
         }
 
         private void onLoadContent(On.Celeste.Celeste.orig_LoadContent orig, Celeste.Celeste self) {
