@@ -75,7 +75,7 @@ namespace ExtendedVariants.Entities.ForMappers {
                 // the trigger should stick out on the top because the player can go offscreen by up to 24px when there is no screen above.
                 Position = new Vector2(bounds.X, bounds.Y - 24f);
                 Collider.Width = bounds.Width;
-                Collider.Height = bounds.Height + 24f;
+                Collider.Height = bounds.Height + 30f;
             }
         }
 
