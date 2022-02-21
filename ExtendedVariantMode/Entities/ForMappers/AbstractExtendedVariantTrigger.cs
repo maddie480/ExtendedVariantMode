@@ -36,6 +36,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         private T newValue;
         private bool revertOnLeave;
         private bool revertOnDeath;
+        private bool delayRevertOnDeath;
         private T oldValueToRevertOnLeave;
         private bool withTeleport;
         private bool coversScreen;
@@ -47,6 +48,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             newValue = getNewValue(data);
             revertOnLeave = data.Bool("revertOnLeave", false);
             revertOnDeath = data.Bool("revertOnDeath", true);
+            delayRevertOnDeath = data.Bool("delayRevertOnDeath", false);
             withTeleport = data.Bool("withTeleport", false);
             coversScreen = data.Bool("coversScreen", false);
             onlyOnce = data.Bool("onlyOnce", false);
@@ -75,12 +77,12 @@ namespace ExtendedVariants.Entities.ForMappers {
                 // the trigger should stick out on the top because the player can go offscreen by up to 24px when there is no screen above.
                 Position = new Vector2(bounds.X, bounds.Y - 24f);
                 Collider.Width = bounds.Width;
-                Collider.Height = bounds.Height + 30f;
+                Collider.Height = bounds.Height + 32f;
             }
         }
 
         protected virtual ExtendedVariantsModule.Variant getVariant(EntityData data) {
-            return data.Enum("variantChange", ExtendedVariantsModule.Variant.Gravity); ;
+            return data.Enum("variantChange", ExtendedVariantsModule.Variant.Gravity);
         }
 
         protected abstract T getNewValue(EntityData data);
@@ -110,7 +112,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         public override void OnLeave(Player player) {
             base.OnLeave(player);
 
-            if (revertOnLeave) {
+            if (revertOnLeave && (!delayRevertOnDeath || !player.Dead)) {
                 ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, oldValueToRevertOnLeave);
             }
         }
