@@ -36,6 +36,6 @@ trigger.fieldInformation = {
     }
 }
 
-trigger.ignoredFields = { "variantChange" }
+trigger.ignoredFields = { "variantChange", "_name" }
 
 return trigger
