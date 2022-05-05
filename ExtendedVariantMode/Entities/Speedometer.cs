@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ExtendedVariants.Entities {
     public class Speedometer : DashCountIndicator {
-        private LinkedList<int> lastSpeeds = new LinkedList<int>();
+        private LinkedList<double> lastSpeeds = new LinkedList<double>();
 
         protected override bool shouldShowCounter() {
             return settings.DisplaySpeedometer != DisplaySpeedometer.SpeedometerConfiguration.DISABLED;
@@ -17,16 +17,16 @@ namespace ExtendedVariants.Entities {
         }
 
         protected override string getNumberToDisplay(Player player) {
-            int mostRecentNumber;
+            double mostRecentNumber;
             switch (settings.DisplaySpeedometer) {
                 case DisplaySpeedometer.SpeedometerConfiguration.HORIZONTAL:
-                    mostRecentNumber = (int) Math.Abs(Math.Round(player.Speed.X));
+                    mostRecentNumber = Math.Abs(Math.Round(player.Speed.X));
                     break;
                 case DisplaySpeedometer.SpeedometerConfiguration.VERTICAL:
-                    mostRecentNumber = (int) Math.Abs(Math.Round(player.Speed.Y));
+                    mostRecentNumber = Math.Abs(Math.Round(player.Speed.Y));
                     break;
                 case DisplaySpeedometer.SpeedometerConfiguration.BOTH:
-                    mostRecentNumber = (int) Math.Round(player.Speed.Length());
+                    mostRecentNumber = Math.Round(player.Speed.Length());
                     break;
                 default:
                     mostRecentNumber = 0;
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Entities {
             if (lastSpeeds.Count > 10) {
                 lastSpeeds.RemoveFirst();
             }
-            return lastSpeeds.Max().ToString();
+            return string.Format("{0:F0}", lastSpeeds.Max());
         }
     }
 }
