@@ -54,7 +54,7 @@ trigger.fieldInformation = {
             "WallBouncingSpeed",
             "ZoomLevel"
         },
-        editable = false
+        editable = true -- TODO change to false when lists are scrollable in Lönn
     }
 }
 
