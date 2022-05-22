@@ -67,6 +67,9 @@ namespace ExtendedVariants.Variants {
 
             if (Settings.RestoreDashesOnRespawn && ExtendedVariantsModule.Session.DashCountOnLatestRespawn != -1) {
                 self.Dashes = ExtendedVariantsModule.Session.DashCountOnLatestRespawn;
+            } else if (ExtendedVariantsModule.Session.DashCountOnLatestRespawn == -1) {
+                // this is the first time we spawn in the level! we should save the dash count.
+                ExtendedVariantsModule.Session.DashCountOnLatestRespawn = self.Dashes;
             }
         }
     }
