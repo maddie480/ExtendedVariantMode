@@ -2,14 +2,18 @@
 using Celeste.Mod;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class RestoreDashesOnRespawn : AbstractExtendedVariant {
+        private static List<ILHook> ilHooks = new List<ILHook>();
 
         public override Type GetVariantType() {
             return typeof(bool);
@@ -32,34 +36,47 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.ChangeRespawnTrigger.OnEnter += modRespawnTriggerOnEnter;
-            On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
+            ilHooks.Add(new ILHook(typeof(Cassette).GetMethod("CollectRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), updateDashCountOnRespawnPointChange));
+            ilHooks.Add(new ILHook(typeof(Level).GetMethod("orig_TransitionRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), updateDashCountOnRespawnPointChange));
+
+            IL.Celeste.SummitCheckpoint.Awake += updateDashCountOnRespawnPointChange;
+            IL.Celeste.SummitCheckpoint.Update += updateDashCountOnRespawnPointChange;
+            IL.Celeste.ChangeRespawnTrigger.OnEnter += updateDashCountOnRespawnPointChange;
+            IL.Celeste.Level.TeleportTo += updateDashCountOnRespawnPointChange;
+
             On.Celeste.Player.Added += onPlayerSpawn;
         }
 
         public override void Unload() {
-            IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
-            On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
+            foreach (ILHook hook in ilHooks) {
+                hook.Dispose();
+            }
+            ilHooks.Clear();
+
+            IL.Celeste.SummitCheckpoint.Awake -= updateDashCountOnRespawnPointChange;
+            IL.Celeste.SummitCheckpoint.Update -= updateDashCountOnRespawnPointChange;
+            IL.Celeste.ChangeRespawnTrigger.OnEnter -= updateDashCountOnRespawnPointChange;
+            IL.Celeste.Level.TeleportTo -= updateDashCountOnRespawnPointChange;
+
             On.Celeste.Player.Added -= onPlayerSpawn;
         }
 
         // save dash count when hitting a change respawn trigger
-        private void modRespawnTriggerOnEnter(ILContext il) {
+        private void updateDashCountOnRespawnPointChange(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            // simply jump into the "if" controlling whether the respawn should be changed or not
-            // (yet again, this is brtrue.s in XNA and brfalse.s in FNA. Thanks compiler.)
-            if (cursor.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Brtrue_S || instr.OpCode == OpCodes.Brfalse_S))) {
-                Logger.Log("ExtendedVariantMode/ResetDashesOnRespawn", $"Adding save for dash count on respawn change at {cursor.Index} in CIL code for OnEnter in ChangeRespawnTrigger");
-                cursor.Emit(OpCodes.Ldarg_1);
-                cursor.EmitDelegate<Action<Player>>(player => ExtendedVariantsModule.Session.DashCountOnLatestRespawn = player.Dashes);
-            }
-        }
+            // jump to the point(s) where the respawn point is changed
+            while (cursor.TryGotoNext(instr => instr.MatchStfld<Session>("RespawnPoint"))) {
+                Logger.Log("ExtendedVariantMode/RestoreDashesOnRespawn", $"Adding save for dash count on respawn change at {cursor.Index} in CIL code for " + il.Method.FullName);
+                cursor.EmitDelegate<Action>(() => {
+                    Player player = Engine.Scene.Tracker.GetEntity<Player>();
+                    if (player != null) {
+                        ExtendedVariantsModule.Session.DashCountOnLatestRespawn = player.Dashes;
+                    }
+                });
 
-        // save dash count when changing screens
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
-            ExtendedVariantsModule.Session.DashCountOnLatestRespawn = self.Tracker.GetEntity<Player>()?.Dashes ?? 0;
-            return orig(self, next, direction);
+                cursor.Index++;
+            }
         }
 
         private void onPlayerSpawn(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
