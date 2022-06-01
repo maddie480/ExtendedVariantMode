@@ -26,6 +26,7 @@ namespace ExtendedVariants.Entities {
         }
 
         private ExtendedVariantsSettings settings;
+        private float invisibleJumpCountTimer = 0f;
 
         public JumpIndicator() {
             Depth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
@@ -49,6 +50,14 @@ namespace ExtendedVariants.Entities {
             } else {
                 Depth = normalDepth;
             }
+
+            // hide jump count when infinite jumps are active, and show them again 0.1 second after turning infinite jumps off.
+            // this avoids showing the jump count briefly on a transition between two rooms with infinite jumps and "revert on leave" enabled.
+            if (settings.JumpCount == int.MaxValue) {
+                invisibleJumpCountTimer = 0.1f;
+            } else if (invisibleJumpCountTimer > 0f) {
+                invisibleJumpCountTimer -= Engine.DeltaTime;
+            }
         }
 
         public override void Render() {
@@ -67,7 +76,7 @@ namespace ExtendedVariants.Entities {
                 MTexture jumpIndicator = GFX.Game["ExtendedVariantMode/jumpindicator"];
 
                 // draw no indicator in the case of infinite jumps.
-                int jumpIndicatorsToDraw = Math.Min(200, settings.JumpCount == int.MaxValue ? 0 : JumpCount.GetJumpBuffer());
+                int jumpIndicatorsToDraw = Math.Min(200, invisibleJumpCountTimer > 0f ? 0 : JumpCount.GetJumpBuffer());
 
                 int lines = 1 + (jumpIndicatorsToDraw - 1) / 5;
 
