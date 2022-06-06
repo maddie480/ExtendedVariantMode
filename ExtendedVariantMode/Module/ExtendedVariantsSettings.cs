@@ -106,6 +106,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public float WallSlidingSpeed { get; set; } = 1f;
+
+        // ======================================
+
+        [SettingIgnore]
         public float DashLength { get; set; } = 1f;
 
         // ======================================

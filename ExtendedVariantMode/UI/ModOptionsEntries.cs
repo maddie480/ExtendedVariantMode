@@ -47,6 +47,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> disableSuperBoostsOption;
         private TextMenuOptionExt<bool> dontRefillStaminaOnGroundOption;
         private TextMenuOptionExt<int> wallBouncingSpeedOption;
+        private TextMenuOptionExt<int> wallSlidingSpeedOption;
         private TextMenuOptionExt<int> dashLengthOption;
         private TextMenuOptionExt<int> dashDirectionOption;
         private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
@@ -401,6 +402,7 @@ namespace ExtendedVariants.UI {
                 swimmingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED", "x", Settings.SwimmingSpeed, 10, multiplierScale, f => Settings.SwimmingSpeed = f);
                 boostMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER", "x", Settings.BoostMultiplier, 44, multiplierScaleWithNegatives, f => Settings.BoostMultiplier = f);
                 explodeLaunchSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED", "x", Settings.ExplodeLaunchSpeed, 10, multiplierScale, f => Settings.ExplodeLaunchSpeed = f);
+                wallSlidingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_WALLSLIDINGSPEED", "x", Settings.WallSlidingSpeed, 10, multiplierScale, f => Settings.WallSlidingSpeed = f);
                 disableSuperBoostsOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS"), Settings.DisableSuperBoosts, false)
                     .Change(b => Settings.DisableSuperBoosts = b);
                 frictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FRICTION", "x", Settings.Friction, 11, multiplierScaleFriction, f => Settings.Friction = f);
@@ -703,7 +705,8 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
-                        Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround }
+                        Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
+                        Variant.WallSlidingSpeed }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -754,7 +757,8 @@ namespace ExtendedVariants.UI {
                 disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption };
+                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
+                wallSlidingSpeedOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -827,6 +831,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(frictionOption);
                 menu.Add(airFrictionOption);
                 menu.Add(explodeLaunchSpeedOption);
+                menu.Add(wallSlidingSpeedOption);
                 menu.Add(disableSuperBoostsOption);
                 disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
                 menu.Add(boostMultiplierOption);
@@ -954,6 +959,7 @@ namespace ExtendedVariants.UI {
             disableSuperBoostsOption?.ResetToDefault();
             dontRefillStaminaOnGroundOption?.ResetToDefault();
             wallBouncingSpeedOption?.ResetToDefault();
+            wallSlidingSpeedOption?.ResetToDefault();
             dashLengthOption?.ResetToDefault();
             dashDirectionOption?.ResetToDefault();
             forceDuckOnGroundOption?.ResetToDefault();

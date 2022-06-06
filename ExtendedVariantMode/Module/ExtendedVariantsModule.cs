@@ -48,7 +48,8 @@ namespace ExtendedVariants.Module {
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
-            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer
+            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
+            WallSlidingSpeed
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -83,6 +84,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.ExplodeLaunchSpeed] = new ExplodeLaunchSpeed();
             VariantHandlers[Variant.DisableSuperBoosts] = new DisableSuperBoosts();
             VariantHandlers[Variant.WallBouncingSpeed] = new WallbouncingSpeed();
+            VariantHandlers[Variant.WallSlidingSpeed] = new WallSlidingSpeed();
             VariantHandlers[Variant.DashLength] = new DashLength();
             VariantHandlers[Variant.ForceDuckOnGround] = new ForceDuckOnGround();
             VariantHandlers[Variant.InvertDashes] = new InvertDashes();

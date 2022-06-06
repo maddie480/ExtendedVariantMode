@@ -52,6 +52,7 @@ trigger.fieldInformation = {
             "SuperdashSteeringSpeed",
             "SwimmingSpeed",
             "WallBouncingSpeed",
+            "WallSlidingSpeed",
             "ZoomLevel"
         },
         editable = true -- TODO change to false when lists are scrollable in Lönn

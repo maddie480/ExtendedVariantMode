@@ -46,6 +46,7 @@ const FloatVariants = [
 	"SuperdashSteeringSpeed",
 	"SwimmingSpeed",
 	"WallBouncingSpeed",
+	"WallSlidingSpeed",
 	"ZoomLevel"
 ]
 
