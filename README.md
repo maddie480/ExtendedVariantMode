@@ -21,6 +21,7 @@ Adds some options to the Mod Options menu:
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 *   **Explode Launch Speed**: Modifies the speed given by bumpers, puffer fish and respawning seekers. You can also choose to **disable super boosts** that you get by holding away from the explosion.  
+*   **Wall Sliding Speed**: Modifies the speed Madeline gets when sliding on a wall. She usually slows down for a bit while friction particles appear, but you can make her accelerate instead!
     
 *   **Boost Multiplier**: Makes the speed you get from jumping from a moving block smaller or bigger. You can also _invert_ the direction of that boost.  
     
@@ -111,7 +112,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/807804)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/811717)
 
 To build the project yourself:
 * Clone or download the repo
