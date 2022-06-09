@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using System;
 using Monocle;
+using Microsoft.Xna.Framework;
 
 namespace ExtendedVariants.Variants {
     public class NoFreezeFrames : AbstractExtendedVariant {
@@ -27,12 +28,12 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Monocle.Engine.Update += modEngineUpdate;
+            On.Monocle.Engine.Update += onEngineUpdate;
             On.Celeste.Celeste.Freeze += onCelesteFreeze;
         }
 
         public override void Unload() {
-            IL.Monocle.Engine.Update -= modEngineUpdate;
+            On.Monocle.Engine.Update -= onEngineUpdate;
             On.Celeste.Celeste.Freeze -= onCelesteFreeze;
         }
 
@@ -43,20 +44,12 @@ namespace ExtendedVariants.Variants {
             orig(time);
         }
 
-        private void modEngineUpdate(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-
-            if (cursor.TryGotoNext(MoveType.Before,
-                instr => instr.MatchLdsfld(typeof(Engine), nameof(Engine.FreezeTimer)))
-            ) {
-                Logger.Log("ExtendedVariantMode/NoFreezeFrames", $"Modding no freeze frames at index {cursor.Index} in CIL code for {cursor.Method.Name}");
-
-                cursor.EmitDelegate<Action>(() => {
-                    if (Settings.NoFreezeFrames) {
-                        Engine.FreezeTimer = 0f;
-                    }
-                });
+        private void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
+            if (Settings.NoFreezeFrames) {
+                Engine.FreezeTimer = 0f;
             }
+
+            orig(self, gameTime);
         }
     }
 }
