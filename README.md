@@ -15,6 +15,7 @@ Adds some options to the Mod Options menu:
 *   **Ground friction**: make the ground more or less slippery everywhere
 *   **Air friction**: makes steering in the air more or less quick... setting this to 0x makes it impossible to steer left/right in air.
 *   **Disable wall jumping** and **Disable climb jumping** (in case you want to make Celeste not Celeste anymore)
+*   **Disable jumping out of water**: this prevents Madeline from jumping out of water, and also from jumping on water (which is normally possible without entering water with good timing).
 *   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up or down. You can still go up by climb jumping (_unless you disable that too_).  
     
 *   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair (Refill Jumps on Dash Refill will give you back your extra jumps whenever you get your dash back)
@@ -112,7 +113,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/811717)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/821484)
 
 To build the project yourself:
 * Clone or download the repo

@@ -32,6 +32,7 @@ trigger.fieldInformation = {
             "DashTrailAllTheTime",
             "DisableClimbJumping",
             "DisableClimbingUpOrDown",
+	        "DisableJumpingOutOfWater",
             "DisableMadelineSpotlight",
             "DisableNeutralJumping",
             "DisableOshiroSlowdown",

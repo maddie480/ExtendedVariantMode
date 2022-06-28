@@ -39,6 +39,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> airFrictionOption;
         private TextMenuOptionExt<bool> disableWallJumpingOption;
         private TextMenuOptionExt<bool> disableClimbJumpingOption;
+        private TextMenuOptionExt<bool> disableJumpingOutOfWaterOption;
         private TextMenuOptionExt<int> jumpCountOption;
         private TextMenuOptionExt<bool> refillJumpsOnDashRefillOption;
         private TextMenuOptionExt<bool> upsideDownOption;
@@ -293,6 +294,8 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableWallJumping = b);
                 disableClimbJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
                     .Change(b => Settings.DisableClimbJumping = b);
+                disableJumpingOutOfWaterOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPINGOUTOFWATER"), Settings.DisableJumpingOutOfWater, false)
+                    .Change(b => Settings.DisableJumpingOutOfWater = b);
                 disableNeutralJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
                     .Change(b => Settings.DisableNeutralJumping = b);
                 jumpCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT", "", Settings.JumpCount, 1, new int[] { 0, 1, 2, 3, 4, 5, int.MaxValue }, i => {
@@ -706,7 +709,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed }
+                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -758,7 +761,7 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -799,6 +802,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(wallBouncingSpeedOption);
                 menu.Add(disableWallJumpingOption);
                 menu.Add(disableClimbJumpingOption);
+                menu.Add(disableJumpingOutOfWaterOption);
                 menu.Add(disableNeutralJumpingOption);
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
@@ -951,6 +955,7 @@ namespace ExtendedVariants.UI {
             airFrictionOption?.ResetToDefault();
             disableWallJumpingOption?.ResetToDefault();
             disableClimbJumpingOption?.ResetToDefault();
+            disableJumpingOutOfWaterOption?.ResetToDefault();
             jumpCountOption?.ResetToDefault();
             refillJumpsOnDashRefillOption?.ResetToDefault();
             upsideDownOption?.ResetToDefault();

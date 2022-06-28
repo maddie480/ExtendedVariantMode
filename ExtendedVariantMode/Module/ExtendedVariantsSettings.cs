@@ -83,6 +83,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool DisableJumpingOutOfWater { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public int JumpCount { get; set; } = 1;
 
         [SettingIgnore]
