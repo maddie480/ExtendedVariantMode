@@ -2,13 +2,9 @@
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Entities.ForMappers {
+    [TrackedAs(typeof(TheoCrystal))]
     public class ExtendedVariantTheoCrystalGoingOffscreen : ExtendedVariantTheoCrystal {
         public ExtendedVariantTheoCrystalGoingOffscreen(Vector2 position) : base(position) { }
 
