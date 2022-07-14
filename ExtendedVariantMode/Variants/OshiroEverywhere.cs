@@ -5,6 +5,7 @@ using ExtendedVariants.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Collections;
@@ -38,6 +39,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
             IL.Celeste.AngryOshiro.Update += modAngryOshiroUpdate;
             On.Celeste.HeartGem.Collect += modHeartGemCollect;
+            On.Celeste.Player.Update += onPlayerUpdate;
         }
 
         public override void Unload() {
@@ -45,7 +47,10 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             IL.Celeste.AngryOshiro.Update -= modAngryOshiroUpdate;
             On.Celeste.HeartGem.Collect -= modHeartGemCollect;
+            On.Celeste.Player.Update -= onPlayerUpdate;
         }
+
+        private bool wasActiveOnLastFrame = false;
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
@@ -53,6 +58,8 @@ namespace ExtendedVariants.Variants {
             if (playerIntro != Player.IntroTypes.Transition) {
                 addOshiroToLevel(self);
             }
+
+            wasActiveOnLastFrame = Settings.OshiroEverywhere;
         }
 
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
@@ -60,7 +67,17 @@ namespace ExtendedVariants.Variants {
             addOshiroToLevel(self);
         }
 
-        private void addOshiroToLevel(Level level) {
+        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+            orig(self);
+
+            if (!wasActiveOnLastFrame && Settings.OshiroEverywhere) {
+                addOshiroToLevel(Engine.Scene as Level, false);
+            }
+
+            wasActiveOnLastFrame = Settings.OshiroEverywhere;
+        }
+
+        private void addOshiroToLevel(Level level, bool updateLists = true) {
             bool oshiroAdded = false;
 
             if (Settings.OshiroEverywhere) {
@@ -78,7 +95,7 @@ namespace ExtendedVariants.Variants {
                 }
             }
 
-            if (oshiroAdded)
+            if (oshiroAdded && updateLists)
                 level.Entities.UpdateLists();
         }
 
