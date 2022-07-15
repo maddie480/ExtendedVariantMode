@@ -113,7 +113,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/830833)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/831401)
 
 To build the project yourself:
 * Clone or download the repo

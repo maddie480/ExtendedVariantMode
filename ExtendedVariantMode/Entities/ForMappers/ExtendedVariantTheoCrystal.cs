@@ -7,7 +7,6 @@ using Monocle;
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/TheoCrystal")]
     [Tracked(true)]
-    [TrackedAs(typeof(TheoCrystal))]
     public class ExtendedVariantTheoCrystal : TheoCrystal {
         // true if Theo can be left behind, false if the player is blocked if they leave Theo behind, null if it was spawned through the extended variant
         public bool AllowLeavingBehind { get; private set; } = false;
