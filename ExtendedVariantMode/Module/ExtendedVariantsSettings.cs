@@ -63,6 +63,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool DisableDashCooldown { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public float Friction { get; set; } = 1f;
 
         // ======================================

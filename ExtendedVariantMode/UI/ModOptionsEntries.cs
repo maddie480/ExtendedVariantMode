@@ -34,6 +34,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> dashSpeedOption;
         private TextMenuOptionExt<bool> legacyDashSpeedBehaviorOption;
         private TextMenuOptionExt<int> dashCountOption;
+        private TextMenuOptionExt<bool> disableDashCooldownOption;
         private TextMenuOptionExt<bool> heldDashOption;
         private TextMenuOptionExt<int> frictionOption;
         private TextMenuOptionExt<int> airFrictionOption;
@@ -399,6 +400,8 @@ namespace ExtendedVariants.UI {
                 superdashSteeringSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED", "x", Settings.SuperdashSteeringSpeed, 10, multiplierScale, f => Settings.SuperdashSteeringSpeed = f);
                 preserveExtraDashesUnderwaterOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER"), Settings.PreserveExtraDashesUnderwater, true)
                     .Change(b => Settings.PreserveExtraDashesUnderwater = b);
+                disableDashCooldownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEDASHCOOLDOWN"), Settings.DisableDashCooldown, false)
+                    .Change(b => Settings.DisableDashCooldown = b);
 
                 // Moving
                 speedXOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX", "x", Settings.SpeedX, 10, multiplierScale, f => Settings.SpeedX = f);
@@ -709,7 +712,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater }
+                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -761,7 +764,7 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -828,6 +831,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(restoreDashesOnRespawnOption);
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
                 menu.Add(preserveExtraDashesUnderwaterOption);
+                menu.Add(disableDashCooldownOption);
 
                 menu.Add(movingTitle);
                 menu.Add(speedXOption);
@@ -973,6 +977,7 @@ namespace ExtendedVariants.UI {
             invertHorizontalControlsOption?.ResetToDefault();
             invertVerticalControlsOption?.ResetToDefault();
             heldDashOption?.ResetToDefault();
+            disableDashCooldownOption?.ResetToDefault();
             disableNeutralJumpingOption?.ResetToDefault();
             badelineChasersEverywhereOption?.ResetToDefault();
             chaserCountOption?.ResetToDefault();

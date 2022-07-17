@@ -49,7 +49,7 @@ namespace ExtendedVariants.Module {
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater
+            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -72,6 +72,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.Stamina] = new Stamina();
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
             VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
+            VariantHandlers[Variant.DisableDashCooldown] = new DisableDashCooldown();
             VariantHandlers[Variant.HeldDash] = new HeldDash();
             VariantHandlers[Variant.Friction] = new Friction();
             VariantHandlers[Variant.AirFriction] = new AirFriction();

@@ -149,6 +149,7 @@
     <Compile Include="UI\TextMenuOptionExt.cs" />
     <Compile Include="VariantRandomizer.cs" />
     <Compile Include="Variants\AbstractExtendedVariant.cs" />
+    <Compile Include="Variants\DisableDashCooldown.cs" />
     <Compile Include="Variants\DisableJumpingOutOfWater.cs" />
     <Compile Include="Variants\LegacyDashSpeedBehavior.cs" />
     <Compile Include="Variants\DontRefillStaminaOnGround.cs" />

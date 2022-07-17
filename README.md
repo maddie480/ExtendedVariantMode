@@ -17,7 +17,7 @@ Adds some options to the Mod Options menu:
 *   **Disable wall jumping** and **Disable climb jumping** (in case you want to make Celeste not Celeste anymore)
 *   **Disable jumping out of water**: this prevents Madeline from jumping out of water, and also from jumping on water (which is normally possible without entering water with good timing).
 *   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up or down. You can still go up by climb jumping (_unless you disable that too_).  
-    
+
 *   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair (Refill Jumps on Dash Refill will give you back your extra jumps whenever you get your dash back)
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
@@ -85,6 +85,7 @@ Adds some options to the Mod Options menu:
 *   **Every Jump is an Ultra**: when you jump or climb jump, Madeline will automatically duck and get a 1.2x horizontal speed boost, like an "ultra" (a speed tech you can do to go fast).
 *   **Coyote Time**: allows you to modify the time during which you can jump after walking off a platform (0.1 second by default).
 *   **Preserve Extra Dashes Underwater**: if you have 2 dashes with a max of 1 (like in Farewell with double dash crystals), dashing in water would usually make you keep this second dash. this setting allows you to turn that behavior off.
+*   **Disable Dash Cooldown**: makes it so you don't have to wait for 0.2 seconds after a dash before being able to dash again.
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
 
   
@@ -113,7 +114,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/831401)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/832525)
 
 To build the project yourself:
 * Clone or download the repo

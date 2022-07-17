@@ -63,6 +63,7 @@ const BooleanVariants = [
 	"DashTrailAllTheTime",
 	"DisableClimbJumping",
 	"DisableClimbingUpOrDown",
+	"DisableDashCooldown",
 	"DisableJumpingOutOfWater",
 	"DisableMadelineSpotlight",
 	"DisableNeutralJumping",
