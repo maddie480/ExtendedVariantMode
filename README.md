@@ -43,6 +43,7 @@ Adds some options to the Mod Options menu:
     *   **Foreground Effect Opacity**: Changes the opacity of all effects and stylegrounds appearing in the foreground, in front of Madeline (like snow or dust).  
         
     *   **Disable Madeline Spotlight**: Prevents Madeline from emiting light. That's some way to spice up the Invisible Motion variant for example.
+    *   **Disable Keys Spotlight**: Prevents keys from emitting light. This can be used in combination with Disable Madeline Spotlight for more darkness if Madeline is carrying a key.
     *   **Display Dash Count**: displays how many dashes Madeline has with a number floating over her head. Useful if you are in a map with a lot of dashes and can't use hair colors to tell how many dashes you have left... or if you just gave yourself 10 dashes through the Dash Count variant.  
 	*   **Display Speedometer**: shows Madeline's horizontal, vertical or overall speed over her head.
         
@@ -114,7 +115,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/832525)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/852013)
 
 To build the project yourself:
 * Clone or download the repo
