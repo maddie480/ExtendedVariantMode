@@ -219,6 +219,20 @@ namespace ExtendedVariants {
             return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetVariantValue();
         }
 
+        public void ResetAllVariantsToDefault() {
+            // reset the variants themselves
+            ExtendedVariantsModule.Instance.ResetToDefaultSettings();
+
+            // reset the session
+            ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Clear();
+
+            // reset the variants set in the room
+            oldVariantsInRoom.Clear();
+            overridenVariantsInRoom.Clear();
+            overridenVariantsInRoomRevertOnLeave.Clear();
+            variantValuesBeforeOverride.Clear();
+        }
+
         internal class LegacyVariantValue {
             public int Value { get; }
 

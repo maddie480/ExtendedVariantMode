@@ -106,6 +106,7 @@
     <Compile Include="Entities\ForMappers\AbstractExtendedVariantTrigger.cs" />
     <Compile Include="Entities\ForMappers\BooleanExtendedVariantTrigger.cs" />
     <Compile Include="Entities\ForMappers\FloatExtendedVariantFadeTrigger.cs" />
+    <Compile Include="Entities\ForMappers\ResetVariantsTrigger.cs" />
     <Compile Include="Entities\ForMappers\WindEverywhereTrigger.cs" />
     <Compile Include="Entities\ForMappers\MadelineBackpackModeTrigger.cs" />
     <Compile Include="Entities\ForMappers\DontRefillDashOnGroundTrigger.cs" />
@@ -262,6 +263,9 @@
     <None Include="Ahorn\libraries\extendedVariantDictionary.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Ahorn\triggers\extendedVariantsResetVariantsTrigger.jl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Ahorn\triggers\extendedVariantsSetJumpCountTrigger.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -320,6 +324,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\dontRefillDashOnGroundTrigger.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\resetVariantsTrigger.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\extendedVariantFadeTrigger.lua">

@@ -191,3 +191,10 @@ triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.attributes.description.d
 triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.attributes.description.enable=Whether the dash direction should be enabled or disabled by the trigger.
 triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked for this to work.
 triggers.ExtendedVariantMode/ToggleDashDirectionTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+
+# Reset Variants Trigger
+triggers.ExtendedVariantMode/ResetVariantsTrigger.placements.name.vanilla=Reset Variants Trigger (Vanilla)
+triggers.ExtendedVariantMode/ResetVariantsTrigger.placements.name.extended=Reset Variants Trigger (Extended)
+triggers.ExtendedVariantMode/ResetVariantsTrigger.placements.name.both=Reset Variants Trigger (Both)
+triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.vanilla=Whether this trigger should reset all vanilla variants on entry.
+triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.extended=Whether this trigger should reset all extended variants on entry.
