@@ -152,6 +152,7 @@
     <Compile Include="Variants\AbstractExtendedVariant.cs" />
     <Compile Include="Variants\DisableDashCooldown.cs" />
     <Compile Include="Variants\DisableJumpingOutOfWater.cs" />
+    <Compile Include="Variants\DisableKeysSpotlight.cs" />
     <Compile Include="Variants\LegacyDashSpeedBehavior.cs" />
     <Compile Include="Variants\DontRefillStaminaOnGround.cs" />
     <Compile Include="Variants\DisableSuperBoosts.cs" />

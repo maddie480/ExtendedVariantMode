@@ -368,6 +368,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public bool DisableKeysSpotlight { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool MadelineIsSilhouette { get; set; } = false;
         [SettingIgnore]
         public bool MadelineHasPonytail { get; set; } = false;

@@ -34,6 +34,7 @@ trigger.fieldInformation = {
             "DisableClimbingUpOrDown",
             "DisableDashCooldown",
             "DisableJumpingOutOfWater",
+            "DisableKeysSpotlight",
             "DisableMadelineSpotlight",
             "DisableNeutralJumping",
             "DisableOshiroSlowdown",

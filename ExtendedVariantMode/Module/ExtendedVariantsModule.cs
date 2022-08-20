@@ -49,7 +49,7 @@ namespace ExtendedVariants.Module {
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown
+            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -141,6 +141,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DashDirection] = new DashDirection();
             VariantHandlers[Variant.BackgroundBrightness] = new BackgroundBrightness();
             VariantHandlers[Variant.DisableMadelineSpotlight] = new DisableMadelineSpotlight();
+            VariantHandlers[Variant.DisableKeysSpotlight] = new DisableKeysSpotlight();
             VariantHandlers[Variant.ForegroundEffectOpacity] = new ForegroundEffectOpacity();
             // MadelineIsSilhouette is instanciated in Initialize
             // MadelineHasPonytail is instanciated in Initialize

@@ -107,6 +107,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> screenShakeIntensityOption;
         private TextMenuOptionExt<int> backgroundBrightnessOption;
         private TextMenuOptionExt<bool> disableMadelineSpotlightOption;
+        private TextMenuOptionExt<bool> disableKeysSpotlightOption;
         private TextMenuOptionExt<int> foregroundEffectOpacityOption;
         private TextMenuOptionExt<bool> madelineIsSilhouetteOption;
         private TextMenuOptionExt<bool> madelineHasPonytailOption;
@@ -521,6 +522,11 @@ namespace ExtendedVariants.UI {
 
                 disableMadelineSpotlightOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEMADELINESPOTLIGHT"), Settings.DisableMadelineSpotlight, false)
                     .Change(b => Settings.DisableMadelineSpotlight = b);
+                disableKeysSpotlightOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEKEYSSPOTLIGHT"), Settings.DisableKeysSpotlight, false)
+                    .Change(b => {
+                        Settings.DisableKeysSpotlight = b;
+                        ((DisableKeysSpotlight) ExtendedVariantsModule.Instance.VariantHandlers[Variant.DisableKeysSpotlight]).OnSettingChanged();
+                    });
                 madelineIsSilhouetteOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEISSILHOUETTE"), Settings.MadelineIsSilhouette, false)
                     .Change(b => Settings.MadelineIsSilhouette = b);
                 dashTrailAllTheTimeOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTRAILALLTHETIME"), Settings.DashTrailAllTheTime, false)
@@ -728,7 +734,7 @@ namespace ExtendedVariants.UI {
                     new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                         Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
                         Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
-                        Variant.DisplaySpeedometer }
+                        Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
 
                 gameplayTweaksSubmenu.GetHighlight = () =>
@@ -764,7 +770,7 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -908,6 +914,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(backgroundBlurLevelOption);
                 menu.Add(zoomLevelOption);
                 menu.Add(colorGradingOption);
+                menu.Add(disableKeysSpotlightOption);
                 menu.Add(screenShakeIntensityOption);
                 menu.Add(friendlyBadelineFollowerOption);
             }
@@ -994,6 +1001,7 @@ namespace ExtendedVariants.UI {
             backgroundBrightnessOption?.ResetToDefault();
             foregroundEffectOpacityOption?.ResetToDefault();
             disableMadelineSpotlightOption?.ResetToDefault();
+            disableKeysSpotlightOption?.ResetToDefault();
             roomBloomOption?.ResetToDefault();
             glitchEffectOption?.ResetToDefault();
             anxietyEffectOption?.ResetToDefault();

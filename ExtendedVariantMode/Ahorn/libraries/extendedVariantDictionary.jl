@@ -65,6 +65,7 @@ const BooleanVariants = [
 	"DisableClimbingUpOrDown",
 	"DisableDashCooldown",
 	"DisableJumpingOutOfWater",
+	"DisableKeysSpotlight",
 	"DisableMadelineSpotlight",
 	"DisableNeutralJumping",
 	"DisableOshiroSlowdown",
