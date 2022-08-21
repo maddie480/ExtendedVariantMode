@@ -108,19 +108,11 @@ namespace ExtendedVariants.Variants {
             // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
             // and be more consistent with the behaviour of the "Infinite Dashes" variant.
             // (without this patch, with > 2 dashes, Madeline's hair is red, then turns pink, then red again before becoming blue)
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && (instr.Next.OpCode == OpCodes.Bne_Un_S || instr.Next.OpCode == OpCodes.Ceq))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Ldc_I4_2 && instr.Next.OpCode == OpCodes.Bne_Un_S)) {
                 Logger.Log("ExtendedVariantMode/DashCount", $"Fixing hair color when having more than 2 dashes by modding a check at {cursor.Index} in CIL code for UpdateHair");
 
-                if (cursor.Next.OpCode == OpCodes.Bne_Un_S) {
-                    // XNA version: this is a branch
-                    // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
-                    cursor.Next.OpCode = OpCodes.Blt_Un_S;
-                } else {
-                    // FNA version: this is a boolean FOLLOWED by a branch
-                    // we're turning this boolean from "Dashes == 2" to "Dashes > 1"
-                    cursor.Prev.OpCode = OpCodes.Ldc_I4_1;
-                    cursor.Next.OpCode = OpCodes.Cgt;
-                }
+                // small trap: the instruction in CIL code actually says "jump if **not** equal to 2". So we set it to "jump if lower than 2" instead
+                cursor.Next.OpCode = OpCodes.Blt_S;
             }
         }
 
