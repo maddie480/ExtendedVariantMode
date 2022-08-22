@@ -37,6 +37,8 @@ namespace ExtendedVariants.Variants {
         }
 
         public void OnSettingChanged() {
+            if (!(Engine.Scene is Level)) return;
+
             if (Settings.DisableKeysSpotlight) {
                 // remove the light of all keys in the scene
                 foreach (Key key in Engine.Scene.Entities.FindAll<Key>()) {
