@@ -1,7 +1,9 @@
 ﻿using Celeste.Mod;
+using ExtendedVariants.Variants;
 using System.Collections.Generic;
 using static ExtendedVariants.Variants.DisplaySpeedometer;
 using static ExtendedVariants.Variants.DontRefillDashOnGround;
+using static ExtendedVariants.Variants.JungleSpidersEverywhere;
 using static ExtendedVariants.Variants.MadelineBackpackMode;
 using static ExtendedVariants.Variants.WindEverywhere;
 
@@ -311,6 +313,11 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public bool BounceEverywhere { get; set; } = false;
+
+        // ======================================
+
+        [SettingIgnore]
+        public SpiderType JungleSpidersEverywhere { get; set; } = SpiderType.Disabled;
 
         // ======================================
 

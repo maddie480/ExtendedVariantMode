@@ -51,6 +51,10 @@
       <HintPath>..\Everest\lib-stripped\FNA.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="JungleHelper">
+      <HintPath>..\lib-stripped\JungleHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="MMHOOK_Celeste">
       <HintPath>..\MMHOOK_Celeste.dll</HintPath>
       <Private>False</Private>
@@ -106,6 +110,7 @@
     <Compile Include="Entities\ForMappers\AbstractExtendedVariantTrigger.cs" />
     <Compile Include="Entities\ForMappers\BooleanExtendedVariantTrigger.cs" />
     <Compile Include="Entities\ForMappers\FloatExtendedVariantFadeTrigger.cs" />
+    <Compile Include="Entities\ForMappers\JungleSpidersEverywhereTrigger.cs" />
     <Compile Include="Entities\ForMappers\ResetVariantsTrigger.cs" />
     <Compile Include="Entities\ForMappers\WindEverywhereTrigger.cs" />
     <Compile Include="Entities\ForMappers\MadelineBackpackModeTrigger.cs" />
@@ -153,6 +158,7 @@
     <Compile Include="Variants\DisableDashCooldown.cs" />
     <Compile Include="Variants\DisableJumpingOutOfWater.cs" />
     <Compile Include="Variants\DisableKeysSpotlight.cs" />
+    <Compile Include="Variants\JungleSpidersEverywhere.cs" />
     <Compile Include="Variants\LegacyDashSpeedBehavior.cs" />
     <Compile Include="Variants\DontRefillStaminaOnGround.cs" />
     <Compile Include="Variants\DisableSuperBoosts.cs" />
@@ -325,6 +331,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\dontRefillDashOnGroundTrigger.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\jungleSpidersEverywhereTrigger.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\resetVariantsTrigger.lua">

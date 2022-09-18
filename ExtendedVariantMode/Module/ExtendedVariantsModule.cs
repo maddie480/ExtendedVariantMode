@@ -22,6 +22,7 @@ namespace ExtendedVariants.Module {
         public bool DJMapHelperInstalled { get; private set; }
         public bool SpringCollab2020Installed { get; private set; }
         public bool MaxHelpingHandInstalled { get; private set; }
+        public bool JungleHelperInstalled { get; private set; }
 
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
@@ -49,7 +50,7 @@ namespace ExtendedVariants.Module {
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight
+            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -136,6 +137,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.InvertHorizontalControls] = new InvertHorizontalControls();
             VariantHandlers[Variant.InvertVerticalControls] = new InvertVerticalControls();
             VariantHandlers[Variant.BounceEverywhere] = new BounceEverywhere();
+            // JungleSpidersEverywhere is instanciated in Initialize
             VariantHandlers[Variant.SuperdashSteeringSpeed] = new SuperdashSteeringSpeed();
             VariantHandlers[Variant.ScreenShakeIntensity] = new ScreenShakeIntensity();
             VariantHandlers[Variant.DashDirection] = new DashDirection();
@@ -244,6 +246,8 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Spring Collab 2020 installed = {SpringCollab2020Installed}");
             MaxHelpingHandInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "MaxHelpingHand", Version = new Version(1, 17, 3) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Max Helping Hand installed = {MaxHelpingHandInstalled}");
+            JungleHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "JungleHelper", Version = new Version(1, 1, 2) });
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Jungle Helper installed = {JungleHelperInstalled}");
 
             UpsideDown.Initialize();
 
@@ -269,6 +273,7 @@ namespace ExtendedVariants.Module {
                     VariantHandlers[Variant.MadelineIsSilhouette].Load();
                 }
             }
+
             if (!MaxHelpingHandInstalled) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Has Ponytail");
                 Settings.MadelineHasPonytail = false;
@@ -280,6 +285,20 @@ namespace ExtendedVariants.Module {
                 if (stuffIsHooked) {
                     // and activate it if all others are already active!
                     VariantHandlers[Variant.MadelineHasPonytail].Load();
+                }
+            }
+
+            if (!JungleHelperInstalled) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Jungle Spiders Everywhere");
+                Settings.JungleSpidersEverywhere = JungleSpidersEverywhere.SpiderType.Disabled;
+                SaveSettings();
+            } else {
+                // let's add this variant in now.
+                VariantHandlers[Variant.JungleSpidersEverywhere] = new JungleSpidersEverywhere();
+
+                if (stuffIsHooked) {
+                    // and activate it if all others are already active!
+                    VariantHandlers[Variant.JungleSpidersEverywhere].Load();
                 }
             }
 
@@ -586,6 +605,10 @@ namespace ExtendedVariants.Module {
                         // this variant cannot be enabled, because it does not exist.
                         continue;
                     }
+                    if (variant == Variant.JungleSpidersEverywhere && !JungleHelperInstalled) {
+                        // this variant cannot be enabled, because it does not exist.
+                        continue;
+                    }
 
                     object expectedValue = TriggerManager.GetExpectedVariantValue(variant);
                     object actualValue = TriggerManager.GetCurrentVariantValue(variant);
@@ -691,6 +714,9 @@ namespace ExtendedVariants.Module {
                     case WindEverywhere.WindPattern castValue:
                         Session.VariantsEnabledViaTrigger[v] = "WindEverywhere:" + castValue;
                         break;
+                    case JungleSpidersEverywhere.SpiderType castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "JungleSpidersEverywhere:" + castValue;
+                        break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
@@ -755,6 +781,9 @@ namespace ExtendedVariants.Module {
                             break;
                         case "WindEverywhere":
                             Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(WindEverywhere.WindPattern), value);
+                            break;
+                        case "JungleSpidersEverywhere":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(JungleSpidersEverywhere.SpiderType), value);
                             break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");

@@ -104,6 +104,7 @@ const SpecialHandlingVariants = [
 	"DisplaySpeedometer", # enum
 	"DontRefillDashOnGround", # enum
 	"JumpCount", # integer but with special "infinite" value
+	"JungleSpidersEverywhere", # enum
 	"MadelineBackpackMode", # enum
 	"WindEverywhere" # enum
 ]

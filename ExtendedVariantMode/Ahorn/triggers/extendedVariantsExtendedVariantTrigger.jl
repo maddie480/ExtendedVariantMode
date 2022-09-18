@@ -52,6 +52,10 @@ using ..Ahorn, Maple
 	colorGrade::String="none", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, delayRevertOnDeath::Bool=false, coversScreen::Bool=false,
 	flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/JungleSpidersEverywhereTrigger" JungleSpidersEverywhereTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	newValue::String="Disable", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, delayRevertOnDeath::Bool=false, coversScreen::Bool=false,
+	flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
 	"Extended Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanExtendedVariantTrigger,
@@ -95,6 +99,10 @@ const placements = Ahorn.PlacementDict(
 	),
 	"Extended Variant Trigger (Color Grading) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		ColorGradeTrigger,
+		"rectangle"
+	),
+	"Extended Variant Trigger (Jungle Spiders Everywhere) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		JungleSpidersEverywhereTrigger,
 		"rectangle"
 	),
 )
@@ -180,6 +188,14 @@ Ahorn.editingOptions(trigger::ColorGradeTrigger) = Dict{String, Any}(
 		"max480/extendedvariants/rgbshift1",
 		"max480/extendedvariants/rgbshift2",
 		"max480/extendedvariants/hollys_randomnoise"
+	]
+)
+Ahorn.editingOptions(trigger::JungleSpidersEverywhereTrigger) = Dict{String, Any}(
+	"newValue" => [
+		"Disabled",
+		"Blue",
+		"Purple",
+		"Red"
 	]
 )
 

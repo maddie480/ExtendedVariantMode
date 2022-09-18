@@ -95,7 +95,7 @@ This can be extended by downloading other mods:
 *   Get [DJ Map Helper](https://gamebanana.com/gamefiles/8458) to add a **Reverse Oshiro Everywhere** option to Extended Variants!
 *   Get the [2020 Celeste Spring Community Collab](https://gamebanana.com/maps/211745) or [max480's Helping Hand](https://github.com/max4805/MaxHelpingHand) (1.14.6 or newer) to add a visual option called **Madeline is a Silhouette**, allowing you to play as a ghost playback.
 *   Get [max480's Helping Hand](https://github.com/max4805/MaxHelpingHand) (1.17.3 or newer) to add a visual option called **Madeline has a Ponytail**, which changes Madeline's hair to look like a ponytail, with different hair colors.  
-    
+*   Get [Jungle Helper](https://github.com/max4805/JungleHelper) (1.1.2 or newer) to add a **Jungle Spiders Everywhere** option, to spawn spiders falling from the top of the screen (found in [Into the Jungle](https://gamebanana.com/mods/292719)) on every screen of the game!
 
   
 This mod also includes a **Variant Randomizer**. You get a big bunch of options for that too:  
@@ -115,7 +115,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/853138)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/865433)
 
 To build the project yourself:
 * Clone or download the repo

@@ -103,6 +103,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> risingLavaEverywhereOption;
         private TextMenuOptionExt<int> risingLavaSpeedOption;
         private TextMenuOptionExt<bool> bounceEverywhereOption;
+        private TextMenuOptionExt<int> jungleSpidersEverywhereOption;
         private TextMenuOptionExt<int> superdashSteeringSpeedOption;
         private TextMenuOptionExt<int> screenShakeIntensityOption;
         private TextMenuOptionExt<int> backgroundBrightnessOption;
@@ -490,6 +491,11 @@ namespace ExtendedVariants.UI {
                 risingLavaEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVAEVERYWHERE"), Settings.RisingLavaEverywhere, false)
                     .Change(b => Settings.RisingLavaEverywhere = b);
                 risingLavaSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVASPEED", "x", Settings.RisingLavaSpeed, 10, multiplierScale, f => Settings.RisingLavaSpeed = f);
+
+                jungleSpidersEverywhereOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE"),
+                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE_" + Enum.GetNames(typeof(JungleSpidersEverywhere.SpiderType))[i]),
+                    0, Enum.GetNames(typeof(JungleSpidersEverywhere.SpiderType)).Length - 1, (int) Settings.JungleSpidersEverywhere, 0)
+                    .Change(i => Settings.JungleSpidersEverywhere = (JungleSpidersEverywhere.SpiderType) i);
             }
 
             // ======
@@ -727,7 +733,7 @@ namespace ExtendedVariants.UI {
                         Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag, Variant.DelayBetweenBadelines, Variant.BadelineAttackPattern,
                         Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom, Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroCount,
                         Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown, Variant.SnowballDelay, Variant.DisableSeekerSlowdown, Variant.RisingLavaSpeed,
-                        Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind }
+                        Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind, Variant.JungleSpidersEverywhere }
                         .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
 
                 visualSubmenu.GetHighlight = () =>
@@ -770,7 +776,7 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -890,6 +896,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(jellyfishEverywhereOption);
                 menu.Add(risingLavaEverywhereOption);
                 menu.Add(risingLavaSpeedOption);
+                if (Instance.JungleHelperInstalled) menu.Add(jungleSpidersEverywhereOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.Visual) {
@@ -1033,6 +1040,7 @@ namespace ExtendedVariants.UI {
             colorGradingOption?.ResetToDefault();
             jellyfishEverywhereOption?.ResetToDefault();
             bounceEverywhereOption?.ResetToDefault();
+            jungleSpidersEverywhereOption?.ResetToDefault();
             superdashSteeringSpeedOption?.ResetToDefault();
             screenShakeIntensityOption?.ResetToDefault();
             madelineIsSilhouetteOption?.ResetToDefault();
