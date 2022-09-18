@@ -51,7 +51,7 @@ trigger.fieldInformation = {
             "WallSlidingSpeed",
             "ZoomLevel"
         },
-        editable = true -- TODO change to false when lists are scrollable in Lönn
+        editable = false
     },
     positionMode = {
         options = enums.trigger_position_modes,

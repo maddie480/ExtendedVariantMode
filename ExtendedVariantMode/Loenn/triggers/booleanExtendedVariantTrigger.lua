@@ -65,7 +65,7 @@ trigger.fieldInformation = {
             "TheoCrystalsEverywhere",
             "UpsideDown"
         },
-        editable = true -- TODO change to false when lists are scrollable in Lönn
+        editable = false
     }
 }
 
