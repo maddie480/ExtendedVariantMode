@@ -1,13 +1,13 @@
 ﻿using Celeste;
 using ExtendedVariants.Entities;
 using Monocle;
-using System.Collections;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using System;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 using Celeste.Mod;
+using MonoMod.RuntimeDetour;
 
 namespace ExtendedVariants.Variants {
     public class EverythingIsUnderwater : AbstractExtendedVariant {
@@ -35,7 +35,10 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += onLoadLevel;
             IL.Celeste.Player.NormalUpdate += addNullChecksToWaterTopSurface;
-            IL.Celeste.WaterFall.Update += addNullChecksToWaterTopSurface;
+
+            using (new DetourContext { Before = { "*" } }) {
+                IL.Celeste.WaterFall.Update += addNullChecksToWaterTopSurface;
+            }
 
             // if already in a map, add the underwater switch controller right away.
             if (Engine.Scene is Level level) {
@@ -69,14 +72,36 @@ namespace ExtendedVariants.Variants {
         private void addNullChecksToWaterTopSurface(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
+            VariableDefinition positionStore = new VariableDefinition(il.Import(typeof(Vector2)));
+            il.Body.Variables.Add(positionStore);
+            VariableDefinition multiplierStore = new VariableDefinition(il.Import(typeof(float)));
+            il.Body.Variables.Add(multiplierStore);
+
             while (cursor.TryGotoNext(instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).Name == "DoRipple")) {
                 Logger.Log("ExtendedVariantMode/EverythingIsUnderwater", $"Patching in null check at {cursor.Index} in IL for {cursor.Method.FullName}");
 
-                cursor.Remove();
-                cursor.EmitDelegate<Action<Water.Surface, Vector2, float>>((surface, position, multiplier) => {
-                    // do the same as vanilla code, but with an added null check.
-                    surface?.DoRipple(position, multiplier);
-                });
+                // the goal here is not to call surface.DoRipple if surface is null.
+
+                // store position and multiplier, duplicate WaterSurface
+                cursor.Emit(OpCodes.Stloc, multiplierStore);
+                cursor.Emit(OpCodes.Stloc, positionStore);
+                cursor.Emit(OpCodes.Dup);
+
+                // after DoRipple, insert a pop (to get rid of the duplicated WaterSurface) and place a br to skip over it if we come from DoRipple
+                cursor.Index++;
+                cursor.Emit(OpCodes.Br, cursor.Next);
+                cursor.Emit(OpCodes.Pop);
+                cursor.Index -= 3;
+
+                // add a null check that jumps to the pop if WaterSurface is null
+                cursor.Emit(OpCodes.Ldc_I4_0);
+                cursor.Emit(OpCodes.Beq, cursor.Next.Next.Next);
+
+                // reload position and multiplier, so that DoRipple can be called
+                cursor.Emit(OpCodes.Ldloc, positionStore);
+                cursor.Emit(OpCodes.Ldloc, multiplierStore);
+
+                cursor.Index++;
             }
         }
     }
