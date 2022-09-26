@@ -35,10 +35,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += onLoadLevel;
             IL.Celeste.Player.NormalUpdate += addNullChecksToWaterTopSurface;
-
-            using (new DetourContext { Before = { "*" } }) {
-                IL.Celeste.WaterFall.Update += addNullChecksToWaterTopSurface;
-            }
+            IL.Celeste.WaterFall.Update += addNullChecksToWaterTopSurface;
 
             // if already in a map, add the underwater switch controller right away.
             if (Engine.Scene is Level level) {
