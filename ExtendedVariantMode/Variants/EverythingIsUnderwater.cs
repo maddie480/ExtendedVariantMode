@@ -91,7 +91,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Index -= 3;
 
                 // add a null check that jumps to the pop if WaterSurface is null
-                cursor.Emit(OpCodes.Ldc_I4_0);
+                cursor.Emit(OpCodes.Ldnull);
                 cursor.Emit(OpCodes.Beq, cursor.Next.Next.Next);
 
                 // reload position and multiplier, so that DoRipple can be called
