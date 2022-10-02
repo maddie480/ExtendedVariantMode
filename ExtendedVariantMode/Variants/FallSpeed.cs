@@ -1,10 +1,12 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Monocle;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class FallSpeed : AbstractExtendedVariant {
@@ -25,10 +27,22 @@ namespace ExtendedVariants.Variants {
 
         protected override void DoSetVariantValue(object value) {
             Settings.FallSpeed = (float) value;
+            OnVariantChanged();
         }
 
         public override void SetLegacyVariantValue(int value) {
             Settings.FallSpeed = (value / 10f);
+            OnVariantChanged();
+        }
+
+        public void OnVariantChanged() {
+            Player player = Engine.Scene?.Tracker.GetEntity<Player>();
+
+            if (player != null) {
+                // forcefully drag back maxFall to a sensical value if going from 100x fall speed to 1x for example.
+                DynData<Player> playerData = new DynData<Player>(player);
+                playerData["maxFall"] = Math.Min(playerData.Get<float>("maxFall"), 240f * Settings.FallSpeed);
+            }
         }
 
         public override void Load() {

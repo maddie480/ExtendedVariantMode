@@ -288,7 +288,10 @@ namespace ExtendedVariants.UI {
             if (category == VariantCategory.All || category == VariantCategory.Movement) {
                 // Vertical Speed
                 gravityOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY", "x", Settings.Gravity, 10, multiplierScale, f => Settings.Gravity = f);
-                fallSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED", "x", Settings.FallSpeed, 10, multiplierScale, f => Settings.FallSpeed = f);
+                fallSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED", "x", Settings.FallSpeed, 10, multiplierScale, f => {
+                    Settings.FallSpeed = f;
+                    ((FallSpeed) Instance.VariantHandlers[Variant.FallSpeed]).OnVariantChanged();
+                });
 
                 // Jumping
                 jumpHeightOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT", "x", Settings.JumpHeight, 10, multiplierScale, f => Settings.JumpHeight = f);
