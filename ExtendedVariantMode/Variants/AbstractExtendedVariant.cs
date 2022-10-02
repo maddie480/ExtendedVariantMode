@@ -1,4 +1,5 @@
-﻿using ExtendedVariants.Module;
+﻿using Celeste;
+using ExtendedVariants.Module;
 using System;
 
 namespace ExtendedVariants.Variants {
@@ -55,5 +56,13 @@ namespace ExtendedVariants.Variants {
         /// Called whenever a new level starts with the randomizer enabled and a set seed, to seed the variant's randomness as well.
         /// </summary>
         public virtual void SetRandomSeed(int seed) { }
+
+        /// <summary>
+        /// Indicates whether the variant controls a vanilla or an extended variant.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsVanilla() {
+            return false;
+        }
     }
 }

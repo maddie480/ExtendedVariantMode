@@ -13,6 +13,7 @@ using Celeste.Mod.UI;
 using Microsoft.Xna.Framework;
 using ExtendedVariants.Entities;
 using System.Linq;
+using ExtendedVariants.Variants.Vanilla;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -50,7 +51,11 @@ namespace ExtendedVariants.Module {
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere
+            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere,
+
+            // vanilla variants
+            AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
+            SuperDashing, ThreeSixtyDashing
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -131,7 +136,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AllStrawberriesAreGoldens] = new AllStrawberriesAreGoldens();
             VariantHandlers[Variant.DontRefillDashOnGround] = new DontRefillDashOnGround();
             VariantHandlers[Variant.DontRefillStaminaOnGround] = new DontRefillStaminaOnGround();
-            VariantHandlers[Variant.GameSpeed] = new GameSpeed();
+            VariantHandlers[Variant.GameSpeed] = new Variants.GameSpeed();
             VariantHandlers[Variant.ColorGrading] = new ColorGrading();
             VariantHandlers[Variant.JellyfishEverywhere] = new JellyfishEverywhere();
             VariantHandlers[Variant.InvertHorizontalControls] = new InvertHorizontalControls();
@@ -163,6 +168,21 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AlwaysInvisible] = new AlwaysInvisible();
             VariantHandlers[Variant.DisplaySpeedometer] = new DisplaySpeedometer();
             VariantHandlers[Variant.LegacyDashSpeedBehavior] = new LegacyDashSpeedBehavior();
+
+            // vanilla variants
+            VariantHandlers[Variant.AirDashes] = new AirDashes();
+            VariantHandlers[Variant.DashAssist] = new DashAssist();
+            VariantHandlers[Variant.VanillaGameSpeed] = new Variants.Vanilla.GameSpeed();
+            VariantHandlers[Variant.Hiccups] = new Hiccups();
+            VariantHandlers[Variant.InfiniteStamina] = new InfiniteStamina();
+            VariantHandlers[Variant.Invincible] = new Invincible();
+            VariantHandlers[Variant.InvisibleMotion] = new InvisibleMotion();
+            VariantHandlers[Variant.LowFriction] = new LowFriction();
+            VariantHandlers[Variant.MirrorMode] = new MirrorMode();
+            VariantHandlers[Variant.NoGrabbing] = new NoGrabbing();
+            VariantHandlers[Variant.PlayAsBadeline] = new PlayAsBadeline();
+            VariantHandlers[Variant.SuperDashing] = new SuperDashing();
+            VariantHandlers[Variant.ThreeSixtyDashing] = new ThreeSixtyDashing();
         }
 
         // ================ Mod options setup ================
@@ -307,7 +327,7 @@ namespace ExtendedVariants.Module {
                 // we will then set ShouldAutoResetVariants to false to record we did that, and won't do it ever again.
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Automatically resetting settings to default!");
 
-                ResetToDefaultSettings();
+                ResetToDefaultSettings(isVanilla: false);
                 Settings.AutoResetVariantsOnFirstStartup = false;
             }
         }
@@ -460,7 +480,8 @@ namespace ExtendedVariants.Module {
                 // reset settings to be sure we match what the mapper wants, without anything the user enabled before playing their map.
                 bool settingsChanged = false;
                 if (variantsWereDisabled || Settings.AutomaticallyResetVariants) {
-                    settingsChanged = ResetToDefaultSettings();
+                    settingsChanged = ResetToDefaultSettings(isVanilla: false);
+                    settingsChanged = ResetToDefaultSettings(isVanilla: true) || settingsChanged;
                     SaveSettings();
                 }
                 showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
@@ -503,22 +524,24 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        public bool ResetToDefaultSettings() {
+        public bool ResetToDefaultSettings(bool isVanilla) {
             bool settingChanged = false;
 
             // reset all proper variants to their default values
             foreach (AbstractExtendedVariant variant in VariantHandlers.Values.ToList()) {
-                if (variant.GetType() == typeof(DashDirection)) {
-                    if (ModOptionsEntries.GetDashDirectionIndex() != 0) {
-                        settingChanged = true;
+                if (variant.IsVanilla() == isVanilla) {
+                    if (variant.GetType() == typeof(DashDirection)) {
+                        if (ModOptionsEntries.GetDashDirectionIndex() != 0) {
+                            settingChanged = true;
+                        }
+                    } else {
+                        if (!variant.GetDefaultVariantValue().Equals(variant.GetVariantValue())) {
+                            settingChanged = true;
+                        }
                     }
-                } else {
-                    if (!variant.GetDefaultVariantValue().Equals(variant.GetVariantValue())) {
-                        settingChanged = true;
-                    }
-                }
 
-                variant.SetVariantValue(variant.GetDefaultVariantValue());
+                    variant.SetVariantValue(variant.GetDefaultVariantValue());
+                }
             }
 
             if (settingChanged && SaveData.Instance != null) {
@@ -528,29 +551,6 @@ namespace ExtendedVariants.Module {
             return settingChanged;
         }
 
-        public static void ResetVanillaVariants() {
-            bool wasPlayAsBadeline = SaveData.Instance.Assists.PlayAsBadeline;
-
-            // from SaveData.AssistModeChecks() when both assist and variant mode are disabled
-            SaveData.Instance.Assists = default(Assists);
-            SaveData.Instance.Assists.GameSpeed = 10;
-
-            // apply the Other Self variant right now, if the Other Self variant was enabled before the reset.
-            Player p = Engine.Scene.Tracker.GetEntity<Player>();
-            if (wasPlayAsBadeline && p != null) {
-                PlayerSpriteMode mode = p.DefaultSpriteMode;
-                if (p.Active) {
-                    p.ResetSpriteNextFrame(mode);
-                } else {
-                    p.ResetSprite(mode);
-                }
-            }
-
-            if (SaveData.Instance != null) {
-                Instance.Randomizer.RefreshEnabledVariantsDisplayList();
-            }
-        }
-
         // ==================== Reset Variants commands =====================
 
         [Command("reset_vanilla_variants", "[from Extended Variant Mode] resets vanilla variants to their default values")]
@@ -558,13 +558,13 @@ namespace ExtendedVariants.Module {
             if (SaveData.Instance == null) {
                 Engine.Commands.Log("This command only works when a save is loaded!");
             } else {
-                ResetVanillaVariants();
+                Instance.ResetToDefaultSettings(isVanilla: true);
             }
         }
 
         [Command("reset_extended_variants", "[from Extended Variant Mode] resets extended variants to their default values")]
         public static void CmdResetExtendedVariants() {
-            Instance.ResetToDefaultSettings();
+            Instance.ResetToDefaultSettings(isVanilla: false);
         }
 
         // ================ Stamp on Chapter Complete screen ================
@@ -607,6 +607,10 @@ namespace ExtendedVariants.Module {
                     }
                     if (variant == Variant.JungleSpidersEverywhere && !JungleHelperInstalled) {
                         // this variant cannot be enabled, because it does not exist.
+                        continue;
+                    }
+                    if (VariantHandlers[variant].IsVanilla()) {
+                        // do not take vanilla variants into account for showing the extended variants icon.
                         continue;
                     }
 
@@ -717,6 +721,9 @@ namespace ExtendedVariants.Module {
                     case JungleSpidersEverywhere.SpiderType castValue:
                         Session.VariantsEnabledViaTrigger[v] = "JungleSpidersEverywhere:" + castValue;
                         break;
+                    case Assists.DashModes castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "DashModes:" + castValue;
+                        break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
@@ -784,6 +791,9 @@ namespace ExtendedVariants.Module {
                             break;
                         case "JungleSpidersEverywhere":
                             Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(JungleSpidersEverywhere.SpiderType), value);
+                            break;
+                        case "DashModes":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(Assists.DashModes), value);
                             break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");

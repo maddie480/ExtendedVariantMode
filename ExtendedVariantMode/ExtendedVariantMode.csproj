@@ -102,6 +102,7 @@
     <None Include="Ahorn\entities\extendedVariantsExtendedVariantController.jl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Entities\ForMappers\AirDashesTrigger.cs" />
     <Compile Include="Entities\ForMappers\ColorGradeTrigger.cs" />
     <Compile Include="Entities\AutoDestroyingReverseOshiroModder.cs" />
     <Compile Include="Entities\AutoDestroyingAngryOshiro.cs" />
@@ -249,6 +250,20 @@
     <Compile Include="Variants\SwimmingSpeed.cs" />
     <Compile Include="Variants\TheoCrystalsEverywhere.cs" />
     <Compile Include="Variants\UpsideDown.cs" />
+    <Compile Include="Variants\Vanilla\AbstractVanillaVariant.cs" />
+    <Compile Include="Variants\Vanilla\Invincible.cs" />
+    <Compile Include="Variants\Vanilla\GameSpeed.cs" />
+    <Compile Include="Variants\Vanilla\AirDashes.cs" />
+    <Compile Include="Variants\Vanilla\InfiniteStamina.cs" />
+    <Compile Include="Variants\Vanilla\DashAssist.cs" />
+    <Compile Include="Variants\Vanilla\PlayAsBadeline.cs" />
+    <Compile Include="Variants\Vanilla\Hiccups.cs" />
+    <Compile Include="Variants\Vanilla\SuperDashing.cs" />
+    <Compile Include="Variants\Vanilla\LowFriction.cs" />
+    <Compile Include="Variants\Vanilla\NoGrabbing.cs" />
+    <Compile Include="Variants\Vanilla\MirrorMode.cs" />
+    <Compile Include="Variants\Vanilla\InvisibleMotion.cs" />
+    <Compile Include="Variants\Vanilla\ThreeSixtyDashing.cs" />
     <Compile Include="Variants\WallbouncingSpeed.cs" />
     <Compile Include="Variants\WallSlidingSpeed.cs" />
     <Compile Include="Variants\WindEverywhere.cs" />
@@ -313,6 +328,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\lang\en_gb.lang">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\airDashesTrigger.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\booleanVanillaVariantTrigger.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\gameSpeedTrigger.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\badelineAttackPatternTrigger.lua">

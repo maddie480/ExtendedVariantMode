@@ -186,3 +186,39 @@ placements.triggers.ExtendedVariantMode/SetJumpCountTrigger.tooltips.mode="Set" 
 # Reset Variants Trigger
 placements.triggers.ExtendedVariantMode/ResetVariantsTrigger.tooltips.vanilla=Whether this trigger should reset all vanilla variants on entry.
 placements.triggers.ExtendedVariantMode/ResetVariantsTrigger.tooltips.extended=Whether this trigger should reset all extended variants on entry.
+
+# Boolean Vanilla Variants Trigger
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.variantChange=The variant to change.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.newValue=Whether the variant should be enabled or disabled when entering the trigger.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Air Dashes Trigger
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.newValue=The new value for the variant.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Game Speed Trigger
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.newValue=The new value for the variant.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.

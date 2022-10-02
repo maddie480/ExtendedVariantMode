@@ -219,18 +219,32 @@ namespace ExtendedVariants {
             return ExtendedVariantsModule.Instance.VariantHandlers[variant].GetVariantValue();
         }
 
-        public void ResetAllVariantsToDefault() {
+        public void ResetAllVariantsToDefault(bool isVanilla) {
             // reset the variants themselves
-            ExtendedVariantsModule.Instance.ResetToDefaultSettings();
+            ExtendedVariantsModule.Instance.ResetToDefaultSettings(isVanilla);
 
             // reset the session
-            ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Clear();
+            filterOutVariants(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, isVanilla);
 
             // reset the variants set in the room
-            oldVariantsInRoom.Clear();
-            overridenVariantsInRoom.Clear();
-            overridenVariantsInRoomRevertOnLeave.Clear();
-            variantValuesBeforeOverride.Clear();
+            filterOutVariants(oldVariantsInRoom, isVanilla);
+            filterOutVariants(overridenVariantsInRoom, isVanilla);
+            filterOutVariants(overridenVariantsInRoomRevertOnLeave, isVanilla);
+            filterOutVariants(variantValuesBeforeOverride, isVanilla);
+        }
+
+        private void filterOutVariants(Dictionary<ExtendedVariantsModule.Variant, object> list, bool isVanilla) {
+            foreach (ExtendedVariantsModule.Variant variant in list.Keys.ToList()) {
+                if (ExtendedVariantsModule.Instance.VariantHandlers.TryGetValue(variant, out AbstractExtendedVariant variantHandler) && variantHandler.IsVanilla()) {
+                    if (isVanilla) {
+                        list.Remove(variant);
+                    }
+                } else {
+                    if (!isVanilla) {
+                        list.Remove(variant);
+                    }
+                }
+            }
         }
 
         internal class LegacyVariantValue {

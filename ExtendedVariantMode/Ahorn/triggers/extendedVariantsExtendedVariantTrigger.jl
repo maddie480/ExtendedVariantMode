@@ -56,6 +56,18 @@ using ..Ahorn, Maple
 	newValue::String="Disable", revertOnLeave::Bool=false, revertOnDeath::Bool=true, withTeleport::Bool=false, delayRevertOnDeath::Bool=false, coversScreen::Bool=false,
 	flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/BooleanVanillaVariantTrigger" BooleanVanillaVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	variantChange::String="Invincible", newValue::Bool=true, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
+@mapdef Trigger "ExtendedVariantMode/GameSpeedTrigger" GameSpeedTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	variantChange::String="VanillaGameSpeed", enable::Bool=true, newValue::Int=10, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
+@mapdef Trigger "ExtendedVariantMode/AirDashesTrigger" AirDashesTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	variantChange::String="AirDashes", enable::Bool=true, newValue::String="Infinite", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
 	"Extended Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanExtendedVariantTrigger,
@@ -103,6 +115,18 @@ const placements = Ahorn.PlacementDict(
 	),
 	"Extended Variant Trigger (Jungle Spiders Everywhere) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		JungleSpidersEverywhereTrigger,
+		"rectangle"
+	),
+	"Vanilla Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		BooleanVanillaVariantTrigger,
+		"rectangle"
+	),
+	"Vanilla Variant Trigger (Game Speed) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		GameSpeedTrigger,
+		"rectangle"
+	),
+	"Vanilla Variant Trigger (Air Dashes) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		AirDashesTrigger,
 		"rectangle"
 	),
 )
@@ -198,11 +222,44 @@ Ahorn.editingOptions(trigger::JungleSpidersEverywhereTrigger) = Dict{String, Any
 		"Red"
 	]
 )
+Ahorn.editingOptions(trigger::BooleanVanillaVariantTrigger) = Dict{String, Any}(
+	"variantChange" => [
+		"DashAssist",
+		"Hiccups",
+		"InfiniteStamina",
+		"Invincible",
+		"InvisibleMotion",
+		"LowFriction",
+		"MirrorMode",
+		"NoGrabbing",
+		"PlayAsBadeline",
+		"SuperDashing",
+		"ThreeSixtyDashing"
+	]
+)
+Ahorn.editingOptions(trigger::GameSpeedTrigger) = Dict{String, Any}(
+	"newValue" => Dict{String, Int}(
+		"0.5x" => 5,
+		"0.6x" => 6,
+		"0.7x" => 7,
+		"0.8x" => 8,
+		"0.9x" => 9,
+		"1x" => 10,
+		"1.2x" => 12,
+		"1.4x" => 14,
+		"1.6x" => 16
+	)
+)
+Ahorn.editingOptions(trigger::AirDashesTrigger) = Dict{String, Any}(
+	"newValue" => [ "Normal", "Two", "Infinite" ]
+)
 
 Ahorn.editingOrder(trigger::DashDirectionTrigger) = String["x", "y", "width", "height", "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"]
 
 # those are internally Integer Extended Variant Triggers that render differently: Jump Count has the "infinite" checkbox, and Badeline Attack Pattern has a dropdown.
 Ahorn.editingIgnored(trigger::JumpCountTrigger, multiple::Bool=false) = String["variantChange"]
 Ahorn.editingIgnored(trigger::BadelineAttackPatternTrigger, multiple::Bool=false) = String["variantChange"]
+Ahorn.editingIgnored(trigger::GameSpeedTrigger, multiple::Bool=false) = String["variantChange"]
+Ahorn.editingIgnored(trigger::AirDashesTrigger, multiple::Bool=false) = String["variantChange"]
 
 end

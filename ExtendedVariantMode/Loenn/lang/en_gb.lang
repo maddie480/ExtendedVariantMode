@@ -210,3 +210,42 @@ triggers.ExtendedVariantMode/ResetVariantsTrigger.placements.name.extended=Reset
 triggers.ExtendedVariantMode/ResetVariantsTrigger.placements.name.both=Reset Variants Trigger (Both)
 triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.vanilla=Whether this trigger should reset all vanilla variants on entry.
 triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.extended=Whether this trigger should reset all extended variants on entry.
+
+# Boolean Vanilla Variants Trigger
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.placements.name.trigger=Vanilla Variant (Boolean)
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.variantChange=The variant to change.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.newValue=Whether the variant should be enabled or disabled when entering the trigger.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.flag=The flag this trigger should react to.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Air Dashes Trigger
+triggers.ExtendedVariantMode/AirDashesTrigger.placements.name.trigger=Vanilla Variant (Air Dashes)
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.newValue=The new value for the variant.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.flag=The flag this trigger should react to.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+triggers.ExtendedVariantMode/AirDashesTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Game Speed Trigger
+triggers.ExtendedVariantMode/GameSpeedTrigger.placements.name.trigger=Vanilla Variant (Game Speed)
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.newValue=The new value for the variant.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.flag=The flag this trigger should react to.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+triggers.ExtendedVariantMode/GameSpeedTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
