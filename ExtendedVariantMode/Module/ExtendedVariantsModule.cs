@@ -327,7 +327,7 @@ namespace ExtendedVariants.Module {
                 // we will then set ShouldAutoResetVariants to false to record we did that, and won't do it ever again.
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Automatically resetting settings to default!");
 
-                ResetToDefaultSettings(isVanilla: false);
+                ResetVariantsToDefaultSettings(isVanilla: false);
                 Settings.AutoResetVariantsOnFirstStartup = false;
             }
         }
@@ -480,8 +480,8 @@ namespace ExtendedVariants.Module {
                 // reset settings to be sure we match what the mapper wants, without anything the user enabled before playing their map.
                 bool settingsChanged = false;
                 if (variantsWereDisabled || Settings.AutomaticallyResetVariants) {
-                    settingsChanged = ResetToDefaultSettings(isVanilla: false);
-                    settingsChanged = ResetToDefaultSettings(isVanilla: true) || settingsChanged;
+                    settingsChanged = ResetVariantsToDefaultSettings(isVanilla: false);
+                    settingsChanged = ResetVariantsToDefaultSettings(isVanilla: true) || settingsChanged;
                     SaveSettings();
                 }
                 showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
@@ -524,7 +524,22 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        public bool ResetToDefaultSettings(bool isVanilla) {
+        /// <summary>
+        /// Resets both vanilla and extended variants to default settings.
+        /// </summary>
+        /// <returns>true if any variant changed, false otherwise.</returns>
+        public bool ResetToDefaultSettings() {
+            bool vanillaVariantReset = ResetVariantsToDefaultSettings(isVanilla: true);
+            bool extendedVariantReset = ResetVariantsToDefaultSettings(isVanilla: false);
+            return vanillaVariantReset || extendedVariantReset;
+        }
+
+        /// <summary>
+        /// Resets either vanilla or extended variants to default settings.
+        /// </summary>
+        /// <param name="isVanilla">Whether to reset vanilla variants (true) or extended variants (false)</param>
+        /// <returns>true if any variant changed, false otherwise.</returns>
+        public bool ResetVariantsToDefaultSettings(bool isVanilla) {
             bool settingChanged = false;
 
             // reset all proper variants to their default values
@@ -558,13 +573,13 @@ namespace ExtendedVariants.Module {
             if (SaveData.Instance == null) {
                 Engine.Commands.Log("This command only works when a save is loaded!");
             } else {
-                Instance.ResetToDefaultSettings(isVanilla: true);
+                Instance.ResetVariantsToDefaultSettings(isVanilla: true);
             }
         }
 
         [Command("reset_extended_variants", "[from Extended Variant Mode] resets extended variants to their default values")]
         public static void CmdResetExtendedVariants() {
-            Instance.ResetToDefaultSettings(isVanilla: false);
+            Instance.ResetVariantsToDefaultSettings(isVanilla: false);
         }
 
         // ================ Stamp on Chapter Complete screen ================

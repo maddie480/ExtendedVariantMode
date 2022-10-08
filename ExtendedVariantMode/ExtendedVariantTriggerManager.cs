@@ -221,7 +221,7 @@ namespace ExtendedVariants {
 
         public void ResetAllVariantsToDefault(bool isVanilla) {
             // reset the variants themselves
-            ExtendedVariantsModule.Instance.ResetToDefaultSettings(isVanilla);
+            ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla);
 
             // reset the session
             filterOutVariants(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, isVanilla);
