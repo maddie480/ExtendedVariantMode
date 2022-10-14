@@ -34,6 +34,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> dashSpeedOption;
         private TextMenuOptionExt<bool> legacyDashSpeedBehaviorOption;
         private TextMenuOptionExt<int> dashCountOption;
+        private TextMenuOptionExt<int> cornerCorrectionOption;
         private TextMenuOptionExt<bool> disableDashCooldownOption;
         private TextMenuOptionExt<bool> heldDashOption;
         private TextMenuOptionExt<int> frictionOption;
@@ -408,6 +409,9 @@ namespace ExtendedVariants.UI {
                 disableDashCooldownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEDASHCOOLDOWN"), Settings.DisableDashCooldown, false)
                     .Change(b => Settings.DisableDashCooldown = b);
 
+                cornerCorrectionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_CORNERCORRECTION", "", Settings.CornerCorrection, 4, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 },
+                    i => Settings.CornerCorrection = i, i => i + "px");
+
                 // Moving
                 speedXOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX", "x", Settings.SpeedX, 10, multiplierScale, f => Settings.SpeedX = f);
                 swimmingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED", "x", Settings.SwimmingSpeed, 10, multiplierScale, f => Settings.SwimmingSpeed = f);
@@ -727,7 +731,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown }
+                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -779,7 +783,7 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -847,6 +851,7 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
                 menu.Add(preserveExtraDashesUnderwaterOption);
                 menu.Add(disableDashCooldownOption);
+                menu.Add(cornerCorrectionOption);
 
                 menu.Add(movingTitle);
                 menu.Add(speedXOption);
@@ -972,6 +977,7 @@ namespace ExtendedVariants.UI {
             dashSpeedOption?.ResetToDefault();
             legacyDashSpeedBehaviorOption?.ResetToDefault();
             dashCountOption?.ResetToDefault();
+            cornerCorrectionOption?.ResetToDefault();
             frictionOption?.ResetToDefault();
             airFrictionOption?.ResetToDefault();
             disableWallJumpingOption?.ResetToDefault();

@@ -7,6 +7,7 @@ const IntegerVariants = [
 	"BadelineBossCount",
 	"BadelineBossNodeCount",
 	"ChaserCount",
+	"CornerCorrection",
 	"DashCount",
 	"JellyfishEverywhere",
 	"OshiroCount",

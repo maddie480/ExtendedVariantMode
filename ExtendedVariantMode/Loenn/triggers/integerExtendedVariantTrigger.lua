@@ -25,6 +25,7 @@ trigger.fieldInformation = {
             "BadelineBossCount",
             "BadelineBossNodeCount",
             "ChaserCount",
+            "CornerCorrection",
             "DashCount",
             "JellyfishEverywhere",
             "OshiroCount",

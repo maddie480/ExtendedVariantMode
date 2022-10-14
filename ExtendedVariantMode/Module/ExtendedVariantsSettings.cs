@@ -65,6 +65,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public int CornerCorrection { get; set; } = 4;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool DisableDashCooldown { get; set; } = false;
 
         // ======================================

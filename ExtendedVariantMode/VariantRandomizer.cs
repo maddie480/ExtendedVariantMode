@@ -288,6 +288,10 @@ namespace ExtendedVariants {
                 // random 0-220 (so 0x to 2x the vanilla value)
                 extendedVariant.SetVariantValue(randomGenerator.Next(220));
 
+            } else if (variant == ExtendedVariantsModule.Variant.CornerCorrection) {
+                // random 0-9
+                extendedVariant.SetVariantValue(randomGenerator.Next(10));
+
             } else if (variant == ExtendedVariantsModule.Variant.BoostMultiplier) {
                 // same scale as other multiplier variants... except it can be negative as well!
                 float[] multiplierScale = new float[] {
@@ -418,6 +422,9 @@ namespace ExtendedVariants {
                     ExtendedVariantsModule.Variant.SnowballDelay, ExtendedVariantsModule.Variant.RegularHiccups }.Contains(variant)) {
                     // time variants
                     enabledVariantsToDisplay.Add($"{variantName}: {variantValue}s");
+
+                } else if (variant == ExtendedVariantsModule.Variant.CornerCorrection) {
+                    enabledVariantsToDisplay.Add($"{variantName}: {variantValue}px");
 
                 } else if (variantType == typeof(bool)) {
                     if ((bool) defaultValue) {
