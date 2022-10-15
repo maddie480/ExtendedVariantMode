@@ -87,6 +87,7 @@ Adds some options to the Mod Options menu:
 *   **Coyote Time**: allows you to modify the time during which you can jump after walking off a platform (0.1 second by default).
 *   **Preserve Extra Dashes Underwater**: if you have 2 dashes with a max of 1 (like in Farewell with double dash crystals), dashing in water would usually make you keep this second dash. this setting allows you to turn that behavior off.
 *   **Disable Dash Cooldown**: makes it so you don't have to wait for 0.2 seconds after a dash before being able to dash again.
+*   **Corner Correction**: when you dash into a wall corner, Madeline can slide by up to 4 pixels to get around the corner. This variant allows you to remove this behavior or to amplify it!
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
 
   
@@ -115,7 +116,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/873954)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/877070)
 
 To build the project yourself:
 * Clone or download the repo
