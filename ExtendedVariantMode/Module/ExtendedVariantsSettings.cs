@@ -408,6 +408,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public float MinimumDelayBeforeThrowing { get; set; } = 1f;
 
+        [SettingIgnore]
+        public float DelayBeforeRegrabbing { get; set; } = 1f;
+
         // ======================================
 
         [SettingIgnore]

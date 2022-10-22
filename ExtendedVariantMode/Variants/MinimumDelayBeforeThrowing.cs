@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 
 namespace ExtendedVariants.Variants {
-    internal class MinimumDelayBeforeThrowing : AbstractExtendedVariant {
+    public class MinimumDelayBeforeThrowing : AbstractExtendedVariant {
         private static ILHook hookPickup = null;
 
         public override Type GetVariantType() {

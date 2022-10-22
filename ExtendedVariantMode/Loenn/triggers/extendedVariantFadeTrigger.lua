@@ -27,6 +27,7 @@ trigger.fieldInformation = {
             "CoyoteTime",
             "DashLength",
             "DashSpeed",
+            "DelayBeforeRegrabbing",
             "DelayBetweenBadelines",
             "ExplodeLaunchSpeed",
             "FallSpeed",

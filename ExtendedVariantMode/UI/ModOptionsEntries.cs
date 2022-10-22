@@ -117,6 +117,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> disableClimbingUpOrDownOption;
         private TextMenuOptionExt<int> pickupDurationOption;
         private TextMenuOptionExt<int> minimumDelayBeforeThrowingOption;
+        private TextMenuOptionExt<int> delayBeforeRegrabbingOption;
         private TextMenuOptionExt<bool> friendlyBadelineFollowerOption;
         private TextMenuOptionExt<bool> displayDashCountOption;
         private TextMenuOptionExt<bool> everyJumpIsUltraOption;
@@ -430,6 +431,7 @@ namespace ExtendedVariants.UI {
                 // Holdables
                 pickupDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_PICKUPDURATION", "x", Settings.PickupDuration, 10, multiplierScale, f => Settings.PickupDuration = f);
                 minimumDelayBeforeThrowingOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_MINIMUMDELAYBEFORETHROWING", "x", Settings.MinimumDelayBeforeThrowing, 10, multiplierScale, f => Settings.MinimumDelayBeforeThrowing = f);
+                delayBeforeRegrabbingOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DELAYBEFOREREGRABBING", "x", Settings.DelayBeforeRegrabbing, 10, multiplierScale, f => Settings.DelayBeforeRegrabbing = f);
             }
 
             // ======
@@ -738,7 +740,8 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing }
+                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
+                        Variant.DelayBeforeRegrabbing }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -791,7 +794,7 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
-                pickupDurationOption, minimumDelayBeforeThrowingOption };
+                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -876,6 +879,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(holdablesTitle);
                 menu.Add(pickupDurationOption);
                 menu.Add(minimumDelayBeforeThrowingOption);
+                menu.Add(delayBeforeRegrabbingOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameElements) {
@@ -1072,6 +1076,7 @@ namespace ExtendedVariants.UI {
             disableClimbingUpOrDownOption?.ResetToDefault();
             pickupDurationOption?.ResetToDefault();
             minimumDelayBeforeThrowingOption?.ResetToDefault();
+            delayBeforeRegrabbingOption?.ResetToDefault();
             friendlyBadelineFollowerOption?.ResetToDefault();
             displayDashCountOption?.ResetToDefault();
             everyJumpIsUltraOption?.ResetToDefault();
