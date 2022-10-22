@@ -403,6 +403,11 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public float PickupDuration { get; set; } = 1f;
+
+        // ======================================
+
+        [SettingIgnore]
         public float SwimmingSpeed { get; set; } = 1f;
 
         // ======================================

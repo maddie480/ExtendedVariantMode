@@ -160,6 +160,7 @@
     <Compile Include="Variants\DisableDashCooldown.cs" />
     <Compile Include="Variants\DisableJumpingOutOfWater.cs" />
     <Compile Include="Variants\DisableKeysSpotlight.cs" />
+    <Compile Include="Variants\PickupDuration.cs" />
     <Compile Include="Variants\JungleSpidersEverywhere.cs" />
     <Compile Include="Variants\LegacyDashSpeedBehavior.cs" />
     <Compile Include="Variants\DontRefillStaminaOnGround.cs" />

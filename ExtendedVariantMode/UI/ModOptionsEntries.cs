@@ -115,6 +115,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> madelineHasPonytailOption;
         private TextMenuOptionExt<bool> dashTrailAllTheTimeOption;
         private TextMenuOptionExt<bool> disableClimbingUpOrDownOption;
+        private TextMenuOptionExt<int> PickupDurationOption;
         private TextMenuOptionExt<bool> friendlyBadelineFollowerOption;
         private TextMenuOptionExt<bool> displayDashCountOption;
         private TextMenuOptionExt<bool> everyJumpIsUltraOption;
@@ -424,6 +425,9 @@ namespace ExtendedVariants.UI {
                 airFrictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION", "x", Settings.AirFriction, 11, multiplierScaleFriction, f => Settings.AirFriction = f);
                 disableClimbingUpOrDownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"), Settings.DisableClimbingUpOrDown, false)
                     .Change(b => Settings.DisableClimbingUpOrDown = b);
+
+                // Holdables
+                PickupDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_PICKUPDURATION", "x", Settings.PickupDuration, 10, multiplierScale, f => Settings.PickupDuration = f);
             }
 
             // ======
@@ -685,13 +689,14 @@ namespace ExtendedVariants.UI {
 
             TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
                 oshiroTitle = null, theoTitle = null, everywhereTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null,
-                madelineTitle = null, levelTitle = null;
+                madelineTitle = null, levelTitle = null, holdablesTitle = null;
 
             if (category == VariantCategory.All || category == VariantCategory.Movement) {
                 verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
                 jumpingTitle = buildHeading(menu, "JUMPING");
                 dashingTitle = buildHeading(menu, "DASHING");
                 movingTitle = buildHeading(menu, "MOVING");
+                holdablesTitle = buildHeading(menu, "HOLDABLES");
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameElements) {
@@ -731,7 +736,7 @@ namespace ExtendedVariants.UI {
                         Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection }
+                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -783,7 +788,8 @@ namespace ExtendedVariants.UI {
                 allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption };
+                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
+                PickupDurationOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -864,6 +870,9 @@ namespace ExtendedVariants.UI {
                 disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
                 menu.Add(boostMultiplierOption);
                 menu.Add(disableClimbingUpOrDownOption);
+
+                menu.Add(holdablesTitle);
+                menu.Add(PickupDurationOption);
             }
 
             if (category == VariantCategory.All || category == VariantCategory.GameElements) {
@@ -1058,6 +1067,7 @@ namespace ExtendedVariants.UI {
             madelineBackpackModeOption?.ResetToDefault();
             displaySpeedometerOption?.ResetToDefault();
             disableClimbingUpOrDownOption?.ResetToDefault();
+            PickupDurationOption?.ResetToDefault();
             friendlyBadelineFollowerOption?.ResetToDefault();
             displayDashCountOption?.ResetToDefault();
             everyJumpIsUltraOption?.ResetToDefault();

@@ -42,6 +42,7 @@ trigger.fieldInformation = {
             "HiccupStrength",
             "HyperdashSpeed",
             "JumpHeight",
+            "PickupDuration",
             "RegularHiccups",
             "RisingLavaSpeed",
             "RoomLighting",
