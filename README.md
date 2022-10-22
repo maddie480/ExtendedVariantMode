@@ -89,6 +89,10 @@ Adds some options to the Mod Options menu:
 *   **Disable Dash Cooldown**: makes it so you don't have to wait for 0.2 seconds after a dash before being able to dash again.
 *   **Corner Correction**: when you dash into a wall corner, Madeline can slide by up to 4 pixels to get around the corner. This variant allows you to remove this behavior or to amplify it!
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
+*   A few variants related to **holdables** (like **Theo and jellies**):
+    * **Pickup Duration**: the time it takes for Madeline to take the holdable. If you make this delay bigger, the animation will be slowed down, and Madeline's position will be frozen for longer.
+    * **Minimum Delay Before Throwing**: the minimum delay after grabbing the holdable before you can throw it away.
+    * **Delay Before Regrabbing**: the minimum delay after throwing a holdable before you can grab it again.
 
   
 This can be extended by downloading other mods:  
@@ -116,7 +120,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/877070)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/880146)
 
 To build the project yourself:
 * Clone or download the repo
