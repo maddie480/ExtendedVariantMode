@@ -38,6 +38,7 @@ trigger.fieldInformation = {
             "HiccupStrength",
             "HyperdashSpeed",
             "JumpHeight",
+            "MinimumDelayBeforeThrowing",
             "PickupDuration",
             "RegularHiccups",
             "RisingLavaSpeed",

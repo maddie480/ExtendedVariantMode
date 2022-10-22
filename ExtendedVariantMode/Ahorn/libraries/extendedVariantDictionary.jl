@@ -37,6 +37,7 @@ const FloatVariants = [
 	"HiccupStrength",
 	"HyperdashSpeed",
 	"JumpHeight",
+	"MinimumDelayBeforeThrowing",
 	"PickupDuration",
 	"RegularHiccups",
 	"RisingLavaSpeed",
