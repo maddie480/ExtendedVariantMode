@@ -69,15 +69,15 @@ using ..Ahorn, Maple
 	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 const placements = Ahorn.PlacementDict(
-	"Extended Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+	"Extended Variant Trigger – Generic (On/Off Toggles) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanExtendedVariantTrigger,
 		"rectangle"
 	),
-	"Extended Variant Trigger (Integer) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+	"Extended Variant Trigger – Generic (Whole Numbers) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		IntegerExtendedVariantTrigger,
 		"rectangle"
 	),
-	"Extended Variant Trigger (Float) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+	"Extended Variant Trigger – Generic (Decimal Numbers) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		FloatExtendedVariantTrigger,
 		"rectangle"
 	),
@@ -117,7 +117,7 @@ const placements = Ahorn.PlacementDict(
 		JungleSpidersEverywhereTrigger,
 		"rectangle"
 	),
-	"Vanilla Variant Trigger (Boolean) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+	"Vanilla Variant Trigger – Generic (On/Off Toggles) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanVanillaVariantTrigger,
 		"rectangle"
 	),

@@ -35,7 +35,7 @@ triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.placements.na
 triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.attributes.description.enable=Whether this trigger should enable or disable the on-screen display of extended variants.
 
 # Boolean Extended Variants Trigger
-triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.placements.name.trigger=Extended Variant (Boolean)
+triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.placements.name.trigger=Extended Variant – Generic (On/Off Toggles)
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.variantChange=The variant to change.
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.newValue=Whether the variant should be enabled or disabled when entering the trigger.
@@ -48,7 +48,7 @@ triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.descriptio
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Integer Extended Variants Trigger
-triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.placements.name.trigger=Extended Variant (Integer)
+triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.placements.name.trigger=Extended Variant – Generic (Whole Numbers)
 triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.attributes.description.variantChange=The variant to change.
 triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.attributes.description.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.attributes.description.newValue=The new value for the variant. Should be an integer number.
@@ -62,7 +62,7 @@ triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.attributes.descriptio
 triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Float Extended Variants Trigger
-triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.placements.name.trigger=Extended Variant (Float)
+triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.placements.name.trigger=Extended Variant – Generic (Decimal Numbers)
 triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.attributes.description.variantChange=The variant to change.
 triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.attributes.description.enable=If checked, the variant will take the provided value. If unchecked, the variant will be reset to its default value.
 triggers.ExtendedVariantMode/FloatExtendedVariantTrigger.attributes.description.newValue=The new value for the variant. Should be a number. For percentage variants, type the percentage divided by 100 (for example, 60% is 0.6).
@@ -212,7 +212,7 @@ triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.vanilla
 triggers.ExtendedVariantMode/ResetVariantsTrigger.attributes.description.extended=Whether this trigger should reset all extended variants on entry.
 
 # Boolean Vanilla Variants Trigger
-triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.placements.name.trigger=Vanilla Variant (Boolean)
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.placements.name.trigger=Vanilla Variant – Generic (On/Off Toggles)
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.variantChange=The variant to change.
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.newValue=Whether the variant should be enabled or disabled when entering the trigger.
