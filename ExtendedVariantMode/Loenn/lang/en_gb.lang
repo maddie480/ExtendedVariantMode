@@ -144,6 +144,18 @@ triggers.ExtendedVariantMode/JumpCountTrigger.attributes.description.flagInverte
 triggers.ExtendedVariantMode/JumpCountTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 triggers.ExtendedVariantMode/JumpCountTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
+# Max Fall Speed Trigger
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.placements.name.trigger=Extended Variant (Max Fall Speed)
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.newValue=The new value for the variant.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.legacy=Checking this will activate old behavior where reducing the max fall speed does not apply immediately.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.flag=The flag this trigger should react to.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+triggers.ExtendedVariantMode/MaxFallSpeedTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
 # Madeline Backpack Mode Trigger
 triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.placements.name.trigger=Extended Variant (Madeline Backpack Mode)
 triggers.ExtendedVariantMode/MadelineBackpackModeTrigger.attributes.description.newValue=The new value for the variant.

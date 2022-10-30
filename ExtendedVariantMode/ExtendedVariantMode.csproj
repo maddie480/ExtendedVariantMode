@@ -112,6 +112,7 @@
     <Compile Include="Entities\ForMappers\BooleanExtendedVariantTrigger.cs" />
     <Compile Include="Entities\ForMappers\FloatExtendedVariantFadeTrigger.cs" />
     <Compile Include="Entities\ForMappers\JungleSpidersEverywhereTrigger.cs" />
+    <Compile Include="Entities\ForMappers\MaxFallSpeedTrigger.cs" />
     <Compile Include="Entities\ForMappers\ResetVariantsTrigger.cs" />
     <Compile Include="Entities\ForMappers\WindEverywhereTrigger.cs" />
     <Compile Include="Entities\ForMappers\MadelineBackpackModeTrigger.cs" />
@@ -359,6 +360,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\dontRefillDashOnGroundTrigger.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Loenn\triggers\maxFallSpeedTrigger.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Loenn\triggers\jungleSpidersEverywhereTrigger.lua">

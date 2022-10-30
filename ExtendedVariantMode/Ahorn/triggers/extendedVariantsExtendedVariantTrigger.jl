@@ -39,6 +39,10 @@ using ..Ahorn, Maple
 @mapdef Trigger "ExtendedVariantMode/JumpCountTrigger" JumpCountTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	variantChange::String="JumpCount", newValue::Int=1, infinite::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
 	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
+@mapdef Trigger "ExtendedVariantMode/MaxFallSpeedTrigger" MaxFallSpeedTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	newValue::Number=1.0, legacy::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false,
+	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 	
 @mapdef Trigger "ExtendedVariantMode/MadelineBackpackModeTrigger" MadelineBackpackModeTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
 	newValue::String="NoBackpack", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
@@ -103,6 +107,10 @@ const placements = Ahorn.PlacementDict(
 	),
 	"Extended Variant Trigger (Madeline Backpack Mode) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		MadelineBackpackModeTrigger,
+		"rectangle"
+	),
+	"Extended Variant Trigger (Max Fall Speed) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		MaxFallSpeedTrigger,
 		"rectangle"
 	),
 	"Extended Variant Trigger (Wind Everywhere) (Extended Variant Mode)" => Ahorn.EntityPlacement(
