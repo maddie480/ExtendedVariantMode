@@ -134,7 +134,7 @@ namespace ExtendedVariants {
         private void onUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0) {
-                    variantChangeTimer -= Engine.DeltaTime;
+                    variantChangeTimer -= Engine.RawDeltaTime;
                     if (variantChangeTimer <= 0f) {
                         // variant timer is over => change variant now!
                         changeVariantNow();
@@ -146,7 +146,7 @@ namespace ExtendedVariants {
 
 
                 if (ExtendedVariantsModule.Settings.Vanillafy != 0) {
-                    vanillafyTimer -= Engine.DeltaTime;
+                    vanillafyTimer -= Engine.RawDeltaTime;
                     if (vanillafyTimer <= 0f) {
                         // disable a variant
                         changeVariantNow(true);
