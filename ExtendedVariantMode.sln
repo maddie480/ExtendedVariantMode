@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendedVariantMode", "ExtendedVariantMode\ExtendedVariantMode.csproj", "{8CBA6958-CD94-44B4-970B-5FC3DBE6B019}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Celeste.Mod.mm", "Everest\Celeste.Mod.mm\Celeste.Mod.mm.csproj", "{D5D0239D-FF95-4897-9484-1898AB7E82F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendedVariantMode", "ExtendedVariantMode.csproj", "{8CBA6958-CD94-44B4-970B-5FC3DBE6B019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>ExtendedVariantMode</AssemblyName>
+    <RootNamespace>ExtendedVariants</RootNamespace>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoMod.RuntimeDetour" Version="22.1.4.3" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="NLua" Version="1.4.25" PrivateAssets="all" ExcludeAssets="runtime" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BetterRefillGems">
+      <HintPath>lib-stripped\BetterRefillGems.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Celeste">
+      <HintPath>lib-stripped\Celeste.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DJMapHelper">
+      <HintPath>lib-stripped\DJMapHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FNA">
+      <HintPath>lib-stripped\FNA.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="JungleHelper">
+      <HintPath>lib-stripped\JungleHelper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MMHOOK_Celeste">
+      <HintPath>lib-stripped/MMHOOK_Celeste.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+</Project>

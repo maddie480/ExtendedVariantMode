@@ -1,0 +1,31 @@
+name: Build using .NET Core
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.108
+
+    - name: Restore with .NET Core
+      run: dotnet restore
+
+    - name: Build using Mono
+      run: msbuild *.sln "/p:Configuration=Release"
+
+    - name: Publish release
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions'
+      env:
+        ZIPNAME: ExtendedVariantMode
+        GITHUB_SHA: ${{ github.sha }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        ZIPNAME=$ZIPNAME-${GITHUB_SHA:0:8}.zip
+        zip -qq -r $ZIPNAME everest.yaml bin/Release/net452/ExtendedVariantMode.* Ahorn Dialog Graphics Loenn
+        curl -H 'Content-Type: multipart/form-data' -X POST -F "file=@$ZIPNAME" "$DISCORD_WEBHOOK"
