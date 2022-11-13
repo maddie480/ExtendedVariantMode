@@ -1,20 +1,13 @@
 ﻿using Celeste;
-using Celeste.Mod;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants {
     public class BoostMultiplier : AbstractExtendedVariant {
-        private static ILHook playerOrigWallJumpHook;
+        private static Hook liftBoostHook;
 
         public override Type GetVariantType() {
             return typeof(float);
@@ -37,40 +30,24 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            // hooking methods returning Vector2 is cursed. so let's hook its usages instead.
-            IL.Celeste.Player.LaunchedBoostCheck += hookLiftBoostUsages;
-            IL.Celeste.Player.Jump += hookLiftBoostUsages;
-            IL.Celeste.Player.SuperJump += hookLiftBoostUsages;
-            IL.Celeste.Player.SuperWallJump += hookLiftBoostUsages;
-
-            playerOrigWallJumpHook = new ILHook(typeof(Player).GetMethod("orig_WallJump", BindingFlags.NonPublic | BindingFlags.Instance), hookLiftBoostUsages);
+            liftBoostHook = new Hook(
+                typeof(Player).GetMethod("get_LiftBoost", BindingFlags.NonPublic | BindingFlags.Instance),
+                typeof(BoostMultiplier).GetMethod("multiplyLiftBoost", BindingFlags.NonPublic | BindingFlags.Instance), this);
         }
 
         public override void Unload() {
-            IL.Celeste.Player.LaunchedBoostCheck -= hookLiftBoostUsages;
-            IL.Celeste.Player.Jump -= hookLiftBoostUsages;
-            IL.Celeste.Player.SuperJump -= hookLiftBoostUsages;
-            IL.Celeste.Player.SuperWallJump -= hookLiftBoostUsages;
-
-            playerOrigWallJumpHook?.Dispose();
-            playerOrigWallJumpHook = null;
+            liftBoostHook?.Dispose();
+            liftBoostHook = null;
         }
 
-        private void hookLiftBoostUsages(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("get_LiftBoost"))) {
-                Logger.Log("ExtendedVariantMode/BoostMultiplier", $"Modding lift boost at {cursor.Index} in IL for {il.Method.FullName}");
+        private Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
+            Vector2 result = orig(self);
 
-                // turn LiftBoost into LiftBoost * (Settings.BoostMultiplier / 10f)
-                cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Func<Vector2, Player, Vector2>>((orig, self) => {
-                    if (Settings.BoostMultiplier < 0f) {
-                        // capping has to be flipped around too!
-                        orig.Y = Calc.Clamp(self.LiftSpeed.Y, 0f, 130f);
-                    }
-                    return orig * (Settings.BoostMultiplier);
-                });
+            if (Settings.BoostMultiplier < 0f) {
+                // capping has to be flipped around too!
+                result.Y = Calc.Clamp(self.LiftSpeed.Y, 0f, 130f);
             }
+            return result * Settings.BoostMultiplier;
         }
     }
 }
