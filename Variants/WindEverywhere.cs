@@ -15,20 +15,8 @@ namespace ExtendedVariants.Variants {
         private bool snowBackdropAddedByEVM = false;
 
         public enum WindPattern {
-            Default,
-            Left = WindController.Patterns.Left,
-            Right = WindController.Patterns.Right,
-            LeftStrong = WindController.Patterns.LeftStrong,
-            RightStrong = WindController.Patterns.RightStrong,
-            RightCrazy = WindController.Patterns.RightCrazy,
-            LeftOnOff = WindController.Patterns.LeftOnOff,
-            RightOnOff = WindController.Patterns.RightOnOff,
-            Alternating = WindController.Patterns.Alternating,
-            LeftOnOffFast = WindController.Patterns.LeftOnOffFast,
-            RightOnOffFast = WindController.Patterns.RightOnOffFast,
-            Down = WindController.Patterns.Down,
-            Up = WindController.Patterns.Up,
-            Random
+            Default, None, Left, Right, LeftStrong, RightStrong, RightCrazy, LeftOnOff, RightOnOff, Alternating,
+            LeftOnOffFast, RightOnOffFast, Down, Up, Random
         }
 
         public override Type GetVariantType() {
@@ -110,17 +98,6 @@ namespace ExtendedVariants.Variants {
 
         private void applyWind(Level level) {
             if (Settings.WindEverywhere != WindPattern.Default) {
-                if (!snowBackdropAddedByEVM) {
-                    // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
-                    // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
-                    level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
-                    snowBackdropAddedByEVM = true;
-                }
-
-                // also switch the audio ambience so that wind can actually be heard too
-                // (that's done by switching to the ch4 audio ambience. yep)
-                Audio.SetAmbience("event:/env/amb/04_main", true);
-
                 WindController.Patterns selectedPattern;
                 if (Settings.WindEverywhere == WindPattern.Random) {
                     // pick up random wind
@@ -133,7 +110,8 @@ namespace ExtendedVariants.Variants {
                     selectedPattern = allPatterns[randomGenerator.Next(allPatterns.Length)];
                 } else {
                     // pick up the chosen wind pattern
-                    selectedPattern = (WindController.Patterns) Settings.WindEverywhere;
+                    selectedPattern = (WindController.Patterns) Enum.Parse(typeof(WindController.Patterns),
+                        Enum.GetName(typeof(WindPattern), Settings.WindEverywhere));
                 }
 
                 // and apply it; this is basically what Wind Trigger does
@@ -146,6 +124,19 @@ namespace ExtendedVariants.Variants {
                 } else {
                     windController.SetPattern(selectedPattern);
                 }
+            }
+
+            if (Settings.WindEverywhere != WindPattern.Default && Settings.WindEverywhere != WindPattern.None) {
+                if (!snowBackdropAddedByEVM) {
+                    // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
+                    // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
+                    level.Foreground.Backdrops.Add(new ExtendedVariantWindSnowFG() { Alpha = 0f });
+                    snowBackdropAddedByEVM = true;
+                }
+
+                // also switch the audio ambience so that wind can actually be heard too
+                // (that's done by switching to the ch4 audio ambience. yep)
+                Audio.SetAmbience("event:/env/amb/04_main", true);
             } else if (snowBackdropAddedByEVM) {
                 // remove the backdrop
                 level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(ExtendedVariantWindSnowFG));
