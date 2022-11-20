@@ -31,7 +31,7 @@ Adds some options to the Mod Options menu:
     *   The "Affect Existing Chasers" option will also modify the number of Badelines on screens where there already are chasers, like Old Site in the base game. except in the screen where you first encounter Badeline because that would trigger the cutscene 10 times at the same time
 *   **Badeline Bosses Everywhere**: Spawn up to _5 bosses_ (from chapter 6) in every room of the game. The first boss will spawn in the opposite side of the room (this is customizable though), the other ones at random positions. Each boss can have up to 5 different positions before disappearing. You can customize the bosses' pattern, and also apply this pattern to existing bosses.
 *   **Oshiro Everywhere**: Have Oshiro (or even _multiple Oshiros_) attack you on every screen! You can also disable the slowdown Oshiro triggers if he gets close to you.
-*   **Wind Everywhere**: Adds wind to every screen. Also replaces wind on screens where there is already wind.
+*   **Wind Everywhere**: Adds wind to every screen. Also replaces wind on screens where there is already wind. You can pick "No Wind" in order to disable wind on screens that have it!
 *   **Snowballs Everywhere**: Add snowballs to every screen etc etc (you can also set the delay between two snowballs!)
 *   **Add Seekers**: This adds seekers in random locations on every screen. (If the screen already contained seekers, those will add up.) You can also disable the slowdown effect the seekers trigger when they get closed to you (this only happens in some levels though).
 *   **Theo Crystals Everywhere**: Whenever you respawn, a Theo crystal spawns with you. You can't change screens unless you hold it!
@@ -120,7 +120,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/890926)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/893972)
 
 To build the project yourself:
 * Clone or download the repo
