@@ -233,3 +233,14 @@ placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.flag=The flag 
 placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 placements.triggers.ExtendedVariantMode/GameSpeedTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Disable Climbing Up or Down Trigger
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.newValue=The new value for the variant.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.

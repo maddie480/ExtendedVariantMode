@@ -341,6 +341,12 @@ namespace ExtendedVariants.Module {
             }
         }
 
+        public override void PrepareMapDataProcessors(MapDataFixup context) {
+            base.PrepareMapDataProcessors(context);
+
+            context.Add<ExtendedVariantsMapDataProcessor>();
+        }
+
         private ILHook hookOnVersionNumberAndVariants;
 
         public void HookStuff() {
@@ -748,6 +754,9 @@ namespace ExtendedVariants.Module {
                     case Assists.DashModes castValue:
                         Session.VariantsEnabledViaTrigger[v] = "DashModes:" + castValue;
                         break;
+                    case DisableClimbingUpOrDown.ClimbUpOrDownOptions castValue:
+                        Session.VariantsEnabledViaTrigger[v] = "DisableClimbingUpOrDown:" + castValue;
+                        break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
@@ -818,6 +827,9 @@ namespace ExtendedVariants.Module {
                             break;
                         case "DashModes":
                             Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(Assists.DashModes), value);
+                            break;
+                        case "DisableClimbingUpOrDown":
+                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions), value);
                             break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");

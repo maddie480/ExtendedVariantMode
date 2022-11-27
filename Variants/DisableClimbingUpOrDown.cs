@@ -6,13 +6,14 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class DisableClimbingUpOrDown : AbstractExtendedVariant {
+        public enum ClimbUpOrDownOptions { Disabled, Up, Down, Both }
 
         public override Type GetVariantType() {
-            return typeof(bool);
+            return typeof(ClimbUpOrDownOptions);
         }
 
         public override object GetDefaultVariantValue() {
-            return false;
+            return ClimbUpOrDownOptions.Disabled;
         }
 
         public override object GetVariantValue() {
@@ -20,11 +21,11 @@ namespace ExtendedVariants.Variants {
         }
 
         protected override void DoSetVariantValue(object value) {
-            Settings.DisableClimbingUpOrDown = (bool) value;
+            Settings.DisableClimbingUpOrDown = (ClimbUpOrDownOptions) value;
         }
 
         public override void SetLegacyVariantValue(int value) {
-            Settings.DisableClimbingUpOrDown = (value != 0);
+            Settings.DisableClimbingUpOrDown = (value == 0 ? ClimbUpOrDownOptions.Disabled : ClimbUpOrDownOptions.Both);
         }
 
         public override void Load() {
@@ -44,10 +45,16 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/DisableClimbingUpOrDown", $"Modifying MoveY to prevent player from moving @ {cursor.Index} in IL for Player.ClimbUpdate");
                 cursor.EmitDelegate<Func<int, int>>(orig => {
-                    if (Settings.DisableClimbingUpOrDown) {
-                        return 0; // player isn't holding up or down...
+                    switch (Settings.DisableClimbingUpOrDown) {
+                        case ClimbUpOrDownOptions.Both:
+                            return 0;
+                        case ClimbUpOrDownOptions.Up:
+                            return Math.Max(0, orig);
+                        case ClimbUpOrDownOptions.Down:
+                            return Math.Min(0, orig);
+                        default:
+                            return orig;
                     }
-                    return orig;
                 });
             }
         }

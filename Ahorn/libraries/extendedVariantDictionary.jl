@@ -70,7 +70,6 @@ const BooleanVariants = [
 	"ChangePatternsOfExistingBosses",
 	"DashTrailAllTheTime",
 	"DisableClimbJumping",
-	"DisableClimbingUpOrDown",
 	"DisableDashCooldown",
 	"DisableJumpingOutOfWater",
 	"DisableKeysSpotlight",
@@ -109,6 +108,7 @@ const SpecialHandlingVariants = [
 	"BadelineAttackPattern", # technically integer, but not easy to use
 	"DashDirection", # bool[][]
 	"ColorGrading", # string
+	"DisableClimbingUpOrDown", # enum
 	"DisplaySpeedometer", # enum
 	"DontRefillDashOnGround", # enum
 	"JumpCount", # integer but with special "infinite" value

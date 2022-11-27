@@ -31,7 +31,6 @@ trigger.fieldInformation = {
             "ChangePatternsOfExistingBosses",
             "DashTrailAllTheTime",
             "DisableClimbJumping",
-            "DisableClimbingUpOrDown",
             "DisableDashCooldown",
             "DisableJumpingOutOfWater",
             "DisableKeysSpotlight",

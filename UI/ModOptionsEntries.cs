@@ -118,7 +118,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> madelineIsSilhouetteOption;
         private TextMenuOptionExt<bool> madelineHasPonytailOption;
         private TextMenuOptionExt<bool> dashTrailAllTheTimeOption;
-        private TextMenuOptionExt<bool> disableClimbingUpOrDownOption;
+        private TextMenuOptionExt<int> disableClimbingUpOrDownOption;
         private TextMenuOptionExt<int> pickupDurationOption;
         private TextMenuOptionExt<int> minimumDelayBeforeThrowingOption;
         private TextMenuOptionExt<int> delayBeforeRegrabbingOption;
@@ -431,8 +431,12 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.DisableSuperBoosts = b);
                 frictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FRICTION", "x", Settings.Friction, 11, multiplierScaleFriction, f => Settings.Friction = f);
                 airFrictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION", "x", Settings.AirFriction, 11, multiplierScaleFriction, f => Settings.AirFriction = f);
-                disableClimbingUpOrDownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"), Settings.DisableClimbingUpOrDown, false)
-                    .Change(b => Settings.DisableClimbingUpOrDown = b);
+
+                disableClimbingUpOrDownOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"),
+                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + Enum.GetNames(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions))[i]),
+                    0, Enum.GetNames(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions)).Length - 1, (int) Settings.DisableClimbingUpOrDown, 0)
+                    .Change(i => Settings.DisableClimbingUpOrDown = (DisableClimbingUpOrDown.ClimbUpOrDownOptions) i);
+
                 horizontalSpringBounceDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALSPRINGBOUNCEDURATION", "x", Settings.HorizontalSpringBounceDuration, 10, multiplierScale, f => Settings.HorizontalSpringBounceDuration = f);
                 horizontalWallJumpDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION", "x", Settings.HorizontalWallJumpDuration, 10, multiplierScale, f => Settings.HorizontalWallJumpDuration = f);
 

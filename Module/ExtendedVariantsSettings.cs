@@ -412,7 +412,7 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
-        public bool DisableClimbingUpOrDown { get; set; } = false;
+        public DisableClimbingUpOrDown.ClimbUpOrDownOptions DisableClimbingUpOrDown { get; set; } = Variants.DisableClimbingUpOrDown.ClimbUpOrDownOptions.Disabled;
 
         // ======================================
 

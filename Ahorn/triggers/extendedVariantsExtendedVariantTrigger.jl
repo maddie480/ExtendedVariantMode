@@ -72,6 +72,10 @@ using ..Ahorn, Maple
 	variantChange::String="AirDashes", enable::Bool=true, newValue::String="Infinite", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
 	coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/DisableClimbingUpOrDownTrigger" DisableClimbingUpOrDownTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+	newValue::String="Both", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
+	flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
 	"Extended Variant Trigger – Generic (On/Off Toggles) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		BooleanExtendedVariantTrigger,
@@ -135,6 +139,10 @@ const placements = Ahorn.PlacementDict(
 	),
 	"Vanilla Variant Trigger (Air Dashes) (Extended Variant Mode)" => Ahorn.EntityPlacement(
 		AirDashesTrigger,
+		"rectangle"
+	),
+	"Extended Variant Trigger (Disable Climbing Up or Down) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+		DisableClimbingUpOrDownTrigger,
 		"rectangle"
 	),
 )
@@ -260,6 +268,9 @@ Ahorn.editingOptions(trigger::GameSpeedTrigger) = Dict{String, Any}(
 )
 Ahorn.editingOptions(trigger::AirDashesTrigger) = Dict{String, Any}(
 	"newValue" => [ "Normal", "Two", "Infinite" ]
+)
+Ahorn.editingOptions(trigger::DisableClimbingUpOrDownTrigger) = Dict{String, Any}(
+	"newValue" => [ "Disabled", "Up", "Down", "Both" ]
 )
 
 Ahorn.editingOrder(trigger::DashDirectionTrigger) = String["x", "y", "width", "height", "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"]
