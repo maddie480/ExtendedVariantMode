@@ -64,6 +64,11 @@ namespace ExtendedVariants.Variants {
                 // vanilla is 0.55 all the time => in 2x, you get 0.7, 0.85 with superdash
                 selfData["gliderBoostTimer"] = (superDash ? 0.3f : 0.15f) * Settings.DashLength + (superDash ? 0.25f : 0.4f);
             }
+
+            if (Settings.DashTimerMultiplier != 1f) {
+                DynData<Player> selfData = new DynData<Player>(self);
+                selfData["dashAttackTimer"] = Settings.DashTimerMultiplier * selfData.Get<float>("dashAttackTimer");
+            }
         }
 
         private void modDashLength(ILContext il) {

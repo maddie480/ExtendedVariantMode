@@ -52,7 +52,7 @@ namespace ExtendedVariants.Module {
             DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
-            MinimumDelayBeforeThrowing, DelayBeforeRegrabbing,
+            MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -96,6 +96,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.WallBouncingSpeed] = new WallbouncingSpeed();
             VariantHandlers[Variant.WallSlidingSpeed] = new WallSlidingSpeed();
             VariantHandlers[Variant.DashLength] = new DashLength();
+            VariantHandlers[Variant.DashTimerMultiplier] = new DashTimerMultiplier();
             VariantHandlers[Variant.ForceDuckOnGround] = new ForceDuckOnGround();
             VariantHandlers[Variant.InvertDashes] = new InvertDashes();
             VariantHandlers[Variant.InvertGrab] = new InvertGrab();

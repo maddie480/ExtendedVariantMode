@@ -26,6 +26,7 @@ const FloatVariants = [
 	"CoyoteTime",
 	"DashLength",
 	"DashSpeed",
+	"DashTimerMultiplier",
 	"DelayBeforeRegrabbing",
 	"DelayBetweenBadelines",
 	"ExplodeLaunchSpeed",

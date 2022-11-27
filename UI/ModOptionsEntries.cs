@@ -52,6 +52,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> wallBouncingSpeedOption;
         private TextMenuOptionExt<int> wallSlidingSpeedOption;
         private TextMenuOptionExt<int> dashLengthOption;
+        private TextMenuOptionExt<int> dashTimerMultiplierOption;
         private TextMenuOptionExt<int> dashDirectionOption;
         private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
         private TextMenuOptionExt<bool> forceDuckOnGroundOption;
@@ -335,6 +336,7 @@ namespace ExtendedVariants.UI {
                         Instance.VariantHandlers[Variant.DashSpeed].Load();
                     });
                 dashLengthOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH", "x", Settings.DashLength, 10, multiplierScale, f => Settings.DashLength = f);
+                dashTimerMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER", "x", Settings.DashTimerMultiplier, 10, multiplierScale, f => Settings.DashTimerMultiplier = f);
                 dashDirectionOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
                     i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 3, GetDashDirectionIndex(), 0).Change(i => {
                         switch (i) {
@@ -741,7 +743,7 @@ namespace ExtendedVariants.UI {
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                         Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                        Variant.DelayBeforeRegrabbing }
+                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -794,7 +796,7 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
-                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption };
+                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -849,6 +851,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(legacyDashSpeedBehaviorOption);
                 legacyDashSpeedBehaviorOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR_HINT"));
                 menu.Add(dashLengthOption);
+                menu.Add(dashTimerMultiplierOption);
+                dashTimerMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER_DESCRIPTION"));
                 menu.Add(dashDirectionOption);
                 menu.Add(dashDirectionsSubMenu);
                 menu.Add(hyperdashSpeedOption);
@@ -1009,6 +1013,7 @@ namespace ExtendedVariants.UI {
             wallBouncingSpeedOption?.ResetToDefault();
             wallSlidingSpeedOption?.ResetToDefault();
             dashLengthOption?.ResetToDefault();
+            dashTimerMultiplierOption?.ResetToDefault();
             dashDirectionOption?.ResetToDefault();
             forceDuckOnGroundOption?.ResetToDefault();
             invertDashesOption?.ResetToDefault();

@@ -130,6 +130,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public float DashLength { get; set; } = 1f;
 
+        [SettingIgnore]
+        public float DashTimerMultiplier { get; set; } = 1f;
+
         // ======================================
 
         [SettingIgnore]
