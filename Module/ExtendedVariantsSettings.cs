@@ -167,6 +167,14 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingIgnore]
+        public float HorizontalSpringBounceDuration { get; set; } = 1f;
+
+        [SettingIgnore]
+        public float HorizontalWallJumpDuration { get; set; } = 1f;
+
+        // ======================================
+
+        [SettingIgnore]
         public bool BadelineChasersEverywhere { get; set; } = false;
 
         [SettingIgnore]

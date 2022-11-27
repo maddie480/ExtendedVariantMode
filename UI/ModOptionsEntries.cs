@@ -48,6 +48,8 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> upsideDownOption;
         private TextMenuOptionExt<int> hyperdashSpeedOption;
         private TextMenuOptionExt<int> explodeLaunchSpeedOption;
+        private TextMenuOptionExt<int> horizontalSpringBounceDurationOption;
+        private TextMenuOptionExt<int> horizontalWallJumpDurationOption;
         private TextMenuOptionExt<bool> disableSuperBoostsOption;
         private TextMenuOptionExt<bool> dontRefillStaminaOnGroundOption;
         private TextMenuOptionExt<int> wallBouncingSpeedOption;
@@ -431,6 +433,8 @@ namespace ExtendedVariants.UI {
                 airFrictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION", "x", Settings.AirFriction, 11, multiplierScaleFriction, f => Settings.AirFriction = f);
                 disableClimbingUpOrDownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"), Settings.DisableClimbingUpOrDown, false)
                     .Change(b => Settings.DisableClimbingUpOrDown = b);
+                horizontalSpringBounceDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALSPRINGBOUNCEDURATION", "x", Settings.HorizontalSpringBounceDuration, 10, multiplierScale, f => Settings.HorizontalSpringBounceDuration = f);
+                horizontalWallJumpDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION", "x", Settings.HorizontalWallJumpDuration, 10, multiplierScale, f => Settings.HorizontalWallJumpDuration = f);
 
                 // Holdables
                 pickupDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_PICKUPDURATION", "x", Settings.PickupDuration, 10, multiplierScale, f => Settings.PickupDuration = f);
@@ -745,7 +749,7 @@ namespace ExtendedVariants.UI {
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                         Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration }
+                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -798,7 +802,8 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
-                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption };
+                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption, horizontalSpringBounceDurationOption,
+                horizontalWallJumpDurationOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -842,6 +847,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(disableClimbJumpingOption);
                 menu.Add(disableJumpingOutOfWaterOption);
                 menu.Add(disableNeutralJumpingOption);
+                menu.Add(horizontalWallJumpDurationOption);
+                horizontalWallJumpDurationOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION_HINT"));
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
                 menu.Add(everyJumpIsUltraOption);
@@ -882,6 +889,7 @@ namespace ExtendedVariants.UI {
                 disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
                 menu.Add(boostMultiplierOption);
                 menu.Add(disableClimbingUpOrDownOption);
+                menu.Add(horizontalSpringBounceDurationOption);
 
                 menu.Add(holdablesTitle);
                 menu.Add(pickupDurationOption);
@@ -1012,6 +1020,8 @@ namespace ExtendedVariants.UI {
             upsideDownOption?.ResetToDefault();
             hyperdashSpeedOption?.ResetToDefault();
             explodeLaunchSpeedOption?.ResetToDefault();
+            horizontalSpringBounceDurationOption?.ResetToDefault();
+            horizontalWallJumpDurationOption?.ResetToDefault();
             disableSuperBoostsOption?.ResetToDefault();
             dontRefillStaminaOnGroundOption?.ResetToDefault();
             wallBouncingSpeedOption?.ResetToDefault();

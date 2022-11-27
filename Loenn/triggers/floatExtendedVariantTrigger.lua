@@ -42,6 +42,8 @@ trigger.fieldInformation = {
             "GlitchEffect",
             "Gravity",
             "HiccupStrength",
+	        "HorizontalSpringBounceDuration",
+	        "HorizontalWallJumpDuration",
             "HyperdashSpeed",
             "JumpDuration",
             "JumpHeight",

@@ -37,6 +37,8 @@ const FloatVariants = [
 	"GlitchEffect",
 	"Gravity",
 	"HiccupStrength",
+	"HorizontalSpringBounceDuration",
+	"HorizontalWallJumpDuration",
 	"HyperdashSpeed",
 	"JumpDuration",
 	"JumpHeight",
