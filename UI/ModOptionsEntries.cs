@@ -27,6 +27,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> gravityOption;
         private TextMenuOptionExt<int> fallSpeedOption;
         private TextMenuOptionExt<int> jumpHeightOption;
+        private TextMenuOptionExt<int> jumpDurationOption;
         private TextMenuOptionExt<int> speedXOption;
         private TextMenuOptionExt<int> swimmingSpeedOption;
         private TextMenuOptionExt<int> boostMultiplierOption;
@@ -300,6 +301,7 @@ namespace ExtendedVariants.UI {
 
                 // Jumping
                 jumpHeightOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT", "x", Settings.JumpHeight, 10, multiplierScale, f => Settings.JumpHeight = f);
+                jumpDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPDURATION", "x", Settings.JumpDuration, 10, multiplierScale, f => Settings.JumpDuration = f);
                 wallBouncingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED", "x", Settings.WallBouncingSpeed, 10, multiplierScale, f => Settings.WallBouncingSpeed = f);
                 disableWallJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
                     .Change(b => Settings.DisableWallJumping = b);
@@ -743,7 +745,7 @@ namespace ExtendedVariants.UI {
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                         Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier }
+                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -796,7 +798,7 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
-                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption };
+                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -834,6 +836,7 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(jumpingTitle);
                 menu.Add(jumpHeightOption);
+                menu.Add(jumpDurationOption);
                 menu.Add(wallBouncingSpeedOption);
                 menu.Add(disableWallJumpingOption);
                 menu.Add(disableClimbJumpingOption);
@@ -990,6 +993,7 @@ namespace ExtendedVariants.UI {
             gravityOption?.ResetToDefault();
             fallSpeedOption?.ResetToDefault();
             jumpHeightOption?.ResetToDefault();
+            jumpDurationOption?.ResetToDefault();
             speedXOption?.ResetToDefault();
             swimmingSpeedOption?.ResetToDefault();
             boostMultiplierOption?.ResetToDefault();

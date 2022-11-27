@@ -39,6 +39,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public float JumpHeight { get; set; } = 1f;
 
+        [SettingIgnore]
+        public float JumpDuration { get; set; } = 1f;
+
         // ======================================
 
         [SettingIgnore]
