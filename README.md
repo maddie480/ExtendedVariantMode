@@ -6,27 +6,31 @@ Adds some options to the Mod Options menu:
 
 *   **Gravity** and **Max fall speed**: can be used together  create a "space" effect, where falling is slower
 *   **Jump height**: control the max height of Madeline' jumps
+*   **Max jump duration**: Madeline will continue to go up for longer (or for a shorter time) if you hold the Jump button.
 *   **Horizontal speed**: affects all horizontal movement when going around
 *   **Swimming speed**: changes the speed cap when Madeline is swimming inside water
     
 *   **Stamina**: affects the ability to climb and grab
 *   **Dash speed** and **Dash duration**: allows for faster and/or longer dashes
 *   **Dash count**: disable dashing or give Madeline up to 5 dashes (also affects refills)
+*   **Dash timer multiplier**: this one messes with the internal timer Celeste uses to check if you are dashing or not. Raising this will give you more time to walljump for example!
 *   **Ground friction**: make the ground more or less slippery everywhere
 *   **Air friction**: makes steering in the air more or less quick... setting this to 0x makes it impossible to steer left/right in air.
 *   **Disable wall jumping** and **Disable climb jumping** (in case you want to make Celeste not Celeste anymore)
 *   **Disable jumping out of water**: this prevents Madeline from jumping out of water, and also from jumping on water (which is normally possible without entering water with good timing).
-*   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up or down. You can still go up by climb jumping (_unless you disable that too_).  
+*   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up, down, or both. You can still go up by climb jumping (_unless you disable that too_).
 
 *   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair (Refill Jumps on Dash Refill will give you back your extra jumps whenever you get your dash back)
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 *   **Explode Launch Speed**: Modifies the speed given by bumpers, puffer fish and respawning seekers. You can also choose to **disable super boosts** that you get by holding away from the explosion.  
+*   **Horizontal Spring Bounce Duration**: determines the time during which you cannot change direction after bouncing on a spring.
 *   **Wall Sliding Speed**: Modifies the speed Madeline gets when sliding on a wall. She usually slows down for a bit while friction particles appear, but you can make her accelerate instead!
     
 *   **Boost Multiplier**: Makes the speed you get from jumping from a moving block smaller or bigger. You can also _invert_ the direction of that boost.  
     
 *   **Disable neutral jumping**: Prevents you from using that technique to climb walls without losing stamina. Neutral jumps now behave like normal jumps!
+*   **Horizontal Wall Jump Duration**: When you don't neutral jump, the game forces Madeline to go in the opposite direction for a bit. You can make that delay shorter or longer with this variant. _Setting that to 0x allows you to neutral jump by just moving towards the wall and jumping!_
 *   **Badeline Chasers Everywhere**: Get Badeline to chase you on every screen in the mountain! (with customizable number of Badelines and delay because why not)
     *   The "Affect Existing Chasers" option will also modify the number of Badelines on screens where there already are chasers, like Old Site in the base game. except in the screen where you first encounter Badeline because that would trigger the cutscene 10 times at the same time
 *   **Badeline Bosses Everywhere**: Spawn up to _5 bosses_ (from chapter 6) in every room of the game. The first boss will spawn in the opposite side of the room (this is customizable though), the other ones at random positions. Each boss can have up to 5 different positions before disappearing. You can customize the bosses' pattern, and also apply this pattern to existing bosses.
@@ -120,7 +124,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/893972)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/898026)
 
 To build the project yourself:
 * Clone or download the repo
