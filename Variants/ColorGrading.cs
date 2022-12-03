@@ -71,7 +71,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // when the variant is enabled, replace the values of both lastColorGrade and Session.ColorGrade when the Render method checks them.
-            // this way, 
+            // this way,
             // 1/ the game thinks this is both the current and previous color grades, and that there is no fade to make
             // 2/ we don't touch the session itself, so it will behave like normal
             // 3/ when we disable the variant, everything goes back to normal again.

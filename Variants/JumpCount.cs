@@ -234,7 +234,7 @@ namespace ExtendedVariants.Variants {
                 return initialJumpGraceTimer;
             }
             if (initialJumpGraceTimer > 0f || (Settings.JumpCount != int.MaxValue && jumpBuffer <= 0)) {
-                // return the default value because we don't want to change anything 
+                // return the default value because we don't want to change anything
                 // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
             }

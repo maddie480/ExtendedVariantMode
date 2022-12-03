@@ -105,7 +105,7 @@ namespace ExtendedVariants.Variants {
             if (cursor.TryGotoNext(instr => instr.MatchLdcR4(4f))) {
                 Logger.Log("ExtendedVariantMode/AddSeekers", $"Adding condition for time control at {cursor.Index} in CIL code for SeekerEffectsController.Update");
 
-                // by placing ourselves just in front of the 4f, we can turn this into 
+                // by placing ourselves just in front of the 4f, we can turn this into
                 // Engine.TimeRate = Calc.Approach(Engine.TimeRate, transformTimeRate(target), 4f * Engine.DeltaTime);
                 // by injecting a single delegate call
                 cursor.EmitDelegate<Func<float, float>>(transformTimeRate);
