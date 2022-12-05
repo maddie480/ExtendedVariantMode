@@ -158,7 +158,7 @@ namespace ExtendedVariants {
                 variantValuesBeforeOverride[variantChange] = oldValue;
             }
 
-            if (revertOnDeath) {
+            if (revertOnDeath || revertOnLeave) {
                 // store the fact that the variant was changed within the room
                 // so that it can be reverted if we die, or saved if we save & quit later
                 // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
