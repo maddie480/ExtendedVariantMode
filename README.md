@@ -20,7 +20,9 @@ Adds some options to the Mod Options menu:
 *   **Disable jumping out of water**: this prevents Madeline from jumping out of water, and also from jumping on water (which is normally possible without entering water with good timing).
 *   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up, down, or both. You can still go up by climb jumping (_unless you disable that too_).
 
-*   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair (Refill Jumps on Dash Refill will give you back your extra jumps whenever you get your dash back)
+*   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair.
+    *    **Refill Jumps on Dash Refill** will give you back your extra jumps whenever you get your dash back.
+    *    **Reset Jump Count on Ground** allows you to choose whether you want to refill jumps on ground (if you have a base Jump Count higher than 1) or whether you get to keep extra jumps when landing on the ground in maps using jump refills!
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 *   **Explode Launch Speed**: Modifies the speed given by bumpers, puffer fish and respawning seekers. You can also choose to **disable super boosts** that you get by holding away from the explosion.
@@ -124,7 +126,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/901686)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/906767)
 
 To build the project yourself:
 * Clone or download the repo
