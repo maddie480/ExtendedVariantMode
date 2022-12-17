@@ -97,6 +97,7 @@ const BooleanVariants = [
     "OshiroEverywhere",
     "PreserveExtraDashesUnderwater",
     "RefillJumpsOnDashRefill",
+    "ResetJumpCountOnGround",
     "RestoreDashesOnRespawn",
     "RisingLavaEverywhere",
     "SnowballsEverywhere",

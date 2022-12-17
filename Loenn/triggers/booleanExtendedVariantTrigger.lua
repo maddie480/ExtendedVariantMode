@@ -58,6 +58,7 @@ trigger.fieldInformation = {
             "OshiroEverywhere",
             "PreserveExtraDashesUnderwater",
             "RefillJumpsOnDashRefill",
+            "ResetJumpCountOnGround",
             "RestoreDashesOnRespawn",
             "RisingLavaEverywhere",
             "SnowballsEverywhere",

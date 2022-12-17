@@ -53,6 +53,7 @@ namespace ExtendedVariants.Module {
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
+            ResetJumpCountOnGround,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -116,6 +117,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.RegularHiccups] = new RegularHiccups();
             VariantHandlers[Variant.HiccupStrength] = new HiccupStrength();
             VariantHandlers[Variant.RefillJumpsOnDashRefill] = new RefillJumpsOnDashRefill();
+            VariantHandlers[Variant.ResetJumpCountOnGround] = new ResetJumpCountOnGround();
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.RoomBloom] = new RoomBloom();
             VariantHandlers[Variant.GlitchEffect] = new GlitchEffect();

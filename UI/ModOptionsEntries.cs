@@ -45,6 +45,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> disableJumpingOutOfWaterOption;
         private TextMenuOptionExt<int> jumpCountOption;
         private TextMenuOptionExt<bool> refillJumpsOnDashRefillOption;
+        private TextMenuOptionExt<bool> resetJumpCountOnGroundOption;
         private TextMenuOptionExt<bool> upsideDownOption;
         private TextMenuOptionExt<int> hyperdashSpeedOption;
         private TextMenuOptionExt<int> explodeLaunchSpeedOption;
@@ -324,6 +325,8 @@ namespace ExtendedVariants.UI {
                 });
                 refillJumpsOnDashRefillOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
                     .Change(b => Settings.RefillJumpsOnDashRefill = b);
+                resetJumpCountOnGroundOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETJUMPCOUNTONGROUND"), Settings.ResetJumpCountOnGround, true)
+                    .Change(b => Settings.ResetJumpCountOnGround = b);
                 everyJumpIsUltraOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA"), Settings.EveryJumpIsUltra, false)
                     .Change(b => Settings.EveryJumpIsUltra = b);
                 coyoteTimeOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME", "x", Settings.CoyoteTime, 10, multiplierScale, f => Settings.CoyoteTime = f);
@@ -753,7 +756,8 @@ namespace ExtendedVariants.UI {
                         Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                         Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration }
+                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
+                        Variant.ResetJumpCountOnGround }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -807,7 +811,7 @@ namespace ExtendedVariants.UI {
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
                 pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption, horizontalSpringBounceDurationOption,
-                horizontalWallJumpDurationOption };
+                horizontalWallJumpDurationOption, resetJumpCountOnGroundOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -855,6 +859,7 @@ namespace ExtendedVariants.UI {
                 horizontalWallJumpDurationOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION_HINT"));
                 menu.Add(jumpCountOption);
                 menu.Add(refillJumpsOnDashRefillOption);
+                menu.Add(resetJumpCountOnGroundOption);
                 menu.Add(everyJumpIsUltraOption);
                 everyJumpIsUltraOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC"));
                 menu.Add(coyoteTimeOption);
@@ -1021,6 +1026,7 @@ namespace ExtendedVariants.UI {
             disableJumpingOutOfWaterOption?.ResetToDefault();
             jumpCountOption?.ResetToDefault();
             refillJumpsOnDashRefillOption?.ResetToDefault();
+            resetJumpCountOnGroundOption?.ResetToDefault();
             upsideDownOption?.ResetToDefault();
             hyperdashSpeedOption?.ResetToDefault();
             explodeLaunchSpeedOption?.ResetToDefault();
@@ -1116,7 +1122,6 @@ namespace ExtendedVariants.UI {
             }
 
             // special graying-out rules for some variant options
-            if (refillJumpsOnDashRefillOption != null) refillJumpsOnDashRefillOption.Disabled = Settings.JumpCount < 2;
             if (oshiroCountOption != null) oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
             if (reverseOshiroCountOption != null) reverseOshiroCountOption.Disabled = !Settings.OshiroEverywhere;
             if (randomizerOptions != null) randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;

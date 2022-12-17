@@ -171,8 +171,11 @@ namespace ExtendedVariants.Variants {
 
         private void refillJumpBuffer(Player player) {
             float jumpGraceTimer = (float) playerJumpGraceTimer.GetValue(player);
-            // JumpCount - 1 because the first jump is from vanilla Celeste
-            if (jumpGraceTimer > 0f) jumpBuffer = Settings.JumpCount - 1;
+
+            if (jumpGraceTimer > 0f && Settings.ResetJumpCountOnGround) {
+                // JumpCount - 1 because the first jump is from vanilla Celeste
+                jumpBuffer = Settings.JumpCount - 1;
+            }
         }
 
         /// <summary>
@@ -251,9 +254,11 @@ namespace ExtendedVariants.Variants {
         private void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
             orig(self);
 
-            // consistently refill jumps, whichever direction the dream dash was in.
-            // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
-            RefillJumpBuffer();
+            if (Settings.ResetJumpCountOnGround) {
+                // consistently refill jumps, whichever direction the dream dash was in.
+                // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
+                RefillJumpBuffer();
+            }
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {

@@ -108,6 +108,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool RefillJumpsOnDashRefill { get; set; } = false;
 
+        [SettingIgnore]
+        public bool ResetJumpCountOnGround { get; set; } = true;
+
         // ======================================
 
         [SettingIgnore]
