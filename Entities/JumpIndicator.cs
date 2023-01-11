@@ -11,6 +11,7 @@ namespace ExtendedVariants.Entities {
     /// <summary>
     /// An indicator for extra jumps (dots above Madeline's head).
     /// </summary>
+    [Tracked]
     public class JumpIndicator : Entity {
         private const int normalDepth = (Depths.FGTerrain + Depths.FGDecals) / 2; // between fg tiles and fg decals
         private const int depthInFrontOfSolids = Depths.FakeWalls - 1; // in front of fake walls

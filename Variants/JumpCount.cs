@@ -269,7 +269,7 @@ namespace ExtendedVariants.Variants {
                 RefillJumpBuffer();
             }
 
-            if (!self.Entities.Any(entity => entity is JumpIndicator)) {
+            if (self.Tracker.CountEntities<JumpIndicator>() == 0) {
                 // add the entity showing the jump count
                 self.Add(new JumpIndicator());
                 self.Entities.UpdateLists();
