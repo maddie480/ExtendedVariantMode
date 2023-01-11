@@ -126,7 +126,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/906767)
+You can download this mod [here!](https://0x0a.de/twoclick?https://gamebanana.com/mmdl/919193)
 
 To build the project yourself:
 * Clone or download the repo
