@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using ExtendedVariants.Entities;
 using System.Linq;
 using ExtendedVariants.Variants.Vanilla;
+using System.Text;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -470,16 +471,25 @@ namespace ExtendedVariants.Module {
             orig(self, session, startPosition);
         }
 
-        private bool isExtendedVariantEntity(string name) {
-            return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
+        private bool isExtendedVariantEntity(EntityData entity) {
+            if (entity.Name == "ExtendedVariantTrigger" || entity.Name.StartsWith("ExtendedVariantMode/")) {
+                return true;
+            }
+            if (entity.Name == "luaCutscenes/luaCutsceneTrigger" || entity.Name == "luaCutscenes/luaTalker") {
+                // detect if the Lua cutscene uses Extended Variants
+                if (Everest.Content.Map.TryGetValue(entity.Attr("filename"), out ModAsset luaCutscene)) {
+                    return Encoding.UTF8.GetString(luaCutscene.Data).Contains("#ExtendedVariants.");
+                }
+            }
+            return false;
         }
 
         private void checkForceEnableVariants(Session session) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
-                levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
-                levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
+                levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData)) ||
+                levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData)))) {
 
                 // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
                 hookTrigger();
