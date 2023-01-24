@@ -272,6 +272,9 @@ MODOPTIONS_EXTENDEDVARIANTS_DISPLAYDASHCOUNT=   Afficher le nombre de dashes
 MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA=   Faire un "ultra" à chaque saut
 MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC=  Madeline s'accroupit et a un boost de vitesse horizontale de 1.2x
 
+MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER=  Multiplicateur de vitesse des "ultras"
+MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC= Donne un boost de vitesse horizontale de 1.2x par défaut
+
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME= "Coyote time"
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=    Temps pendant lequel tu peux sauter après avoir quitté une plateforme
 

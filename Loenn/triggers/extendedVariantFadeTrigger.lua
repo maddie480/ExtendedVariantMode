@@ -54,6 +54,7 @@ trigger.fieldInformation = {
             "SpeedX",
             "SuperdashSteeringSpeed",
             "SwimmingSpeed",
+            "UltraSpeedMultiplier",
             "WallBouncingSpeed",
             "WallSlidingSpeed",
             "ZoomLevel"

@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
                 self.DashDir.X = Math.Sign(self.DashDir.X);
                 self.DashDir.Y = 0f;
                 // self.Speed.Y = 0f; // this seems a bit counter-productive when applied after a jump...
-                self.Speed.X *= 1.2f;
+                self.Speed.X *= Settings.UltraSpeedMultiplier;
                 self.Ducking = true;
             }
         }

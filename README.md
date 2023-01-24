@@ -90,6 +90,7 @@ Adds some options to the Mod Options menu:
 *   **Steering Speed for Super Dashes**: turn quicker or slower in the air when you have the Super Dashing variant enabled.
 *   **Screen Shake Intensity**: just in case you want super screen shake for some reason. _Seizure warning on this one!_
 *   **Every Jump is an Ultra**: when you jump or climb jump, Madeline will automatically duck and get a 1.2x horizontal speed boost, like an "ultra" (a speed tech you can do to go fast).
+*   **Ultra Speed Multiplier**: ... and this one allows you to adjust that 1.2x horizontal speed boost. That also applies to the "Every Jump is an Ultra" variant! It also affects the speed you get when dashing down-left or down-right against the ground.
 *   **Coyote Time**: allows you to modify the time during which you can jump after walking off a platform (0.1 second by default).
 *   **Preserve Extra Dashes Underwater**: if you have 2 dashes with a max of 1 (like in Farewell with double dash crystals), dashing in water would usually make you keep this second dash. this setting allows you to turn that behavior off.
 *   **Disable Dash Cooldown**: makes it so you don't have to wait for 0.2 seconds after a dash before being able to dash again.

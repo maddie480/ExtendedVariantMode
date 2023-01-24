@@ -461,6 +461,9 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public bool EveryJumpIsUltra { get; set; } = false;
 
+        [SettingIgnore]
+        public float UltraSpeedMultiplier { get; set; } = 1.2f;
+
         // ======================================
 
         [SettingIgnore]

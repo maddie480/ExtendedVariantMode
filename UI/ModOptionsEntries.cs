@@ -126,6 +126,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> friendlyBadelineFollowerOption;
         private TextMenuOptionExt<bool> displayDashCountOption;
         private TextMenuOptionExt<bool> everyJumpIsUltraOption;
+        private TextMenuOptionExt<int> ultraSpeedMultiplierOption;
         private TextMenuOptionExt<int> madelineBackpackModeOption;
         private TextMenuOptionExt<int> coyoteTimeOption;
         private TextMenuOptionExt<bool> noFreezeFramesOption;
@@ -329,6 +330,7 @@ namespace ExtendedVariants.UI {
                     .Change(b => Settings.ResetJumpCountOnGround = b);
                 everyJumpIsUltraOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA"), Settings.EveryJumpIsUltra, false)
                     .Change(b => Settings.EveryJumpIsUltra = b);
+                ultraSpeedMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER", "x", Settings.UltraSpeedMultiplier, 12, multiplierScale, f => Settings.UltraSpeedMultiplier = f);
                 coyoteTimeOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME", "x", Settings.CoyoteTime, 10, multiplierScale, f => Settings.CoyoteTime = f);
 
                 // Dashing
@@ -757,7 +759,7 @@ namespace ExtendedVariants.UI {
                         Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                         Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                         Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
-                        Variant.ResetJumpCountOnGround }
+                        Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier }
                         .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
 
                 gameElementsSubmenu.GetHighlight = () =>
@@ -811,7 +813,7 @@ namespace ExtendedVariants.UI {
                 everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
                 wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
                 pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption, horizontalSpringBounceDurationOption,
-                horizontalWallJumpDurationOption, resetJumpCountOnGroundOption };
+                horizontalWallJumpDurationOption, resetJumpCountOnGroundOption, ultraSpeedMultiplierOption };
 
             refreshOptionMenuEnabledStatus();
 
@@ -876,6 +878,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(dashDirectionsSubMenu);
                 menu.Add(hyperdashSpeedOption);
                 menu.Add(superdashSteeringSpeedOption);
+                menu.Add(ultraSpeedMultiplierOption);
+                ultraSpeedMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC"));
                 menu.Add(dashCountOption);
                 menu.Add(heldDashOption);
                 menu.Add(dontRefillDashOnGroundOption);
@@ -1109,6 +1113,7 @@ namespace ExtendedVariants.UI {
             friendlyBadelineFollowerOption?.ResetToDefault();
             displayDashCountOption?.ResetToDefault();
             everyJumpIsUltraOption?.ResetToDefault();
+            ultraSpeedMultiplierOption?.ResetToDefault();
             coyoteTimeOption?.ResetToDefault();
             noFreezeFramesOption?.ResetToDefault();
             preserveExtraDashesUnderwaterOption?.ResetToDefault();
