@@ -157,8 +157,8 @@ placements.triggers.ExtendedVariantMode/JungleSpidersEverywhereTrigger.tooltips.
 
 # Extended Variants Fade Trigger
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.variantChange=The variant to change.
-placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.valueA=The internal value for the variant to fade from (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
-placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.valueB=The internal value for the variant to fade to (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.valueA=The value for the variant to fade from.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.valueB=The value for the variant to fade to.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 

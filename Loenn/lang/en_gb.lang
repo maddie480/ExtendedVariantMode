@@ -25,8 +25,8 @@ entities.ExtendedVariantMode/RecoverJumpRefill.attributes.description.breakEvenW
 # Extended Variants Fade Trigger
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.placements.name.trigger=Extended Variant Fade
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.variantChange=The variant to change.
-triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.valueA=The internal value for the variant to fade from (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
-triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.valueB=The internal value for the variant to fade to (always an integer). For more details, check the README-Mappers.txt file provided with the mod.
+triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.valueA=The value for the variant to fade from.
+triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.valueB=The value for the variant to fade to.
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 
