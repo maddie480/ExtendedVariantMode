@@ -1,13 +1,17 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.XaphanHelper.Managers;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
@@ -17,12 +21,18 @@ namespace ExtendedVariants {
         private Dictionary<ExtendedVariantsModule.Variant, object> oldVariantsInRoom = new Dictionary<ExtendedVariantsModule.Variant, object>();
         private Dictionary<ExtendedVariantsModule.Variant, object> variantValuesBeforeOverride = new Dictionary<ExtendedVariantsModule.Variant, object>();
 
+        private static Hook hookOnXaphanHelperTeleport;
+
         public void Load() {
             Everest.Events.Level.OnEnter += onLevelEnter;
             Everest.Events.Player.OnSpawn += onPlayerSpawn;
             Everest.Events.Level.OnTransitionTo += onLevelTransitionTo;
             Everest.Events.Level.OnExit += onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += modRespawnTriggerOnEnter;
+
+            if (ExtendedVariantsModule.Instance.XaphanHelperInstalled) {
+                hookXaphanHelper();
+            }
         }
 
         public void Unload() {
@@ -31,6 +41,16 @@ namespace ExtendedVariants {
             Everest.Events.Level.OnTransitionTo -= onLevelTransitionTo;
             Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
+
+            hookOnXaphanHelperTeleport?.Dispose();
+            hookOnXaphanHelperTeleport = null;
+        }
+
+        private void hookXaphanHelper() {
+            hookOnXaphanHelperTeleport = new Hook(
+                typeof(WarpManager).GetMethod("TeleportToChapter", BindingFlags.NonPublic | BindingFlags.Static),
+                typeof(ExtendedVariantTriggerManager).GetMethod("resetVariantsOnXaphanTeleport", BindingFlags.NonPublic | BindingFlags.Instance),
+                this);
         }
 
         /// <summary>
@@ -123,6 +143,15 @@ namespace ExtendedVariants {
 
         private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             ResetVariantsOnLevelExit();
+        }
+
+        private void resetVariantsOnXaphanTeleport(Action<int> orig, int areaId) {
+            if (Engine.Scene is Level) {
+                // Xaphan Helper is going to teleport us to another level, and THAT is a level exit. Variants should be reset.
+                ResetVariantsOnLevelExit();
+            }
+
+            orig(areaId);
         }
 
         internal void ResetVariantsOnLevelExit() {
