@@ -26,22 +26,15 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Celeste.Player.Jump += modJump;
-            On.Celeste.Player.ClimbJump += modClimbJump;
         }
 
         public override void Unload() {
             On.Celeste.Player.Jump -= modJump;
-            On.Celeste.Player.ClimbJump -= modClimbJump;
         }
 
         private void modJump(On.Celeste.Player.orig_Jump orig, Celeste.Player self, bool particles, bool playSfx) {
+            forceUltra(self);
             orig(self, particles, playSfx);
-            forceUltra(self);
-        }
-
-        private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
-            orig(self);
-            forceUltra(self);
         }
 
         private void forceUltra(Player self) {
