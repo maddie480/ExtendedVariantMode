@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using ExtendedVariants.Entities;
 using System.Linq;
 using ExtendedVariants.Variants.Vanilla;
+using MonoMod.ModInterop;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -239,6 +240,8 @@ namespace ExtendedVariants.Module {
             Logger.SetLogLevel("ExtendedVariantMode", LogLevel.Info);
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
+
+            typeof(CollabUtilsImports).ModInterop();
 
             if (Settings.LegacyDashSpeedBehavior) {
                 VariantHandlers[Variant.DashSpeed] = new DashSpeedOld();
@@ -478,6 +481,22 @@ namespace ExtendedVariants.Module {
             return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
         }
 
+        [ModImportName("CollabUtils2.LobbyHelper")]
+        private static class CollabUtilsImports {
+#pragma warning disable CS0649 // field not initialized: yes it is, but through ModInterop magic
+            public static Func<string, string> GetCollabNameForSID;
+#pragma warning restore CS0649
+        }
+
+        private static bool isInCollab(Session session) {
+            if (CollabUtilsImports.GetCollabNameForSID == null) {
+                // no collab utils => no collab
+                return false;
+            }
+
+            return CollabUtilsImports.GetCollabNameForSID(session.Area.GetSID()) != null;
+        }
+
         private void checkForceEnableVariants(Session session) {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
@@ -505,7 +524,11 @@ namespace ExtendedVariants.Module {
                     settingsChanged = ResetVariantsToDefaultSettings(isVanilla: true) || settingsChanged;
                     SaveSettings();
                 }
-                showForcedVariantsPostcard = showForcedVariantsPostcard || settingsChanged;
+                showForcedVariantsPostcard |= settingsChanged;
+
+
+                // only show the postcard if not in a collab (as it tends to break immersion inside of collabs).
+                showForcedVariantsPostcard &= !isInCollab(session);
             }
         }
 
