@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Celeste.Mod.XaphanHelper.Managers;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
+using ExtendedVariants.Variants.Vanilla;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -29,6 +30,7 @@ namespace ExtendedVariants {
             Everest.Events.Level.OnTransitionTo += onLevelTransitionTo;
             Everest.Events.Level.OnExit += onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += modRespawnTriggerOnEnter;
+            On.Celeste.SaveData.AssistModeChecks += modAssistModeChecks;
 
             if (ExtendedVariantsModule.Instance.XaphanHelperInstalled) {
                 hookXaphanHelper();
@@ -41,6 +43,7 @@ namespace ExtendedVariants {
             Everest.Events.Level.OnTransitionTo -= onLevelTransitionTo;
             Everest.Events.Level.OnExit -= onLevelExit;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
+            On.Celeste.SaveData.AssistModeChecks -= modAssistModeChecks;
 
             hookOnXaphanHelperTeleport?.Dispose();
             hookOnXaphanHelperTeleport = null;
@@ -119,6 +122,21 @@ namespace ExtendedVariants {
                 // and call our method in there
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Inserting call to CommitVariantChanges at index {cursor.Index} in CIL code for OnEnter in ChangeRespawnTrigger");
                 cursor.EmitDelegate<Action>(commitVariantChanges);
+            }
+        }
+
+        private void modAssistModeChecks(On.Celeste.SaveData.orig_AssistModeChecks orig, SaveData self) {
+            bool isVanillaVariantUsed = false;
+
+            foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Keys.ToList()) {
+                if (ExtendedVariantsModule.Instance.VariantHandlers[v] is AbstractVanillaVariant) {
+                    isVanillaVariantUsed = true;
+                    break;
+                }
+            }
+
+            if (!isVanillaVariantUsed) {
+                orig(self);
             }
         }
 
