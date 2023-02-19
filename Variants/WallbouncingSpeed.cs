@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class WallbouncingSpeed : AbstractExtendedVariant {
@@ -14,16 +15,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.WallBouncingSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.WallBouncingSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.WallBouncingSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -54,7 +47,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The wallbounce speed factor (1 = default wallbounce speed)</returns>
         private float determineWallBouncingSpeedFactor() {
-            return Settings.WallBouncingSpeed;
+            return GetVariantValue<float>(Variant.WallBouncingSpeed);
         }
     }
 }

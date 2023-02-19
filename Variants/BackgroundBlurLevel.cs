@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     // that's actually the same as BlurLevel except not at the same place in Render. :p
@@ -18,16 +19,8 @@ namespace ExtendedVariants.Variants {
             return 0f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BackgroundBlurLevel;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BackgroundBlurLevel = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BackgroundBlurLevel = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -66,9 +59,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void BackgroundBlurLevelBuffer() {
-            if (Settings.BackgroundBlurLevel > 0) {
+            if (GetVariantValue<float>(Variant.BackgroundBlurLevel) > 0) {
                 // what if... I just gaussian blur the level buffer
-                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, Settings.BackgroundBlurLevel);
+                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, GetVariantValue<float>(Variant.BackgroundBlurLevel));
             }
         }
 

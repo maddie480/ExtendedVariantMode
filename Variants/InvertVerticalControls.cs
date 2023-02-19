@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class InvertVerticalControls : AbstractExtendedVariant {
@@ -13,16 +14,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.InvertVerticalControls;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.InvertVerticalControls = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.InvertVerticalControls = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -53,7 +46,7 @@ namespace ExtendedVariants.Variants {
             // either way, we should keep it or invert it based on our settings.
 
             bool expectedValue = Input.Aim.InvertedY;
-            if (Settings.InvertVerticalControls) expectedValue = !expectedValue;
+            if (GetVariantValue<bool>(Variant.InvertVerticalControls)) expectedValue = !expectedValue;
 
             Input.Aim.InvertedY = expectedValue;
             Input.MoveY.Inverted = expectedValue;

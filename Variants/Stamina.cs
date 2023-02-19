@@ -9,6 +9,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class Stamina : AbstractExtendedVariant {
@@ -26,17 +27,9 @@ namespace ExtendedVariants.Variants {
             return 110;
         }
 
-        public override object GetVariantValue() {
-            return Settings.Stamina;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.Stamina = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             // "type 15 to get 150 stamina", of course. :p
-            Settings.Stamina = (value * 10);
+            return value * 10;
         }
 
         public override void Load() {
@@ -81,11 +74,11 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/Stamina", $"Patching stamina at index {cursor.Index} in CIL code for {cursor.Method.FullName}");
 
                 cursor.EmitDelegate<Func<float, float>>(orig => {
-                    if (Settings.DontRefillStaminaOnGround && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
+                    if (GetVariantValue<bool>(Variant.DontRefillStaminaOnGround) && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
                         // return the player stamina: this will result in player.Stamina = player.Stamina, thus doing absolutely nothing.
                         return Engine.Scene.Tracker.GetEntity<Player>()?.Stamina ?? determineBaseStamina();
                     }
-                    if (Settings.Stamina != 110) {
+                    if (GetVariantValue<int>(Variant.Stamina) != 110) {
                         // mod the stamina amount to refill.
                         return determineBaseStamina();
                     }
@@ -100,7 +93,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original RefillStamina method</param>
         /// <param name="self">The Player instance</param>
         private void modRefillStamina(On.Celeste.Player.orig_RefillStamina orig, Player self) {
-            if (Settings.DontRefillStaminaOnGround && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
+            if (GetVariantValue<bool>(Variant.DontRefillStaminaOnGround) && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
                 // we don't want to refill stamina at all.
                 return;
             }
@@ -108,7 +101,7 @@ namespace ExtendedVariants.Variants {
             // invoking the original method is not really useful, but another mod may try to hook it, so don't break it if the Stamina variant is disabled
             orig.Invoke(self);
 
-            if (Settings.Stamina != 110) {
+            if (GetVariantValue<int>(Variant.Stamina) != 110) {
                 self.Stamina = determineBaseStamina();
             }
         }
@@ -139,7 +132,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The max stamina (default 110)</returns>
         private float determineBaseStamina() {
-            return Settings.Stamina;
+            return GetVariantValue<int>(Variant.Stamina);
         }
     }
 }

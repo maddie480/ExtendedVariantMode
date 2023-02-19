@@ -2,6 +2,7 @@
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
+using System;
 using System.Collections;
 using System.Reflection;
 
@@ -13,11 +14,11 @@ namespace ExtendedVariants.Entities {
     public class UnderwaterSwitchController : Entity {
         private static FieldInfo waterFill = typeof(Water).GetField("fill", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private ExtendedVariantsSettings settings;
+        private Func<bool> everythingIsUnderwater;
         private Water water;
 
-        public UnderwaterSwitchController(ExtendedVariantsSettings settings) : base(Vector2.Zero) {
-            this.settings = settings;
+        public UnderwaterSwitchController(Func<bool> everythingIsUnderwater) : base(Vector2.Zero) {
+            this.everythingIsUnderwater = everythingIsUnderwater;
 
             Add(new Coroutine(Routine()));
             AddTag(Tags.TransitionUpdate);
@@ -27,7 +28,7 @@ namespace ExtendedVariants.Entities {
             Session session = SceneAs<Level>().Session;
             while (true) {
                 // wait until the variant is enabled.
-                while (!settings.EverythingIsUnderwater) {
+                while (!everythingIsUnderwater()) {
                     yield return null;
                 }
 
@@ -37,7 +38,7 @@ namespace ExtendedVariants.Entities {
                 }
 
                 // wait until the variant is disabled, or the mod is turned off.
-                while (settings.EverythingIsUnderwater && settings.MasterSwitch) {
+                while (everythingIsUnderwater() && ExtendedVariantsModule.Settings.MasterSwitch) {
                     yield return null;
                 }
 
@@ -46,7 +47,7 @@ namespace ExtendedVariants.Entities {
                 water = null;
 
                 // if the mod was turned off, destroy the controller.
-                if (!settings.MasterSwitch) {
+                if (!ExtendedVariantsModule.Settings.MasterSwitch) {
                     RemoveSelf();
                     yield break;
                 }

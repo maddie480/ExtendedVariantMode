@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class RoomLighting : AbstractExtendedVariant {
@@ -18,30 +19,19 @@ namespace ExtendedVariants.Variants {
             return -1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.RoomLighting;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.RoomLighting = (float) value;
-            applyRightAway();
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == -1f) {
-                Settings.RoomLighting = -1f;
+                return -1f;
             } else {
-                Settings.RoomLighting = (value / 10f);
+                return value / 10f;
             }
-
-            applyRightAway();
         }
 
-        private void applyRightAway() {
+        public override void VariantValueChanged() {
             if (Engine.Scene?.GetType() == typeof(Level)) {
                 // currently in level, change lighting right away
                 Level lvl = (Engine.Scene as Level);
-                lvl.Lighting.Alpha = (Settings.RoomLighting == -1f ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - (Settings.RoomLighting));
+                lvl.Lighting.Alpha = (GetVariantValue<float>(Variant.RoomLighting) == -1f ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - (GetVariantValue<float>(Variant.RoomLighting)));
             }
         }
 
@@ -65,8 +55,8 @@ namespace ExtendedVariants.Variants {
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
-            if (Settings.RoomLighting != -1f) {
-                float lightingTarget = 1 - Settings.RoomLighting;
+            if (GetVariantValue<float>(Variant.RoomLighting) != -1f) {
+                float lightingTarget = 1 - GetVariantValue<float>(Variant.RoomLighting);
                 if (playerIntro == Player.IntroTypes.Transition) {
                     // we force the game into thinking this is not a dark room, so that it uses the BaseLightingAlpha + LightingAlphaAdd formula
                     // (this change is not permanent, exiting and re-entering will reset this flag)
@@ -102,9 +92,9 @@ namespace ExtendedVariants.Variants {
         private void modLightFadeTriggerOnStay(On.Celeste.LightFadeTrigger.orig_OnStay orig, LightFadeTrigger self, Player player) {
             orig(self, player);
 
-            if (Settings.RoomLighting != -1f) {
+            if (GetVariantValue<float>(Variant.RoomLighting) != -1f) {
                 // be sure to lock the lighting alpha to the value set by the player
-                float lightingTarget = 1 - Settings.RoomLighting;
+                float lightingTarget = 1 - GetVariantValue<float>(Variant.RoomLighting);
                 (self.Scene as Level).Lighting.Alpha = lightingTarget;
             }
         }

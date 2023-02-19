@@ -4,6 +4,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableClimbJumping : AbstractExtendedVariant {
@@ -16,16 +17,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableClimbJumping;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableClimbJumping = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableClimbJumping = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -39,7 +32,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
-            if (!Settings.DisableClimbJumping) {
+            if (!GetVariantValue<bool>(Variant.DisableClimbJumping)) {
                 orig(self);
             }
         }
@@ -60,7 +53,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool modJumpButtonCheck(bool actualValue, Player self, int moveX) {
-            if (!Settings.DisableClimbJumping) {
+            if (!GetVariantValue<bool>(Variant.DisableClimbJumping)) {
                 // nothing to do
                 return actualValue;
             }

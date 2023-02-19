@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ZoomLevel : AbstractExtendedVariant {
@@ -18,16 +19,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.ZoomLevel;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ZoomLevel = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.ZoomLevel = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -60,21 +53,21 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modZoom(float zoom) {
-            return zoom * Settings.ZoomLevel;
+            return zoom * GetVariantValue<float>(Variant.ZoomLevel);
         }
 
         public Vector2 getScreenPosition(Vector2 originalPosition) {
-            if (Settings.ZoomLevel == 1f) {
+            if (GetVariantValue<float>(Variant.ZoomLevel) == 1f) {
                 // nothing to do, spare us some processing.
                 return originalPosition;
             }
 
             // compute the size difference between regular screen and zoomed in screen
-            Vector2 screenSize = new Vector2(320f, 180f) * Settings.ZoomLevel;
+            Vector2 screenSize = new Vector2(320f, 180f) * GetVariantValue<float>(Variant.ZoomLevel);
             Vector2 diff = screenSize - new Vector2(320f, 180f);
 
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
-            if (Settings.ZoomLevel > 1f && player != null) {
+            if (GetVariantValue<float>(Variant.ZoomLevel) > 1f && player != null) {
                 // if the player is on the left of the screen, we shouldn't move the screen (left is aligned with left side of the screen).
                 // if they are on the right, we should move it left by the difference (right is aligned with right side of the screen).
                 // in between, just lerp

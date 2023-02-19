@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     /// <summary>
@@ -18,16 +19,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashSpeed = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -61,7 +54,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="self">A reference to the player</param>
         private void modifyDashSpeed(Player self) {
-            self.Speed *= Settings.DashSpeed;
+            self.Speed *= GetVariantValue<float>(Variant.DashSpeed);
         }
     }
 }

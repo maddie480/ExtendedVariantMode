@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class PreserveExtraDashesUnderwater : AbstractExtendedVariant {
@@ -12,16 +13,8 @@ namespace ExtendedVariants.Variants {
             return true;
         }
 
-        public override object GetVariantValue() {
-            return Settings.PreserveExtraDashesUnderwater;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.PreserveExtraDashesUnderwater = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.PreserveExtraDashesUnderwater = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -35,7 +28,7 @@ namespace ExtendedVariants.Variants {
         private int onSwimUpdate(On.Celeste.Player.orig_SwimUpdate orig, Player self) {
             int result = orig(self);
 
-            if (!Settings.PreserveExtraDashesUnderwater && result == Player.StDash && self.Dashes > self.MaxDashes) {
+            if (!GetVariantValue<bool>(Variant.PreserveExtraDashesUnderwater) && result == Player.StDash && self.Dashes > self.MaxDashes) {
                 // if we're dashing and have more than our dash count, consume a dash!
                 self.Dashes--;
             }

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class MadelineIsSilhouette : AbstractExtendedVariant {
@@ -27,16 +28,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.MadelineIsSilhouette;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.MadelineIsSilhouette = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.MadelineIsSilhouette = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -75,11 +68,11 @@ namespace ExtendedVariants.Variants {
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).Name == "get_MadelineIsSilhouette")) {
                 Logger.Log("ExtendedVariantMode/MadelineIsSilhouette", $"Hooking MadelineIsSilhouette at {cursor.Index} in IL for {cursor.Method.FullName}");
                 cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (previouslyEnabled != Settings.MadelineIsSilhouette) {
-                        previouslyEnabled = Settings.MadelineIsSilhouette;
-                        runRefreshPlayerSpriteMode(orig || Settings.MadelineIsSilhouette);
+                    if (previouslyEnabled != GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
+                        previouslyEnabled = GetVariantValue<bool>(Variant.MadelineIsSilhouette);
+                        runRefreshPlayerSpriteMode(orig || GetVariantValue<bool>(Variant.MadelineIsSilhouette));
                     }
-                    if (Settings.MadelineIsSilhouette) {
+                    if (GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
                         return true;
                     }
                     return orig;

@@ -2,6 +2,7 @@
 using Celeste.Mod;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class GlitchEffect : AbstractExtendedVariant {
@@ -14,19 +15,11 @@ namespace ExtendedVariants.Variants {
             return -1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.GlitchEffect;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.GlitchEffect = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {
-                Settings.GlitchEffect = -1f;
+                return -1f;
             } else {
-                Settings.GlitchEffect = (value / 20f);
+                return value / 20f;
             }
         }
 
@@ -50,8 +43,8 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modGlitchValue(float vanilla) {
-            if (Settings.GlitchEffect == -1f) return vanilla;
-            return Settings.GlitchEffect;
+            if (GetVariantValue<float>(Variant.GlitchEffect) == -1f) return vanilla;
+            return GetVariantValue<float>(Variant.GlitchEffect);
         }
     }
 }

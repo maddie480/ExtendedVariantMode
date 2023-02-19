@@ -30,30 +30,32 @@ namespace ExtendedVariants.Entities.ForMappers {
             revertOnDeath = data.Bool("revertOnDeath", true);
 
             // failsafe
-            oldValueToRevertOnLeave = ExtendedVariantsModule.Settings.AllowedDashDirections;
+            oldValueToRevertOnLeave = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DashDirection);
         }
 
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
+            bool[][] allowedDashDirections = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DashDirection);
+
             // the new value is a copy of the old value with one boolean flipped.
             bool[][] newValue = new bool[][] { new bool[3], new bool[3], new bool[3] };
             for (int i = 0; i < 3; i++) {
-                for (int j  = 0; j < 3; j++) {
-                    newValue[i][j] = ExtendedVariantsModule.Settings.AllowedDashDirections[i][j];
+                for (int j = 0; j < 3; j++) {
+                    newValue[i][j] = allowedDashDirections[i][j];
                 }
             }
 
             int x = 0, y = 0;
             switch (dashDirection) {
-                case TOP:           x = 1; y = 0; break;
-                case TOP_RIGHT:     x = 2; y = 0; break;
-                case RIGHT:         x = 2; y = 1; break;
-                case BOTTOM_RIGHT:  x = 2; y = 2; break;
-                case BOTTOM:        x = 1; y = 2; break;
-                case BOTTOM_LEFT:   x = 0; y = 2; break;
-                case LEFT:          x = 0; y = 1; break;
-                case TOP_LEFT:      x = 0; y = 0; break;
+                case TOP: x = 1; y = 0; break;
+                case TOP_RIGHT: x = 2; y = 0; break;
+                case RIGHT: x = 2; y = 1; break;
+                case BOTTOM_RIGHT: x = 2; y = 2; break;
+                case BOTTOM: x = 1; y = 2; break;
+                case BOTTOM_LEFT: x = 0; y = 2; break;
+                case LEFT: x = 0; y = 1; break;
+                case TOP_LEFT: x = 0; y = 0; break;
             }
 
             newValue[y][x] = enable;

@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class CornerCorrection : AbstractExtendedVariant {
@@ -8,20 +9,12 @@ namespace ExtendedVariants.Variants {
             return typeof(int);
         }
 
-        public override object GetVariantValue() {
-            return Settings.CornerCorrection;
-        }
-
         public override object GetDefaultVariantValue() {
             return 4;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            Settings.CornerCorrection = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.CornerCorrection = value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
 
         public override void Load() {
@@ -45,9 +38,9 @@ namespace ExtendedVariants.Variants {
 
                 cursor.EmitDelegate<Func<int, int>>(orig => {
                     // vanilla corner correction already is 4 pixels, but we still pass orig through in case another mod mods it.
-                    if (Settings.CornerCorrection == 4) return orig;
+                    if (GetVariantValue<int>(Variant.CornerCorrection) == 4) return orig;
 
-                    return Settings.CornerCorrection * Math.Sign(orig);
+                    return GetVariantValue<int>(Variant.CornerCorrection) * Math.Sign(orig);
                 });
             }
         }

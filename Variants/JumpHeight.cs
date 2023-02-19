@@ -6,6 +6,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JumpHeight : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.JumpHeight;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.JumpHeight = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.JumpHeight = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -113,7 +106,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The jump height factor (1 = default jump height)</returns>
         private float determineJumpHeightFactor() {
-            return Settings.JumpHeight;
+            return GetVariantValue<float>(Variant.JumpHeight);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class SuperdashSteeringSpeed : AbstractExtendedVariant {
@@ -14,16 +15,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.SuperdashSteeringSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.SuperdashSteeringSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.SuperdashSteeringSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -46,7 +39,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineSuperdashSteeringFactor() {
-            return Settings.SuperdashSteeringSpeed;
+            return GetVariantValue<float>(Variant.SuperdashSteeringSpeed);
         }
     }
 }

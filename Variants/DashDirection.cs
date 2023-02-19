@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Collections;
 using MonoMod.RuntimeDetour;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashDirection : AbstractExtendedVariant {
@@ -24,15 +25,7 @@ namespace ExtendedVariants.Variants {
             return new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
         }
 
-        public override object GetVariantValue() {
-            return Settings.AllowedDashDirections;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AllowedDashDirections = (bool[][]) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             // how the H did people deal with bit math in extended variant triggers???
             int TOP = 0b1000000000;
             int TOP_RIGHT = 0b0100000000;
@@ -54,7 +47,7 @@ namespace ExtendedVariants.Variants {
                 value = 0b0101010100;
             }
 
-            Settings.AllowedDashDirections = new bool[][] {
+            return new bool[][] {
                 new bool[] { (value & TOP_LEFT) != 0, (value & TOP) != 0, (value & TOP_RIGHT) != 0 },
                 new bool[] { (value & LEFT) != 0, true, (value & RIGHT) != 0 },
                 new bool[] { (value & BOTTOM_LEFT) != 0, (value & BOTTOM) != 0, (value & BOTTOM_RIGHT) != 0 },
@@ -146,7 +139,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool areAllDirectionsAllowed() {
-            foreach (bool[] ba in Settings.AllowedDashDirections) {
+            foreach (bool[] ba in GetVariantValue<bool[][]>(Variant.DashDirection)) {
                 foreach (bool b in ba) {
                     if (!b) return false;
                 }
@@ -159,7 +152,7 @@ namespace ExtendedVariants.Variants {
             direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
             // bottom-left (-1, 1) is row 2, column 0.
-            return Settings.AllowedDashDirections[(int) (direction.Y + 1)][(int) (direction.X + 1)];
+            return GetVariantValue<bool[][]>(Variant.DashDirection)[(int) (direction.Y + 1)][(int) (direction.X + 1)];
         }
     }
 }

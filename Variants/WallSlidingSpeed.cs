@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class WallSlidingSpeed : AbstractExtendedVariant {
@@ -12,16 +13,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.WallSlidingSpeed;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.WallSlidingSpeed = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.WallSlidingSpeed = (float) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -42,7 +35,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float getWallSlidingSpeed(float orig) {
-            return orig * Settings.WallSlidingSpeed;
+            return orig * GetVariantValue<float>(Variant.WallSlidingSpeed);
         }
     }
 }

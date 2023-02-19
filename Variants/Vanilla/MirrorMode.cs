@@ -7,21 +7,22 @@ namespace ExtendedVariants.Variants.Vanilla {
             return typeof(bool);
         }
 
-        public override object GetVariantValue() {
-            return SaveData.Instance.Assists.MirrorMode;
-        }
-
         public override object GetDefaultVariantValue() {
             return false;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            SetVariantValue(value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            SaveData.Instance.Assists.MirrorMode = (bool) value;
-            Input.MoveX.Inverted = (Input.Aim.InvertedX = (Input.Feather.InvertedX = (bool) value));
+        public override void VariantValueChanged() {
+            bool mirrorMode = applyAssists(SaveData.Instance.Assists, out _).MirrorMode;
+            Input.MoveX.Inverted = (Input.Aim.InvertedX = (Input.Feather.InvertedX = mirrorMode));
+        }
+
+        protected override Assists applyVariantValue(Assists target, object value) {
+            target.MirrorMode = (bool) value;
+            return target;
         }
     }
 }

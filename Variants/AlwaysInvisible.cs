@@ -1,5 +1,6 @@
 ﻿
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AlwaysInvisible : AbstractExtendedVariant {
@@ -10,16 +11,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.AlwaysInvisible;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AlwaysInvisible = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.AlwaysInvisible = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -35,13 +28,13 @@ namespace ExtendedVariants.Variants {
         // vanilla implements Invisible Motion by skipping the Render method entirely when the player is moving... so we're just going to do the same. :p
 
         private void modPlayerSeekerRender(On.Celeste.PlayerSeeker.orig_Render orig, Celeste.PlayerSeeker self) {
-            if (!Settings.AlwaysInvisible) {
+            if (!GetVariantValue<bool>(Variant.AlwaysInvisible)) {
                 orig(self);
             }
         }
 
         private void modPlayerRender(On.Celeste.Player.orig_Render orig, Celeste.Player self) {
-            if (!Settings.AlwaysInvisible) {
+            if (!GetVariantValue<bool>(Variant.AlwaysInvisible)) {
                 orig(self);
             }
         }

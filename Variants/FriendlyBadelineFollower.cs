@@ -3,6 +3,7 @@ using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class FriendlyBadelineFollower : AbstractExtendedVariant {
@@ -15,16 +16,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.FriendlyBadelineFollower;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.FriendlyBadelineFollower = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.FriendlyBadelineFollower = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -44,11 +37,11 @@ namespace ExtendedVariants.Variants {
 
             Player player = self.Tracker.GetEntity<Player>();
 
-            if (Settings.FriendlyBadelineFollower && player != null && self.Tracker.CountEntities<FriendlyBaddy>() == 0) {
+            if (GetVariantValue<bool>(Variant.FriendlyBadelineFollower) && player != null && self.Tracker.CountEntities<FriendlyBaddy>() == 0) {
                 self.Add(new FriendlyBaddy(player.Center + new Vector2(-16f * (int) player.Facing, -16f)));
             }
 
-            wasActiveOnLastFrame = Settings.FriendlyBadelineFollower;
+            wasActiveOnLastFrame = GetVariantValue<bool>(Variant.FriendlyBadelineFollower);
         }
 
         private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
@@ -56,7 +49,7 @@ namespace ExtendedVariants.Variants {
 
             Level level = Engine.Scene as Level;
 
-            if (!wasActiveOnLastFrame && Settings.FriendlyBadelineFollower && level.Tracker.CountEntities<FriendlyBaddy>() == 0) {
+            if (!wasActiveOnLastFrame && GetVariantValue<bool>(Variant.FriendlyBadelineFollower) && level.Tracker.CountEntities<FriendlyBaddy>() == 0) {
                 // Friendly Badeline Follower was just activated (by trigger or mod options), so make her appear right now!
                 FriendlyBaddy baddy = new FriendlyBaddy(self.Center);
                 level.Add(baddy);
@@ -64,7 +57,7 @@ namespace ExtendedVariants.Variants {
                 Audio.Play("event:/char/badeline/maddy_split", self.Center);
             }
 
-            wasActiveOnLastFrame = Settings.FriendlyBadelineFollower;
+            wasActiveOnLastFrame = GetVariantValue<bool>(Variant.FriendlyBadelineFollower);
         }
     }
 }

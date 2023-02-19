@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class SpeedX : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.SpeedX;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.SpeedX = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.SpeedX = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -131,7 +124,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The speed factor (1 = default speed)</returns>
         private float determineSpeedXFactor() {
-            return Settings.SpeedX;
+            return GetVariantValue<float>(Variant.SpeedX);
         }
 
         // NOTE: X speed also comes in play for the UpdateSprite patch in Friction.

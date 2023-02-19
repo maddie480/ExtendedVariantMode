@@ -1,5 +1,6 @@
 ﻿using ExtendedVariants.Module;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class LegacyDashSpeedBehavior : AbstractExtendedVariant {
@@ -11,29 +12,17 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.LegacyDashSpeedBehavior;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            Settings.LegacyDashSpeedBehavior = (value != 0);
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.LegacyDashSpeedBehavior = (bool) value;
-
-            // hot swap the "dash speed" variant handler
-            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed].Unload();
-            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed] = Settings.LegacyDashSpeedBehavior ? (AbstractExtendedVariant) new DashSpeedOld() : new DashSpeed();
-            ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.DashSpeed].Load();
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override void VariantValueChanged() {
+            if ((ExtendedVariantsModule.Instance.VariantHandlers[Variant.DashSpeed] is DashSpeedOld) != GetVariantValue<bool>(Variant.LegacyDashSpeedBehavior)) {
+                // hot swap the "dash speed" variant handler
+                ExtendedVariantsModule.Instance.VariantHandlers[Variant.DashSpeed].Unload();
+                ExtendedVariantsModule.Instance.VariantHandlers[Variant.DashSpeed] = GetVariantValue<bool>(Variant.LegacyDashSpeedBehavior) ? (AbstractExtendedVariant) new DashSpeedOld() : new DashSpeed();
+                ExtendedVariantsModule.Instance.VariantHandlers[Variant.DashSpeed].Load();
+            }
         }
     }
 }

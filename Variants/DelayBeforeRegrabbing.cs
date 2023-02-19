@@ -2,6 +2,7 @@
 using Celeste.Mod;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DelayBeforeRegrabbing : AbstractExtendedVariant {
@@ -9,20 +10,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.DelayBeforeRegrabbing;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1f;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DelayBeforeRegrabbing = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DelayBeforeRegrabbing = (float) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -36,7 +29,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Holdable>("cannotHoldDelay"))) {
                 Logger.Log("ExtendedVariantMode/DelayBeforeRegrabbing", $"Modding delay before regrabbing at {cursor.Index} in IL for Holdable.Release");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * Settings.DelayBeforeRegrabbing);
+                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.DelayBeforeRegrabbing));
             }
         }
     }

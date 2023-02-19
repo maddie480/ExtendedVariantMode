@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class InvertHorizontalControls : AbstractExtendedVariant {
@@ -13,16 +14,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.InvertHorizontalControls;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.InvertHorizontalControls = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.InvertHorizontalControls = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -38,7 +31,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
-            if (Input.Aim == null || Input.MoveX == null || SaveData.Instance?.Assists == null || Settings == null) {
+            if (Input.Aim == null || Input.MoveX == null || SaveData.Instance?.Assists == null) {
                 orig(self);
                 return;
             }
@@ -53,7 +46,7 @@ namespace ExtendedVariants.Variants {
             // either way, we should keep it or invert it based on our settings.
 
             bool expectedValue = Input.Aim.InvertedX;
-            if (Settings.InvertHorizontalControls) expectedValue = !expectedValue;
+            if (GetVariantValue<bool>(Variant.InvertHorizontalControls)) expectedValue = !expectedValue;
 
             Input.Aim.InvertedX = expectedValue;
             Input.MoveX.Inverted = expectedValue;

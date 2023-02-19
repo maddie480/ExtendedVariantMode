@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class RoomBloom : AbstractExtendedVariant {
@@ -15,23 +16,15 @@ namespace ExtendedVariants.Variants {
             return -1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.RoomBloom;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.RoomBloom = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {
-                Settings.RoomBloom = -1f;
+                return -1f;
             } else if (value < 10f) {
                 // 8 means 80% bloom...
-                Settings.RoomBloom = (value / 10f);
+                return value / 10f;
             } else {
                 // ... but 14 means 500% bloom, not 140%. Legacy values ftw
-                Settings.RoomBloom = (value - 9f);
+                return value - 9f;
             }
         }
 
@@ -62,13 +55,13 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modBloomBase(float vanilla) {
-            if (Settings.RoomBloom == -1f) return vanilla;
-            return Math.Min(Settings.RoomBloom, 1f);
+            if (GetVariantValue<float>(Variant.RoomBloom) == -1f) return vanilla;
+            return Math.Min(GetVariantValue<float>(Variant.RoomBloom), 1f);
         }
 
         private float modBloomStrength(float vanilla) {
-            if (Settings.RoomBloom == -1f) return vanilla;
-            return Math.Max(1, Settings.RoomBloom);
+            if (GetVariantValue<float>(Variant.RoomBloom) == -1f) return vanilla;
+            return Math.Max(1, GetVariantValue<float>(Variant.RoomBloom));
         }
     }
 }

@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BoostMultiplier : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BoostMultiplier;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BoostMultiplier = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BoostMultiplier = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -50,11 +43,11 @@ namespace ExtendedVariants.Variants {
             Vector2 result = orig(self);
             if (!isBoostMultiplierApplied) return result;
 
-            if (Settings.BoostMultiplier < 0f) {
+            if (GetVariantValue<float>(Variant.BoostMultiplier) < 0f) {
                 // capping has to be flipped around too!
                 result.Y = Calc.Clamp(self.LiftSpeed.Y, 0f, 130f);
             }
-            return result * Settings.BoostMultiplier;
+            return result * GetVariantValue<float>(Variant.BoostMultiplier);
         }
 
         private void modPlayerNormalUpdate(ILContext il) {

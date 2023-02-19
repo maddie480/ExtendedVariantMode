@@ -7,20 +7,17 @@ namespace ExtendedVariants.Variants.Vanilla {
             return typeof(bool);
         }
 
-        public override object GetVariantValue() {
-            return SaveData.Instance.Assists.SuperDashing;
-        }
-
         public override object GetDefaultVariantValue() {
             return false;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            SaveData.Instance.Assists.SuperDashing = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            SaveData.Instance.Assists.SuperDashing = (bool) value;
+        protected override Assists applyVariantValue(Assists target, object value) {
+            target.SuperDashing = (bool) value;
+            return target;
         }
     }
 }

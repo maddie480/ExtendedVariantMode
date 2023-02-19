@@ -54,7 +54,7 @@ namespace ExtendedVariants.Entities {
 
             // hide jump count when infinite jumps are active, and show them again 0.1 second after turning infinite jumps off.
             // this avoids showing the jump count briefly on a transition between two rooms with infinite jumps and "revert on leave" enabled.
-            if (settings.JumpCount == int.MaxValue) {
+            if ((int) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.JumpCount) == int.MaxValue) {
                 invisibleJumpCountTimer = 0.1f;
             } else if (invisibleJumpCountTimer > 0f) {
                 invisibleJumpCountTimer -= Engine.DeltaTime;

@@ -10,6 +10,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BadelineChasersEverywhere : AbstractExtendedVariant {
@@ -26,16 +27,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BadelineChasersEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BadelineChasersEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BadelineChasersEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -99,11 +92,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineBadelineLag() {
-            return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() ? 1.55f : Settings.BadelineLag;
+            return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() ? 1.55f : GetVariantValue<float>(Variant.BadelineLag);
         }
 
         private float determineDelayBetweenBadelines() {
-            return Settings.DelayBetweenBadelines;
+            return GetVariantValue<float>(Variant.DelayBetweenBadelines);
         }
 
         /// <summary>
@@ -117,14 +110,14 @@ namespace ExtendedVariants.Variants {
             orig(self, playerIntro, isFromLoader);
 
             // this method takes care of every situation except transitions, we let this one to TransitionRoutine
-            if (Settings.BadelineChasersEverywhere && playerIntro != Player.IntroTypes.Transition) {
+            if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere) && playerIntro != Player.IntroTypes.Transition) {
                 // set this to avoid the player being instakilled during the level intro animation
                 Player player = self.Tracker.GetEntity<Player>();
                 if (player != null) player.JustRespawned = true;
             }
 
             if (playerIntro != Player.IntroTypes.Transition) {
-                if ((Settings.BadelineChasersEverywhere || Settings.AffectExistingChasers)) {
+                if ((GetVariantValue<bool>(Variant.BadelineChasersEverywhere) || GetVariantValue<bool>(Variant.AffectExistingChasers))) {
                     injectBadelineChasers(self);
                 }
                 updateLastChaserLag(self);
@@ -184,13 +177,13 @@ namespace ExtendedVariants.Variants {
         private void injectBadelineChasers(Level level) {
             bool hasChasersInBaseLevel = level.Tracker.CountEntities<BadelineOldsite>() != 0;
 
-            if (Settings.BadelineChasersEverywhere) {
+            if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere)) {
                 Player player = level.Tracker.GetEntity<Player>();
 
                 // check if the base level already has chasers
                 if (player != null && !hasChasersInBaseLevel) {
                     // add a Badeline chaser where the player is, and tell it not to change the music to the chase music
-                    for (int i = 0; i < Settings.ChaserCount; i++) {
+                    for (int i = 0; i < GetVariantValue<int>(Variant.ChaserCount); i++) {
                         level.Add(new AutoDestroyingBadelineOldsite(generateBadelineEntityData(level, i), player.Position, i));
                     }
 
@@ -200,16 +193,16 @@ namespace ExtendedVariants.Variants {
 
             // plz disregard the settings and don't touch the chasers if in Badeline Intro cutscene
             // because the chaser triggers the cutscene, so having 10 chasers triggers 10 instances of the cutscene at the same time (a)
-            if (Settings.AffectExistingChasers && hasChasersInBaseLevel && notInBadelineIntroCutscene(level)) {
+            if (GetVariantValue<bool>(Variant.AffectExistingChasers) && hasChasersInBaseLevel && notInBadelineIntroCutscene(level)) {
                 List<Entity> chasers = level.Tracker.GetEntities<BadelineOldsite>();
-                if (chasers.Count > Settings.ChaserCount) {
+                if (chasers.Count > GetVariantValue<int>(Variant.ChaserCount)) {
                     // for example, if there are 6 chasers and we want 3, we will ask chasers 4-6 to commit suicide
-                    for (int i = chasers.Count - 1; i >= Settings.ChaserCount; i--) {
+                    for (int i = chasers.Count - 1; i >= GetVariantValue<int>(Variant.ChaserCount); i--) {
                         chasers[i].RemoveSelf();
                     }
-                } else if (chasers.Count < Settings.ChaserCount) {
+                } else if (chasers.Count < GetVariantValue<int>(Variant.ChaserCount)) {
                     // for example, if we have 2 chasers and we want 6, we will duplicate both chasers twice
-                    for (int i = chasers.Count; i < Settings.ChaserCount; i++) {
+                    for (int i = chasers.Count; i < GetVariantValue<int>(Variant.ChaserCount); i++) {
                         int baseChaser = i % chasers.Count;
                         level.Add(new AutoDestroyingBadelineOldsite(generateBadelineEntityData(level, i), chasers[baseChaser].Position, i));
                     }
@@ -241,7 +234,7 @@ namespace ExtendedVariants.Variants {
         private bool modVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
             Session session = (scene as Level).Session;
 
-            if (Settings.BadelineChasersEverywhere &&
+            if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere) &&
                 // don't use vanilla behaviour when that would lead the chasers to commit suicide
                 (!session.GetLevelFlag("3") || session.GetLevelFlag("11") ||
                 // don't use vanilla behaviour when that would trigger the Badeline intro cutscene, except (of course) on Old Site
@@ -311,7 +304,7 @@ namespace ExtendedVariants.Variants {
 
             UsingWatchtower = false;
 
-            if (Settings.BadelineChasersEverywhere) {
+            if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere)) {
                 // adjust chaser state timestamps so that they behave as if the player didn't stand by that watchtower.
                 float timeDiff = Engine.Scene.TimeActive - timeStartedUsing;
                 for (int i = 0; i < player.ChaserStates.Count; i++) {
@@ -325,7 +318,7 @@ namespace ExtendedVariants.Variants {
 
         private void onUpdateChaserStates(On.Celeste.Player.orig_UpdateChaserStates orig, Player self) {
             // we want to stop saving chaser states when Madeline is using a watchtower, because Extended Variants-brand Badeline chasers are going to pause.
-            if (!Settings.BadelineChasersEverywhere || !UsingWatchtower) {
+            if (!GetVariantValue<bool>(Variant.BadelineChasersEverywhere) || !UsingWatchtower) {
                 orig(self);
             }
         }

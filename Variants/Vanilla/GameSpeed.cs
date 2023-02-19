@@ -11,25 +11,26 @@ namespace ExtendedVariants.Variants.Vanilla {
             return typeof(int);
         }
 
-        public override object GetVariantValue() {
-            return SaveData.Instance.Assists.GameSpeed;
-        }
-
         public override object GetDefaultVariantValue() {
             return 10;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            SetLegacyVariantValue((int) value);
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (!ValidValues.Contains(value)) {
                 throw new Exception("Game speed " + (value / 10f) + "x is not valid for vanilla variants!");
             }
 
-            SaveData.Instance.Assists.GameSpeed = value;
-            Engine.TimeRateB = SaveData.Instance.Assists.GameSpeed / 10f;
+            return value;
+        }
+
+        public override void VariantValueChanged() {
+            int gameSpeed = applyAssists(SaveData.Instance.Assists, out _).GameSpeed;
+            Engine.TimeRateB = gameSpeed / 10f;
+        }
+
+        protected override Assists applyVariantValue(Assists target, object value) {
+            target.GameSpeed = (int) value;
+            return target;
         }
     }
 }

@@ -3,10 +3,7 @@ using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class InvertDashes : AbstractExtendedVariant {
@@ -18,16 +15,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.InvertDashes;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.InvertDashes = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.InvertDashes = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -61,7 +50,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="self">A reference to the player</param>
         private void invertDashSpeed(Player self) {
-            if (Settings.InvertDashes) {
+            if (GetVariantValue<bool>(Variant.InvertDashes)) {
                 self.Speed *= -1;
                 self.DashDir *= -1;
             }

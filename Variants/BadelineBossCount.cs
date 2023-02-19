@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 1;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BadelineBossCount;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BadelineBossCount = value;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BadelineBossCount = (int) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
     }
 }

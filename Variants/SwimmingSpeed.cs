@@ -1,6 +1,7 @@
 ﻿using Celeste.Mod;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class SwimmingSpeed : AbstractExtendedVariant {
@@ -13,16 +14,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.SwimmingSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.SwimmingSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.SwimmingSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -37,7 +30,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(60f) || instr.MatchLdcR4(80f) || instr.MatchLdcR4(-60f))) {
                 Logger.Log("ExtendedVariantMode/SwimmingSpeed", $"Patching swimming speed at {cursor.Index} in IL for Player.SwimUpdate");
-                cursor.EmitDelegate<Func<float, float>>(speed => speed * Settings.SwimmingSpeed);
+                cursor.EmitDelegate<Func<float, float>>(speed => speed * GetVariantValue<float>(Variant.SwimmingSpeed));
             }
         }
     }

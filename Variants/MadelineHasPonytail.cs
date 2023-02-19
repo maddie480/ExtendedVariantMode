@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class MadelineHasPonytail : AbstractExtendedVariant {
@@ -23,16 +24,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.MadelineHasPonytail;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.MadelineHasPonytail = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.MadelineHasPonytail = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -64,7 +57,7 @@ namespace ExtendedVariants.Variants {
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).Name == "get_MadelineHasPonytail")) {
                 Logger.Log("ExtendedVariantMode/MadelineHasPonytail", $"Hooking MadelineHasPonytail at {cursor.Index} in IL for {cursor.Method.FullName}");
                 cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (Settings.MadelineHasPonytail) {
+                    if (GetVariantValue<bool>(Variant.MadelineHasPonytail)) {
                         // before returning true, ensure hair has enough nodes to handle the ponytail (6).
                         // this prevents crashes when enabling the variant in the middle of a level.
                         Player player;

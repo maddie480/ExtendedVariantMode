@@ -5,6 +5,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class PickupDuration : AbstractExtendedVariant {
@@ -14,20 +15,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.PickupDuration;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1f;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            Settings.PickupDuration = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.PickupDuration = (float) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -50,16 +43,16 @@ namespace ExtendedVariants.Variants {
             while (cursor.TryGotoNext(instr => instr.MatchLdcR4(0.16f), instr => instr.MatchLdcI4(1))) {
                 cursor.Index++;
                 Logger.Log("ExtendedVariantMode/PickupDuration", $"Editing grab delay at {cursor.Index} in IL for Player.PickupCoroutine");
-                cursor.EmitDelegate<Func<float, float>>(orig => Settings.PickupDuration * orig);
+                cursor.EmitDelegate<Func<float, float>>(orig => GetVariantValue<float>(Variant.PickupDuration) * orig);
             }
         }
 
         private void onUpdateSprite(On.Celeste.Player.orig_UpdateSprite orig, Player self) {
             orig(self);
 
-            if (Settings.PickupDuration != 1f && self.StateMachine.State == Player.StPickup) {
+            if (GetVariantValue<float>(Variant.PickupDuration) != 1f && self.StateMachine.State == Player.StPickup) {
                 // adapt the animation speed to the pickup speed.
-                self.Sprite.Rate = Settings.PickupDuration == 0 ? 1000 : 1 / Settings.PickupDuration;
+                self.Sprite.Rate = GetVariantValue<float>(Variant.PickupDuration) == 0 ? 1000 : 1 / GetVariantValue<float>(Variant.PickupDuration);
             }
         }
     }

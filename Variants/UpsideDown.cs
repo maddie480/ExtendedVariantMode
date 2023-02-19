@@ -11,6 +11,7 @@ using MonoMod.RuntimeDetour;
 using System;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class UpsideDown : AbstractExtendedVariant {
@@ -32,16 +33,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.UpsideDown;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.UpsideDown = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.UpsideDown = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -143,16 +136,16 @@ namespace ExtendedVariants.Variants {
         private static void applyUpsideDownEffect(ref Vector2 paddingVector, ref Vector2 positionVector) {
             paddingVector = zoomLevelVariant.getScreenPosition(paddingVector);
 
-            if (ExtendedVariantsModule.Settings.UpsideDown) {
+            if (isUpsideDown()) {
                 paddingVector.Y = -paddingVector.Y;
                 positionVector.Y = 90f - (positionVector.Y - 90f);
             }
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = ExtendedVariantsModule.Settings.UpsideDown));
+            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = isUpsideDown()));
             if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = ExtendedVariantsModule.Settings.UpsideDown;
+                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = isUpsideDown();
             }
 
             orig(self);
@@ -160,7 +153,7 @@ namespace ExtendedVariants.Variants {
 
         private SpriteEffects applyUpsideDownEffectToSprites() {
             SpriteEffects effects = SpriteEffects.None;
-            if (Settings.UpsideDown) effects |= SpriteEffects.FlipVertically;
+            if (GetVariantValue<bool>(Variant.UpsideDown)) effects |= SpriteEffects.FlipVertically;
             if (SaveData.Instance.Assists.MirrorMode) effects |= SpriteEffects.FlipHorizontally;
             return effects;
         }
@@ -172,7 +165,7 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/UpsideDown", $"Flipping HD stylegrounds upside down at {cursor.Index} in IL for HdParallax.renderForReal");
 
                 cursor.EmitDelegate<Func<Matrix, Matrix>>(orig => {
-                    if (ExtendedVariantsModule.Settings.UpsideDown) {
+                    if (isUpsideDown()) {
                         orig *= Matrix.CreateTranslation(0f, -Engine.Viewport.Height, 0f);
                         orig *= Matrix.CreateScale(1f, -1f, 1f);
                     }
@@ -180,6 +173,9 @@ namespace ExtendedVariants.Variants {
                     return orig;
                 });
             }
+        }
+        private static bool isUpsideDown() {
+            return (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.UpsideDown);
         }
     }
 }

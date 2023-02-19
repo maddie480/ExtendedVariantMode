@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JungleSpidersEverywhere : AbstractExtendedVariant {
@@ -26,16 +27,8 @@ namespace ExtendedVariants.Variants {
             return SpiderType.Disabled;
         }
 
-        public override object GetVariantValue() {
-            return Settings.JungleSpidersEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.JungleSpidersEverywhere = (SpiderType) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.JungleSpidersEverywhere = (SpiderType) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return (SpiderType) value;
         }
 
         public override void Load() {
@@ -72,7 +65,7 @@ namespace ExtendedVariants.Variants {
             spawnedSpider = false;
 
             // do not do anything if the variant is disabled (obviously)
-            if (Settings.JungleSpidersEverywhere == SpiderType.Disabled) return;
+            if (GetVariantValue<SpiderType>(Variant.JungleSpidersEverywhere) == SpiderType.Disabled) return;
 
             // do not do anything if the vanilla level already has spider bosses
             if (self.Entities.OfType<SpiderBoss>().Count() > 0) return;
@@ -80,7 +73,7 @@ namespace ExtendedVariants.Variants {
             // spawn a spider!
             EntityData data = new EntityData();
             data.Values = new Dictionary<string, object> {
-                { "color", Settings.JungleSpidersEverywhere.ToString() }
+                { "color", GetVariantValue<SpiderType>(Variant.JungleSpidersEverywhere).ToString() }
             };
             SpiderBoss spider = new SpiderBoss(data, Vector2.Zero);
             self.Add(spider);

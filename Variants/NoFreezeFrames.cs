@@ -3,6 +3,7 @@ using MonoMod.Cil;
 using System;
 using Monocle;
 using Microsoft.Xna.Framework;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class NoFreezeFrames : AbstractExtendedVariant {
@@ -15,16 +16,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.NoFreezeFrames;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.NoFreezeFrames = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.NoFreezeFrames = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -38,14 +31,14 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
-            if (Settings.NoFreezeFrames) {
+            if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
                 return;
             }
             orig(time);
         }
 
         private void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
-            if (Settings.NoFreezeFrames) {
+            if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
                 Engine.FreezeTimer = 0f;
             }
 

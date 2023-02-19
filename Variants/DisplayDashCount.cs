@@ -13,16 +13,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisplayDashCount;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisplayDashCount = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisplayDashCount = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {

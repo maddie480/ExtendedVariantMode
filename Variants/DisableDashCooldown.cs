@@ -3,6 +3,7 @@ using Celeste.Mod;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableDashCooldown : AbstractExtendedVariant {
@@ -17,16 +18,8 @@ namespace ExtendedVariants.Variants {
             return typeof(bool);
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableDashCooldown;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableDashCooldown = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableDashCooldown = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -52,7 +45,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float modDashCooldownTimer(float orig) {
-            if (Settings.DisableDashCooldown) {
+            if (GetVariantValue<bool>(Variant.DisableDashCooldown)) {
                 return 0f;
             }
 

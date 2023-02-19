@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AirFriction : AbstractExtendedVariant {
@@ -13,26 +14,12 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.AirFriction;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AirFriction = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             // what even is this?
             switch (value) {
-                case -1:
-                    Settings.AirFriction = 0f;
-                    break;
-                case 0:
-                    Settings.AirFriction = 0.05f;
-                    break;
-                default:
-                    Settings.AirFriction = value / 10f;
-                    break;
+                case -1: return 0f;
+                case 0: return 0.05f;
+                default: return value / 10f;
             }
         }
 
@@ -62,7 +49,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float determineFrictionFactor() {
-            return Settings.AirFriction;
+            return GetVariantValue<float>(Variant.AirFriction);
         }
     }
 }

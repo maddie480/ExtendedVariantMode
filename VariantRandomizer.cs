@@ -244,18 +244,16 @@ namespace ExtendedVariants {
         }
 
         private bool isDefaultValue(ExtendedVariantsModule.Variant variant) {
-            // Equals() doesn't work on 2D boolean arrays, surprisingly
-            if (variant == ExtendedVariantsModule.Variant.DashDirection) return ModOptionsEntries.GetDashDirectionIndex() == 0;
-
-            AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
-            return variantHandler.GetVariantValue().Equals(variantHandler.GetDefaultVariantValue());
+            return ExtendedVariantTriggerManager.AreValuesIdentical(
+                ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue());
         }
 
         private void disableVariant(ExtendedVariantsModule.Variant variant) {
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Disabling variant {variant.ToString()}");
 
             AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
-            variantHandler.SetVariantValue(variantHandler.GetDefaultVariantValue());
+            ModOptionsEntries.SetVariantValue(variant, variantHandler.GetDefaultVariantValue());
         }
 
         private void enableVariant(ExtendedVariantsModule.Variant variant) {
@@ -265,32 +263,32 @@ namespace ExtendedVariants {
 
             if (variant == ExtendedVariantsModule.Variant.DashDirection) {
                 // random between "diagonals only" and "no diagonals"
-                extendedVariant.SetVariantValue(getRandomDashDirection());
+                ModOptionsEntries.SetVariantValue(variant, getRandomDashDirection());
 
             } else if (variant == ExtendedVariantsModule.Variant.BadelineAttackPattern) {
                 // random between a set of values
                 int[] badelineBossesPatternsOptions = { 1, 2, 3, 4, 5, 9, 10, 14, 15 };
-                extendedVariant.SetVariantValue(badelineBossesPatternsOptions[randomGenerator.Next(badelineBossesPatternsOptions.Length)]);
+                ModOptionsEntries.SetVariantValue(variant, badelineBossesPatternsOptions[randomGenerator.Next(badelineBossesPatternsOptions.Length)]);
 
             } else if (variant == ExtendedVariantsModule.Variant.ColorGrading) {
                 // random between all color grades shipping with extended variants
-                extendedVariant.SetVariantValue(ColorGrading.ExistingColorGrades[randomGenerator.Next(ColorGrading.ExistingColorGrades.Count)]);
+                ModOptionsEntries.SetVariantValue(variant, ColorGrading.ExistingColorGrades[randomGenerator.Next(ColorGrading.ExistingColorGrades.Count)]);
 
             } else if (variant == ExtendedVariantsModule.Variant.JellyfishEverywhere) {
                 // random 1-3
-                extendedVariant.SetVariantValue(randomGenerator.Next(3) + 1);
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(3) + 1);
 
             } else if (variant == ExtendedVariantsModule.Variant.JumpCount) {
                 // random 0-5
-                extendedVariant.SetVariantValue(randomGenerator.Next(6));
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(6));
 
             } else if (variant == ExtendedVariantsModule.Variant.Stamina) {
                 // random 0-220 (so 0x to 2x the vanilla value)
-                extendedVariant.SetVariantValue(randomGenerator.Next(220));
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(220));
 
             } else if (variant == ExtendedVariantsModule.Variant.CornerCorrection) {
                 // random 0-9
-                extendedVariant.SetVariantValue(randomGenerator.Next(10));
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(10));
 
             } else if (variant == ExtendedVariantsModule.Variant.BoostMultiplier) {
                 // same scale as other multiplier variants... except it can be negative as well!
@@ -300,31 +298,31 @@ namespace ExtendedVariants {
                 float result = multiplierScale[randomGenerator.Next(multiplierScale.Length)];
                 if (randomGenerator.Next() > 0.5) result *= -1;
 
-                extendedVariant.SetVariantValue(result);
+                ModOptionsEntries.SetVariantValue(variant, result);
 
             } else if (variant == ExtendedVariantsModule.Variant.GameSpeed) {
                 // same scale as other multiplier variants, but without 0 for obvious reasons.
                 float[] multiplierScale = new float[] {
                     0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2, 2.5f, 3
                 };
-                extendedVariant.SetVariantValue(multiplierScale[randomGenerator.Next(multiplierScale.Length)]);
+                ModOptionsEntries.SetVariantValue(variant, multiplierScale[randomGenerator.Next(multiplierScale.Length)]);
 
             } else if (variant == ExtendedVariantsModule.Variant.VanillaGameSpeed) {
-                extendedVariant.SetVariantValue(Variants.Vanilla.GameSpeed.ValidValues[randomGenerator.Next(Variants.Vanilla.GameSpeed.ValidValues.Length)]);
+                ModOptionsEntries.SetVariantValue(variant, Variants.Vanilla.GameSpeed.ValidValues[randomGenerator.Next(Variants.Vanilla.GameSpeed.ValidValues.Length)]);
 
             } else if (new ExtendedVariantsModule.Variant[] { ExtendedVariantsModule.Variant.RoomLighting, ExtendedVariantsModule.Variant.BackgroundBrightness, ExtendedVariantsModule.Variant.ForegroundEffectOpacity,
                 ExtendedVariantsModule.Variant.GlitchEffect, ExtendedVariantsModule.Variant.AnxietyEffect, ExtendedVariantsModule.Variant.BlurLevel, ExtendedVariantsModule.Variant.BackgroundBlurLevel }
                 .Contains(variant)) {
                 // percentage variants: 0-100% by steps of 10%
-                extendedVariant.SetVariantValue(randomGenerator.Next(11) / 10f);
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(11) / 10f);
 
             } else if (extendedVariant.GetVariantType() == typeof(bool)) {
                 // to toggle the value, well... just toggle it. Easy!
-                extendedVariant.SetVariantValue(!((bool) extendedVariant.GetDefaultVariantValue()));
+                ModOptionsEntries.SetVariantValue(variant, !((bool) extendedVariant.GetDefaultVariantValue()));
 
             } else if (extendedVariant.GetVariantType() == typeof(int)) {
                 // 1-5 is good for most variants.
-                extendedVariant.SetVariantValue(randomGenerator.Next(5) + 1);
+                ModOptionsEntries.SetVariantValue(variant, randomGenerator.Next(5) + 1);
 
             } else if (extendedVariant.GetVariantType() == typeof(float)) {
                 // this is for multiplier variants!
@@ -332,12 +330,12 @@ namespace ExtendedVariants {
                     0, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2, 2.5f, 3
                 };
 
-                extendedVariant.SetVariantValue(multiplierScale[randomGenerator.Next(multiplierScale.Length)]);
+                ModOptionsEntries.SetVariantValue(variant, multiplierScale[randomGenerator.Next(multiplierScale.Length)]);
 
             } else if (extendedVariant.GetVariantType().IsEnum) {
                 // enum variants
                 Array vals = Enum.GetValues(extendedVariant.GetVariantType());
-                extendedVariant.SetVariantValue(vals.GetValue(randomGenerator.Next(vals.Length)));
+                ModOptionsEntries.SetVariantValue(variant, vals.GetValue(randomGenerator.Next(vals.Length)));
 
             } else {
                 throw new NotImplementedException("Cannot randomize variant " + variant + "!");
@@ -383,14 +381,14 @@ namespace ExtendedVariants {
             foreach (ExtendedVariantsModule.Variant variant in enabledExtendedVariants) {
                 string variantName = Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}");
                 Type variantType = ExtendedVariantsModule.Instance.VariantHandlers[variant].GetVariantType();
-                object variantValue = ExtendedVariantsModule.Instance.VariantHandlers[variant].GetVariantValue();
+                object variantValue = ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
                 object defaultValue = ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue();
 
                 if (variant == ExtendedVariantsModule.Variant.DashDirection) {
-                    enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ModOptionsEntries.GetDashDirectionIndex()}")}");
+                    enabledVariantsToDisplay.Add($"{variantName}: {Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{ModOptionsEntries.GetDashDirectionIndex((bool[][]) variantValue)}")}");
 
                 } else if (variant == ExtendedVariantsModule.Variant.JumpCount) {
-                    string displayValue = ExtendedVariantsModule.Settings.JumpCount == int.MaxValue ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ExtendedVariantsModule.Settings.JumpCount.ToString();
+                    string displayValue = ((int) variantValue) == int.MaxValue ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE") : ((int) variantValue).ToString();
                     enabledVariantsToDisplay.Add($"{variantName}: {displayValue}");
 
                 } else if (variant == ExtendedVariantsModule.Variant.BadelineAttackPattern) {

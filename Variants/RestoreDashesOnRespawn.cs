@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class RestoreDashesOnRespawn : AbstractExtendedVariant {
@@ -23,16 +24,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.RestoreDashesOnRespawn;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.RestoreDashesOnRespawn = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.RestoreDashesOnRespawn = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -82,7 +75,7 @@ namespace ExtendedVariants.Variants {
         private void onPlayerSpawn(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
             orig(self, scene);
 
-            if (Settings.RestoreDashesOnRespawn && ExtendedVariantsModule.Session.DashCountOnLatestRespawn != -1) {
+            if (GetVariantValue<bool>(Variant.RestoreDashesOnRespawn) && ExtendedVariantsModule.Session.DashCountOnLatestRespawn != -1) {
                 self.Dashes = ExtendedVariantsModule.Session.DashCountOnLatestRespawn;
             } else if (ExtendedVariantsModule.Session.DashCountOnLatestRespawn == -1) {
                 // this is the first time we spawn in the level! we should save the dash count.

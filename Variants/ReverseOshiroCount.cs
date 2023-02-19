@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 0;
         }
 
-        public override object GetVariantValue() {
-            return Settings.ReverseOshiroCount;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.ReverseOshiroCount = value;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ReverseOshiroCount = (int) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
     }
 }

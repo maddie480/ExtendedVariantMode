@@ -6,6 +6,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.Utils;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class GameSpeed : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.GameSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.GameSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.GameSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -81,7 +74,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modGameSpeed(int gameSpeed) {
-            if (previousGameSpeed > Settings.GameSpeed) {
+            if (previousGameSpeed > GetVariantValue<float>(Variant.GameSpeed)) {
                 Logger.Log("ExtendedVariantMode/GameSpeed", "Game speed slowed down, ensuring cassette blocks and sprites are sane...");
                 if (Engine.Scene is Level level) {
                     // go across all entities in the screen
@@ -111,9 +104,9 @@ namespace ExtendedVariants.Variants {
                     }
                 }
             }
-            previousGameSpeed = Settings.GameSpeed;
+            previousGameSpeed = GetVariantValue<float>(Variant.GameSpeed);
 
-            return (int) (gameSpeed * Settings.GameSpeed);
+            return (int) (gameSpeed * GetVariantValue<float>(Variant.GameSpeed));
         }
 
         private int modSpeedSoundSnapshot(int originalSnapshot) {

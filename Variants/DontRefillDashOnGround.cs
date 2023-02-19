@@ -4,6 +4,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DontRefillDashOnGround : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return DashRefillOnGroundConfiguration.DEFAULT;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashRefillOnGroundState;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashRefillOnGroundState = (DashRefillOnGroundConfiguration) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashRefillOnGroundState = (DashRefillOnGroundConfiguration) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return (DashRefillOnGroundConfiguration) value;
         }
 
         public override void Load() {
@@ -93,7 +86,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool areRefillsOnGroundDisabled(bool vanilla) {
-            switch (Settings.DashRefillOnGroundState) {
+            switch (GetVariantValue<DashRefillOnGroundConfiguration>(Variant.DontRefillDashOnGround)) {
                 case DashRefillOnGroundConfiguration.ON: return true;
                 case DashRefillOnGroundConfiguration.OFF: return false;
                 default: return vanilla;

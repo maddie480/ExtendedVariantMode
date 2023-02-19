@@ -7,6 +7,7 @@ using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Linq;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AddSeekers : AbstractExtendedVariant {
@@ -23,16 +24,8 @@ namespace ExtendedVariants.Variants {
             return 0;
         }
 
-        public override object GetVariantValue() {
-            return Settings.AddSeekers;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AddSeekers = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.AddSeekers = value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
 
         public override void SetRandomSeed(int seed) {
@@ -62,13 +55,13 @@ namespace ExtendedVariants.Variants {
             Level level = self;
             Player player = level.Tracker.GetEntity<Player>();
 
-            if (player != null && Settings.AddSeekers != 0) {
+            if (player != null && GetVariantValue<int>(Variant.AddSeekers) != 0) {
                 // make the seeker barriers temporarily collidable so that they are taken in account in Solid collide checks
                 // and seekers can't spawn in them
                 // (... yes, this is also what vanilla does in the seekers' Update method.)
                 foreach (Entity entity in self.Tracker.GetEntities<SeekerBarrier>()) entity.Collidable = true;
 
-                for (int seekerCount = 0; seekerCount < Settings.AddSeekers; seekerCount++) {
+                for (int seekerCount = 0; seekerCount < GetVariantValue<int>(Variant.AddSeekers); seekerCount++) {
                     for (int i = 0; i < 100; i++) {
                         // roll a seeker position in the room
                         int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
@@ -113,7 +106,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformTimeRate(float vanillaTimeRate) {
-            return Settings.DisableSeekerSlowdown || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
+            return GetVariantValue<bool>(Variant.DisableSeekerSlowdown) || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
         }
 
         private void onHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {

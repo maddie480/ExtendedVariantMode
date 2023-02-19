@@ -5,6 +5,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class Gravity : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.Gravity;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.Gravity = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.Gravity = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -97,7 +90,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The gravity factor (1 = default gravity)</returns>
         private float determineGravityFactor() {
-            return Settings.Gravity;
+            return GetVariantValue<float>(Variant.Gravity);
         }
 
         private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
@@ -121,7 +114,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool canGrabEvenWhenGoingUp() {
-            return Settings.Gravity == 0f && climbJumpGrabCooldown <= 0f;
+            return GetVariantValue<float>(Variant.Gravity) == 0f && climbJumpGrabCooldown <= 0f;
         }
 
         // NOTE: Gravity also comes in play in the UpdateSprite patch of FallSpeed.

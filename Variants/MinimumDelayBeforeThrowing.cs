@@ -4,6 +4,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class MinimumDelayBeforeThrowing : AbstractExtendedVariant {
@@ -13,20 +14,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.MinimumDelayBeforeThrowing;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1f;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            Settings.MinimumDelayBeforeThrowing = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.MinimumDelayBeforeThrowing = (float) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -42,7 +35,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.35f))) {
                 Logger.Log("ExtendedVariantMode/MinimumDelayBeforeThrowing", $"Modding minimum delay before throwing at {cursor.Index} in IL for Player.orig_Pickup");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * Settings.MinimumDelayBeforeThrowing);
+                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.MinimumDelayBeforeThrowing));
             }
         }
     }

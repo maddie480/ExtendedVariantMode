@@ -27,7 +27,7 @@ namespace ExtendedVariants.Entities {
                 Sprite.Scale.X = facing == 0 ? 1 : facing;
             }
 
-            if (!ExtendedVariantsModule.Settings.FriendlyBadelineFollower) {
+            if (!((bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.FriendlyBadelineFollower))) {
                 Vanish();
             }
         }

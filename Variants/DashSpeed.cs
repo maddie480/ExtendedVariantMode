@@ -6,6 +6,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashSpeed : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashSpeed = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -58,7 +51,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float getDashSpeedMultiplier() {
-            return Settings.DashSpeed;
+            return GetVariantValue<float>(Variant.DashSpeed);
         }
     }
 }

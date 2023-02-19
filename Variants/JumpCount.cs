@@ -9,6 +9,7 @@ using MonoMod.Cil;
 using System;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JumpCount : AbstractExtendedVariant {
@@ -30,20 +31,12 @@ namespace ExtendedVariants.Variants {
             return 1;
         }
 
-        public override object GetVariantValue() {
-            return Settings.JumpCount;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.JumpCount = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == 6) {
                 // having "infinite jumps" be int.MaxValue makes so much more sense than having it be 6...
-                Settings.JumpCount = int.MaxValue;
+                return int.MaxValue;
             } else {
-                Settings.JumpCount = value;
+                return value;
             }
         }
 
@@ -79,7 +72,7 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/JumpCount", $"Preventing dream jumping with 0 jumps at {cursor.Index} in IL for Player.DreamDashUpdate");
 
                 cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (Settings.JumpCount == 0) {
+                    if (GetVariantValue<int>(Variant.JumpCount) == 0) {
                         // no dream jumping!
                         return false;
                     }
@@ -160,11 +153,11 @@ namespace ExtendedVariants.Variants {
 
         private bool jumpNeedsRefilling() {
             // JumpCount - 1 because the first jump is from vanilla Celeste
-            return Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2 && jumpBuffer < Settings.JumpCount - 1;
+            return GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2 && jumpBuffer < GetVariantValue<int>(Variant.JumpCount) - 1;
         }
 
         private void dashRefilled() {
-            if (Settings.RefillJumpsOnDashRefill && Settings.JumpCount >= 2) {
+            if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2) {
                 RefillJumpBuffer();
             }
         }
@@ -172,9 +165,9 @@ namespace ExtendedVariants.Variants {
         private void refillJumpBuffer(Player player) {
             float jumpGraceTimer = (float) playerJumpGraceTimer.GetValue(player);
 
-            if (jumpGraceTimer > 0f && Settings.ResetJumpCountOnGround) {
+            if (jumpGraceTimer > 0f && GetVariantValue<bool>(Variant.ResetJumpCountOnGround)) {
                 // JumpCount - 1 because the first jump is from vanilla Celeste
-                jumpBuffer = Settings.JumpCount - 1;
+                jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
             }
         }
 
@@ -184,7 +177,7 @@ namespace ExtendedVariants.Variants {
         /// <returns>Whether extra jumps were refilled or not.</returns>
         public bool RefillJumpBuffer() {
             int oldJumpBuffer = jumpBuffer;
-            jumpBuffer = Settings.JumpCount - 1;
+            jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
             return oldJumpBuffer != jumpBuffer;
         }
 
@@ -204,7 +197,7 @@ namespace ExtendedVariants.Variants {
 
             if (capped) {
                 // cap the extra jump count.
-                jumpBuffer = Math.Min(jumpBuffer, cap == -1 ? Settings.JumpCount - 1 : cap);
+                jumpBuffer = Math.Min(jumpBuffer, cap == -1 ? GetVariantValue<int>(Variant.JumpCount) - 1 : cap);
             }
 
             return oldJumpBuffer != jumpBuffer;
@@ -227,7 +220,7 @@ namespace ExtendedVariants.Variants {
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
         private float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
-            if (Settings.JumpCount == 0 && jumpBuffer <= 0) {
+            if (GetVariantValue<int>(Variant.JumpCount) == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
             }
@@ -236,7 +229,7 @@ namespace ExtendedVariants.Variants {
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
-            if (initialJumpGraceTimer > 0f || (Settings.JumpCount != int.MaxValue && jumpBuffer <= 0)) {
+            if (initialJumpGraceTimer > 0f || (GetVariantValue<int>(Variant.JumpCount) != int.MaxValue && jumpBuffer <= 0)) {
                 // return the default value because we don't want to change anything
                 // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
@@ -254,7 +247,7 @@ namespace ExtendedVariants.Variants {
         private void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
             orig(self);
 
-            if (Settings.ResetJumpCountOnGround) {
+            if (GetVariantValue<bool>(Variant.ResetJumpCountOnGround)) {
                 // consistently refill jumps, whichever direction the dream dash was in.
                 // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
                 RefillJumpBuffer();

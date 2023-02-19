@@ -14,16 +14,8 @@ namespace ExtendedVariants.Variants {
             return SpeedometerConfiguration.DISABLED;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisplaySpeedometer;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisplaySpeedometer = (SpeedometerConfiguration) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisplaySpeedometer = (SpeedometerConfiguration) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return (SpeedometerConfiguration) value;
         }
 
         public override void Load() {

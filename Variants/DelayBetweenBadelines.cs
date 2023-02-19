@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 0.4f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DelayBetweenBadelines;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DelayBetweenBadelines = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DelayBetweenBadelines = (float) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
     }
 }

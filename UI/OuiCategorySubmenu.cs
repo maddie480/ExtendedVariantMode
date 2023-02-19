@@ -13,7 +13,7 @@ namespace ExtendedVariants.UI {
             ModOptionsEntries.VariantCategory category = (ModOptionsEntries.VariantCategory) parameters[0];
 
             // only put the category we're in
-            new ModOptionsEntries().CreateAllOptions(category, false, false, false, false, null /* we don't care because there is no submenu */,
+            new ModOptionsEntries().CreateAllOptions(category, false, false, false, null /* we don't care because there is no submenu */,
                 menu, inGame, false /* we don't care because there is no master switch */);
         }
 

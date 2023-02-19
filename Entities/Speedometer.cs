@@ -1,4 +1,5 @@
 ﻿using Celeste;
+using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,17 @@ namespace ExtendedVariants.Entities {
         private LinkedList<double> lastSpeeds = new LinkedList<double>();
 
         protected override bool shouldShowCounter() {
-            return settings.DisplaySpeedometer != DisplaySpeedometer.SpeedometerConfiguration.DISABLED;
+            return (DisplaySpeedometer.SpeedometerConfiguration) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DisplaySpeedometer)
+                != DisplaySpeedometer.SpeedometerConfiguration.DISABLED;
         }
 
         protected override float getExtraOffset() {
-            return settings.DisplayDashCount ? 8f : 0f;
+            return (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DisplayDashCount) ? 8f : 0f;
         }
 
         protected override string getNumberToDisplay(Player player) {
             double mostRecentNumber;
-            switch (settings.DisplaySpeedometer) {
+            switch ((DisplaySpeedometer.SpeedometerConfiguration) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DisplaySpeedometer)) {
                 case DisplaySpeedometer.SpeedometerConfiguration.HORIZONTAL:
                     mostRecentNumber = Math.Abs(Math.Round(player.Speed.X));
                     break;

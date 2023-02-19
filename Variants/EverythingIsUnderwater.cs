@@ -7,7 +7,7 @@ using System;
 using Mono.Cecil.Cil;
 using Mono.Cecil;
 using Celeste.Mod;
-using MonoMod.RuntimeDetour;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class EverythingIsUnderwater : AbstractExtendedVariant {
@@ -20,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.EverythingIsUnderwater;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.EverythingIsUnderwater = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.EverythingIsUnderwater = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -39,7 +31,7 @@ namespace ExtendedVariants.Variants {
 
             // if already in a map, add the underwater switch controller right away.
             if (Engine.Scene is Level level) {
-                level.Add(new UnderwaterSwitchController(Settings));
+                level.Add(new UnderwaterSwitchController(() => GetVariantValue<bool>(Variant.EverythingIsUnderwater)));
                 level.Entities.UpdateLists();
             }
         }
@@ -55,7 +47,7 @@ namespace ExtendedVariants.Variants {
 
             if (!self.Session?.LevelData?.Underwater ?? false) {
                 // inject a controller that will spawn/despawn water depending on the extended variant setting.
-                self.Add(new UnderwaterSwitchController(Settings));
+                self.Add(new UnderwaterSwitchController(() => GetVariantValue<bool>(Variant.EverythingIsUnderwater)));
 
                 // when transitioning, don't update lists right away, but on the end of the frame.
                 if (playerIntro != Player.IntroTypes.Transition) {

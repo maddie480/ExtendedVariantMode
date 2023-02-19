@@ -3,12 +3,14 @@ using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
@@ -20,124 +22,17 @@ namespace ExtendedVariants.UI {
     public class ModOptionsEntries {
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
-        private TextMenu.Option<bool> masterSwitchOption;
-        private TextMenu.Option<bool> optionsOutOfModOptionsMenuOption;
-        private TextMenu.Option<bool> submenusForEachCategoryOption;
-        private TextMenu.Option<bool> automaticallyResetVariantsOption;
-        private TextMenuOptionExt<int> gravityOption;
-        private TextMenuOptionExt<int> fallSpeedOption;
-        private TextMenuOptionExt<int> jumpHeightOption;
-        private TextMenuOptionExt<int> jumpDurationOption;
-        private TextMenuOptionExt<int> speedXOption;
-        private TextMenuOptionExt<int> swimmingSpeedOption;
-        private TextMenuOptionExt<int> boostMultiplierOption;
-        private TextMenuOptionExt<int> staminaOption;
-        private TextMenuOptionExt<int> dashSpeedOption;
-        private TextMenuOptionExt<bool> legacyDashSpeedBehaviorOption;
-        private TextMenuOptionExt<int> dashCountOption;
-        private TextMenuOptionExt<int> cornerCorrectionOption;
-        private TextMenuOptionExt<bool> disableDashCooldownOption;
-        private TextMenuOptionExt<bool> heldDashOption;
-        private TextMenuOptionExt<int> frictionOption;
-        private TextMenuOptionExt<int> airFrictionOption;
-        private TextMenuOptionExt<bool> disableWallJumpingOption;
-        private TextMenuOptionExt<bool> disableClimbJumpingOption;
-        private TextMenuOptionExt<bool> disableJumpingOutOfWaterOption;
-        private TextMenuOptionExt<int> jumpCountOption;
-        private TextMenuOptionExt<bool> refillJumpsOnDashRefillOption;
-        private TextMenuOptionExt<bool> resetJumpCountOnGroundOption;
-        private TextMenuOptionExt<bool> upsideDownOption;
-        private TextMenuOptionExt<int> hyperdashSpeedOption;
-        private TextMenuOptionExt<int> explodeLaunchSpeedOption;
-        private TextMenuOptionExt<int> horizontalSpringBounceDurationOption;
-        private TextMenuOptionExt<int> horizontalWallJumpDurationOption;
-        private TextMenuOptionExt<bool> disableSuperBoostsOption;
-        private TextMenuOptionExt<bool> dontRefillStaminaOnGroundOption;
-        private TextMenuOptionExt<int> wallBouncingSpeedOption;
-        private TextMenuOptionExt<int> wallSlidingSpeedOption;
-        private TextMenuOptionExt<int> dashLengthOption;
-        private TextMenuOptionExt<int> dashTimerMultiplierOption;
-        private TextMenuOptionExt<int> dashDirectionOption;
-        private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
-        private TextMenuOptionExt<bool> forceDuckOnGroundOption;
-        private TextMenuOptionExt<bool> invertDashesOption;
-        private TextMenuOptionExt<bool> invertGrabOption;
-        private TextMenuOptionExt<bool> invertHorizontalControlsOption;
-        private TextMenuOptionExt<bool> invertVerticalControlsOption;
-        private TextMenuOptionExt<bool> disableNeutralJumpingOption;
-        private TextMenuOptionExt<bool> changeVariantsRandomlyOption;
-        private TextMenuOptionExt<bool> badelineChasersEverywhereOption;
-        private TextMenuOptionExt<int> chaserCountOption;
-        private TextMenuOptionExt<bool> affectExistingChasersOption;
-        private TextMenuOptionExt<bool> badelineBossesEverywhereOption;
-        private TextMenuOptionExt<int> badelineAttackPatternOption;
-        private TextMenuOptionExt<bool> changePatternOfExistingBossesOption;
+        private TextMenuOptionExt<int> oshiroCountOption;
+        private TextMenuOptionExt<int> reverseOshiroCountOption;
+        private TextMenu.Item randomizerOptions;
         private TextMenuOptionExt<int> firstBadelineSpawnRandomOption;
         private TextMenuOptionExt<int> badelineBossCountOption;
         private TextMenuOptionExt<int> badelineBossNodeCountOption;
-        private TextMenuOptionExt<int> regularHiccupsOption;
-        private TextMenuOptionExt<int> hiccupStrengthOption;
-        private TextMenuOptionExt<int> roomLightingOption;
-        private TextMenuOptionExt<int> roomBloomOption;
-        private TextMenuOptionExt<int> glitchEffectOption;
-        private TextMenuOptionExt<int> anxietyEffectOption;
-        private TextMenuOptionExt<int> blurLevelOption;
-        private TextMenuOptionExt<int> backgroundBlurLevelOption;
-        private TextMenuOptionExt<int> zoomLevelOption;
-        private TextMenuOptionExt<bool> everythingIsUnderwaterOption;
-        private TextMenuOptionExt<bool> oshiroEverywhereOption;
-        private TextMenuOptionExt<int> oshiroCountOption;
-        private TextMenuOptionExt<int> reverseOshiroCountOption;
-        private TextMenuOptionExt<bool> disableOshiroSlowdownOption;
-        private TextMenuOptionExt<int> windEverywhereOption;
-        private TextMenuOptionExt<bool> snowballsEverywhereOption;
-        private TextMenuOptionExt<int> snowballDelayOption;
-        private TextMenuOptionExt<int> addSeekersOption;
-        private TextMenuOptionExt<bool> disableSeekerSlowdownOption;
-        private TextMenuOptionExt<bool> theoCrystalsEverywhereOption;
         private TextMenuOptionExt<bool> allowThrowingTheoOffscreenOption;
         private TextMenuOptionExt<bool> allowLeavingTheoBehindOption;
-        private TextMenuOptionExt<int> badelineLagOption;
-        private TextMenuOptionExt<int> delayBetweenBadelinesOption;
-        private TextMenuOptionExt<bool> allStrawberriesAreGoldensOption;
-        private TextMenuOptionExt<int> dontRefillDashOnGroundOption;
-        private TextMenuOptionExt<bool> disableRefillsOnScreenTransitionOption;
-        private TextMenuOptionExt<bool> restoreDashesOnRespawnOption;
-        private TextMenuOptionExt<int> gameSpeedOption;
-        private TextMenuOptionExt<int> colorGradingOption;
-        private TextMenuOptionExt<int> jellyfishEverywhereOption;
-        private TextMenuOptionExt<bool> risingLavaEverywhereOption;
-        private TextMenuOptionExt<int> risingLavaSpeedOption;
-        private TextMenuOptionExt<bool> bounceEverywhereOption;
-        private TextMenuOptionExt<int> jungleSpidersEverywhereOption;
-        private TextMenuOptionExt<int> superdashSteeringSpeedOption;
-        private TextMenuOptionExt<int> screenShakeIntensityOption;
-        private TextMenuOptionExt<int> backgroundBrightnessOption;
-        private TextMenuOptionExt<bool> disableMadelineSpotlightOption;
-        private TextMenuOptionExt<bool> disableKeysSpotlightOption;
-        private TextMenuOptionExt<int> foregroundEffectOpacityOption;
-        private TextMenuOptionExt<bool> madelineIsSilhouetteOption;
-        private TextMenuOptionExt<bool> madelineHasPonytailOption;
-        private TextMenuOptionExt<bool> dashTrailAllTheTimeOption;
-        private TextMenuOptionExt<int> disableClimbingUpOrDownOption;
-        private TextMenuOptionExt<int> pickupDurationOption;
-        private TextMenuOptionExt<int> minimumDelayBeforeThrowingOption;
-        private TextMenuOptionExt<int> delayBeforeRegrabbingOption;
-        private TextMenuOptionExt<bool> friendlyBadelineFollowerOption;
-        private TextMenuOptionExt<bool> displayDashCountOption;
-        private TextMenuOptionExt<bool> everyJumpIsUltraOption;
-        private TextMenuOptionExt<int> ultraSpeedMultiplierOption;
-        private TextMenuOptionExt<int> madelineBackpackModeOption;
-        private TextMenuOptionExt<int> coyoteTimeOption;
-        private TextMenuOptionExt<bool> noFreezeFramesOption;
-        private TextMenuOptionExt<bool> preserveExtraDashesUnderwaterOption;
-        private TextMenuOptionExt<bool> alwaysInvisibleOption;
-        private TextMenuOptionExt<int> displaySpeedometerOption;
-        private TextMenu.Item resetExtendedToDefaultOption;
-        private TextMenu.Item resetVanillaToDefaultOption;
-        private TextMenu.Item randomizerOptions;
-
-        private List<TextMenu.Item> allOptions;
+        private TextMenuOptionExt<int> dashDirection;
+        private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
+        private List<TextMenu.Item> elementsToHideOnToggle;
 
         private static int[] badelineBossesPatternsOptions = {
             0, // random (technical option)
@@ -157,16 +52,6 @@ namespace ExtendedVariants.UI {
             14, // beams w/ 0.5s pause
             15 // beams w/ 1.4s pause
         };
-
-        private int indexFromPatternValue(int option) {
-            for (int index = 0; index < badelineBossesPatternsOptions.Length - 1; index++) {
-                if (badelineBossesPatternsOptions[index + 1] > option) {
-                    return index;
-                }
-            }
-
-            return badelineBossesPatternsOptions.Length - 1;
-        }
 
         private static float[] multiplierScale = new float[] {
             0, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1, 1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2,
@@ -190,9 +75,40 @@ namespace ExtendedVariants.UI {
             2.5f, 3, 3.5f, 4, 4.5f, 5, 6, 7, 8, 9, 10, 25, 50, 100
         };
 
-        private static TextMenuOptionExt<int> getScaleOption<T>(string name, string suffix, T value, int defIndex, T[] scale, Action<T> setter, Func<T, string> formatter = null) where T : IComparable {
+        private TextMenuOptionExt<int> getScaleOption<T>(Variant variant, string suffix, T[] scale, Func<T, string> formatter = null) where T : IComparable {
             List<T> choices = new List<T>(scale);
 
+            T currentValue = (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
+            T mapDefinedValue = (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant);
+            T defaultValue = (T) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue();
+
+            // we run valueToIndex a first time in order to insert values in the choices if necessary.
+            // the second run will then be able to get the definitive indices of the values without risking being thrown off by a later insert.
+            valueToIndex(currentValue, choices);
+            valueToIndex(mapDefinedValue, choices);
+            valueToIndex(defaultValue, choices);
+
+            TextMenuExt.Slider slider = new TextMenuExt.Slider(Dialog.Clean($"modoptions_extendedvariants_{variant}"),
+                i => {
+                    T valueToFormat = choices[i];
+                    if (formatter != null) {
+                        return formatter(valueToFormat);
+                    }
+
+                    if (valueToFormat is float f && (int) f == f) {
+                        // float that represents an integer value, like 5.0f => 5
+                        return $"{f:n0}{suffix}";
+                    }
+                    return valueToFormat + suffix;
+                },
+                0, choices.Count - 1, valueToIndex(currentValue, choices), valueToIndex(defaultValue, choices), valueToIndex(mapDefinedValue, choices));
+
+            slider.Change(i => setVariantValue(variant, choices[i]));
+
+            return slider;
+        }
+
+        private int valueToIndex<T>(T value, List<T> choices) where T : IComparable {
             // go forward until choices[position] is higher or equal to our value
             int position = 0;
             while (position < choices.Count && value.CompareTo(choices[position]) > 0) {
@@ -206,33 +122,90 @@ namespace ExtendedVariants.UI {
             } else if (value.CompareTo(choices[position]) != 0) {
                 // we stopped on a value that is higher than us (not equal) => insert ourselves there
                 choices.Insert(position, value);
+            }
 
-                if (position <= defIndex) {
-                    // we pushed the default index to the right!
-                    defIndex++;
+            return position;
+        }
+
+        private TextMenuExt.OnOff getToggleOption(Variant variant) {
+            return (TextMenuExt.OnOff) new TextMenuExt.OnOff(
+                Dialog.Clean($"modoptions_extendedvariants_{variant}"),
+                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                (bool) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
+                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))
+                    .Change(b => setVariantValue(variant, b));
+        }
+
+        public static void SetVariantValue(Variant variantChange, object newValue) {
+            bool mapDefaultValue = false;
+
+            if (Engine.Scene is Level) {
+                if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variantChange))) {
+                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides and from the settings.");
+                    ExtendedVariantsModule.Session.VariantsOverridenByUser.Remove(variantChange);
+                    ExtendedVariantsModule.Settings.EnabledVariants.Remove(variantChange);
+                    mapDefaultValue = true;
+                } else {
+                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was added to the overrides.");
+                    ExtendedVariantsModule.Session.VariantsOverridenByUser.Add(variantChange);
                 }
             }
 
-            TextMenuExt.Slider slider = new TextMenuExt.Slider(Dialog.Clean(name),
-                i => {
-                    T valueToFormat = choices[i];
-                    if (formatter != null) {
-                        return formatter(valueToFormat);
-                    }
+            if (!mapDefaultValue) {
+                if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange))) {
+                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the default value, so it was removed from the settings.");
+                } else {
+                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was set.");
+                    ExtendedVariantsModule.Settings.EnabledVariants[variantChange] = newValue;
+                }
+            }
 
-                    if (valueToFormat is float f && (int) f == f) {
-                        // float that represents an integer value, like 5.0f => 5
-                        return $"{f:n0}{suffix}";
-                    }
-                    return valueToFormat + suffix;
-                },
-                0, choices.Count - 1, position, defIndex);
-            slider.Change(i => setter(choices[i]));
-            return slider;
+            ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
+            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+        }
+
+        private void setVariantValue(Variant variantChange, object newValue) {
+            SetVariantValue(variantChange, newValue);
+            refreshOptionMenuEnabledStatus();
+        }
+
+        private T[] getEnumValues<T>() where T : Enum {
+            Array enumValues = Enum.GetValues(typeof(T));
+            T[] result = new T[enumValues.Length];
+            int i = 0;
+            foreach (T enumValue in enumValues) {
+                result[i++] = enumValue;
+            }
+            return result;
+        }
+
+        private Color getColorForVariantSubmenu(List<Variant> variants) {
+            bool hasMapDefinedVariants = false;
+
+            foreach (Variant variant in variants) {
+                if (!ExtendedVariantsModule.Instance.VariantHandlers.ContainsKey(variant)) {
+                    continue;
+                }
+
+                if (!ExtendedVariantTriggerManager.AreValuesIdentical(
+                    ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                    ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))) {
+
+                    return Color.Goldenrod;
+                }
+                if (!ExtendedVariantTriggerManager.AreValuesIdentical(
+                    ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
+                    ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))) {
+
+                    hasMapDefinedVariants = true;
+                }
+            }
+
+            return hasMapDefinedVariants ? Color.DeepSkyBlue : Color.White;
         }
 
         public enum VariantCategory {
-            All, Movement, GameElements, Visual, GameplayTweaks, None
+            Movement, GameElements, Visual, GameplayTweaks, None
         }
 
         /// <summary>
@@ -246,12 +219,12 @@ namespace ExtendedVariants.UI {
         /// <param name="menu">The menu to inject the options to</param>
         /// <param name="inGame">true if we are in the pause menu, false if we are in the overworld</param>
         /// <param name="forceEnabled">true if extended variants cannot be disabled because the map being played requires them. Only useful if includeMasterSwitch = true</param>
-        public void CreateAllOptions(VariantCategory category, bool includeMasterSwitch, bool includeCategorySubmenus, bool includeRandomizer, bool includeOpenSubmenuButton,
+        public void CreateAllOptions(VariantCategory category, bool includeMasterSwitch, bool includeCategorySubmenus, bool includeRandomizer,
             Action submenuBackAction, TextMenu menu, bool inGame, bool forceEnabled) {
 
             if (includeMasterSwitch) {
                 // create the "master switch" option with specific enable/disable handling.
-                masterSwitchOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
+                menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
                     Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
                 }
                     .Change(v => {
@@ -261,129 +234,162 @@ namespace ExtendedVariants.UI {
                         // (de)activate all hooks!
                         if (v) ExtendedVariantsModule.Instance.HookStuff();
                         else ExtendedVariantsModule.Instance.UnhookStuff();
-                    });
-
-                if (!inGame) {
-                    optionsOutOfModOptionsMenuOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU"), Settings.OptionsOutOfModOptionsMenuEnabled)
-                        .Change(b => {
-                            Settings.OptionsOutOfModOptionsMenuEnabled = b;
-                            if (!Settings.SubmenusForEachCategoryEnabled) reloadModOptions();
-                        });
-                    submenusForEachCategoryOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY"), Settings.SubmenusForEachCategoryEnabled)
-                        .Change(b => {
-                            Settings.SubmenusForEachCategoryEnabled = b;
-                            reloadModOptions();
-                        });
-                    automaticallyResetVariantsOption = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOMATICALLYRESETVARIANTS"), Settings.AutomaticallyResetVariants)
-                        .Change(b => Settings.AutomaticallyResetVariants = b);
-                }
-            }
-
-            if (category == VariantCategory.All || includeCategorySubmenus) {
-                // Add buttons to easily revert to default values (vanilla and extended variants)
-                if (inGame) {
-                    resetVanillaToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_VANILLA")).Pressed(() => {
-                        ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: true);
-                    });
-                }
-
-                resetExtendedToDefaultOption = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_EXTENDED")).Pressed(() => {
-                    ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: false);
-                    resetAllOptionsToDefault();
-                    refreshOptionMenuEnabledStatus();
-                });
+                    }));
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.Movement) {
-                // Vertical Speed
-                gravityOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_GRAVITY", "x", Settings.Gravity, 10, multiplierScale, f => Settings.Gravity = f);
-                fallSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FALLSPEED", "x", Settings.FallSpeed, 10, multiplierScale, f => {
-                    Settings.FallSpeed = f;
-                    ((FallSpeed) Instance.VariantHandlers[Variant.FallSpeed]).OnVariantChanged();
+
+            if (includeCategorySubmenus) {
+                TextMenu.Button resetExtendedVariants, resetVanillaVariants = null;
+
+                // Add buttons to easily revert to default values (vanilla and extended variants)
+                if (inGame) {
+                    menu.Add((resetVanillaVariants = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_VANILLA"))).Pressed(() => {
+                        ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: true);
+                    }));
+                }
+
+                menu.Add((resetExtendedVariants = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_EXTENDED"))).Pressed(() => {
+                    ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: false);
+                }));
+
+                TextMenuButtonExt movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu;
+                TextMenu.SubHeader title;
+
+                menu.Add(title = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING")));
+                menu.Add(movementSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Movement }));
+                menu.Add(gameElementsSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameElements }));
+                menu.Add(visualSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Visual }));
+                menu.Add(gameplayTweaksSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameplayTweaks }));
+
+                // each submenu entry should be highlighted if one of the options in it has a non-default value.
+
+                movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
+                    Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
+                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
+                    Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
+                    Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
+                    Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
+                    Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
+                    Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
+                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection
                 });
 
-                // Jumping
-                jumpHeightOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPHEIGHT", "x", Settings.JumpHeight, 10, multiplierScale, f => Settings.JumpHeight = f);
-                jumpDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPDURATION", "x", Settings.JumpDuration, 10, multiplierScale, f => Settings.JumpDuration = f);
-                wallBouncingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_WALLBOUNCINGSPEED", "x", Settings.WallBouncingSpeed, 10, multiplierScale, f => Settings.WallBouncingSpeed = f);
-                disableWallJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEWALLJUMPING"), Settings.DisableWallJumping, false)
-                    .Change(b => Settings.DisableWallJumping = b);
-                disableClimbJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBJUMPING"), Settings.DisableClimbJumping, false)
-                    .Change(b => Settings.DisableClimbJumping = b);
-                disableJumpingOutOfWaterOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPINGOUTOFWATER"), Settings.DisableJumpingOutOfWater, false)
-                    .Change(b => Settings.DisableJumpingOutOfWater = b);
-                disableNeutralJumpingOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLENEUTRALJUMPING"), Settings.DisableNeutralJumping, false)
-                    .Change(b => Settings.DisableNeutralJumping = b);
-                jumpCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JUMPCOUNT", "", Settings.JumpCount, 1, new int[] { 0, 1, 2, 3, 4, 5, int.MaxValue }, i => {
-                    Settings.JumpCount = i;
-                    refreshOptionMenuEnabledStatus();
-                }, i => {
+                gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
+                    Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
+                    Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere,
+                    Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag, Variant.DelayBetweenBadelines, Variant.BadelineAttackPattern,
+                    Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom, Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroCount,
+                    Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown, Variant.SnowballDelay, Variant.DisableSeekerSlowdown, Variant.RisingLavaSpeed,
+                    Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind, Variant.JungleSpidersEverywhere
+                });
+
+                visualSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
+                    Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
+                    Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
+                    Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
+                    Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight
+                });
+
+                gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
+                    Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
+                    Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
+                    Variant.AlwaysInvisible, Variant.HiccupStrength
+                });
+
+                elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
+            } else {
+                elementsToHideOnToggle = new List<TextMenu.Item>();
+            }
+
+            // ======
+
+            if (category == VariantCategory.Movement) {
+                menu.Add(buildHeading(menu, "VERTICALSPEED"));
+                menu.Add(getScaleOption(Variant.Gravity, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.FallSpeed, "x", multiplierScale));
+
+                menu.Add(buildHeading(menu, "JUMPING"));
+                menu.Add(getScaleOption(Variant.JumpHeight, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.JumpDuration, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.WallBouncingSpeed, "x", multiplierScale));
+                menu.Add(getToggleOption(Variant.DisableWallJumping));
+                menu.Add(getToggleOption(Variant.DisableClimbJumping));
+                menu.Add(getToggleOption(Variant.DisableJumpingOutOfWater));
+                menu.Add(getToggleOption(Variant.DisableNeutralJumping));
+
+                TextMenuOptionExt<int> horizontalWallJumpDurationOption;
+                menu.Add(horizontalWallJumpDurationOption = getScaleOption(Variant.HorizontalWallJumpDuration, "x", multiplierScale));
+                horizontalWallJumpDurationOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION_HINT"));
+
+                menu.Add(getScaleOption(Variant.JumpCount, "", new int[] { 0, 1, 2, 3, 4, 5, int.MaxValue }, i => {
                     if (i == int.MaxValue) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INFINITE");
                     }
                     return i.ToString();
-                });
-                refillJumpsOnDashRefillOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_REFILLJUMPSONDASHREFILL"), Settings.RefillJumpsOnDashRefill, false)
-                    .Change(b => Settings.RefillJumpsOnDashRefill = b);
-                resetJumpCountOnGroundOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETJUMPCOUNTONGROUND"), Settings.ResetJumpCountOnGround, true)
-                    .Change(b => Settings.ResetJumpCountOnGround = b);
-                everyJumpIsUltraOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA"), Settings.EveryJumpIsUltra, false)
-                    .Change(b => Settings.EveryJumpIsUltra = b);
-                ultraSpeedMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER", "x", Settings.UltraSpeedMultiplier, 12, multiplierScale, f => Settings.UltraSpeedMultiplier = f);
-                coyoteTimeOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME", "x", Settings.CoyoteTime, 10, multiplierScale, f => Settings.CoyoteTime = f);
+                }));
 
-                // Dashing
-                dashSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHSPEED", "x", Settings.DashSpeed, 10, multiplierScale, f => Settings.DashSpeed = f);
-                legacyDashSpeedBehaviorOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR"), Settings.LegacyDashSpeedBehavior, false)
-                    .Change(value => {
-                        Settings.LegacyDashSpeedBehavior = value;
+                menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill));
+                menu.Add(getToggleOption(Variant.ResetJumpCountOnGround));
 
-                        // hot swap the "dash speed" variant handler
-                        Instance.VariantHandlers[Variant.DashSpeed].Unload();
-                        Instance.VariantHandlers[Variant.DashSpeed] = Settings.LegacyDashSpeedBehavior ? (AbstractExtendedVariant) new DashSpeedOld() : new DashSpeed();
-                        Instance.VariantHandlers[Variant.DashSpeed].Load();
-                    });
-                dashLengthOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHLENGTH", "x", Settings.DashLength, 10, multiplierScale, f => Settings.DashLength = f);
-                dashTimerMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER", "x", Settings.DashTimerMultiplier, 10, multiplierScale, f => Settings.DashTimerMultiplier = f);
-                dashDirectionOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
-                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"), 0, 3, GetDashDirectionIndex(), 0).Change(i => {
+                TextMenuExt.OnOff everyJumpIsUltraOption;
+                menu.Add(everyJumpIsUltraOption = getToggleOption(Variant.EveryJumpIsUltra));
+                everyJumpIsUltraOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC"));
+
+                TextMenuOptionExt<int> coyoteTimeOption;
+                menu.Add(coyoteTimeOption = getScaleOption(Variant.CoyoteTime, "x", multiplierScale));
+                coyoteTimeOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC"));
+
+                menu.Add(buildHeading(menu, "DASHING"));
+                menu.Add(getScaleOption(Variant.DashSpeed, "x", multiplierScale));
+
+                TextMenuExt.OnOff legacyDashSpeedBehaviorOption;
+                menu.Add(legacyDashSpeedBehaviorOption = getToggleOption(Variant.LegacyDashSpeedBehavior));
+                legacyDashSpeedBehaviorOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR_HINT"));
+
+                menu.Add(getScaleOption(Variant.DashLength, "x", multiplierScale));
+
+                TextMenuOptionExt<int> dashTimerMultiplierOption;
+                menu.Add(dashTimerMultiplierOption = getScaleOption(Variant.DashTimerMultiplier, "x", multiplierScale));
+                dashTimerMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER_DESCRIPTION"));
+
+                menu.Add(dashDirection = (TextMenuExt.Slider) new TextMenuExt.Slider(
+                    Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
+                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"),
+                    0, 3,
+                    GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.DashDirection)),
+                    0, // default
+                    GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(Variant.DashDirection)))
+                    .Change(i => {
                         switch (i) {
                             case 1:
-                                Settings.AllowedDashDirections = new bool[][] {
+                                setVariantValue(Variant.DashDirection, new bool[][] {
                                     new bool[] { false, true, false },
                                     new bool[] { true, true, true },
                                     new bool[] { false, true, false }
-                                };
+                                });
                                 break;
                             case 2:
-                                Settings.AllowedDashDirections = new bool[][] {
+                                setVariantValue(Variant.DashDirection, new bool[][] {
                                     new bool[] { true, false, true },
                                     new bool[] { false, true, false },
                                     new bool[] { true, false, true }
-                                };
-                                break;
-                            case 3:
-                                Settings.AllowedDashDirections = new bool[][] {
-                                    new bool[] { false, false, false },
-                                    new bool[] { false, true, false },
-                                    new bool[] { false, false, false }
-                                };
+                                });
                                 break;
                             default:
-                                Settings.AllowedDashDirections = new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
+                                setVariantValue(Variant.DashDirection, new bool[][] {
+                                    new bool[] { true, true, true },
+                                    new bool[] { true, true, true },
+                                    new bool[] { true, true, true }
+                                });
                                 break;
                         }
-                        refreshOptionMenuEnabledStatus();
-
-                        if (i == 3) {
-                            Settings.AllowedDashDirections = new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
-                        }
-                    });
+                    }));
 
                 // build the dash direction submenu.
                 dashDirectionsSubMenu = new Celeste.TextMenuExt.SubMenu(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_ALLOWED"), enterOnSelect: false);
                 string[,] directionNames = new string[,] { { "TOPLEFT", "TOP", "TOPRIGHT" }, { "LEFT", "CENTER", "RIGHT" }, { "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT" } };
+                bool[][] allowedDashDirections = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.DashDirection);
 
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
@@ -391,224 +397,149 @@ namespace ExtendedVariants.UI {
 
                         int a = i, b = j;
 
-                        TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i, j]), Settings.AllowedDashDirections[i][j]);
-                        toggle.Change(value => Settings.AllowedDashDirections[a][b] = value);
+                        TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i, j]), allowedDashDirections[i][j]);
+                        toggle.Change(value => {
+                            allowedDashDirections[a][b] = value;
+                            setVariantValue(Variant.DashDirection, allowedDashDirections);
+                        });
                         dashDirectionsSubMenu.Add(toggle);
                     }
                 }
 
-                hyperdashSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HYPERDASHSPEED", "x", Settings.HyperdashSpeed, 10, multiplierScale, f => Settings.HyperdashSpeed = f);
-                dashCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DASHCOUNT", "", Settings.DashCount, 0, new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => Settings.DashCount = i, i => {
+                menu.Add(dashDirectionsSubMenu);
+
+                menu.Add(getScaleOption(Variant.HyperdashSpeed, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.SuperdashSteeringSpeed, "x", multiplierScale));
+
+                TextMenuOptionExt<int> ultraSpeedMultiplierOption;
+                menu.Add(ultraSpeedMultiplierOption = getScaleOption(Variant.UltraSpeedMultiplier, "x", multiplierScale));
+                ultraSpeedMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC"));
+
+                menu.Add(getScaleOption(Variant.DashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
                     if (i == -1) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     }
                     return i.ToString();
-                });
-                heldDashOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HELDDASH"), Settings.HeldDash, false)
-                    .Change(b => Settings.HeldDash = b);
+                }));
+                menu.Add(getToggleOption(Variant.HeldDash));
+                menu.Add(getScaleOption(Variant.DontRefillDashOnGround, "", getEnumValues<DontRefillDashOnGround.DashRefillOnGroundConfiguration>(),
+                    i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[(int) i]));
+                menu.Add(getToggleOption(Variant.DisableRefillsOnScreenTransition));
+                menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
 
-                dontRefillDashOnGroundOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLDASHONGROUND"),
-                    i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[i],
-                    0, 2, (int) Settings.DashRefillOnGroundState, 0)
-                    .Change(i => Settings.DashRefillOnGroundState = (DontRefillDashOnGround.DashRefillOnGroundConfiguration) i);
-                disableRefillsOnScreenTransitionOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION"), Settings.DisableRefillsOnScreenTransition, false)
-                    .Change(b => Settings.DisableRefillsOnScreenTransition = b);
-                dontRefillStaminaOnGroundOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DONTREFILLSTAMINAONGROUND"), Settings.DontRefillStaminaOnGround, false)
-                    .Change(b => Settings.DontRefillStaminaOnGround = b);
-                restoreDashesOnRespawnOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN"), Settings.RestoreDashesOnRespawn, false)
-                    .Change(b => Settings.RestoreDashesOnRespawn = b);
-                superdashSteeringSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SUPERDASHSTEERINGSPEED", "x", Settings.SuperdashSteeringSpeed, 10, multiplierScale, f => Settings.SuperdashSteeringSpeed = f);
-                preserveExtraDashesUnderwaterOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER"), Settings.PreserveExtraDashesUnderwater, true)
-                    .Change(b => Settings.PreserveExtraDashesUnderwater = b);
-                disableDashCooldownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEDASHCOOLDOWN"), Settings.DisableDashCooldown, false)
-                    .Change(b => Settings.DisableDashCooldown = b);
+                TextMenuExt.OnOff restoreDashesOnRespawnOption;
+                menu.Add(restoreDashesOnRespawnOption = getToggleOption(Variant.RestoreDashesOnRespawn));
+                restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
 
-                cornerCorrectionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_CORNERCORRECTION", "", Settings.CornerCorrection, 4, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 },
-                    i => Settings.CornerCorrection = i, i => i + "px");
+                menu.Add(getToggleOption(Variant.PreserveExtraDashesUnderwater));
+                menu.Add(getToggleOption(Variant.DisableDashCooldown));
+                menu.Add(getScaleOption(Variant.CornerCorrection, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
 
-                // Moving
-                speedXOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SPEEDX", "x", Settings.SpeedX, 10, multiplierScale, f => Settings.SpeedX = f);
-                swimmingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SWIMMINGSPEED", "x", Settings.SwimmingSpeed, 10, multiplierScale, f => Settings.SwimmingSpeed = f);
-                boostMultiplierOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BOOSTMULTIPLIER", "x", Settings.BoostMultiplier, 44, multiplierScaleWithNegatives, f => Settings.BoostMultiplier = f);
-                explodeLaunchSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_EXPLODELAUNCHSPEED", "x", Settings.ExplodeLaunchSpeed, 10, multiplierScale, f => Settings.ExplodeLaunchSpeed = f);
-                wallSlidingSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_WALLSLIDINGSPEED", "x", Settings.WallSlidingSpeed, 10, multiplierScale, f => Settings.WallSlidingSpeed = f);
-                disableSuperBoostsOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS"), Settings.DisableSuperBoosts, false)
-                    .Change(b => Settings.DisableSuperBoosts = b);
-                frictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FRICTION", "x", Settings.Friction, 11, multiplierScaleFriction, f => Settings.Friction = f);
-                airFrictionOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_AIRFRICTION", "x", Settings.AirFriction, 11, multiplierScaleFriction, f => Settings.AirFriction = f);
+                menu.Add(buildHeading(menu, "MOVING"));
+                menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.Friction, "x", multiplierScaleFriction));
+                menu.Add(getScaleOption(Variant.AirFriction, "x", multiplierScaleFriction));
+                menu.Add(getScaleOption(Variant.ExplodeLaunchSpeed, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.WallSlidingSpeed, "x", multiplierScale));
 
-                disableClimbingUpOrDownOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN"),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + Enum.GetNames(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions))[i]),
-                    0, Enum.GetNames(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions)).Length - 1, (int) Settings.DisableClimbingUpOrDown, 0)
-                    .Change(i => Settings.DisableClimbingUpOrDown = (DisableClimbingUpOrDown.ClimbUpOrDownOptions) i);
+                TextMenuExt.OnOff disableSuperBoostsOption;
+                menu.Add(disableSuperBoostsOption = getToggleOption(Variant.DisableSuperBoosts));
+                disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
 
-                horizontalSpringBounceDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALSPRINGBOUNCEDURATION", "x", Settings.HorizontalSpringBounceDuration, 10, multiplierScale, f => Settings.HorizontalSpringBounceDuration = f);
-                horizontalWallJumpDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION", "x", Settings.HorizontalWallJumpDuration, 10, multiplierScale, f => Settings.HorizontalWallJumpDuration = f);
+                menu.Add(getScaleOption(Variant.BoostMultiplier, "x", multiplierScaleWithNegatives));
+                menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
+                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
+                menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
 
-                // Holdables
-                pickupDurationOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_PICKUPDURATION", "x", Settings.PickupDuration, 10, multiplierScale, f => Settings.PickupDuration = f);
-                minimumDelayBeforeThrowingOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_MINIMUMDELAYBEFORETHROWING", "x", Settings.MinimumDelayBeforeThrowing, 10, multiplierScale, f => Settings.MinimumDelayBeforeThrowing = f);
-                delayBeforeRegrabbingOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DELAYBEFOREREGRABBING", "x", Settings.DelayBeforeRegrabbing, 10, multiplierScale, f => Settings.DelayBeforeRegrabbing = f);
+                menu.Add(buildHeading(menu, "HOLDABLES"));
+                menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.MinimumDelayBeforeThrowing, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.DelayBeforeRegrabbing, "x", multiplierScale));
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
-                // Badeline Chasers
-                badelineChasersEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINECHASERSEVERYWHERE"), Settings.BadelineChasersEverywhere, false)
-                    .Change(b => Settings.BadelineChasersEverywhere = b);
-                chaserCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_CHASERCOUNT", "", Settings.ChaserCount, 0, new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => Settings.ChaserCount = i);
-                affectExistingChasersOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AFFECTEXISTINGCHASERS"), Settings.AffectExistingChasers, false)
-                    .Change(b => Settings.AffectExistingChasers = b);
-                badelineLagOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINELAG", "s", Settings.BadelineLag, 16, multiplierScaleBadelineLag, f => Settings.BadelineLag = f);
-                delayBetweenBadelinesOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_DELAYBETWEENBADELINES", "s", Settings.DelayBetweenBadelines, 4, multiplierScale, f => Settings.DelayBetweenBadelines = f);
 
-                // Badeline Bosses
-                badelineBossesEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSESEVERYWHERE"), Settings.BadelineBossesEverywhere, false)
-                    .Change(b => {
-                        Settings.BadelineBossesEverywhere = b;
-                        refreshOptionMenuEnabledStatus();
-                    });
-                badelineAttackPatternOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BADELINEATTACKPATTERN"),
-                    i => {
-                        if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
-                        return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_BADELINEPATTERN_{badelineBossesPatternsOptions[i]}");
-                    }, 0, badelineBossesPatternsOptions.Length - 1, indexFromPatternValue(Settings.BadelineAttackPattern), 0)
-                    .Change(i => Settings.BadelineAttackPattern = badelineBossesPatternsOptions[i]);
-                changePatternOfExistingBossesOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEPATTERNSOFEXISTINGBOSSES"), Settings.ChangePatternsOfExistingBosses, false)
-                    .Change(b => Settings.ChangePatternsOfExistingBosses = b);
-                firstBadelineSpawnRandomOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM"),
-                    i => i == 1 ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF"),
-                    0, 1, Settings.FirstBadelineSpawnRandom ? 1 : 0, 0).Change(i => Settings.FirstBadelineSpawnRandom = (i != 0));
-                badelineBossCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSCOUNT", "", Settings.BadelineBossCount, 0, new int[] { 1, 2, 3, 4, 5 }, i => Settings.BadelineBossCount = i);
-                badelineBossNodeCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BADELINEBOSSNODECOUNT", "", Settings.BadelineBossNodeCount, 0, new int[] { 1, 2, 3, 4, 5 }, i => Settings.BadelineBossNodeCount = i);
+            if (category == VariantCategory.GameElements) {
+                menu.Add(buildHeading(menu, "CHASERS"));
+                menu.Add(getToggleOption(Variant.BadelineChasersEverywhere));
+                menu.Add(getScaleOption(Variant.ChaserCount, "", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
+                menu.Add(getToggleOption(Variant.AffectExistingChasers));
+                menu.Add(getScaleOption(Variant.BadelineLag, "s", multiplierScaleBadelineLag));
+                menu.Add(getScaleOption(Variant.DelayBetweenBadelines, "s", multiplierScale));
 
-                // Oshiro
-                oshiroEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSHIROEVERYWHERE"), Settings.OshiroEverywhere, false)
-                    .Change(b => {
-                        Settings.OshiroEverywhere = b;
-                        refreshOptionMenuEnabledStatus();
-                    });
-                oshiroCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_OSHIROCOUNT", "", Settings.OshiroCount, 1, new int[] { 0, 1, 2, 3, 4, 5 }, i => Settings.OshiroCount = i);
-                reverseOshiroCountOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_REVERSEOSHIROCOUNT", "", Settings.ReverseOshiroCount, 0, new int[] { 0, 1, 2, 3, 4, 5 }, i => Settings.ReverseOshiroCount = i);
-                disableOshiroSlowdownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEOSHIROSLOWDOWN"), Settings.DisableOshiroSlowdown, false)
-                    .Change(b => Settings.DisableOshiroSlowdown = b);
+                menu.Add(buildHeading(menu, "BOSSES"));
+                menu.Add(getToggleOption(Variant.BadelineBossesEverywhere));
+                menu.Add(getScaleOption(Variant.BadelineAttackPattern, "", badelineBossesPatternsOptions, i => {
+                    if (i == 0) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_RANDOM");
+                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_BADELINEPATTERN_{i}");
+                }));
+                menu.Add(getToggleOption(Variant.ChangePatternsOfExistingBosses));
+                menu.Add(firstBadelineSpawnRandomOption = getScaleOption(Variant.FirstBadelineSpawnRandom, "", new bool[] { false, true },
+                    b => b ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_ON") : Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FIRSTBADELINESPAWNRANDOM_OFF")));
+                menu.Add(badelineBossCountOption = getScaleOption(Variant.BadelineBossCount, "", new int[] { 1, 2, 3, 4, 5 }));
+                menu.Add(badelineBossNodeCountOption = getScaleOption(Variant.BadelineBossNodeCount, "", new int[] { 1, 2, 3, 4, 5 }));
 
-                // Other elements
-                windEverywhereOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE"),
-                    i => Dialog.Clean(i == 0 ? "MODOPTIONS_EXTENDEDVARIANTS_DISABLED" : "MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_" + Enum.GetNames(typeof(WindEverywhere.WindPattern))[i]),
-                    0, Enum.GetNames(typeof(WindEverywhere.WindPattern)).Length - 1, (int) Settings.WindEverywhere, 0)
-                    .Change(i => Settings.WindEverywhere = (WindEverywhere.WindPattern) i);
-                snowballsEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLSEVERYWHERE"), Settings.SnowballsEverywhere, false)
-                    .Change(b => Settings.SnowballsEverywhere = b);
-                snowballDelayOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SNOWBALLDELAY", "s", Settings.SnowballDelay, 8, multiplierScale, f => Settings.SnowballDelay = f);
-                addSeekersOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ADDSEEKERS", "", Settings.AddSeekers, 0, new int[] { 0, 1, 2, 3, 4, 5 }, i => Settings.AddSeekers = i);
-                disableSeekerSlowdownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESEEKERSLOWDOWN"), Settings.DisableSeekerSlowdown, false)
-                    .Change(b => {
-                        Settings.DisableSeekerSlowdown = b;
-                        if (b && Engine.Scene is Level level && level.Tracker.CountEntities<Seeker>() != 0) {
-                            // since we are in a map with seekers and we are killing slowdown, set speed to 1 to be sure we aren't making the current slowdown permanent. :maddyS:
-                            Engine.TimeRate = 1f;
-                        }
-                    });
-                theoCrystalsEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_THEOCRYSTALSEVERYWHERE"), Settings.TheoCrystalsEverywhere, false)
-                    .Change(b => {
-                        Settings.TheoCrystalsEverywhere = b;
-                        refreshOptionMenuEnabledStatus();
-                    });
-                allowThrowingTheoOffscreenOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_allowThrowingTheoOffscreen"), Settings.AllowThrowingTheoOffscreen, false)
-                    .Change(b => Settings.AllowThrowingTheoOffscreen = b);
-                allowLeavingTheoBehindOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_allowLeavingTheoBehind"), Settings.AllowLeavingTheoBehind, false)
-                    .Change(b => Settings.AllowLeavingTheoBehind = b);
-                jellyfishEverywhereOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_JELLYFISHEVERYWHERE", "", Settings.JellyfishEverywhere, 0, new int[] { 0, 1, 2, 3 }, i => Settings.JellyfishEverywhere = i);
-                risingLavaEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVAEVERYWHERE"), Settings.RisingLavaEverywhere, false)
-                    .Change(b => Settings.RisingLavaEverywhere = b);
-                risingLavaSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_RISINGLAVASPEED", "x", Settings.RisingLavaSpeed, 10, multiplierScale, f => Settings.RisingLavaSpeed = f);
+                menu.Add(buildHeading(menu, "OSHIRO"));
+                menu.Add(getToggleOption(Variant.OshiroEverywhere));
+                menu.Add(oshiroCountOption = getScaleOption(Variant.OshiroCount, "", new int[] { 0, 1, 2, 3, 4, 5 }));
+                if (Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption = getScaleOption(Variant.ReverseOshiroCount, "", new int[] { 0, 1, 2, 3, 4, 5 }));
+                menu.Add(getToggleOption(Variant.DisableOshiroSlowdown));
 
-                jungleSpidersEverywhereOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE"),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE_" + Enum.GetNames(typeof(JungleSpidersEverywhere.SpiderType))[i]),
-                    0, Enum.GetNames(typeof(JungleSpidersEverywhere.SpiderType)).Length - 1, (int) Settings.JungleSpidersEverywhere, 0)
-                    .Change(i => Settings.JungleSpidersEverywhere = (JungleSpidersEverywhere.SpiderType) i);
+                menu.Add(buildHeading(menu, "THEO"));
+                menu.Add(getToggleOption(Variant.TheoCrystalsEverywhere));
+
+                menu.Add(allowThrowingTheoOffscreenOption = getToggleOption(Variant.AllowThrowingTheoOffscreen));
+                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc2"));
+                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc1"));
+
+                menu.Add(allowLeavingTheoBehindOption = getToggleOption(Variant.AllowLeavingTheoBehind));
+
+                menu.Add(buildHeading(menu, "EVERYWHERE"));
+                menu.Add(getScaleOption(Variant.WindEverywhere, "", getEnumValues<WindEverywhere.WindPattern>(),
+                    e => Dialog.Clean(e == WindEverywhere.WindPattern.Default ? "MODOPTIONS_EXTENDEDVARIANTS_DISABLED" : "MODOPTIONS_EXTENDEDVARIANTS_WINDEVERYWHERE_" + e)));
+                menu.Add(getToggleOption(Variant.SnowballsEverywhere));
+                menu.Add(getScaleOption(Variant.SnowballDelay, "s", multiplierScale));
+                menu.Add(getScaleOption(Variant.AddSeekers, "", new int[] { 0, 1, 2, 3, 4, 5 }));
+                menu.Add(getToggleOption(Variant.DisableSeekerSlowdown));
+                menu.Add(getScaleOption(Variant.JellyfishEverywhere, "", new int[] { 0, 1, 2, 3 }));
+                menu.Add(getToggleOption(Variant.RisingLavaEverywhere));
+                menu.Add(getScaleOption(Variant.RisingLavaSpeed, "x", multiplierScale));
+                if (Instance.JungleHelperInstalled) menu.Add(getScaleOption(Variant.JungleSpidersEverywhere, "", getEnumValues<JungleSpidersEverywhere.SpiderType>(),
+                    e => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE_" + e)));
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.Visual) {
-                upsideDownOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_UPSIDEDOWN"), Settings.UpsideDown, false)
-                    .Change(b => Settings.UpsideDown = b);
 
-                roomLightingOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ROOMLIGHTING", "", Settings.RoomLighting, 0, new float[] {
-                    -1f, 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f
-                }, f => {
-                    Settings.RoomLighting = f;
+            if (category == VariantCategory.Visual) {
+                menu.Add(buildHeading(menu, "MADELINE"));
+                menu.Add(getToggleOption(Variant.DisableMadelineSpotlight));
+                if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(getToggleOption(Variant.MadelineIsSilhouette));
+                menu.Add(getToggleOption(Variant.DashTrailAllTheTime));
+                if (Instance.MaxHelpingHandInstalled) menu.Add(getToggleOption(Variant.MadelineHasPonytail));
+                menu.Add(getToggleOption(Variant.DisplayDashCount));
+                menu.Add(getScaleOption(Variant.DisplaySpeedometer, "", getEnumValues<DisplaySpeedometer.SpeedometerConfiguration>(),
+                    e => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER_" + e)));
+                menu.Add(getScaleOption(Variant.MadelineBackpackMode, "", getEnumValues<MadelineBackpackMode.MadelineBackpackModes>(),
+                    e => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_" + e)));
 
-                    if (Engine.Scene.GetType() == typeof(Level)) {
-                        // currently in level, change lighting right away
-                        Level lvl = (Engine.Scene as Level);
-                        lvl.Lighting.Alpha = (f == -1 ? (lvl.DarkRoom ? lvl.Session.DarkRoomAlpha : lvl.BaseLightingAlpha + lvl.Session.LightingAlphaAdd) : 1 - f);
-                    }
-                }, f => {
+                menu.Add(buildHeading(menu, "LEVEL"));
+                menu.Add(getToggleOption(Variant.UpsideDown));
+                menu.Add(getScaleOption(Variant.RoomLighting, "", new float[] { -1f, 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f }, f => {
                     if (f == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     return $"{f * 100}%";
-                });
-
-                backgroundBrightnessOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBRIGHTNESS", "", Settings.BackgroundBrightness, 10, new float[] {
-                    0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f
-                }, f => Settings.BackgroundBrightness = f, f => $"{f * 100}%");
-
-                foregroundEffectOpacityOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_FOREGROUNDEFFECTOPACITY", "", Settings.ForegroundEffectOpacity, 10, new float[] {
-                    0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f
-                }, f => Settings.ForegroundEffectOpacity = f, f => $"{f * 100}%");
-
-                disableMadelineSpotlightOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEMADELINESPOTLIGHT"), Settings.DisableMadelineSpotlight, false)
-                    .Change(b => Settings.DisableMadelineSpotlight = b);
-                disableKeysSpotlightOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEKEYSSPOTLIGHT"), Settings.DisableKeysSpotlight, false)
-                    .Change(b => {
-                        Settings.DisableKeysSpotlight = b;
-                        ((DisableKeysSpotlight) ExtendedVariantsModule.Instance.VariantHandlers[Variant.DisableKeysSpotlight]).OnSettingChanged();
-                    });
-                madelineIsSilhouetteOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEISSILHOUETTE"), Settings.MadelineIsSilhouette, false)
-                    .Change(b => Settings.MadelineIsSilhouette = b);
-                dashTrailAllTheTimeOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTRAILALLTHETIME"), Settings.DashTrailAllTheTime, false)
-                    .Change(b => Settings.DashTrailAllTheTime = b);
-                madelineHasPonytailOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEHASPONYTAIL"), Settings.MadelineHasPonytail, false)
-                    .Change(b => Settings.MadelineHasPonytail = b);
-
-                madelineBackpackModeOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE"),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MADELINEBACKPACKMODE_" + Enum.GetNames(typeof(MadelineBackpackMode.MadelineBackpackModes))[i]),
-                    0, Enum.GetNames(typeof(MadelineBackpackMode.MadelineBackpackModes)).Length - 1, (int) Settings.MadelineBackpackMode, 0)
-                    .Change(i => {
-                        Settings.MadelineBackpackMode = (MadelineBackpackMode.MadelineBackpackModes) i;
-
-                        Player p = Engine.Scene.Tracker.GetEntity<Player>();
-                        if (p != null) {
-                            if (p.Active) {
-                                p.ResetSpriteNextFrame(p.DefaultSpriteMode);
-                            } else {
-                                p.ResetSprite(p.DefaultSpriteMode);
-                            }
-                        }
-                    });
-
-                roomBloomOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ROOMBLOOM", "", Settings.RoomBloom, 0, new float[] {
-                    -1f, 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f, 2f, 3f, 4f, 5f
-                }, f => Settings.RoomBloom = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
-
-                glitchEffectOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_GLITCHEFFECT", "", Settings.GlitchEffect, 0, new float[] {
-                    -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.GlitchEffect = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
-
-                anxietyEffectOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ANXIETYEFFECT", "", Settings.AnxietyEffect, 0, new float[] {
-                    -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.AnxietyEffect = f, f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%");
-
-                blurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BLURLEVEL", "", Settings.BlurLevel, 0, new float[] {
-                    0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.BlurLevel = f, f => $"{f * 100}%");
-
-                backgroundBlurLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_BACKGROUNDBLURLEVEL", "", Settings.BackgroundBlurLevel, 0, new float[] {
-                    0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f
-                }, f => Settings.BackgroundBlurLevel = f, f => $"{f * 100}%");
-
-                zoomLevelOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_ZOOMLEVEL", "x", Settings.ZoomLevel, 10, multiplierScale, f => Settings.ZoomLevel = f);
+                }));
+                menu.Add(getScaleOption(Variant.BackgroundBrightness, "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f }, f => $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.ForegroundEffectOpacity, "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f }, f => $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.RoomBloom, "", new float[] { -1f, 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f, 2f, 3f, 4f, 5f },
+                    f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.GlitchEffect, "", new float[] { -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f },
+                    f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.AnxietyEffect, "", new float[] { -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f },
+                    f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.BlurLevel, "", new float[] { 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f }, f => $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.BackgroundBlurLevel, "", new float[] { 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f }, f => $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.ZoomLevel, "x", multiplierScale));
 
                 // go through all Everest mod assets, and list all color grades that exist.
                 List<string> allColorGrades = new List<string>(ColorGrading.ExistingColorGrades);
@@ -620,528 +551,99 @@ namespace ExtendedVariants.UI {
                         allColorGrades.Add(colorgrade);
                     }
                 }
+                allColorGrades.Insert(0, "");
 
-                colorGradingOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLORGRADING"),
-                    i => {
-                        if (i == -1) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                menu.Add(getScaleOption(Variant.ColorGrading, "", allColorGrades.ToArray(), colorGradeName => {
+                    if (string.IsNullOrEmpty(colorGradeName)) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
 
-                        if (i >= ColorGrading.ExistingColorGrades.Count) {
-                            // mod color grade - try formatting it somewhat nicely.
-                            string colorGradeName = allColorGrades[i];
-                            if (colorGradeName.Contains("/")) colorGradeName = colorGradeName.Substring(colorGradeName.LastIndexOf("/") + 1);
-                            if (colorGradeName.Length > 15) colorGradeName = colorGradeName.Substring(0, 15) + "...";
-                            return "Mod - " + colorGradeName.SpacedPascalCase();
-                        }
+                    if (!ColorGrading.ExistingColorGrades.Contains(colorGradeName)) {
+                        // mod color grade - try formatting it somewhat nicely.
+                        if (colorGradeName.Contains("/")) colorGradeName = colorGradeName.Substring(colorGradeName.LastIndexOf("/") + 1);
+                        if (colorGradeName.Length > 15) colorGradeName = colorGradeName.Substring(0, 15) + "...";
+                        return "Mod - " + colorGradeName.SpacedPascalCase();
+                    }
 
-                        // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
-                        // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
-                        string resourceName = ColorGrading.ExistingColorGrades[i];
-                        if (resourceName.Contains("/")) resourceName = resourceName.Substring(resourceName.LastIndexOf("/") + 1);
-                        return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{resourceName}");
+                    // "none" => read MODOPTIONS_EXTENDEDVARIANTS_CG_none
+                    // "celsius/tetris" => read MODOPTIONS_EXTENDEDVARIANTS_CG_tetris
+                    if (colorGradeName.Contains("/")) colorGradeName = colorGradeName.Substring(colorGradeName.LastIndexOf("/") + 1);
+                    return Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_CG_{colorGradeName}");
+                }));
 
-                    }, -1, allColorGrades.Count - 1, string.IsNullOrEmpty(Settings.ColorGrading) ? -1 : allColorGrades.IndexOf(Settings.ColorGrading), 0)
-                    .Change(i => Settings.ColorGrading = (i == -1 ? "" : allColorGrades[i]));
-
-                screenShakeIntensityOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_SCREENSHAKEINTENSITY", "x", Settings.ScreenShakeIntensity, 10, multiplierScale, f => Settings.ScreenShakeIntensity = f);
-
-                friendlyBadelineFollowerOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FRIENDLYBADELINEFOLLOWER"), Settings.FriendlyBadelineFollower, false)
-                    .Change(b => Settings.FriendlyBadelineFollower = b);
-
-                displayDashCountOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYDASHCOUNT"), Settings.DisplayDashCount, false)
-                    .Change(b => Settings.DisplayDashCount = b);
-
-
-                displaySpeedometerOption = (TextMenuExt.Slider) new TextMenuExt.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER"),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISPLAYSPEEDOMETER_" + Enum.GetNames(typeof(DisplaySpeedometer.SpeedometerConfiguration))[i]),
-                    0, Enum.GetNames(typeof(DisplaySpeedometer.SpeedometerConfiguration)).Length - 1, (int) Settings.DisplaySpeedometer, 0)
-                    .Change(i => Settings.DisplaySpeedometer = (DisplaySpeedometer.SpeedometerConfiguration) i);
+                menu.Add(getToggleOption(Variant.DisableKeysSpotlight));
+                menu.Add(getScaleOption(Variant.ScreenShakeIntensity, "x", multiplierScale));
+                menu.Add(getToggleOption(Variant.FriendlyBadelineFollower));
             }
 
             // ======
-            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
-                // ex-"Other" category
-                gameSpeedOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_GAMESPEED", "x", Settings.GameSpeed, 10, multiplierScale, f => Settings.GameSpeed = f);
 
-                noFreezeFramesOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES"), Settings.NoFreezeFrames, false)
-                    .Change(b => Settings.NoFreezeFrames = b);
+            if (category == VariantCategory.GameplayTweaks) {
+                menu.Add(buildHeading(menu, "OTHER"));
+                menu.Add(getScaleOption(Variant.GameSpeed, "x", multiplierScale));
 
-                everythingIsUnderwaterOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYTHINGISUNDERWATER"), Settings.EverythingIsUnderwater, false)
-                    .Change(b => Settings.EverythingIsUnderwater = b);
+                TextMenuExt.OnOff noFreezeFramesOption;
+                menu.Add(noFreezeFramesOption = getToggleOption(Variant.NoFreezeFrames));
+                noFreezeFramesOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC"));
 
-                staminaOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_STAMINA", "", Settings.Stamina, 11, new int[] {
+                menu.Add(getToggleOption(Variant.EverythingIsUnderwater));
+                menu.Add(getScaleOption(Variant.Stamina, "", new int[] {
                     0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
                     310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
-                }, i => Settings.Stamina = i);
-                regularHiccupsOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_REGULARHICCUPS", "", Settings.RegularHiccups, 0, multiplierScale, f => {
-                    Settings.RegularHiccups = f;
-                    (ExtendedVariantsModule.Instance.VariantHandlers[ExtendedVariantsModule.Variant.RegularHiccups] as RegularHiccups).UpdateTimerFromSettings();
-                }, f => f == 0f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : $"{f}s");
-                hiccupStrengthOption = getScaleOption("MODOPTIONS_EXTENDEDVARIANTS_HICCUPSTRENGTH", "x", Settings.HiccupStrength, 10, multiplierScale, f => Settings.HiccupStrength = f);
+                }));
+                menu.Add(getScaleOption(Variant.RegularHiccups, "", multiplierScale, f => f == 0f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : $"{f}s"));
+                menu.Add(getScaleOption(Variant.HiccupStrength, "x", multiplierScale));
+                menu.Add(getToggleOption(Variant.AllStrawberriesAreGoldens));
+                menu.Add(getToggleOption(Variant.AlwaysInvisible));
 
-                allStrawberriesAreGoldensOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALLSTRAWBERRIESAREGOLDENS"), Settings.AllStrawberriesAreGoldens, false)
-                    .Change(b => Settings.AllStrawberriesAreGoldens = b);
-
-                // ex-"Troll" category
-                forceDuckOnGroundOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_FORCEDUCKONGROUND"), Settings.ForceDuckOnGround, false)
-                .Change(b => Settings.ForceDuckOnGround = b);
-                invertDashesOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTDASHES"), Settings.InvertDashes, false)
-                    .Change(b => Settings.InvertDashes = b);
-                invertGrabOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTGRAB"), Settings.InvertGrab, false)
-                    .Change(b => Settings.InvertGrab = b);
-                invertHorizontalControlsOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTHORIZONTALCONTROLS"), Settings.InvertHorizontalControls, false)
-                    .Change(b => Settings.InvertHorizontalControls = b);
-                invertVerticalControlsOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_INVERTVERTICALCONTROLS"), Settings.InvertVerticalControls, false)
-                    .Change(b => Settings.InvertVerticalControls = b);
-                bounceEverywhereOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_BOUNCEEVERYWHERE"), Settings.BounceEverywhere, false)
-                    .Change(b => Settings.BounceEverywhere = b);
-                alwaysInvisibleOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALWAYSINVISIBLE"), Settings.AlwaysInvisible, false)
-                    .Change(b => Settings.AlwaysInvisible = b);
+                menu.Add(buildHeading(menu, "TROLL"));
+                menu.Add(getToggleOption(Variant.ForceDuckOnGround));
+                menu.Add(getToggleOption(Variant.InvertDashes));
+                menu.Add(getToggleOption(Variant.InvertGrab));
+                menu.Add(getToggleOption(Variant.InvertHorizontalControls));
+                menu.Add(getToggleOption(Variant.InvertVerticalControls));
+                menu.Add(getToggleOption(Variant.BounceEverywhere));
             }
 
             if (includeRandomizer) {
-                changeVariantsRandomlyOption = (TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false)
+                menu.Add(buildHeading(menu, "RANDOMIZER"));
+
+                menu.Add((TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false, false)
                     .Change(b => {
                         Settings.ChangeVariantsRandomly = b;
                         refreshOptionMenuEnabledStatus();
-                    });
+                    }));
 
-                randomizerOptions = AbstractSubmenu.BuildOpenMenuButton<OuiRandomizerOptions>(menu, inGame, submenuBackAction, new object[0]);
+                menu.Add(randomizerOptions = AbstractSubmenu.BuildOpenMenuButton<OuiRandomizerOptions>(menu, inGame, submenuBackAction, new object[0]));
             }
-
-            TextMenu.SubHeader verticalSpeedTitle = null, jumpingTitle = null, dashingTitle = null, movingTitle = null, chasersTitle = null, bossesTitle = null,
-                oshiroTitle = null, theoTitle = null, everywhereTitle = null, otherTitle = null, trollTitle = null, randomizerTitle = null, submenusTitle = null,
-                madelineTitle = null, levelTitle = null, holdablesTitle = null;
-
-            if (category == VariantCategory.All || category == VariantCategory.Movement) {
-                verticalSpeedTitle = buildHeading(menu, "VERTICALSPEED");
-                jumpingTitle = buildHeading(menu, "JUMPING");
-                dashingTitle = buildHeading(menu, "DASHING");
-                movingTitle = buildHeading(menu, "MOVING");
-                holdablesTitle = buildHeading(menu, "HOLDABLES");
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
-                chasersTitle = buildHeading(menu, "CHASERS");
-                bossesTitle = buildHeading(menu, "BOSSES");
-                oshiroTitle = buildHeading(menu, "OSHIRO");
-                theoTitle = buildHeading(menu, "THEO");
-                everywhereTitle = buildHeading(menu, "EVERYWHERE");
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.Visual) {
-                madelineTitle = buildHeading(menu, "MADELINE");
-                levelTitle = buildHeading(menu, "LEVEL");
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
-                otherTitle = buildHeading(menu, "OTHER");
-                trollTitle = buildHeading(menu, "TROLL");
-            }
-
-            if (includeRandomizer) randomizerTitle = buildHeading(menu, "RANDOMIZER");
-
-            TextMenuButtonExt movementSubmenu = null, gameElementsSubmenu = null, visualSubmenu = null, gameplayTweaksSubmenu = null;
-
-            if (includeCategorySubmenus) {
-                submenusTitle = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING"));
-                movementSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Movement });
-                gameElementsSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameElements });
-                visualSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Visual });
-                gameplayTweaksSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameplayTweaks });
-
-                // each submenu entry should be highlighted if one of the options in it has a non-default value.
-
-                movementSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
-                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                        Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                        Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
-                        Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                        Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                        Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
-                        Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier }
-                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue())) || GetDashDirectionIndex() != 0;
-
-                gameElementsSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
-                        Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere,
-                        Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag, Variant.DelayBetweenBadelines, Variant.BadelineAttackPattern,
-                        Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom, Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroCount,
-                        Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown, Variant.SnowballDelay, Variant.DisableSeekerSlowdown, Variant.RisingLavaSpeed,
-                        Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind, Variant.JungleSpidersEverywhere }
-                        .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
-
-                visualSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
-                        Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                        Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
-                        Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight }
-                        .Exists(variant => Instance.VariantHandlers.ContainsKey(variant) && !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
-
-                gameplayTweaksSubmenu.GetHighlight = () =>
-                    new List<Variant> { Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                        Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                        Variant.AlwaysInvisible, Variant.HiccupStrength }
-                        .Exists(variant => !Instance.VariantHandlers[variant].GetVariantValue().Equals(Instance.VariantHandlers[variant].GetDefaultVariantValue()));
-            }
-
-            TextMenu.Item openSubmenuButton = null;
-            if (includeOpenSubmenuButton) {
-                openSubmenuButton = AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, inGame,
-                        () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), new object[] { inGame });
-            }
-
-            allOptions = new List<TextMenu.Item>() {
-                // all sub-headers
-                verticalSpeedTitle, jumpingTitle, dashingTitle, movingTitle, chasersTitle, bossesTitle, oshiroTitle, theoTitle, everywhereTitle, madelineTitle, levelTitle, otherTitle, trollTitle, randomizerTitle, submenusTitle,
-                // all submenus
-                movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu,
-                // all options excluding the master switch
-                optionsOutOfModOptionsMenuOption, submenusForEachCategoryOption, automaticallyResetVariantsOption, openSubmenuButton,
-                gravityOption, fallSpeedOption, jumpHeightOption, speedXOption, swimmingSpeedOption, staminaOption, dashSpeedOption, dashCountOption, legacyDashSpeedBehaviorOption,
-                heldDashOption, frictionOption, airFrictionOption, disableWallJumpingOption, disableClimbJumpingOption, jumpCountOption, refillJumpsOnDashRefillOption, upsideDownOption, hyperdashSpeedOption,
-                wallBouncingSpeedOption, dashLengthOption, forceDuckOnGroundOption, invertDashesOption, invertGrabOption, disableNeutralJumpingOption, changeVariantsRandomlyOption, badelineChasersEverywhereOption,
-                chaserCountOption, affectExistingChasersOption, regularHiccupsOption, hiccupStrengthOption, roomLightingOption, roomBloomOption, glitchEffectOption, oshiroEverywhereOption, oshiroCountOption,
-                reverseOshiroCountOption, everythingIsUnderwaterOption, disableOshiroSlowdownOption, windEverywhereOption, snowballsEverywhereOption, snowballDelayOption, addSeekersOption,
-                disableSeekerSlowdownOption, theoCrystalsEverywhereOption, badelineLagOption, delayBetweenBadelinesOption, allStrawberriesAreGoldensOption, dontRefillDashOnGroundOption, gameSpeedOption,
-                colorGradingOption, resetExtendedToDefaultOption, randomizerOptions, badelineBossesEverywhereOption, badelineAttackPatternOption, changePatternOfExistingBossesOption, firstBadelineSpawnRandomOption,
-                badelineBossCountOption, badelineBossNodeCountOption, jellyfishEverywhereOption, explodeLaunchSpeedOption, risingLavaEverywhereOption, risingLavaSpeedOption, invertHorizontalControlsOption,
-                bounceEverywhereOption, superdashSteeringSpeedOption, screenShakeIntensityOption, anxietyEffectOption, blurLevelOption, zoomLevelOption, dashDirectionOption, backgroundBrightnessOption,
-                disableMadelineSpotlightOption, foregroundEffectOpacityOption, madelineIsSilhouetteOption, dashTrailAllTheTimeOption, disableClimbingUpOrDownOption, allowThrowingTheoOffscreenOption,
-                allowLeavingTheoBehindOption, boostMultiplierOption, resetVanillaToDefaultOption, friendlyBadelineFollowerOption, dashDirectionsSubMenu, disableRefillsOnScreenTransitionOption,
-                restoreDashesOnRespawnOption, disableSuperBoostsOption, displayDashCountOption, madelineHasPonytailOption, madelineBackpackModeOption, invertVerticalControlsOption, dontRefillStaminaOnGroundOption,
-                everyJumpIsUltraOption, coyoteTimeOption, backgroundBlurLevelOption, noFreezeFramesOption, preserveExtraDashesUnderwaterOption, alwaysInvisibleOption, displaySpeedometerOption,
-                wallSlidingSpeedOption, disableJumpingOutOfWaterOption, disableDashCooldownOption, disableKeysSpotlightOption, jungleSpidersEverywhereOption, cornerCorrectionOption,
-                pickupDurationOption, minimumDelayBeforeThrowingOption, delayBeforeRegrabbingOption, dashTimerMultiplierOption, jumpDurationOption, horizontalSpringBounceDurationOption,
-                horizontalWallJumpDurationOption, resetJumpCountOnGroundOption, ultraSpeedMultiplierOption };
 
             refreshOptionMenuEnabledStatus();
-
-            if (includeMasterSwitch) {
-                menu.Add(masterSwitchOption);
-                if (!inGame) {
-                    menu.Add(optionsOutOfModOptionsMenuOption);
-                    menu.Add(submenusForEachCategoryOption);
-                    menu.Add(automaticallyResetVariantsOption);
-                    automaticallyResetVariantsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOMATICALLYRESETVARIANTS_DESCRIPTION"));
-                }
-            }
-
-            if (category == VariantCategory.All || includeCategorySubmenus) {
-                if (resetVanillaToDefaultOption != null) menu.Add(resetVanillaToDefaultOption);
-                menu.Add(resetExtendedToDefaultOption);
-            }
-
-            if (includeOpenSubmenuButton) {
-                menu.Add(openSubmenuButton);
-            }
-
-            if (includeCategorySubmenus) {
-                menu.Add(submenusTitle);
-                menu.Add(movementSubmenu);
-                menu.Add(gameElementsSubmenu);
-                menu.Add(visualSubmenu);
-                menu.Add(gameplayTweaksSubmenu);
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.Movement) {
-                menu.Add(verticalSpeedTitle);
-                menu.Add(gravityOption);
-                menu.Add(fallSpeedOption);
-
-                menu.Add(jumpingTitle);
-                menu.Add(jumpHeightOption);
-                menu.Add(jumpDurationOption);
-                menu.Add(wallBouncingSpeedOption);
-                menu.Add(disableWallJumpingOption);
-                menu.Add(disableClimbJumpingOption);
-                menu.Add(disableJumpingOutOfWaterOption);
-                menu.Add(disableNeutralJumpingOption);
-                menu.Add(horizontalWallJumpDurationOption);
-                horizontalWallJumpDurationOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION_HINT"));
-                menu.Add(jumpCountOption);
-                menu.Add(refillJumpsOnDashRefillOption);
-                menu.Add(resetJumpCountOnGroundOption);
-                menu.Add(everyJumpIsUltraOption);
-                everyJumpIsUltraOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC"));
-                menu.Add(coyoteTimeOption);
-                coyoteTimeOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC"));
-
-                menu.Add(dashingTitle);
-                menu.Add(dashSpeedOption);
-                menu.Add(legacyDashSpeedBehaviorOption);
-                legacyDashSpeedBehaviorOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LEGACYDASHSPEEDBEHAVIOR_HINT"));
-                menu.Add(dashLengthOption);
-                menu.Add(dashTimerMultiplierOption);
-                dashTimerMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER_DESCRIPTION"));
-                menu.Add(dashDirectionOption);
-                menu.Add(dashDirectionsSubMenu);
-                menu.Add(hyperdashSpeedOption);
-                menu.Add(superdashSteeringSpeedOption);
-                menu.Add(ultraSpeedMultiplierOption);
-                ultraSpeedMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC"));
-                menu.Add(dashCountOption);
-                menu.Add(heldDashOption);
-                menu.Add(dontRefillDashOnGroundOption);
-                menu.Add(disableRefillsOnScreenTransitionOption);
-                menu.Add(dontRefillStaminaOnGroundOption);
-                menu.Add(restoreDashesOnRespawnOption);
-                restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
-                menu.Add(preserveExtraDashesUnderwaterOption);
-                menu.Add(disableDashCooldownOption);
-                menu.Add(cornerCorrectionOption);
-
-                menu.Add(movingTitle);
-                menu.Add(speedXOption);
-                menu.Add(swimmingSpeedOption);
-                menu.Add(frictionOption);
-                menu.Add(airFrictionOption);
-                menu.Add(explodeLaunchSpeedOption);
-                menu.Add(wallSlidingSpeedOption);
-                menu.Add(disableSuperBoostsOption);
-                disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
-                menu.Add(boostMultiplierOption);
-                menu.Add(disableClimbingUpOrDownOption);
-                menu.Add(horizontalSpringBounceDurationOption);
-
-                menu.Add(holdablesTitle);
-                menu.Add(pickupDurationOption);
-                menu.Add(minimumDelayBeforeThrowingOption);
-                menu.Add(delayBeforeRegrabbingOption);
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.GameElements) {
-                menu.Add(chasersTitle);
-                menu.Add(badelineChasersEverywhereOption);
-                menu.Add(chaserCountOption);
-                menu.Add(affectExistingChasersOption);
-                menu.Add(badelineLagOption);
-                menu.Add(delayBetweenBadelinesOption);
-
-                menu.Add(bossesTitle);
-                menu.Add(badelineBossesEverywhereOption);
-                menu.Add(badelineAttackPatternOption);
-                menu.Add(changePatternOfExistingBossesOption);
-                menu.Add(firstBadelineSpawnRandomOption);
-                menu.Add(badelineBossCountOption);
-                menu.Add(badelineBossNodeCountOption);
-
-                menu.Add(oshiroTitle);
-                menu.Add(oshiroEverywhereOption);
-                menu.Add(oshiroCountOption);
-                if (Instance.DJMapHelperInstalled) menu.Add(reverseOshiroCountOption);
-                menu.Add(disableOshiroSlowdownOption);
-
-                menu.Add(theoTitle);
-                menu.Add(theoCrystalsEverywhereOption);
-                menu.Add(allowThrowingTheoOffscreenOption);
-                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc2"));
-                allowThrowingTheoOffscreenOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AllowThrowingTheoOffscreen_desc1"));
-                menu.Add(allowLeavingTheoBehindOption);
-
-                menu.Add(everywhereTitle);
-                menu.Add(windEverywhereOption);
-                menu.Add(snowballsEverywhereOption);
-                menu.Add(snowballDelayOption);
-                menu.Add(addSeekersOption);
-                menu.Add(disableSeekerSlowdownOption);
-                menu.Add(jellyfishEverywhereOption);
-                menu.Add(risingLavaEverywhereOption);
-                menu.Add(risingLavaSpeedOption);
-                if (Instance.JungleHelperInstalled) menu.Add(jungleSpidersEverywhereOption);
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.Visual) {
-                menu.Add(madelineTitle);
-                menu.Add(disableMadelineSpotlightOption);
-                if (Instance.MaxHelpingHandInstalled || Instance.SpringCollab2020Installed) menu.Add(madelineIsSilhouetteOption);
-                menu.Add(dashTrailAllTheTimeOption);
-                if (Instance.MaxHelpingHandInstalled) menu.Add(madelineHasPonytailOption);
-                menu.Add(displayDashCountOption);
-                menu.Add(displaySpeedometerOption);
-                menu.Add(madelineBackpackModeOption);
-
-                menu.Add(levelTitle);
-                menu.Add(upsideDownOption);
-                menu.Add(roomLightingOption);
-                menu.Add(backgroundBrightnessOption);
-                menu.Add(foregroundEffectOpacityOption);
-                menu.Add(roomBloomOption);
-                menu.Add(glitchEffectOption);
-                menu.Add(anxietyEffectOption);
-                menu.Add(blurLevelOption);
-                menu.Add(backgroundBlurLevelOption);
-                menu.Add(zoomLevelOption);
-                menu.Add(colorGradingOption);
-                menu.Add(disableKeysSpotlightOption);
-                menu.Add(screenShakeIntensityOption);
-                menu.Add(friendlyBadelineFollowerOption);
-            }
-
-            if (category == VariantCategory.All || category == VariantCategory.GameplayTweaks) {
-                menu.Add(otherTitle);
-                menu.Add(gameSpeedOption);
-                menu.Add(noFreezeFramesOption);
-                noFreezeFramesOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC"));
-                menu.Add(everythingIsUnderwaterOption);
-                menu.Add(staminaOption);
-                menu.Add(regularHiccupsOption);
-                menu.Add(hiccupStrengthOption);
-                menu.Add(allStrawberriesAreGoldensOption);
-                menu.Add(alwaysInvisibleOption);
-
-                menu.Add(trollTitle);
-                menu.Add(forceDuckOnGroundOption);
-                menu.Add(invertDashesOption);
-                menu.Add(invertGrabOption);
-                menu.Add(invertHorizontalControlsOption);
-                menu.Add(invertVerticalControlsOption);
-                menu.Add(bounceEverywhereOption);
-            }
-
-            if (includeRandomizer) {
-                menu.Add(randomizerTitle);
-                menu.Add(changeVariantsRandomlyOption);
-                menu.Add(randomizerOptions);
-            }
         }
 
         private TextMenu.SubHeader buildHeading(TextMenu menu, string headingNameResource) {
             return new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING") + " - " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING_" + headingNameResource));
         }
 
-        private void resetAllOptionsToDefault() {
-            gravityOption?.ResetToDefault();
-            fallSpeedOption?.ResetToDefault();
-            jumpHeightOption?.ResetToDefault();
-            jumpDurationOption?.ResetToDefault();
-            speedXOption?.ResetToDefault();
-            swimmingSpeedOption?.ResetToDefault();
-            boostMultiplierOption?.ResetToDefault();
-            staminaOption?.ResetToDefault();
-            dashSpeedOption?.ResetToDefault();
-            legacyDashSpeedBehaviorOption?.ResetToDefault();
-            dashCountOption?.ResetToDefault();
-            cornerCorrectionOption?.ResetToDefault();
-            frictionOption?.ResetToDefault();
-            airFrictionOption?.ResetToDefault();
-            disableWallJumpingOption?.ResetToDefault();
-            disableClimbJumpingOption?.ResetToDefault();
-            disableJumpingOutOfWaterOption?.ResetToDefault();
-            jumpCountOption?.ResetToDefault();
-            refillJumpsOnDashRefillOption?.ResetToDefault();
-            resetJumpCountOnGroundOption?.ResetToDefault();
-            upsideDownOption?.ResetToDefault();
-            hyperdashSpeedOption?.ResetToDefault();
-            explodeLaunchSpeedOption?.ResetToDefault();
-            horizontalSpringBounceDurationOption?.ResetToDefault();
-            horizontalWallJumpDurationOption?.ResetToDefault();
-            disableSuperBoostsOption?.ResetToDefault();
-            dontRefillStaminaOnGroundOption?.ResetToDefault();
-            wallBouncingSpeedOption?.ResetToDefault();
-            wallSlidingSpeedOption?.ResetToDefault();
-            dashLengthOption?.ResetToDefault();
-            dashTimerMultiplierOption?.ResetToDefault();
-            dashDirectionOption?.ResetToDefault();
-            forceDuckOnGroundOption?.ResetToDefault();
-            invertDashesOption?.ResetToDefault();
-            invertGrabOption?.ResetToDefault();
-            invertHorizontalControlsOption?.ResetToDefault();
-            invertVerticalControlsOption?.ResetToDefault();
-            heldDashOption?.ResetToDefault();
-            disableDashCooldownOption?.ResetToDefault();
-            disableNeutralJumpingOption?.ResetToDefault();
-            badelineChasersEverywhereOption?.ResetToDefault();
-            chaserCountOption?.ResetToDefault();
-            affectExistingChasersOption?.ResetToDefault();
-            badelineBossesEverywhereOption?.ResetToDefault();
-            badelineAttackPatternOption?.ResetToDefault();
-            changePatternOfExistingBossesOption?.ResetToDefault();
-            firstBadelineSpawnRandomOption?.ResetToDefault();
-            badelineBossCountOption?.ResetToDefault();
-            badelineBossNodeCountOption?.ResetToDefault();
-            regularHiccupsOption?.ResetToDefault();
-            hiccupStrengthOption?.ResetToDefault();
-            roomLightingOption?.ResetToDefault();
-            backgroundBrightnessOption?.ResetToDefault();
-            foregroundEffectOpacityOption?.ResetToDefault();
-            disableMadelineSpotlightOption?.ResetToDefault();
-            disableKeysSpotlightOption?.ResetToDefault();
-            roomBloomOption?.ResetToDefault();
-            glitchEffectOption?.ResetToDefault();
-            anxietyEffectOption?.ResetToDefault();
-            blurLevelOption?.ResetToDefault();
-            backgroundBlurLevelOption?.ResetToDefault();
-            zoomLevelOption?.ResetToDefault();
-            everythingIsUnderwaterOption?.ResetToDefault();
-            oshiroEverywhereOption?.ResetToDefault();
-            oshiroCountOption?.ResetToDefault();
-            reverseOshiroCountOption?.ResetToDefault();
-            disableOshiroSlowdownOption?.ResetToDefault();
-            windEverywhereOption?.ResetToDefault();
-            snowballsEverywhereOption?.ResetToDefault();
-            snowballDelayOption?.ResetToDefault();
-            addSeekersOption?.ResetToDefault();
-            disableSeekerSlowdownOption?.ResetToDefault();
-            theoCrystalsEverywhereOption?.ResetToDefault();
-            allowThrowingTheoOffscreenOption?.ResetToDefault();
-            allowLeavingTheoBehindOption?.ResetToDefault();
-            risingLavaEverywhereOption?.ResetToDefault();
-            risingLavaSpeedOption?.ResetToDefault();
-            badelineLagOption?.ResetToDefault();
-            delayBetweenBadelinesOption?.ResetToDefault();
-            allStrawberriesAreGoldensOption?.ResetToDefault();
-            dontRefillDashOnGroundOption?.ResetToDefault();
-            disableRefillsOnScreenTransitionOption?.ResetToDefault();
-            restoreDashesOnRespawnOption?.ResetToDefault();
-            gameSpeedOption?.ResetToDefault();
-            colorGradingOption?.ResetToDefault();
-            jellyfishEverywhereOption?.ResetToDefault();
-            bounceEverywhereOption?.ResetToDefault();
-            jungleSpidersEverywhereOption?.ResetToDefault();
-            superdashSteeringSpeedOption?.ResetToDefault();
-            screenShakeIntensityOption?.ResetToDefault();
-            madelineIsSilhouetteOption?.ResetToDefault();
-            madelineHasPonytailOption?.ResetToDefault();
-            dashTrailAllTheTimeOption?.ResetToDefault();
-            madelineBackpackModeOption?.ResetToDefault();
-            displaySpeedometerOption?.ResetToDefault();
-            disableClimbingUpOrDownOption?.ResetToDefault();
-            pickupDurationOption?.ResetToDefault();
-            minimumDelayBeforeThrowingOption?.ResetToDefault();
-            delayBeforeRegrabbingOption?.ResetToDefault();
-            friendlyBadelineFollowerOption?.ResetToDefault();
-            displayDashCountOption?.ResetToDefault();
-            everyJumpIsUltraOption?.ResetToDefault();
-            ultraSpeedMultiplierOption?.ResetToDefault();
-            coyoteTimeOption?.ResetToDefault();
-            noFreezeFramesOption?.ResetToDefault();
-            preserveExtraDashesUnderwaterOption?.ResetToDefault();
-            alwaysInvisibleOption?.ResetToDefault();
-        }
-
         private void refreshOptionMenuEnabledStatus() {
             // hide everything if the master switch is off, show everything if it is on.
-            foreach (TextMenu.Item item in allOptions) {
+            foreach (TextMenu.Item item in elementsToHideOnToggle) {
                 if (item != null) item.Visible = Settings.MasterSwitch;
             }
 
+            ExtendedVariantTriggerManager triggerManager = ExtendedVariantsModule.Instance.TriggerManager;
+
             // special graying-out rules for some variant options
-            if (oshiroCountOption != null) oshiroCountOption.Disabled = !Settings.OshiroEverywhere;
-            if (reverseOshiroCountOption != null) reverseOshiroCountOption.Disabled = !Settings.OshiroEverywhere;
+            if (oshiroCountOption != null) oshiroCountOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.OshiroEverywhere));
+            if (reverseOshiroCountOption != null) reverseOshiroCountOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.OshiroEverywhere));
             if (randomizerOptions != null) randomizerOptions.Disabled = !Settings.ChangeVariantsRandomly;
-            if (firstBadelineSpawnRandomOption != null) firstBadelineSpawnRandomOption.Disabled = !Settings.BadelineBossesEverywhere;
-            if (badelineBossCountOption != null) badelineBossCountOption.Disabled = !Settings.BadelineBossesEverywhere;
-            if (badelineBossNodeCountOption != null) badelineBossNodeCountOption.Disabled = !Settings.BadelineBossesEverywhere;
-            if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !Settings.TheoCrystalsEverywhere;
-            if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !Settings.TheoCrystalsEverywhere;
-            if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = GetDashDirectionIndex() == 3;
+            if (firstBadelineSpawnRandomOption != null) firstBadelineSpawnRandomOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.BadelineBossesEverywhere));
+            if (badelineBossCountOption != null) badelineBossCountOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.BadelineBossesEverywhere));
+            if (badelineBossNodeCountOption != null) badelineBossNodeCountOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.BadelineBossesEverywhere));
+            if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
+            if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
+            if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
-        public static int GetDashDirectionIndex() {
-            bool[][] settings = ExtendedVariantsModule.Settings.AllowedDashDirections;
-
+        public static int GetDashDirectionIndex(bool[][] settings) {
             // first option: everything allowed
             if (
                 settings[0][0] && settings[0][1] && settings[0][2] &&

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashTrailAllTheTime : AbstractExtendedVariant {
@@ -15,16 +16,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashTrailAllTheTime;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashTrailAllTheTime = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashTrailAllTheTime = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -47,7 +40,7 @@ namespace ExtendedVariants.Variants {
         private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
-            if (Settings.DashTrailAllTheTime) {
+            if (GetVariantValue<bool>(Variant.DashTrailAllTheTime)) {
                 dashTrailTimer -= Engine.DeltaTime;
                 if (dashTrailTimer <= 0f) {
                     createTrail(self);

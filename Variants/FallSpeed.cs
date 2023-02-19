@@ -7,6 +7,7 @@ using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
 using MonoMod.Utils;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class FallSpeed : AbstractExtendedVariant {
@@ -21,27 +22,17 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.FallSpeed;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            Settings.FallSpeed = (float) value;
-            OnVariantChanged();
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.FallSpeed = (value / 10f);
-            OnVariantChanged();
-        }
-
-        public void OnVariantChanged() {
+        public override void VariantValueChanged() {
             Player player = Engine.Scene?.Tracker.GetEntity<Player>();
 
             if (player != null) {
                 // forcefully drag back maxFall to a sensical value if going from 100x fall speed to 1x for example.
                 DynData<Player> playerData = new DynData<Player>(player);
-                playerData["maxFall"] = Math.Min(playerData.Get<float>("maxFall"), 240f * Settings.FallSpeed);
+                playerData["maxFall"] = Math.Min(playerData.Get<float>("maxFall"), 240f * GetVariantValue<float>(Variant.FallSpeed));
             }
         }
 
@@ -141,11 +132,11 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The fall speed factor (1 = default fall speed)</returns>
         private float determineFallSpeedFactor() {
-            return Settings.FallSpeed;
+            return GetVariantValue<float>(Variant.FallSpeed);
         }
 
         private float mixFallSpeedAndGravity() {
-            return Math.Min(Settings.FallSpeed, Settings.Gravity);
+            return Math.Min(GetVariantValue<float>(Variant.FallSpeed), GetVariantValue<float>(Variant.Gravity));
         }
     }
 }

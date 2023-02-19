@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.ChangePatternsOfExistingBosses;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.ChangePatternsOfExistingBosses = (value != 0);
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ChangePatternsOfExistingBosses = (bool) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
     }
 }

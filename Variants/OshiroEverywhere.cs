@@ -10,6 +10,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Linq;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class OshiroEverywhere : AbstractExtendedVariant {
@@ -22,16 +23,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.OshiroEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.OshiroEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.OshiroEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -59,7 +52,7 @@ namespace ExtendedVariants.Variants {
                 addOshiroToLevel(self);
             }
 
-            wasActiveOnLastFrame = Settings.OshiroEverywhere;
+            wasActiveOnLastFrame = GetVariantValue<bool>(Variant.OshiroEverywhere);
         }
 
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
@@ -70,18 +63,18 @@ namespace ExtendedVariants.Variants {
         private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
-            if (!wasActiveOnLastFrame && Settings.OshiroEverywhere) {
+            if (!wasActiveOnLastFrame && GetVariantValue<bool>(Variant.OshiroEverywhere)) {
                 addOshiroToLevel(Engine.Scene as Level, false);
             }
 
-            wasActiveOnLastFrame = Settings.OshiroEverywhere;
+            wasActiveOnLastFrame = GetVariantValue<bool>(Variant.OshiroEverywhere);
         }
 
         private void addOshiroToLevel(Level level, bool updateLists = true) {
             bool oshiroAdded = false;
 
-            if (Settings.OshiroEverywhere) {
-                for (int i = level.Tracker.CountEntities<AngryOshiro>(); i < Settings.OshiroCount; i++) {
+            if (GetVariantValue<bool>(Variant.OshiroEverywhere)) {
+                for (int i = level.Tracker.CountEntities<AngryOshiro>(); i < GetVariantValue<int>(Variant.OshiroCount); i++) {
                     // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                     Vector2 position = new Vector2(level.Bounds.Left - 32, level.Bounds.Top + level.Bounds.Height / 2);
                     level.Add(new AutoDestroyingAngryOshiro(position, false, i * 0.5f));
@@ -89,7 +82,7 @@ namespace ExtendedVariants.Variants {
                 }
 
                 // check if reverse Oshiros have to be added
-                if (ExtendedVariantsModule.Instance.DJMapHelperInstalled && Settings.ReverseOshiroCount > 0) {
+                if (ExtendedVariantsModule.Instance.DJMapHelperInstalled && GetVariantValue<int>(Variant.ReverseOshiroCount) > 0) {
                     addReverseOshiroToLevel(level);
                     oshiroAdded = true;
                 }
@@ -100,7 +93,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addReverseOshiroToLevel(Level level) {
-            for (int i = level.Tracker.CountEntities<AngryOshiroRight>(); i < Settings.ReverseOshiroCount; i++) {
+            for (int i = level.Tracker.CountEntities<AngryOshiroRight>(); i < GetVariantValue<int>(Variant.ReverseOshiroCount); i++) {
                 // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                 Vector2 position = new Vector2(level.Bounds.Right + 32, level.Bounds.Top + level.Bounds.Height / 2);
                 AngryOshiroRight oshiro = new AngryOshiroRight(position);
@@ -130,7 +123,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool isOshiroSlowdownDisabled() {
-            return Settings.DisableOshiroSlowdown;
+            return GetVariantValue<bool>(Variant.DisableOshiroSlowdown);
         }
 
         private void modHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {

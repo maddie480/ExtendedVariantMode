@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class CoyoteTime : AbstractExtendedVariant {
@@ -18,16 +19,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.CoyoteTime;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.CoyoteTime = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.CoyoteTime = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -54,9 +47,9 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Dup);
                 cursor.Index++;
                 cursor.EmitDelegate<Action<Player>>(p => {
-                    if (Settings.CoyoteTime != 1f) {
+                    if (GetVariantValue<float>(Variant.CoyoteTime) != 1f) {
                         // default is 0.1
-                        new DynData<Player>(p)["jumpGraceTimer"] = Settings.CoyoteTime * 0.1f;
+                        new DynData<Player>(p)["jumpGraceTimer"] = GetVariantValue<float>(Variant.CoyoteTime) * 0.1f;
                     }
                 });
             }
@@ -68,7 +61,7 @@ namespace ExtendedVariants.Variants {
             // we're hooking usages for StartJumpGraceTime instead of hooking it because there's no way hooking a 4-instruction method works without inlining issues.
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.1f))) {
                 Logger.Log("ExtendedVariantMode/CoyoteTime", $"Modding coyote time at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * Settings.CoyoteTime);
+                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.CoyoteTime));
             }
         }
     }

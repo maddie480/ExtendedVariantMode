@@ -6,6 +6,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableNeutralJumping : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableNeutralJumping;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableNeutralJumping = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableNeutralJumping = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -74,7 +67,7 @@ namespace ExtendedVariants.Variants {
         /// Indicates if neutral jumping is enabled.
         /// </summary>
         private bool neutralJumpingEnabled() {
-            return !Settings.DisableNeutralJumping;
+            return !GetVariantValue<bool>(Variant.DisableNeutralJumping);
         }
     }
 }

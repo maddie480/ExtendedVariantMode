@@ -8,25 +8,26 @@ namespace ExtendedVariants.Variants.Vanilla {
             return typeof(Assists.DashModes);
         }
 
-        public override object GetVariantValue() {
-            return SaveData.Instance.Assists.DashMode;
-        }
-
         public override object GetDefaultVariantValue() {
             return Assists.DashModes.Normal;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            SetVariantValue((Assists.DashModes) value);
+        public override object ConvertLegacyVariantValue(int value) {
+            return (Assists.DashModes) value;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            SaveData.Instance.Assists.DashMode = (Assists.DashModes) value;
+        public override void VariantValueChanged() {
+            Assists.DashModes dashMode = applyAssists(SaveData.Instance.Assists, out _).DashMode;
 
             Player player = Engine.Scene?.Tracker.GetEntity<Player>();
             if (player != null) {
-                player.Dashes = Math.Min(player.Dashes, player.MaxDashes);
+                player.Dashes = Math.Min(player.Dashes, dashMode != Assists.DashModes.Normal ? 2 : player.MaxDashes);
             }
+        }
+
+        protected override Assists applyVariantValue(Assists target, object value) {
+            target.DashMode = (Assists.DashModes) value;
+            return target;
         }
     }
 }

@@ -6,6 +6,7 @@ using Monocle;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class InvertGrab : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.InvertGrab;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.InvertGrab = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.InvertGrab = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -82,11 +75,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool invertButtonCheck(VirtualButton button) {
-            return Settings.InvertGrab ? !button.Check : button.Check;
+            return GetVariantValue<bool>(Variant.InvertGrab) ? !button.Check : button.Check;
         }
 
         private bool invertButtonCheck(bool buttonCheck) {
-            return Settings.InvertGrab ? !buttonCheck : buttonCheck;
+            return GetVariantValue<bool>(Variant.InvertGrab) ? !buttonCheck : buttonCheck;
         }
     }
 }

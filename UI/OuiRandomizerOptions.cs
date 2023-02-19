@@ -189,7 +189,7 @@ namespace ExtendedVariants.UI {
             }
 
             TextMenu.Option<bool> toggle = new TextMenuExt.OnOff(label,
-                ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(keyName, out bool val) ? val : true, false)
+                ExtendedVariantsModule.Settings.RandomizerEnabledVariants.TryGetValue(keyName, out bool val) ? val : true, false, false)
                 .Change(newValue => ExtendedVariantsModule.Settings.RandomizerEnabledVariants[keyName] = newValue);
             menu.Add(toggle);
             return toggle;

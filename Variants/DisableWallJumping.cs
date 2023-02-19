@@ -6,6 +6,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableWallJumping : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableWallJumping;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableWallJumping = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableWallJumping = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -68,14 +61,14 @@ namespace ExtendedVariants.Variants {
         /// <param name="dir">the direction</param>
         /// <returns>true if walljumping is possible, false otherwise</returns>
         private bool modWallJumpCheck(On.Celeste.Player.orig_WallJumpCheck orig, Player self, int dir) {
-            if (Settings.DisableWallJumping) {
+            if (GetVariantValue<bool>(Variant.DisableWallJumping)) {
                 return false;
             }
             return orig(self, dir);
         }
 
         private bool isWallJumpingDisabled() {
-            return Settings.DisableWallJumping;
+            return GetVariantValue<bool>(Variant.DisableWallJumping);
         }
     }
 }

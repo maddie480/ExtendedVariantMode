@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class TheoCrystalsEverywhere : AbstractExtendedVariant {
@@ -26,16 +27,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.TheoCrystalsEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.TheoCrystalsEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.TheoCrystalsEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -63,7 +56,7 @@ namespace ExtendedVariants.Variants {
             if (playerIntro != Player.IntroTypes.Transition) {
                 injectTheoCrystal(self);
 
-            } else if ((Settings.AllowLeavingTheoBehind || Settings.AllowThrowingTheoOffscreen) &&
+            } else if ((GetVariantValue<bool>(Variant.AllowLeavingTheoBehind) || GetVariantValue<bool>(Variant.AllowThrowingTheoOffscreen)) &&
                 !(self.Tracker.GetEntity<Player>()?.Holding?.Entity is TheoCrystal)) {
 
                 // player is transitioning into a new room, but doesn't have Theo with them.
@@ -76,21 +69,21 @@ namespace ExtendedVariants.Variants {
         }
 
         private void injectTheoCrystal(Level level) {
-            if (Settings.TheoCrystalsEverywhere) {
+            if (GetVariantValue<bool>(Variant.TheoCrystalsEverywhere)) {
                 Player player = level.Tracker.GetEntity<Player>();
                 bool hasCrystalInBaseLevel = level.Tracker.CountEntities<TheoCrystal>() != 0;
 
                 // check if the base level already has a crystal
                 if (player != null && !hasCrystalInBaseLevel) {
                     // add a Theo Crystal where the player is
-                    level.Add(Settings.AllowThrowingTheoOffscreen ? new ExtendedVariantTheoCrystalGoingOffscreen(player.Position) : new ExtendedVariantTheoCrystal(player.Position));
+                    level.Add(GetVariantValue<bool>(Variant.AllowThrowingTheoOffscreen) ? new ExtendedVariantTheoCrystalGoingOffscreen(player.Position) : new ExtendedVariantTheoCrystal(player.Position));
                     level.Entities.UpdateLists();
                 }
             }
         }
 
         private void injectTheoCrystalAfterTransition(Level level) {
-            if (Settings.TheoCrystalsEverywhere) {
+            if (GetVariantValue<bool>(Variant.TheoCrystalsEverywhere)) {
                 Player player = level.Tracker.GetEntity<Player>();
                 bool hasCrystalInBaseLevel = level.Session.LevelData.Entities.Any(entity => entity.Name == "theoCrystal");
 
@@ -98,7 +91,7 @@ namespace ExtendedVariants.Variants {
                 if (player != null && !hasCrystalInBaseLevel) {
                     // add a Theo Crystal where the spawn point nearest to player is
                     Vector2 spawn = level.GetSpawnPoint(player.Position);
-                    level.Add(Settings.AllowThrowingTheoOffscreen ? new ExtendedVariantTheoCrystalGoingOffscreen(spawn) : new ExtendedVariantTheoCrystal(spawn));
+                    level.Add(GetVariantValue<bool>(Variant.AllowThrowingTheoOffscreen) ? new ExtendedVariantTheoCrystalGoingOffscreen(spawn) : new ExtendedVariantTheoCrystal(spawn));
                     level.Entities.UpdateLists();
                 }
             }
@@ -148,7 +141,7 @@ namespace ExtendedVariants.Variants {
 
         private bool isTheoCrystalsEverywhere() {
             // the variant is on, or an Extended Variant Theo crystal is in the level.
-            return Settings.TheoCrystalsEverywhere ||
+            return GetVariantValue<bool>(Variant.TheoCrystalsEverywhere) ||
                 Engine.Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>().OfType<ExtendedVariantTheoCrystal>().Any(t => t.SpawnedAsEntity);
         }
 
@@ -159,7 +152,7 @@ namespace ExtendedVariants.Variants {
 
             if (entities.Count() == 0) {
                 // there is none! just use the extended variant setting.
-                return Settings.AllowLeavingTheoBehind;
+                return GetVariantValue<bool>(Variant.AllowLeavingTheoBehind);
             } else {
                 // allow leaving Theo behind of all Theos on the screen can be left behind.
                 return entities.All(t => t.AllowLeavingBehind);

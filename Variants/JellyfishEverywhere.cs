@@ -7,6 +7,7 @@ using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JellyfishEverywhere : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return 0;
         }
 
-        public override object GetVariantValue() {
-            return Settings.JellyfishEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.JellyfishEverywhere = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.JellyfishEverywhere = value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
 
         public override void Load() {
@@ -55,7 +48,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addJellyfishToLevel(Level level) {
-            for (int i = 0; i < Settings.JellyfishEverywhere; i++) {
+            for (int i = 0; i < GetVariantValue<int>(Variant.JellyfishEverywhere); i++) {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player != null && player.Holding?.Entity?.GetType() != typeof(Glider)) {
                     // player is here, and is not holding jellyfish.
@@ -66,10 +59,10 @@ namespace ExtendedVariants.Variants {
                     Glider jellyfish = new Glider(playerPosition, true, false);
 
                     // offset the jellyfish if there are multiple
-                    if (Settings.JellyfishEverywhere == 2) {
+                    if (GetVariantValue<int>(Variant.JellyfishEverywhere) == 2) {
                         if (i == 0) jellyfish.Position.X -= 10;
                         else jellyfish.Position.X += 10;
-                    } else if (Settings.JellyfishEverywhere == 3) {
+                    } else if (GetVariantValue<int>(Variant.JellyfishEverywhere) == 3) {
                         if (i == 1) jellyfish.Position.X -= 20;
                         else if (i == 2) jellyfish.Position.X += 20;
                     }

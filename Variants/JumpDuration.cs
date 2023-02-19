@@ -3,11 +3,8 @@ using Celeste.Mod;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JumpDuration : AbstractExtendedVariant {
@@ -17,20 +14,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.JumpDuration;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1f;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            Settings.JumpDuration = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.JumpDuration = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -71,7 +60,7 @@ namespace ExtendedVariants.Variants {
 
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("varJumpTimer"))) {
                 Logger.Log("ExtendedVariantMode/JumpDuration", $"Modding varJumpTimer at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * Settings.JumpDuration);
+                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.JumpDuration));
                 cursor.Index++;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Celeste;
 using Microsoft.Xna.Framework;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BounceEverywhere : AbstractExtendedVariant {
@@ -12,16 +13,8 @@ namespace ExtendedVariants.Variants {
             return typeof(bool);
         }
 
-        public override object GetVariantValue() {
-            return Settings.BounceEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BounceEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BounceEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -35,7 +28,7 @@ namespace ExtendedVariants.Variants {
         private int modPlayerNormalUpdate(On.Celeste.Player.orig_NormalUpdate orig, Player self) {
             int newState = orig(self);
 
-            if (Settings.BounceEverywhere && newState == 0) {
+            if (GetVariantValue<bool>(Variant.BounceEverywhere) && newState == 0) {
                 // we are still in the Normal state.
 
                 // no bounce if the player is going to climb! Climbing should already take priority over bouncing.

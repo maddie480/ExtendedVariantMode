@@ -7,6 +7,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class SnowballsEverywhere : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.SnowballsEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.SnowballsEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.SnowballsEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -60,7 +53,7 @@ namespace ExtendedVariants.Variants {
 
         private void addSnowballToLevel(Level level) {
             // do pretty much the same thing as the so-called "Wind Attack Trigger" from vanilla
-            if (Settings.SnowballsEverywhere && level.Entities.FindFirst<Snowball>() == null) {
+            if (GetVariantValue<bool>(Variant.SnowballsEverywhere) && level.Entities.FindFirst<Snowball>() == null) {
                 Snowball snowball = new AutoDestroyingSnowball();
                 level.Add(snowball);
                 level.Entities.UpdateLists();
@@ -87,7 +80,7 @@ namespace ExtendedVariants.Variants {
         private float determineInitialResetTimer() {
             // we want the first snowball to be issued with a minimum delay of 0.8 seconds whatever the setting to avoid softlocks.
             // to do that, we will initialize the resetTimer to -0.5f if the snowball delay is of 0.3 seconds for example.
-            return Math.Min(0, Settings.SnowballDelay - 0.8f);
+            return Math.Min(0, GetVariantValue<float>(Variant.SnowballDelay) - 0.8f);
         }
 
         private void modSnowballUpdate(ILContext il) {
@@ -107,7 +100,7 @@ namespace ExtendedVariants.Variants {
             if (ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings()) {
                 return 0.8f;
             }
-            return Settings.SnowballDelay;
+            return GetVariantValue<float>(Variant.SnowballDelay);
         }
     }
 }

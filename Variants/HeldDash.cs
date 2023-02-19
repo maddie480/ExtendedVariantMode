@@ -6,6 +6,7 @@ using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class HeldDash : AbstractExtendedVariant {
@@ -20,16 +21,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.HeldDash;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.HeldDash = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.HeldDash = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -97,7 +90,7 @@ namespace ExtendedVariants.Variants {
 
         private bool hasHeldDash(Player self) {
             // expose an "ExtendedVariantsHeldDash" DynData field to other mods.
-            return Settings.HeldDash || (new DynData<Player>(self).Data.TryGetValue("ExtendedVariantsHeldDash", out object o) && o is bool b && b);
+            return GetVariantValue<bool>(Variant.HeldDash) || (new DynData<Player>(self).Data.TryGetValue("ExtendedVariantsHeldDash", out object o) && o is bool b && b);
         }
     }
 }

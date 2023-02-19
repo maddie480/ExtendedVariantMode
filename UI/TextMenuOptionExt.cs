@@ -10,9 +10,11 @@ namespace ExtendedVariants.UI {
         private float sine;
 
         private int defaultIndex;
+        private int mapDefinedIndex;
 
-        public TextMenuOptionExt(string label, int defaultIndex) : base(label) {
+        public TextMenuOptionExt(string label, int defaultIndex, int mapDefinedIndex) : base(label) {
             this.defaultIndex = defaultIndex;
+            this.mapDefinedIndex = mapDefinedIndex;
         }
 
         // these overrides just allow to maintain lastDir and sine, since I can't access them
@@ -32,14 +34,6 @@ namespace ExtendedVariants.UI {
             base.Update();
             sine += Engine.RawDeltaTime;
         }
-
-        public void ResetToDefault() {
-            // replicate the vanilla behaviour
-            PreviousIndex = Index;
-            Index = defaultIndex;
-            ValueWiggler.Start();
-        }
-
 
         /// <summary>
         /// This is essentially the base method, but with a twist: the non-selected color is not always white.
@@ -69,10 +63,13 @@ namespace ExtendedVariants.UI {
         /// </summary>
         /// <returns>The non-selected color</returns>
         private Color getUnselectedColor() {
-            if (Index == defaultIndex) {
-                return Color.White;
+            if (Index != mapDefinedIndex) {
+                return Color.Goldenrod;
             }
-            return Color.Goldenrod;
+            if (defaultIndex != mapDefinedIndex) {
+                return Color.DeepSkyBlue;
+            }
+            return Color.White;
         }
     }
 }

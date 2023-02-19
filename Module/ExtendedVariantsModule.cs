@@ -29,8 +29,6 @@ namespace ExtendedVariants.Module {
 
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
-        private bool showForcedVariantsPostcard = false;
-        private Postcard forceEnabledVariantsPostcard;
         private bool isLevelEnding = false;
 
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
@@ -204,21 +202,13 @@ namespace ExtendedVariants.Module {
         public override void CreateModMenuSection(TextMenu menu, bool inGame, EventInstance snapshot) {
             base.CreateModMenuSection(menu, inGame, snapshot);
 
-            if (Settings.OptionsOutOfModOptionsMenuEnabled && inGame) {
+            if (inGame) {
                 // build the menu with only the master switch
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, false,
-                    null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
-            } else if (Settings.SubmenusForEachCategoryEnabled) {
-                // build the menu with the master switch + submenus + randomizer options
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, true, true, false,
-                    () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
-            } else if (Settings.OptionsOutOfModOptionsMenuEnabled) {
-                // build the menu with the master switch + the button to open the submenu
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false, true,
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false,
                     null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
             } else {
-                // build the good old full menu directly in Mod Options (master switch + all variant categories + randomizer)
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.All, true, false, true, false,
+                // build the menu with the master switch + submenus + randomizer options
+                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, true, true,
                     () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
             }
         }
@@ -228,10 +218,8 @@ namespace ExtendedVariants.Module {
                 item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button) item).Label == Dialog.Clean("menu_pause_options"));
 
             // insert ourselves just before Options if required (this is below Variants if variant mode is enabled)
-            if (Settings.OptionsOutOfModOptionsMenuEnabled) {
-                menu.Insert(optionsIndex, AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, true,
-                    null /* this is not used when in-game anyway */, new object[] { true }));
-            }
+            menu.Insert(optionsIndex, AbstractSubmenu.BuildOpenMenuButton<OuiExtendedVariantsSubmenu>(menu, true,
+                null /* this is not used when in-game anyway */, new object[] { true }));
         }
 
         // ================ Variants hooking / unhooking ================
@@ -240,12 +228,6 @@ namespace ExtendedVariants.Module {
             Logger.SetLogLevel("ExtendedVariantMode", LogLevel.Info);
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
-
-            typeof(CollabUtilsImports).ModInterop();
-
-            if (Settings.LegacyDashSpeedBehavior) {
-                VariantHandlers[Variant.DashSpeed] = new DashSpeedOld();
-            }
 
             On.Celeste.LevelEnter.Go += checkForceEnableVariantsOnLevelEnter;
             On.Celeste.LevelLoader.ctor += checkForceEnableVariantsOnLevelLoad;
@@ -292,17 +274,9 @@ namespace ExtendedVariants.Module {
             if (DJMapHelperInstalled) {
                 // let's add this variant in now.
                 VariantHandlers[Variant.ReverseOshiroCount] = new ReverseOshiroCount();
-            } else {
-                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Reverse Oshiros");
-                Settings.ReverseOshiroCount = 0;
-                SaveSettings();
             }
 
-            if (!SpringCollab2020Installed && !MaxHelpingHandInstalled) {
-                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Is Silhouette");
-                Settings.MadelineIsSilhouette = false;
-                SaveSettings();
-            } else {
+            if (SpringCollab2020Installed || MaxHelpingHandInstalled) {
                 // let's add this variant in now.
                 VariantHandlers[Variant.MadelineIsSilhouette] = new MadelineIsSilhouette();
 
@@ -312,11 +286,7 @@ namespace ExtendedVariants.Module {
                 }
             }
 
-            if (!MaxHelpingHandInstalled) {
-                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Madeline Has Ponytail");
-                Settings.MadelineHasPonytail = false;
-                SaveSettings();
-            } else {
+            if (MaxHelpingHandInstalled) {
                 // let's add this variant in now.
                 VariantHandlers[Variant.MadelineHasPonytail] = new MadelineHasPonytail();
 
@@ -326,11 +296,7 @@ namespace ExtendedVariants.Module {
                 }
             }
 
-            if (!JungleHelperInstalled) {
-                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Force-disabling Jungle Spiders Everywhere");
-                Settings.JungleSpidersEverywhere = JungleSpidersEverywhere.SpiderType.Disabled;
-                SaveSettings();
-            } else {
+            if (JungleHelperInstalled) {
                 // let's add this variant in now.
                 VariantHandlers[Variant.JungleSpidersEverywhere] = new JungleSpidersEverywhere();
 
@@ -340,13 +306,11 @@ namespace ExtendedVariants.Module {
                 }
             }
 
-            if (Settings.AutoResetVariantsOnFirstStartup) {
-                // this means the settings were never saved in version 0.22.2+ and are potentially in the older format: reset them!
-                // we will then set ShouldAutoResetVariants to false to record we did that, and won't do it ever again.
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Automatically resetting settings to default!");
-
-                ResetVariantsToDefaultSettings(isVanilla: false);
-                Settings.AutoResetVariantsOnFirstStartup = false;
+            // filter out settings for variants that don't exist (optional dependencies that got disabled / uninstalled).
+            foreach (Variant variantId in Settings.EnabledVariants.Keys.ToList()) {
+                if (!VariantHandlers.ContainsKey(variantId)) {
+                    Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantModule", $"Removed non-existing variant {variantId} from settings");
+                }
             }
         }
 
@@ -430,9 +394,6 @@ namespace ExtendedVariants.Module {
             Entities.Legacy.ExtendedVariantTrigger.Load();
             Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Load();
 
-            On.Celeste.LevelEnter.Routine += addForceEnabledVariantsPostcard;
-            On.Celeste.LevelEnter.BeforeRender += addForceEnabledVariantsPostcardRendering;
-
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done loading variant trigger manager.");
 
             triggerIsHooked = true;
@@ -444,9 +405,7 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
             Entities.Legacy.ExtendedVariantTrigger.Unload();
-
-            On.Celeste.LevelEnter.Routine -= addForceEnabledVariantsPostcard;
-            On.Celeste.LevelEnter.BeforeRender -= addForceEnabledVariantsPostcardRendering;
+            Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Unload();
 
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done unloading variant trigger manager.");
 
@@ -465,13 +424,11 @@ namespace ExtendedVariants.Module {
         private void checkForceEnableVariantsOnLevelLoad(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
             if (triggerIsHooked && Engine.Scene is Level) {
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Loading level from level (console load?), running level exit hooks!");
-                TriggerManager.ResetVariantsOnLevelExit();
                 unhookTrigger();
             }
 
             if (!triggerIsHooked) {
                 checkForceEnableVariants(session);
-                showForcedVariantsPostcard = false;
             }
 
             orig(self, session, startPosition);
@@ -479,22 +436,6 @@ namespace ExtendedVariants.Module {
 
         private bool isExtendedVariantEntity(string name) {
             return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
-        }
-
-        [ModImportName("CollabUtils2.LobbyHelper")]
-        private static class CollabUtilsImports {
-#pragma warning disable CS0649 // field not initialized: yes it is, but through ModInterop magic
-            public static Func<string, string> GetCollabNameForSID;
-#pragma warning restore CS0649
-        }
-
-        private static bool isInCollab(Session session) {
-            if (CollabUtilsImports.GetCollabNameForSID == null) {
-                // no collab utils => no collab
-                return false;
-            }
-
-            return CollabUtilsImports.GetCollabNameForSID(session.Area.GetSID()) != null;
         }
 
         private void checkForceEnableVariants(Session session) {
@@ -512,44 +453,10 @@ namespace ExtendedVariants.Module {
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
                 if (!stuffIsHooked) {
-                    showForcedVariantsPostcard = true;
                     Settings.MasterSwitch = true;
                     HookStuff();
                 }
-
-                // reset settings to be sure we match what the mapper wants, without anything the user enabled before playing their map.
-                bool settingsChanged = false;
-                if (variantsWereDisabled || Settings.AutomaticallyResetVariants) {
-                    settingsChanged = ResetVariantsToDefaultSettings(isVanilla: false);
-                    settingsChanged = ResetVariantsToDefaultSettings(isVanilla: true) || settingsChanged;
-                    SaveSettings();
-                }
-                showForcedVariantsPostcard |= settingsChanged;
-
-
-                // only show the postcard if not in a collab (as it tends to break immersion inside of collabs).
-                showForcedVariantsPostcard &= !isInCollab(session);
             }
-        }
-
-        private IEnumerator addForceEnabledVariantsPostcard(On.Celeste.LevelEnter.orig_Routine orig, LevelEnter self) {
-            if (showForcedVariantsPostcard) {
-                showForcedVariantsPostcard = false;
-
-                // let's show a postcard to let the player know Extended Variants have been enabled.
-                self.Add(forceEnabledVariantsPostcard = new Postcard(Dialog.Get("POSTCARD_EXTENDEDVARIANTS_FORCEENABLED"), "event:/ui/main/postcard_csides_in", "event:/ui/main/postcard_csides_out"));
-                yield return forceEnabledVariantsPostcard.DisplayRoutine();
-                forceEnabledVariantsPostcard = null;
-            }
-
-            // just go on with vanilla behavior (other postcards, B-side intro, etc)
-            yield return new SwapImmediately(orig(self));
-        }
-
-        private void addForceEnabledVariantsPostcardRendering(On.Celeste.LevelEnter.orig_BeforeRender orig, LevelEnter self) {
-            orig(self);
-
-            if (forceEnabledVariantsPostcard != null) forceEnabledVariantsPostcard.BeforeRender();
         }
 
         private void checkForTriggerUnhooking(On.Celeste.LevelExit.orig_ctor orig, LevelExit self, LevelExit.Mode mode, Session session, HiresSnow snow) {
@@ -572,42 +479,26 @@ namespace ExtendedVariants.Module {
         /// Resets both vanilla and extended variants to default settings.
         /// </summary>
         /// <returns>true if any variant changed, false otherwise.</returns>
-        public bool ResetToDefaultSettings() {
-            bool vanillaVariantReset = ResetVariantsToDefaultSettings(isVanilla: true);
-            bool extendedVariantReset = ResetVariantsToDefaultSettings(isVanilla: false);
-            return vanillaVariantReset || extendedVariantReset;
+        public void ResetToDefaultSettings() {
+            ResetVariantsToDefaultSettings(isVanilla: true);
+            ResetVariantsToDefaultSettings(isVanilla: false);
         }
 
         /// <summary>
         /// Resets either vanilla or extended variants to default settings.
         /// </summary>
         /// <param name="isVanilla">Whether to reset vanilla variants (true) or extended variants (false)</param>
-        /// <returns>true if any variant changed, false otherwise.</returns>
-        public bool ResetVariantsToDefaultSettings(bool isVanilla) {
-            bool settingChanged = false;
-
+        public void ResetVariantsToDefaultSettings(bool isVanilla) {
             // reset all proper variants to their default values
-            foreach (AbstractExtendedVariant variant in VariantHandlers.Values.ToList()) {
+            foreach (Variant variantId in Settings.EnabledVariants.Keys.ToList()) {
+                AbstractExtendedVariant variant = VariantHandlers[variantId];
                 if (variant.IsVanilla() == isVanilla) {
-                    if (variant.GetType() == typeof(DashDirection)) {
-                        if (ModOptionsEntries.GetDashDirectionIndex() != 0) {
-                            settingChanged = true;
-                        }
-                    } else {
-                        if (!variant.GetDefaultVariantValue().Equals(variant.GetVariantValue())) {
-                            settingChanged = true;
-                        }
-                    }
-
-                    variant.SetVariantValue(variant.GetDefaultVariantValue());
+                    Settings.EnabledVariants.Remove(variantId);
+                    Session?.VariantsOverridenByUser.Remove(variantId);
+                    variant.VariantValueChanged();
+                    Randomizer.RefreshEnabledVariantsDisplayList();
                 }
             }
-
-            if (settingChanged && SaveData.Instance != null) {
-                Randomizer.RefreshEnabledVariantsDisplayList();
-            }
-
-            return settingChanged;
         }
 
         // ==================== Reset Variants commands =====================
@@ -649,56 +540,9 @@ namespace ExtendedVariants.Module {
         }
 
         private void checkForUsedVariants() {
-            if (!Session.ExtendedVariantsWereUsed) {
-                // check if extended variants are used.
-                foreach (Variant variant in Enum.GetValues(typeof(Variant))) {
-                    if (variant == Variant.MadelineIsSilhouette && !MaxHelpingHandInstalled && !SpringCollab2020Installed) {
-                        // this variant cannot be enabled, because it does not exist.
-                        continue;
-                    }
-                    if (variant == Variant.MadelineHasPonytail && !MaxHelpingHandInstalled) {
-                        // this variant cannot be enabled, because it does not exist.
-                        continue;
-                    }
-                    if (variant == Variant.ReverseOshiroCount && !DJMapHelperInstalled) {
-                        // this variant cannot be enabled, because it does not exist.
-                        continue;
-                    }
-                    if (variant == Variant.JungleSpidersEverywhere && !JungleHelperInstalled) {
-                        // this variant cannot be enabled, because it does not exist.
-                        continue;
-                    }
-                    if (VariantHandlers[variant].IsVanilla()) {
-                        // do not take vanilla variants into account for showing the extended variants icon.
-                        continue;
-                    }
-
-                    object expectedValue = TriggerManager.GetExpectedVariantValue(variant);
-                    object actualValue = TriggerManager.GetCurrentVariantValue(variant);
-
-                    if (variant == Variant.DashDirection) {
-                        bool equal = true;
-                        for (int i = 0; i < 3; i++) {
-                            for (int j = 0; j < 3; j++) {
-                                if (((bool[][]) expectedValue)[i][j] != ((bool[][]) actualValue)[i][j]) {
-                                    equal = false;
-                                }
-                            }
-                        }
-
-                        if (!equal) {
-                            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
-                            Session.ExtendedVariantsWereUsed = true;
-                            break;
-                        }
-                    } else {
-                        if (!expectedValue.Equals(actualValue)) {
-                            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"/!\\ Variants have been used! {variant} is {actualValue} instead of {expectedValue}. Tagging session as dirty!");
-                            Session.ExtendedVariantsWereUsed = true;
-                            break;
-                        }
-                    }
-                }
+            if (!Session.ExtendedVariantsWereUsed && (Settings.EnabledVariants.Count != 0 || Session.VariantsOverridenByUser.Count != 0)) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "/!\\ Variants have been used! Tagging session as dirty!");
+                Session.ExtendedVariantsWereUsed = true;
             }
         }
 
@@ -737,137 +581,35 @@ namespace ExtendedVariants.Module {
             return orig;
         }
 
-        // ================ Fix types for deserialized sessions ================
+        // ================ Fix types for deserialized settings ================
 
         // when you save an array of objects with YamlDotNet and load them back...
         // they all turn into strings. aaaaaaaaaaaaaaaa
 
+        public override void SaveSettings() {
+            ExtendedVariantSerializationUtils.ToSavableFormat(Settings.EnabledVariants);
+            base.SaveSettings();
+            ExtendedVariantSerializationUtils.FromSavableFormat(Settings.EnabledVariants);
+        }
+
+        public override void LoadSettings() {
+            base.LoadSettings();
+            ExtendedVariantSerializationUtils.FromSavableFormat(Settings.EnabledVariants);
+        }
+
+        // ================ Fix types for deserialized sessions ================
+
         public override byte[] SerializeSession(int index) {
-            foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys.ToList()) {
-                object value = Session.VariantsEnabledViaTrigger[v];
-
-                switch (value) {
-                    case string castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "string:" + castValue;
-                        break;
-                    case int castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "int:" + castValue;
-                        break;
-                    case float castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "float:" + castValue;
-                        break;
-                    case bool castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "bool:" + castValue;
-                        break;
-                    case bool[][] castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "DashDirection:" +
-                            castValue[0][0] + "," + castValue[0][1] + "," + castValue[0][2] + "," +
-                            castValue[1][0] + "," + castValue[1][1] + "," + castValue[1][2] + "," +
-                            castValue[2][0] + "," + castValue[2][1] + "," + castValue[2][2];
-                        break;
-                    case DisplaySpeedometer.SpeedometerConfiguration castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "DisplaySpeedometer:" + castValue;
-                        break;
-                    case DontRefillDashOnGround.DashRefillOnGroundConfiguration castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "DontRefillDashOnGround:" + castValue;
-                        break;
-                    case MadelineBackpackMode.MadelineBackpackModes castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "MadelineBackpackMode:" + castValue;
-                        break;
-                    case WindEverywhere.WindPattern castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "WindEverywhere:" + castValue;
-                        break;
-                    case JungleSpidersEverywhere.SpiderType castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "JungleSpidersEverywhere:" + castValue;
-                        break;
-                    case Assists.DashModes castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "DashModes:" + castValue;
-                        break;
-                    case DisableClimbingUpOrDown.ClimbUpOrDownOptions castValue:
-                        Session.VariantsEnabledViaTrigger[v] = "DisableClimbingUpOrDown:" + castValue;
-                        break;
-                    default:
-                        Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
-                        break;
-                }
-            }
-
+            ExtendedVariantSerializationUtils.ToSavableFormat(Session.VariantsEnabledViaTrigger);
             byte[] result = base.SerializeSession(index);
-            turnTypesIntoTheirRealCounterparts();
+            ExtendedVariantSerializationUtils.FromSavableFormat(Session.VariantsEnabledViaTrigger);
 
             return result;
         }
 
         public override void DeserializeSession(int index, byte[] data) {
             base.DeserializeSession(index, data);
-            turnTypesIntoTheirRealCounterparts();
-        }
-
-        private void turnTypesIntoTheirRealCounterparts() {
-            try {
-                foreach (Variant v in Session.VariantsEnabledViaTrigger.Keys.ToList()) {
-                    string value = Session.VariantsEnabledViaTrigger[v].ToString();
-
-                    // handle sessions created by older Extended Variants versions (no prefix, and everything is an integer)
-                    if (!value.Contains(":") && int.TryParse(value, out int legacyValue)) {
-                        Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Encountered a legacy variant value in session: " + v + " = " + legacyValue);
-                        Session.VariantsEnabledViaTrigger[v] = new ExtendedVariantTriggerManager.LegacyVariantValue(legacyValue);
-                        continue;
-                    }
-
-                    string type = value.Substring(0, value.IndexOf(":"));
-                    value = value.Substring(type.Length + 1);
-
-                    switch (type) {
-                        case "string":
-                            Session.VariantsEnabledViaTrigger[v] = value;
-                            break;
-                        case "int":
-                            Session.VariantsEnabledViaTrigger[v] = int.Parse(value);
-                            break;
-                        case "float":
-                            Session.VariantsEnabledViaTrigger[v] = float.Parse(value);
-                            break;
-                        case "bool":
-                            Session.VariantsEnabledViaTrigger[v] = bool.Parse(value);
-                            break;
-                        case "DashDirection":
-                            string[] split = value.Split(',');
-                            Session.VariantsEnabledViaTrigger[v] = new bool[][] {
-                                new bool[] { bool.Parse(split[0]),bool.Parse(split[1]),bool.Parse(split[2]) },
-                                new bool[] { bool.Parse(split[3]),bool.Parse(split[4]),bool.Parse(split[5]) },
-                                new bool[] { bool.Parse(split[6]),bool.Parse(split[7]),bool.Parse(split[8]) }
-                            };
-                            break;
-                        case "DisplaySpeedometer":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DisplaySpeedometer.SpeedometerConfiguration), value);
-                            break;
-                        case "DontRefillDashOnGround":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DontRefillDashOnGround.DashRefillOnGroundConfiguration), value);
-                            break;
-                        case "MadelineBackpackMode":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(MadelineBackpackMode.MadelineBackpackModes), value);
-                            break;
-                        case "WindEverywhere":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(WindEverywhere.WindPattern), value);
-                            break;
-                        case "JungleSpidersEverywhere":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(JungleSpidersEverywhere.SpiderType), value);
-                            break;
-                        case "DashModes":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(Assists.DashModes), value);
-                            break;
-                        case "DisableClimbingUpOrDown":
-                            Session.VariantsEnabledViaTrigger[v] = Enum.Parse(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions), value);
-                            break;
-                        default:
-                            throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
-                    }
-                }
-            } catch (Exception e) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantModule", $"Failed to parse a value in session!");
-                Logger.LogDetailed(e);
-            }
+            ExtendedVariantSerializationUtils.FromSavableFormat(Session.VariantsEnabledViaTrigger);
         }
 
         // ================ Common methods for multiple variants ================

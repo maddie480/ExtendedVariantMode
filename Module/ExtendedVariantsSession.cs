@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsSession : EverestModuleSession {
         public Dictionary<ExtendedVariantsModule.Variant, object> VariantsEnabledViaTrigger = new Dictionary<ExtendedVariantsModule.Variant, object>();
+        public HashSet<ExtendedVariantsModule.Variant> VariantsOverridenByUser = new HashSet<ExtendedVariantsModule.Variant>();
 
         public bool ExtendedVariantsWereUsed { get; set; } = false;
 

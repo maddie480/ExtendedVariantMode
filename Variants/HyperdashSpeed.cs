@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class HyperdashSpeed : AbstractExtendedVariant {
@@ -14,16 +15,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.HyperdashSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.HyperdashSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.HyperdashSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -54,7 +47,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
         private float determineHyperdashSpeedFactor() {
-            return Settings.HyperdashSpeed;
+            return GetVariantValue<float>(Variant.HyperdashSpeed);
         }
     }
 }

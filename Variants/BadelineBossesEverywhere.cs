@@ -8,6 +8,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BadelineBossesEverywhere : AbstractExtendedVariant {
@@ -24,16 +25,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BadelineBossesEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BadelineBossesEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BadelineBossesEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void SetRandomSeed(int seed) {
@@ -61,7 +54,7 @@ namespace ExtendedVariants.Variants {
             // failsafe: kill the glitch effect.
             Glitch.Value = 0;
 
-            if (Settings.BadelineBossesEverywhere && playerIntro != Player.IntroTypes.Transition) {
+            if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere) && playerIntro != Player.IntroTypes.Transition) {
                 injectBadelineBosses(self);
             }
         }
@@ -69,7 +62,7 @@ namespace ExtendedVariants.Variants {
         private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
 
-            if (Settings.BadelineBossesEverywhere) {
+            if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere)) {
                 injectBadelineBosses(self);
             }
         }
@@ -78,11 +71,11 @@ namespace ExtendedVariants.Variants {
             Player player = level.Tracker.GetEntity<Player>();
 
             if (player != null) {
-                for (int id = level.Tracker.CountEntities<FinalBoss>(); id < Settings.BadelineBossCount; id++) {
+                for (int id = level.Tracker.CountEntities<FinalBoss>(); id < GetVariantValue<int>(Variant.BadelineBossCount); id++) {
                     // let's add a boss
 
                     Vector2 bossPosition;
-                    if (id == 0 && !Settings.FirstBadelineSpawnRandom) {
+                    if (id == 0 && !GetVariantValue<bool>(Variant.FirstBadelineSpawnRandom)) {
                         // the first Badeline should spawn at the opposite of the room
                         bossPosition = computeBossPositionAtOppositeOfPlayer(level, player);
                     } else {
@@ -96,9 +89,9 @@ namespace ExtendedVariants.Variants {
                     Vector2 penultimateNode = player.Position;
                     Vector2 lastNode = bossPosition;
 
-                    Vector2[] nodes = new Vector2[Settings.BadelineBossNodeCount];
+                    Vector2[] nodes = new Vector2[GetVariantValue<int>(Variant.BadelineBossNodeCount)];
 
-                    for (int i = 0; i < Settings.BadelineBossNodeCount - 1; i++) {
+                    for (int i = 0; i < GetVariantValue<int>(Variant.BadelineBossNodeCount) - 1; i++) {
                         // randomize all nodes, except the last one.
                         nodes[i] = computeBossPositionAtRandom(level, player);
 
@@ -135,7 +128,7 @@ namespace ExtendedVariants.Variants {
                         bossData.Position = bossPosition;
                         bossData.Values["canChangeMusic"] = false;
                         bossData.Values["cameraLockY"] = false;
-                        bossData.Values["patternIndex"] = Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
+                        bossData.Values["patternIndex"] = GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
                         bossData.Nodes = nodes;
 
                         // add it to the level!
@@ -226,8 +219,8 @@ namespace ExtendedVariants.Variants {
         }
 
         private int modAttackPattern(int vanillaPattern) {
-            if (Settings.ChangePatternsOfExistingBosses) {
-                return Settings.BadelineAttackPattern == 0 ? patternRandomizer.Next(1, 16) : Settings.BadelineAttackPattern;
+            if (GetVariantValue<bool>(Variant.ChangePatternsOfExistingBosses)) {
+                return GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
             }
             return vanillaPattern;
         }

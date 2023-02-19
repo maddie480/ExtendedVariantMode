@@ -17,17 +17,10 @@ namespace ExtendedVariants.UI {
         protected override void addOptionsToMenu(TextMenu menu, bool inGame, object[] parameters) {
             currentMenu = menu;
 
-            if (ExtendedVariantsModule.Settings.SubmenusForEachCategoryEnabled) {
-                // variants submenus + randomizer options
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, false, true, true, false,
-                    () => OuiModOptions.Instance.Overworld.Goto<OuiExtendedVariantsSubmenu>(),
-                    menu, inGame, false /* we don't care since there is no master switch */);
-            } else {
-                // all variants options + randomizer options
-                new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.All, false, false, true, false,
-                    () => OuiModOptions.Instance.Overworld.Goto<OuiExtendedVariantsSubmenu>(),
-                    menu, inGame, false /* we don't care since there is no master switch */);
-            }
+            // variants submenus + randomizer options
+            new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, false, true, true,
+                () => OuiModOptions.Instance.Overworld.Goto<OuiExtendedVariantsSubmenu>(),
+                menu, inGame, false /* we don't care since there is no master switch */);
         }
 
         public override IEnumerator Enter(Oui from) {

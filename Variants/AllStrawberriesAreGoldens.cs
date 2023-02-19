@@ -8,6 +8,7 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AllStrawberriesAreGoldens : AbstractExtendedVariant {
@@ -30,16 +31,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.AllStrawberriesAreGoldens;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AllStrawberriesAreGoldens = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.AllStrawberriesAreGoldens = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -77,7 +70,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
-            if (!Settings.AllStrawberriesAreGoldens) {
+            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 return orig(self, direction, evenIfInvincible, registerDeathInStats);
             }
 
@@ -157,7 +150,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
-            if (!Settings.AllStrawberriesAreGoldens && !strawberriesWereMadeGolden) {
+            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !strawberriesWereMadeGolden) {
                 // nothing to do actually.
                 return currentSprite;
             }
@@ -166,7 +159,7 @@ namespace ExtendedVariants.Variants {
 
             bool isGolden = currentSprite.Texture?.AtlasPath?.Contains("gold") ?? false;
             // in vanilla, if a berry happens to be a moon golden strawberry, it will appear as a moon berry.
-            bool shouldBeGolden = !self.Moon && (self.Golden || Settings.AllStrawberriesAreGoldens);
+            bool shouldBeGolden = !self.Moon && (self.Golden || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens));
 
             if (isGolden == shouldBeGolden) {
                 // there's nothing to do though...
@@ -220,11 +213,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool strawberryHasGoldenCollectBehavior(Strawberry berry) {
-            return berry.Golden || Settings.AllStrawberriesAreGoldens;
+            return berry.Golden || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens);
         }
 
         private void onStrawberryCollected(On.Celeste.Strawberry.orig_OnPlayer orig, Strawberry self, Player player) {
-            if (!Settings.AllStrawberriesAreGoldens) {
+            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 orig(self, player);
                 return;
             }
@@ -248,7 +241,7 @@ namespace ExtendedVariants.Variants {
         private Session onSessionRestart(On.Celeste.Session.orig_Restart orig, Session self, string intoLevel) {
             Session session = orig(self, intoLevel);
 
-            if (Settings.AllStrawberriesAreGoldens && Engine.Scene is LevelExit levelExit) {
+            if (GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && Engine.Scene is LevelExit levelExit) {
                 DynData<LevelExit> exitData = new DynData<LevelExit>(levelExit);
                 if (exitData.Get<LevelExit.Mode>("mode") == LevelExit.Mode.GoldenBerryRestart && exitData.Data.ContainsKey("playerInventoryToRestore")) {
                     session.Inventory = exitData.Get<PlayerInventory>("playerInventoryToRestore");

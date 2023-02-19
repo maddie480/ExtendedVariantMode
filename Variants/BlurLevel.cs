@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BlurLevel : AbstractExtendedVariant {
@@ -17,16 +18,8 @@ namespace ExtendedVariants.Variants {
             return 0f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BlurLevel;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BlurLevel = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BlurLevel = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -64,9 +57,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void blurLevelBuffer() {
-            if (Settings.BlurLevel > 0) {
+            if (GetVariantValue<float>(Variant.BlurLevel) > 0) {
                 // what if... I just gaussian blur the level buffer
-                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, Settings.BlurLevel);
+                GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, GetVariantValue<float>(Variant.BlurLevel));
             }
         }
 

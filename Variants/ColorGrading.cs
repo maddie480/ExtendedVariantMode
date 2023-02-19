@@ -4,6 +4,7 @@ using System.Reflection;
 using Celeste;
 using Celeste.Mod;
 using MonoMod.Cil;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ColorGrading : AbstractExtendedVariant {
@@ -24,47 +25,20 @@ namespace ExtendedVariants.Variants {
             return "";
         }
 
-        public override object GetVariantValue() {
-            return Settings.ColorGrading;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ColorGrading = (string) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == -1 || ExistingColorGrades.Count <= value) {
-                Settings.ColorGrading = "";
+                return "";
             } else {
-                Settings.ColorGrading = ExistingColorGrades[value];
+                return ExistingColorGrades[value];
             }
         }
 
         public override void Load() {
             IL.Celeste.Level.Render += modLevelRender;
-            On.Celeste.Celeste.LoadContent += onLoadContent;
-
-            // if color grades were loaded, we can check if the color grade currently configured still exists.
-            if ((bool) everestContentLoaded.GetValue(null)) {
-                checkColorGrade();
-            }
         }
 
         public override void Unload() {
             IL.Celeste.Level.Render -= modLevelRender;
-            On.Celeste.Celeste.LoadContent -= onLoadContent;
-        }
-
-        private void onLoadContent(On.Celeste.Celeste.orig_LoadContent orig, Celeste.Celeste self) {
-            orig(self);
-            checkColorGrade();
-        }
-
-        private void checkColorGrade() {
-            if (!string.IsNullOrEmpty(Settings.ColorGrading) && !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + Settings.ColorGrading)) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ColorGrading", "Graphics/ColorGrading/" + Settings.ColorGrading + " doesn't exist! Resetting color grade setting.");
-                Settings.ColorGrading = "";
-            }
         }
 
         private void modLevelRender(ILContext il) {
@@ -86,11 +60,11 @@ namespace ExtendedVariants.Variants {
         }
 
         private string modColorGrading(string vanillaValue) {
-            if (Settings.ColorGrading == "") {
+            if (GetVariantValue<string>(Variant.ColorGrading) == "" || !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + GetVariantValue<string>(Variant.ColorGrading))) {
                 return vanillaValue;
             }
 
-            return Settings.ColorGrading;
+            return GetVariantValue<string>(Variant.ColorGrading);
         }
     }
 }

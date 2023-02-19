@@ -8,30 +8,31 @@ namespace ExtendedVariants.Variants.Vanilla {
             return typeof(bool);
         }
 
-        public override object GetVariantValue() {
-            return SaveData.Instance.Assists.PlayAsBadeline;
-        }
-
         public override object GetDefaultVariantValue() {
             return false;
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            SetVariantValue(value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            SaveData.Instance.Assists.PlayAsBadeline = (bool) value;
+        public override void VariantValueChanged() {
+            bool playAsBadeline = applyAssists(SaveData.Instance.Assists, out _).PlayAsBadeline;
 
             Player player = Engine.Scene?.Tracker.GetEntity<Player>();
             if (player != null) {
-                PlayerSpriteMode mode = (SaveData.Instance.Assists.PlayAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
+                PlayerSpriteMode mode = (playAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
                 if (player.Active) {
                     player.ResetSpriteNextFrame(mode);
                 } else {
                     player.ResetSprite(mode);
                 }
             }
+        }
+
+        protected override Assists applyVariantValue(Assists target, object value) {
+            target.PlayAsBadeline = (bool) value;
+            return target;
         }
     }
 }

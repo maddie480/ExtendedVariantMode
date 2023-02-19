@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 1.0f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashTimerMultiplier;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashTimerMultiplier = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashTimerMultiplier = (float) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
     }
 }

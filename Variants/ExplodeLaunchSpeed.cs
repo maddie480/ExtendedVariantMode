@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ExplodeLaunchSpeed : AbstractExtendedVariant {
@@ -38,16 +39,8 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.ExplodeLaunchSpeed;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ExplodeLaunchSpeed = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.ExplodeLaunchSpeed = (value / 10f);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -66,7 +59,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public void Initialize() {
-            if (Settings.MasterSwitch) {
+            if (ExtendedVariantsModule.Settings.MasterSwitch) {
                 // hook mods now that they are all loaded!
                 hookModsUsingExplodeLaunch();
             }
@@ -129,9 +122,9 @@ namespace ExtendedVariants.Variants {
         private void correctExplodeLaunchSpeed() {
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
             if (player != null) {
-                player.Speed *= Settings.ExplodeLaunchSpeed;
+                player.Speed *= GetVariantValue<float>(Variant.ExplodeLaunchSpeed);
 
-                if (Settings.DisableSuperBoosts) {
+                if (GetVariantValue<bool>(Variant.DisableSuperBoosts)) {
                     if (Input.MoveX.Value == Math.Sign(player.Speed.X)) {
                         // cancel super boost
                         player.Speed.X /= 1.2f;

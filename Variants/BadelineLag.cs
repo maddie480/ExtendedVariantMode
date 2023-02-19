@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 1.55f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.BadelineLag;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.BadelineLag = (value == 0 ? 1.55f : value / 10f);
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.BadelineLag = (float) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value == 0 ? 1.55f : value / 10f;
         }
     }
 }

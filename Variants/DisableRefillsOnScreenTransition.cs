@@ -1,5 +1,6 @@
 ﻿
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableRefillsOnScreenTransition : AbstractExtendedVariant {
@@ -12,16 +13,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableRefillsOnScreenTransition;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableRefillsOnScreenTransition = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableRefillsOnScreenTransition = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -38,7 +31,7 @@ namespace ExtendedVariants.Variants {
 
             orig(self);
 
-            if (Settings.DisableRefillsOnScreenTransition) {
+            if (GetVariantValue<bool>(Variant.DisableRefillsOnScreenTransition)) {
                 self.Dashes = bakDashes;
                 self.Stamina = bakStamina;
             }

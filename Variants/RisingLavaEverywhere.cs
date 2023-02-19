@@ -7,6 +7,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Linq;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class RisingLavaEverywhere : AbstractExtendedVariant {
@@ -19,16 +20,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.RisingLavaEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.RisingLavaEverywhere = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.RisingLavaEverywhere = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -59,7 +52,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void addRisingLavaToLevel(Level level) {
-            if (Settings.RisingLavaEverywhere && level.Entities.All(entity => entity.GetType() != typeof(RisingLava) && entity.GetType() != typeof(SandwichLava))) {
+            if (GetVariantValue<bool>(Variant.RisingLavaEverywhere) && level.Entities.All(entity => entity.GetType() != typeof(RisingLava) && entity.GetType() != typeof(SandwichLava))) {
                 // we should add a rising lava entity to the level, since there isn't any at the moment.
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player != null) {
@@ -92,7 +85,7 @@ namespace ExtendedVariants.Variants {
             }
 
             // otherwise (or if the player did not just respawn), just return the factor.
-            return Settings.RisingLavaSpeed;
+            return GetVariantValue<float>(Variant.RisingLavaSpeed);
         }
     }
 }

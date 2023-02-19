@@ -4,6 +4,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class HorizontalWallJumpDuration : AbstractExtendedVariant {
@@ -13,20 +14,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.HorizontalWallJumpDuration;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1f;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            Settings.HorizontalWallJumpDuration = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.HorizontalWallJumpDuration = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -43,7 +36,7 @@ namespace ExtendedVariants.Variants {
 
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("forceMoveXTimer"))) {
                 Logger.Log("ExtendedVariantMode/HorizontalWallJumpDuration", $"Modding forceMoveXTimer at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * Settings.HorizontalWallJumpDuration);
+                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.HorizontalWallJumpDuration));
                 cursor.Index++;
             }
         }

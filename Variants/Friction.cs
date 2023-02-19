@@ -5,6 +5,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class Friction : AbstractExtendedVariant {
@@ -19,26 +20,12 @@ namespace ExtendedVariants.Variants {
             return 1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.Friction;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.Friction = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             // what even is this?
             switch (value) {
-                case -1:
-                    Settings.Friction = 0f;
-                    break;
-                case 0:
-                    Settings.Friction = 0.05f;
-                    break;
-                default:
-                    Settings.Friction = value / 10f;
-                    break;
+                case -1: return 0f;
+                case 0: return 0.05f;
+                default: return value / 10f;
             }
         }
 
@@ -104,14 +91,14 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The idle animation threshold (minimum 25, gets higher as the friction factor is lower)</returns>
         private float getIdleAnimationThreshold() {
-            if (Settings.Friction >= 1f) {
+            if (GetVariantValue<float>(Variant.Friction) >= 1f) {
                 // keep the default value
                 return 25f;
             }
 
             // shift the "stand still" threshold towards max walking speed, which is 90f
             // for example, it will give 83.5 when friction factor is 0.1, Madeline will appear to slip standing still.
-            return 25f + (90f * Settings.SpeedX - 25f) * (1 - determineFrictionFactor());
+            return 25f + (90f * GetVariantValue<float>(Variant.SpeedX) - 25f) * (1 - determineFrictionFactor());
         }
 
         /// <summary>
@@ -119,7 +106,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <returns>The friction factor (1 = default friction)</returns>
         private float determineFrictionFactor() {
-            return Settings.Friction;
+            return GetVariantValue<float>(Variant.Friction);
         }
     }
 }

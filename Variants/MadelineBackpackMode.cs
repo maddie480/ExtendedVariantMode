@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 using System.Collections.Generic;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class MadelineBackpackMode : AbstractExtendedVariant {
@@ -16,13 +17,7 @@ namespace ExtendedVariants.Variants {
             return MadelineBackpackModes.Default;
         }
 
-        public override object GetVariantValue() {
-            return Settings.MadelineBackpackMode;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.MadelineBackpackMode = (MadelineBackpackModes) value;
-
+        public override void VariantValueChanged() {
             Player p = Engine.Scene?.Tracker.GetEntity<Player>();
             if (p != null) {
                 if (p.Active) {
@@ -33,8 +28,8 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        public override void SetLegacyVariantValue(int value) {
-            Settings.MadelineBackpackMode = (MadelineBackpackModes) value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return (MadelineBackpackModes) value;
         }
 
         public override void Load() {
@@ -55,9 +50,9 @@ namespace ExtendedVariants.Variants {
         private void onPlayerSpriteConstructor(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode) {
             // modify Madeline or MadelineNoBackpack as needed, if the variant is enabled.
             if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack) {
-                if (Settings.MadelineBackpackMode == MadelineBackpackModes.Backpack) {
+                if (GetVariantValue<MadelineBackpackModes>(Variant.MadelineBackpackMode) == MadelineBackpackModes.Backpack) {
                     mode = PlayerSpriteMode.Madeline;
-                } else if (Settings.MadelineBackpackMode == MadelineBackpackModes.NoBackpack) {
+                } else if (GetVariantValue<MadelineBackpackModes>(Variant.MadelineBackpackMode) == MadelineBackpackModes.NoBackpack) {
                     mode = PlayerSpriteMode.MadelineNoBackpack;
                 }
             }

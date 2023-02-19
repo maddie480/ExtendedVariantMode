@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ForceDuckOnGround : AbstractExtendedVariant {
@@ -14,16 +15,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.ForceDuckOnGround;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.ForceDuckOnGround = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.ForceDuckOnGround = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -59,7 +52,7 @@ namespace ExtendedVariants.Variants {
 
                 ILLabel target = (ILLabel) cursor.Prev.Operand;
 
-                // basically, this turns the if into "if(this.Ducking && !Settings.ForceDuckOnGround)": this prevents unducking
+                // basically, this turns the if into "if(this.Ducking && !GetVariantValue(Variant.ForceDuckOnGround))": this prevents unducking
                 cursor.EmitDelegate<Func<bool>>(ForceDuckOnGroundEnabled);
                 cursor.Emit(OpCodes.Brtrue, target);
 
@@ -73,8 +66,8 @@ namespace ExtendedVariants.Variants {
                     if (cursorAfterCondition.TryGotoNext(MoveType.After, instr => (instr.OpCode == OpCodes.Bne_Un || instr.OpCode == OpCodes.Bne_Un_S))) {
                         Logger.Log("ExtendedVariantMode/ForceDuckOnGround", $"Inserting condition to enforce Force Duck On Ground at {cursor.Index} in CIL code for NormalUpdate");
 
-                        // so this is basically "if (this.onGround && (Settings.ForceDuckOnGround || Input.MoveY == 1) && this.Speed.Y >= 0f)"
-                        // by telling IL "if Settings.ForceDuckOnGround is true, jump over the Input.MoveY check"
+                        // so this is basically "if (this.onGround && (GetVariantValue(Variant.ForceDuckOnGround) || Input.MoveY == 1) && this.Speed.Y >= 0f)"
+                        // by telling IL "if GetVariantValue(Variant.ForceDuckOnGround) is true, jump over the Input.MoveY check"
                         cursor.EmitDelegate<Func<bool>>(ForceDuckOnGroundEnabled);
                         cursor.Emit(OpCodes.Brtrue, cursorAfterCondition.Next);
                     }
@@ -82,6 +75,6 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool ForceDuckOnGroundEnabled() => Settings.ForceDuckOnGround;
+        private bool ForceDuckOnGroundEnabled() => GetVariantValue<bool>(Variant.ForceDuckOnGround);
     }
 }

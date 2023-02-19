@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableClimbingUpOrDown : AbstractExtendedVariant {
@@ -16,16 +17,8 @@ namespace ExtendedVariants.Variants {
             return ClimbUpOrDownOptions.Disabled;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableClimbingUpOrDown;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableClimbingUpOrDown = (ClimbUpOrDownOptions) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableClimbingUpOrDown = (value == 0 ? ClimbUpOrDownOptions.Disabled : ClimbUpOrDownOptions.Both);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value == 0 ? ClimbUpOrDownOptions.Disabled : ClimbUpOrDownOptions.Both;
         }
 
         public override void Load() {
@@ -45,7 +38,7 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/DisableClimbingUpOrDown", $"Modifying MoveY to prevent player from moving @ {cursor.Index} in IL for Player.ClimbUpdate");
                 cursor.EmitDelegate<Func<int, int>>(orig => {
-                    switch (Settings.DisableClimbingUpOrDown) {
+                    switch (GetVariantValue<ClimbUpOrDownOptions>(Variant.DisableClimbingUpOrDown)) {
                         case ClimbUpOrDownOptions.Both:
                             return 0;
                         case ClimbUpOrDownOptions.Up:

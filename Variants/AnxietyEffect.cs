@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Microsoft.Xna.Framework;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
@@ -16,19 +17,11 @@ namespace ExtendedVariants.Variants {
             return -1f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.AnxietyEffect;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.AnxietyEffect = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {
-                Settings.AnxietyEffect = -1f;
+                return -1f;
             } else {
-                Settings.AnxietyEffect = (value / 5f);
+                return value / 5f;
             }
         }
 
@@ -50,11 +43,11 @@ namespace ExtendedVariants.Variants {
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             orig(self);
 
-            if (Settings.AnxietyEffect != -1) {
+            if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
                 anxietyCustomized = true;
 
                 // set the anxiety intensity
-                GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : Settings.AnxietyEffect);
+                GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : GetVariantValue<float>(Variant.AnxietyEffect));
 
                 Vector2 camera = self.Camera.Position;
                 Player player = self.Tracker.GetEntity<Player>();
@@ -84,9 +77,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformAnxietyValue(float originalValue) {
-            if (Settings.AnxietyEffect != -1) {
+            if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
                 // anxiety is modded
-                return Settings.AnxietyEffect;
+                return GetVariantValue<float>(Variant.AnxietyEffect);
             }
             // anxiety is vanilla
             return originalValue;

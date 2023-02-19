@@ -5,6 +5,7 @@ using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashCount : AbstractExtendedVariant {
@@ -22,16 +23,8 @@ namespace ExtendedVariants.Variants {
             return -1;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DashCount;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DashCount = (int) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DashCount = value;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value;
         }
 
         public override void Load() {
@@ -59,10 +52,10 @@ namespace ExtendedVariants.Variants {
             // trigger the "on dash refill" event
             OnDashRefill?.Invoke();
 
-            if (Settings.DashCount == -1) {
+            if (GetVariantValue<int>(Variant.DashCount) == -1) {
                 return orig.Invoke(self);
-            } else if (self.Dashes < Settings.DashCount) {
-                self.Dashes = Settings.DashCount;
+            } else if (self.Dashes < GetVariantValue<int>(Variant.DashCount)) {
+                self.Dashes = GetVariantValue<int>(Variant.DashCount);
                 return true;
             }
             return false;
@@ -131,13 +124,13 @@ namespace ExtendedVariants.Variants {
             yield return new SwapImmediately(orig(self, player));
 
             // apply the dash refill rules here (this does not call RefillDash)
-            if (Settings.DashCount != -1) {
+            if (GetVariantValue<int>(Variant.DashCount) != -1) {
                 // this will run in 0.15 seconds: if (player.Dashes < player.Inventory.Dashes) player.Dashes++;
                 // let's take that into account and deduce 1 from the dash count if required.
-                if (Settings.DashCount < player.Inventory.Dashes) {
-                    player.Dashes = Settings.DashCount - 1;
+                if (GetVariantValue<int>(Variant.DashCount) < player.Inventory.Dashes) {
+                    player.Dashes = GetVariantValue<int>(Variant.DashCount) - 1;
                 } else {
-                    player.Dashes = Settings.DashCount;
+                    player.Dashes = GetVariantValue<int>(Variant.DashCount);
                 }
             }
 
@@ -153,11 +146,11 @@ namespace ExtendedVariants.Variants {
         /// <param name="defaultValue">The default value (= Player.MaxDashes)</param>
         /// <returns>The dash count</returns>
         private int determineDashCount(int defaultValue) {
-            if (Settings.DashCount == -1) {
+            if (GetVariantValue<int>(Variant.DashCount) == -1) {
                 return defaultValue;
             }
 
-            return Settings.DashCount;
+            return GetVariantValue<int>(Variant.DashCount);
         }
     }
 }

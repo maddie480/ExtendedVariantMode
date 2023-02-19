@@ -6,6 +6,7 @@ using Monocle;
 using MonoMod.Cil;
 using System;
 using System.Collections;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class WindEverywhere : AbstractExtendedVariant {
@@ -27,15 +28,7 @@ namespace ExtendedVariants.Variants {
             return WindPattern.Default;
         }
 
-        public override object GetVariantValue() {
-            return Settings.WindEverywhere;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.WindEverywhere = (WindPattern) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
+        public override object ConvertLegacyVariantValue(int value) {
             // you know, 5 obviously means RightCrazy :a:
             WindController.Patterns[] allPatterns = new WindController.Patterns[] {
                 WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
@@ -45,13 +38,13 @@ namespace ExtendedVariants.Variants {
 
             if (value == 0) {
                 // default pattern
-                Settings.WindEverywhere = WindPattern.Default;
+                return WindPattern.Default;
             } else if (value == allPatterns.Length + 1) {
                 // random wind
-                Settings.WindEverywhere = WindPattern.Random;
+                return WindPattern.Random;
             } else {
                 // chosen wind pattern
-                Settings.WindEverywhere = (WindPattern) allPatterns[value - 1];
+                return (WindPattern) allPatterns[value - 1];
             }
         }
 
@@ -97,9 +90,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void applyWind(Level level) {
-            if (Settings.WindEverywhere != WindPattern.Default) {
+            if (GetVariantValue<WindPattern>(Variant.WindEverywhere) != WindPattern.Default) {
                 WindController.Patterns selectedPattern;
-                if (Settings.WindEverywhere == WindPattern.Random) {
+                if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Random) {
                     // pick up random wind
                     WindController.Patterns[] allPatterns = new WindController.Patterns[] {
                         WindController.Patterns.Left, WindController.Patterns.Right, WindController.Patterns.LeftStrong, WindController.Patterns.RightStrong, WindController.Patterns.RightCrazy,
@@ -111,7 +104,7 @@ namespace ExtendedVariants.Variants {
                 } else {
                     // pick up the chosen wind pattern
                     selectedPattern = (WindController.Patterns) Enum.Parse(typeof(WindController.Patterns),
-                        Enum.GetName(typeof(WindPattern), Settings.WindEverywhere));
+                        Enum.GetName(typeof(WindPattern), GetVariantValue<WindPattern>(Variant.WindEverywhere)));
                 }
 
                 // and apply it; this is basically what Wind Trigger does
@@ -126,7 +119,7 @@ namespace ExtendedVariants.Variants {
                 }
             }
 
-            if (Settings.WindEverywhere != WindPattern.Default && Settings.WindEverywhere != WindPattern.None) {
+            if (GetVariantValue<WindPattern>(Variant.WindEverywhere) != WindPattern.Default && GetVariantValue<WindPattern>(Variant.WindEverywhere) != WindPattern.None) {
                 if (!snowBackdropAddedByEVM) {
                     // add the styleground / backdrop used in Golden Ridge to make wind actually visible.
                     // ExtendedVariantWindSnowFG will hide itself if a vanilla backdrop supporting wind is already present or appears.
@@ -160,7 +153,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private float transformVisualWind(float vanilla) {
-            if (Settings.WindEverywhere == WindPattern.Default) {
+            if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Default) {
                 // variant disabled: don't affect vanilla.
                 return vanilla;
             }

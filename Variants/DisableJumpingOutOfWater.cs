@@ -5,6 +5,7 @@ using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableJumpingOutOfWater : AbstractExtendedVariant {
@@ -16,16 +17,8 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetVariantValue() {
-            return Settings.DisableJumpingOutOfWater;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.DisableJumpingOutOfWater = (bool) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.DisableJumpingOutOfWater = (value != 0);
+        public override object ConvertLegacyVariantValue(int value) {
+            return value != 0;
         }
 
         public override void Load() {
@@ -58,7 +51,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private bool modInputJumpResult(bool orig) {
-            if (Settings.DisableJumpingOutOfWater) {
+            if (GetVariantValue<bool>(Variant.DisableJumpingOutOfWater)) {
                 return false;
             }
 
@@ -66,7 +59,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private Water ignoreWater(Water orig) {
-            if (Settings.DisableJumpingOutOfWater) {
+            if (GetVariantValue<bool>(Variant.DisableJumpingOutOfWater)) {
                 return null;
             }
 

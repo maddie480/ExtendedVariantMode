@@ -10,24 +10,8 @@ namespace ExtendedVariants.Variants {
             return 0.8f;
         }
 
-        public override object GetVariantValue() {
-            return Settings.SnowballDelay;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.SnowballDelay = value / 10f;
-        }
-
-        protected override void DoSetVariantValue(object value) {
-            Settings.SnowballDelay = (float) value;
-        }
-
-        public override void Load() {
-            // this setting is used elsewhere
-        }
-
-        public override void Unload() {
-            // this setting is used elsewhere
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
     }
 }

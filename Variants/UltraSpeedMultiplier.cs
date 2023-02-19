@@ -5,6 +5,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class UltraSpeedMultiplier : AbstractExtendedVariant {
@@ -14,20 +15,12 @@ namespace ExtendedVariants.Variants {
             return typeof(float);
         }
 
-        public override object GetVariantValue() {
-            return Settings.UltraSpeedMultiplier;
-        }
-
         public override object GetDefaultVariantValue() {
             return 1.2f;
         }
 
-        protected override void DoSetVariantValue(object value) {
-            Settings.UltraSpeedMultiplier = (float) value;
-        }
-
-        public override void SetLegacyVariantValue(int value) {
-            Settings.UltraSpeedMultiplier = value / 10f;
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
         }
 
         public override void Load() {
@@ -49,7 +42,7 @@ namespace ExtendedVariants.Variants {
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(1.2f))) {
                 Logger.Log("ExtendedVariantMode/UltraSpeedMultiplier", $"Modifying ultra speed multiplier at {cursor.Index} in IL for Player.OnCollideV");
-                cursor.EmitDelegate<Func<float, float>>(orig => Settings.UltraSpeedMultiplier == 1.2f ? orig : Settings.UltraSpeedMultiplier);
+                cursor.EmitDelegate<Func<float, float>>(orig => GetVariantValue<float>(Variant.UltraSpeedMultiplier) == 1.2f ? orig : GetVariantValue<float>(Variant.UltraSpeedMultiplier));
             }
         }
     }
