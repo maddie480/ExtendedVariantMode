@@ -37,9 +37,5 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="XaphanHelper">
-      <HintPath>lib-stripped\XaphanHelper.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
 </Project>
