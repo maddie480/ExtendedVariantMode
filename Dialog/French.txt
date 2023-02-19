@@ -21,8 +21,6 @@
 MODNAME_EXTENDEDVARIANTMODE=    Mode Variante étendu
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=  Mode Variante étendu
 
-POSTCARD_EXTENDEDVARIANTS_FORCEENABLED= Tu entres dans une map qui utilise le {# 9B3FB5}Mode Variante étendu{#}.{n}{n}Pour que cette map fonctionne, les {# 9B3FB5}variantes étendues{#} ont été activées et remises à zéro à leurs valeurs par défaut.
-
 MODOPTIONS_EXTENDEDVARIANTS_HEADING=    Variantes
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_DASHING=    Dashes
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_JUMPING=    Sauts
@@ -44,10 +42,7 @@ MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_GAMEELEMENTS=   Éléments de jeu
 MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_VISUAL= Modifications visuelles
 MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_GAMEPLAYTWEAKS= Modifications de gameplay
 
-MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU= Menu séparé pour les variantes
-MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY= Sous-menu par catégorie
 MODOPTIONS_EXTENDEDVARIANTS_PAUSEMENU_BUTTON=   Variantes étendues
-MODOPTIONS_EXTENDEDVARIANTS_MODOPTIONS_BUTTON=  Options des variantes étendues
 
 MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH=   Activé
 MODOPTIONS_EXTENDEDVARIANTS_GRAVITY=    Gravité
@@ -263,9 +258,6 @@ MODOPTIONS_EXTENDEDVARIANTS_FRIENDLYBADELINEFOLLOWER=   Badeline suit le joueur
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEREFILLSONSCREENTRANSITION=   Ne pas donner de dash au changement d'écran
 MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN= Restaurer le nombre de dashes après une mort
 MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE=    Si tu avais 1 dash au dernier point de contrôle, tu réapparaîtras avec 1 dash
-
-MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Remettre à zéro les variantes automatiquement
-MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= lorsque tu entres dans un niveau utilisant des variantes étendues
 
 MODOPTIONS_EXTENDEDVARIANTS_DISPLAYDASHCOUNT=   Afficher le nombre de dashes
 

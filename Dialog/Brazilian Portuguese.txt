@@ -21,8 +21,6 @@
 MODNAME_EXTENDEDVARIANTMODE=    Modo Variáveis Estendidas
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=  Modo Variáveis Estendidas
 
-POSTCARD_EXTENDEDVARIANTS_FORCEENABLED=    Você está entrando em um mapa usando o {# 9B3FB5}Modo Variáveis Estendidas{#}.{n}{n}Para este mapa funcionar, {# 9B3FB5}Variáveis Estendidas{#} foram habilitadas e resetadas aos seus valores padrões.
-
 MODOPTIONS_EXTENDEDVARIANTS_HEADING=    Variáveis
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_DASHING=    Dashes
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_JUMPING=    Pulos
@@ -44,10 +42,7 @@ MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_GAMEELEMENTS=   Elementos de jogo
 MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_VISUAL= Visual
 MODOPTIONS_EXTENDEDVARIANTS_SUBMENU_GAMEPLAYTWEAKS= Mudanças na gameplay
 
-MODOPTIONS_EXTENDEDVARIANTS_OPTIONSOUTOFMODOPTIONSMENU= Variáveis em menu separado
-MODOPTIONS_EXTENDEDVARIANTS_SUBMENUFOREACHCATEGORY= Submenu para cada categoria
 MODOPTIONS_EXTENDEDVARIANTS_PAUSEMENU_BUTTON=   Variáveis Estendidas
-MODOPTIONS_EXTENDEDVARIANTS_MODOPTIONS_BUTTON=  Configurações das Variáveis Estendidas
 
 MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH=   Habilitado
 MODOPTIONS_EXTENDEDVARIANTS_GRAVITY=    Gravidade
@@ -240,9 +235,6 @@ MODOPTIONS_EXTENDEDVARIANTS_EVERYJUMPISULTRA_DESC=  Obtém um impulso de x1.2 de
 
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME= Tempo de coiote
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=    Tempo em que se pode pular no ar depois de andar para fora de uma plataforma
-
-MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants= Automaticamente restaurar variáveis
-MODOPTIONS_EXTENDEDVARIANTS_AutomaticallyResetVariants_description= Quando entrar num mapa usando Variáveis Estendidas
 
 MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER=  Preservar dashes extra embaixo de água
 

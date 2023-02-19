@@ -21,8 +21,6 @@
 MODNAME_EXTENDEDVARIANTMODE=    Extended Variant Mode
 MODOPTIONS_EXTENDEDVARIANTS_TITLE=  Extended Variant Mode
 
-POSTCARD_EXTENDEDVARIANTS_FORCEENABLED= Du beginnst gerade eine Map welche {# 9B3FB5}Extended Variant Mode{#} benutzt.{n}{n}Damit diese richtig funktioniert, wurde {# 9B3FB5}Extended Variants{#} aktiviert und alle Werte wurden zurückgesetzt.
-
 MODOPTIONS_EXTENDEDVARIANTS_HEADING=    Varianten
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_DASHING=    Dashen
 MODOPTIONS_EXTENDEDVARIANTS_HEADING_JUMPING=    Springen
