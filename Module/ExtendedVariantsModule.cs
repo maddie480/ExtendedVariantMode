@@ -232,6 +232,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelLoader.ctor += checkForceEnableVariantsOnLevelLoad;
             On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
 
+            typeof(LuaCutscenesUtils).ModInterop();
+
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
                 HookStuff();
