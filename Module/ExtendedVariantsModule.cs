@@ -25,7 +25,6 @@ namespace ExtendedVariants.Module {
         public bool SpringCollab2020Installed { get; private set; }
         public bool MaxHelpingHandInstalled { get; private set; }
         public bool JungleHelperInstalled { get; private set; }
-        public bool XaphanHelperInstalled { get; private set; }
 
         private bool stuffIsHooked = false;
         private bool triggerIsHooked = false;
@@ -266,8 +265,6 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Max Helping Hand installed = {MaxHelpingHandInstalled}");
             JungleHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "JungleHelper", Version = new Version(1, 1, 2) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Jungle Helper installed = {JungleHelperInstalled}");
-            XaphanHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "XaphanHelper", Version = new Version(1, 0, 51) });
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Xaphan Helper installed = {XaphanHelperInstalled}");
 
             UpsideDown.Initialize();
 
