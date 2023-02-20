@@ -60,7 +60,7 @@ namespace ExtendedVariants {
                 // "commit" variants set in the room to save slot
                 foreach (ExtendedVariantsModule.Variant v in overridenVariantsInRoom.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Committing variant change {v} to {overridenVariantsInRoom[v]}");
-                    setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, v, overridenVariantsInRoom[v]);
+                    setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, true, v, overridenVariantsInRoom[v]);
                 }
 
                 // clear values
@@ -82,9 +82,9 @@ namespace ExtendedVariants {
                 // so that it can be reverted if we die, or saved if we save & quit later
                 // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
                 if (revertOnLeave) {
-                    oldValue = setVariantValue(overridenVariantsInRoomRevertOnLeave, variantChange, newValue);
+                    oldValue = setVariantValue(overridenVariantsInRoomRevertOnLeave, false, variantChange, newValue);
                 } else {
-                    oldValue = setVariantValue(overridenVariantsInRoom, variantChange, newValue);
+                    oldValue = setVariantValue(overridenVariantsInRoom, false, variantChange, newValue);
                 }
 
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave})");
@@ -94,7 +94,7 @@ namespace ExtendedVariants {
                 overridenVariantsInRoomRevertOnLeave.Remove(variantChange);
 
                 // ... and save it straight into session.
-                oldValue = setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, variantChange, newValue);
+                oldValue = setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, true, variantChange, newValue);
 
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Triggered ExtendedVariantTrigger: changed and committed {variantChange} from {oldValue} to {newValue}");
             }
@@ -103,7 +103,7 @@ namespace ExtendedVariants {
         }
 
         public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, object oldValueToRevertOnLeave) {
-            setVariantValue(overridenVariantsInRoomRevertOnLeave, variantChange, oldValueToRevertOnLeave);
+            setVariantValue(overridenVariantsInRoomRevertOnLeave, true, variantChange, oldValueToRevertOnLeave);
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
         }
 
@@ -184,9 +184,9 @@ namespace ExtendedVariants {
             return one.Equals(two);
         }
 
-        private object setVariantValue(Dictionary<ExtendedVariantsModule.Variant, object> target, ExtendedVariantsModule.Variant variantChange, object newValue) {
+        private object setVariantValue(Dictionary<ExtendedVariantsModule.Variant, object> target, bool allowRemove, ExtendedVariantsModule.Variant variantChange, object newValue) {
             object oldValue = GetCurrentMapDefinedVariantValue(variantChange);
-            if (AreValuesIdentical(newValue, GetDefaultValueForVariant(variantChange))) {
+            if (allowRemove && AreValuesIdentical(newValue, GetDefaultValueForVariant(variantChange))) {
                 Logger.Log("ExtendedVariantsModule/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was equal to the default, so it was removed.");
                 target.Remove(variantChange);
             } else {
@@ -201,7 +201,7 @@ namespace ExtendedVariants {
         }
 
         private void resetVariantValue(Dictionary<ExtendedVariantsModule.Variant, object> target, ExtendedVariantsModule.Variant variantChange) {
-            setVariantValue(target, variantChange, GetDefaultValueForVariant(variantChange));
+            setVariantValue(target, true, variantChange, GetDefaultValueForVariant(variantChange));
         }
 
         private void roomStateReset() {

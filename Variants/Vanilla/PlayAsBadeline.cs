@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         public override void VariantValueChanged() {
-            bool playAsBadeline = applyAssists(SaveData.Instance.Assists, out _).PlayAsBadeline;
+            bool playAsBadeline = applyAssists(vanillaAssists, out _).PlayAsBadeline;
 
             Player player = Engine.Scene?.Tracker.GetEntity<Player>();
             if (player != null) {

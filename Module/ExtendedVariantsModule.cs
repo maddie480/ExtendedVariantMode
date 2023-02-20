@@ -336,6 +336,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.Level.EndPauseEffects += onUnpause;
             On.Celeste.Level.End += onLevelEnd;
 
+            VanillaVariantOptions.Load();
+
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
 
@@ -366,6 +368,8 @@ namespace ExtendedVariants.Module {
             On.Celeste.Level.LoadLevel -= onLoadLevel;
             On.Celeste.Level.EndPauseEffects -= onUnpause;
             On.Celeste.Level.End -= onLevelEnd;
+
+            VanillaVariantOptions.Unload();
 
             // unset flags
             onLevelExit();

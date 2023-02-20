@@ -24,7 +24,7 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         public override void VariantValueChanged() {
-            int gameSpeed = applyAssists(SaveData.Instance.Assists, out _).GameSpeed;
+            int gameSpeed = applyAssists(vanillaAssists, out _).GameSpeed;
             Engine.TimeRateB = gameSpeed / 10f;
         }
 

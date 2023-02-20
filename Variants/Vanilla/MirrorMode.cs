@@ -16,7 +16,7 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         public override void VariantValueChanged() {
-            bool mirrorMode = applyAssists(SaveData.Instance.Assists, out _).MirrorMode;
+            bool mirrorMode = applyAssists(vanillaAssists, out _).MirrorMode;
             Input.MoveX.Inverted = (Input.Aim.InvertedX = (Input.Feather.InvertedX = mirrorMode));
         }
 

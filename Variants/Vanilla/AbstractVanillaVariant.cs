@@ -1,17 +1,16 @@
 ﻿using Celeste;
-using Celeste.Mod;
 using ExtendedVariants.Module;
 using Monocle;
-using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
         private static bool vanillaVariantsHooked = false;
+
+        protected static Assists vanillaAssists;
+        protected static bool overriding;
 
         public override void Load() {
             if (!vanillaVariantsHooked) {
@@ -46,13 +45,13 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         private void swapOutForDurationOfOrigCall(Action orig) {
-            Assists origAssists = SaveData.Instance.Assists;
-            Assists newAssists = applyAssists(SaveData.Instance.Assists, out bool updated);
+            vanillaAssists = SaveData.Instance.Assists;
+            Assists newAssists = applyAssists(vanillaAssists, out overriding);
 
-            if (updated) {
+            if (overriding) {
                 SaveData.Instance.Assists = newAssists;
                 orig();
-                SaveData.Instance.Assists = origAssists;
+                SaveData.Instance.Assists = vanillaAssists;
             } else {
                 orig();
             }
@@ -60,6 +59,15 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         public override bool IsVanilla() {
             return true;
+        }
+
+        public void VariantValueChangedByPlayer(object newValue) {
+            if (overriding) {
+                vanillaAssists = applyVariantValue(vanillaAssists, newValue);
+            } else {
+                SaveData.Instance.Assists = applyVariantValue(SaveData.Instance.Assists, newValue);
+                vanillaAssists = SaveData.Instance.Assists;
+            }
         }
 
         protected abstract Assists applyVariantValue(Assists target, object value);
@@ -71,7 +79,10 @@ namespace ExtendedVariants.Variants.Vanilla {
                 if (!(variant.Value is AbstractVanillaVariant vanillaVariant)) continue;
 
                 object value = ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant.Key);
-                if (value != vanillaVariant.GetDefaultVariantValue()) {
+                if (!ExtendedVariantsModule.Session.VariantsOverridenByUser.Contains(variant.Key)
+                    && !ExtendedVariantTriggerManager.AreValuesIdentical(value, vanillaVariant.GetDefaultVariantValue())) {
+                    Console.WriteLine("non defult: " + variant.Key + " = " + value);
+
                     target = vanillaVariant.applyVariantValue(target, value);
                     updated = true;
                 }
