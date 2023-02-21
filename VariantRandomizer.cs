@@ -245,9 +245,14 @@ namespace ExtendedVariants {
         }
 
         private bool isDefaultValue(ExtendedVariantsModule.Variant variant) {
-            return ExtendedVariantTriggerManager.AreValuesIdentical(
-                ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
-                ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue());
+            AbstractExtendedVariant variantHandler = ExtendedVariantsModule.Instance.VariantHandlers[variant];
+            if (variantHandler is AbstractVanillaVariant vanillaVariantHandler) {
+                return vanillaVariantHandler.IsSetToDefaultByPlayer();
+            } else {
+                return ExtendedVariantTriggerManager.AreValuesIdentical(
+                    ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                    variantHandler.GetDefaultVariantValue());
+            }
         }
 
         private void disableVariant(ExtendedVariantsModule.Variant variant) {

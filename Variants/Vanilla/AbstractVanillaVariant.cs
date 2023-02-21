@@ -71,6 +71,10 @@ namespace ExtendedVariants.Variants.Vanilla {
             }
         }
 
+        public bool IsSetToDefaultByPlayer() {
+            return applyVariantValue(vanillaAssists, GetDefaultVariantValue()).Equals(vanillaAssists);
+        }
+
         protected abstract Assists applyVariantValue(Assists target, object value);
 
         protected Assists applyAssists(Assists target, out bool updated) {
