@@ -55,6 +55,8 @@ namespace ExtendedVariants.UI {
             addAirDashes(menu, self);
             menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist));
             menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible));
+
+            menu.Selection = menu.FirstPossibleSelection;
         }
 
         private static void buildAssistModeMenu(On.Celeste.Level.orig_AssistMode orig, Level self, int returnIndex, bool minimal) {
@@ -74,6 +76,8 @@ namespace ExtendedVariants.UI {
             addAirDashes(menu, self);
             menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist));
             menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible));
+
+            menu.Selection = menu.FirstPossibleSelection;
         }
 
         private static void addGameSpeed(TextMenu menu, int max) {
