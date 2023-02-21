@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants;
+using ExtendedVariants.Variants.Vanilla;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -144,7 +145,7 @@ namespace ExtendedVariants.UI {
             // build the toggles to individually enable or disable all vanilla variants
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_VANILLA")));
             foreach (ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Instance.VariantHandlers.Keys) {
-                if (ExtendedVariantsModule.Instance.VariantHandlers[variant].IsVanilla()) {
+                if (ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant) {
                     items.VanillaVariantOptions.Add(addToggleOptionToMenu(menu, variant));
                 }
             }
@@ -152,7 +153,7 @@ namespace ExtendedVariants.UI {
             // and do the same with extended ones
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_ENABLED_EXTENDED")));
             foreach (ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Instance.VariantHandlers.Keys) {
-                if (!ExtendedVariantsModule.Instance.VariantHandlers[variant].IsVanilla()) {
+                if (ExtendedVariantsModule.Instance.VariantHandlers[variant] is not AbstractVanillaVariant) {
                     items.ExtendedVariantOptions.Add(addToggleOptionToMenu(menu, variant));
                 }
             }
@@ -182,7 +183,7 @@ namespace ExtendedVariants.UI {
         private static TextMenu.Item addToggleOptionToMenu(TextMenu menu, ExtendedVariantsModule.Variant variant) {
             string keyName = variant.ToString();
             string label;
-            if (ExtendedVariantsModule.Instance.VariantHandlers[variant].IsVanilla()) {
+            if (ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant) {
                 label = VariantRandomizer.GetVanillaVariantLabel(variant);
             } else {
                 label = Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_" + variant.ToString().ToUpperInvariant());

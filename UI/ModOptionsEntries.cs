@@ -245,12 +245,12 @@ namespace ExtendedVariants.UI {
                 // Add buttons to easily revert to default values (vanilla and extended variants)
                 if (inGame) {
                     menu.Add((resetVanillaVariants = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_VANILLA"))).Pressed(() => {
-                        ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: true);
+                        ExtendedVariantsModule.Instance.ResetVanillaVariantsToDefaultSettings();
                     }));
                 }
 
                 menu.Add((resetExtendedVariants = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESETTODEFAULT_EXTENDED"))).Pressed(() => {
-                    ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla: false);
+                    ExtendedVariantsModule.Instance.ResetExtendedVariantsToDefaultSettings();
                 }));
 
                 TextMenuButtonExt movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu;

@@ -76,7 +76,7 @@ namespace ExtendedVariants.UI {
                     i = ((speed.Values[speed.PreviousIndex].Item2 <= i) ? (i + 1) : (i - 1));
                 }
                 speed.Index = i - 5;
-                setVariantValue(Variant.VanillaGameSpeed, i);
+                SetVariantValue(Variant.VanillaGameSpeed, i);
             });
         }
 
@@ -91,7 +91,7 @@ namespace ExtendedVariants.UI {
                 (int) SaveData.Instance.Assists.DashMode,
                 0,
                 (int) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(Variant.AirDashes)
-            ).Change(i => setVariantValue(Variant.AirDashes, (Assists.DashModes) i)));
+            ).Change(i => SetVariantValue(Variant.AirDashes, (Assists.DashModes) i)));
 
             if (self.Session.Area.ID == 0) {
                 airDashes.Disabled = true;
@@ -104,10 +104,10 @@ namespace ExtendedVariants.UI {
                 variantValue,
                 (bool) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
                 (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))
-                    .Change(b => setVariantValue(variant, b));
+                    .Change(b => SetVariantValue(variant, b));
         }
 
-        private static void setVariantValue<T>(Variant variantChange, T newValue) {
+        public static void SetVariantValue(Variant variantChange, object newValue) {
             if (Engine.Scene is Level) {
                 if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variantChange))) {
                     Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides.");
@@ -118,8 +118,8 @@ namespace ExtendedVariants.UI {
                 }
             }
 
-            ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
             (ExtendedVariantsModule.Instance.VariantHandlers[variantChange] as AbstractVanillaVariant).VariantValueChangedByPlayer(newValue);
+            ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
             ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
         }
     }

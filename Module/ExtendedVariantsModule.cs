@@ -483,21 +483,34 @@ namespace ExtendedVariants.Module {
         /// </summary>
         /// <returns>true if any variant changed, false otherwise.</returns>
         public void ResetToDefaultSettings() {
-            ResetVariantsToDefaultSettings(isVanilla: true);
-            ResetVariantsToDefaultSettings(isVanilla: false);
+            ResetVanillaVariantsToDefaultSettings();
+            ResetExtendedVariantsToDefaultSettings();
         }
 
         /// <summary>
-        /// Resets either vanilla or extended variants to default settings.
+        /// Resets extended variants to default settings.
         /// </summary>
-        /// <param name="isVanilla">Whether to reset vanilla variants (true) or extended variants (false)</param>
-        public void ResetVariantsToDefaultSettings(bool isVanilla) {
-            // reset all proper variants to their default values
+        public void ResetExtendedVariantsToDefaultSettings() {
             foreach (Variant variantId in Settings.EnabledVariants.Keys.ToList()) {
                 AbstractExtendedVariant variant = VariantHandlers[variantId];
-                if (variant.IsVanilla() == isVanilla) {
-                    Settings.EnabledVariants.Remove(variantId);
+
+                Settings.EnabledVariants.Remove(variantId);
+                Session?.VariantsOverridenByUser.Remove(variantId);
+                variant.VariantValueChanged();
+                Randomizer.RefreshEnabledVariantsDisplayList();
+            }
+        }
+
+        /// <summary>
+        /// Resets vanilla variants to default settings.
+        /// </summary>
+        public void ResetVanillaVariantsToDefaultSettings() {
+            foreach (Variant variantId in VariantHandlers.Keys) {
+                AbstractExtendedVariant variant = VariantHandlers[variantId];
+
+                if (variant is AbstractVanillaVariant vanillaVariant) {
                     Session?.VariantsOverridenByUser.Remove(variantId);
+                    vanillaVariant.VariantValueChangedByPlayer(variant.GetDefaultVariantValue());
                     variant.VariantValueChanged();
                     Randomizer.RefreshEnabledVariantsDisplayList();
                 }
@@ -511,13 +524,13 @@ namespace ExtendedVariants.Module {
             if (SaveData.Instance == null) {
                 Engine.Commands.Log("This command only works when a save is loaded!");
             } else {
-                Instance.ResetVariantsToDefaultSettings(isVanilla: true);
+                Instance.ResetVanillaVariantsToDefaultSettings();
             }
         }
 
         [Command("reset_extended_variants", "[from Extended Variant Mode] resets extended variants to their default values")]
         public static void CmdResetExtendedVariants() {
-            Instance.ResetVariantsToDefaultSettings(isVanilla: false);
+            Instance.ResetExtendedVariantsToDefaultSettings();
         }
 
         // ================ Stamp on Chapter Complete screen ================

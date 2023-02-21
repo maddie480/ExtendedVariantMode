@@ -9,6 +9,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExtendedVariants.Variants.Vanilla;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
@@ -144,9 +145,6 @@ namespace ExtendedVariants {
         }
 
         public void ResetAllVariantsToDefault(bool isVanilla) {
-            // reset the variants themselves
-            ExtendedVariantsModule.Instance.ResetVariantsToDefaultSettings(isVanilla);
-
             // reset the session
             resetVariantsInList(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, isVanilla);
 
@@ -157,7 +155,7 @@ namespace ExtendedVariants {
 
         private void resetVariantsInList(Dictionary<ExtendedVariantsModule.Variant, object> list, bool isVanilla) {
             foreach (ExtendedVariantsModule.Variant variant in list.Keys.ToList()) {
-                if (ExtendedVariantsModule.Instance.VariantHandlers.TryGetValue(variant, out AbstractExtendedVariant variantHandler) && variantHandler.IsVanilla()) {
+                if (ExtendedVariantsModule.Instance.VariantHandlers.TryGetValue(variant, out AbstractExtendedVariant variantHandler) && variantHandler is AbstractVanillaVariant) {
                     if (isVanilla) {
                         resetVariantValue(list, variant);
                     }

@@ -1,9 +1,9 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using ExtendedVariants.Module;
-using Monocle;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
@@ -14,9 +14,9 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         public override void Load() {
             if (!vanillaVariantsHooked) {
-                On.Celeste.Player.Added += onPlayerAdded;
                 On.Celeste.Level.Update += onLevelUpdate;
                 On.Celeste.Level.Render += onLevelRender;
+                Everest.Events.Player.OnSpawn += onPlayerSpawn;
 
                 vanillaVariantsHooked = true;
             }
@@ -24,16 +24,12 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         public override void Unload() {
             if (vanillaVariantsHooked) {
-                On.Celeste.Player.Added -= onPlayerAdded;
                 On.Celeste.Level.Update -= onLevelUpdate;
                 On.Celeste.Level.Render -= onLevelRender;
+                Everest.Events.Player.OnSpawn -= onPlayerSpawn;
 
                 vanillaVariantsHooked = false;
             }
-        }
-
-        private void onPlayerAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
-            swapOutForDurationOfOrigCall(() => orig(self, scene));
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
@@ -42,6 +38,15 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         private void onLevelRender(On.Celeste.Level.orig_Render orig, Level self) {
             swapOutForDurationOfOrigCall(() => orig(self));
+        }
+
+        private void onPlayerSpawn(Player player) {
+            Assists.DashModes mapDefinedValue = (Assists.DashModes) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(Variant.AirDashes);
+            if (mapDefinedValue != SaveData.Instance.Assists.DashMode) {
+                // make sure the dash count is applied right away when the player died and Air Dashes was a revert on death variant.
+                SaveData.Instance.Assists.DashMode = mapDefinedValue;
+                player.Dashes = player.MaxDashes;
+            }
         }
 
         private void swapOutForDurationOfOrigCall(Action orig) {
@@ -55,10 +60,6 @@ namespace ExtendedVariants.Variants.Vanilla {
             } else {
                 orig();
             }
-        }
-
-        public override bool IsVanilla() {
-            return true;
         }
 
         public void VariantValueChangedByPlayer(object newValue) {
@@ -81,7 +82,6 @@ namespace ExtendedVariants.Variants.Vanilla {
                 object value = ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant.Key);
                 if (!ExtendedVariantsModule.Session.VariantsOverridenByUser.Contains(variant.Key)
                     && !ExtendedVariantTriggerManager.AreValuesIdentical(value, vanillaVariant.GetDefaultVariantValue())) {
-                    Console.WriteLine("non defult: " + variant.Key + " = " + value);
 
                     target = vanillaVariant.applyVariantValue(target, value);
                     updated = true;
