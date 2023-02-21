@@ -302,6 +302,11 @@ namespace ExtendedVariants.UI {
                 elementsToHideOnToggle = new List<TextMenu.Item>();
             }
 
+            if (category != VariantCategory.None) {
+                menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_ORANGE")) { TextColor = Color.Goldenrod });
+                menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_BLUE")) { TextColor = Color.DeepSkyBlue, HeightExtra = 0f });
+            }
+
             // ======
 
             if (category == VariantCategory.Movement) {

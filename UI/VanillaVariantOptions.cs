@@ -2,6 +2,7 @@
 using Celeste.Mod;
 using ExtendedVariants.Module;
 using ExtendedVariants.Variants.Vanilla;
+using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.RuntimeDetour;
 using System;
@@ -29,8 +30,13 @@ namespace ExtendedVariants.UI {
 
             TextMenu menu = self.Entities.ToAdd.OfType<TextMenu>().First();
             menu.Clear();
+            menu.CompactWidthMode = true;
 
             menu.Add(new TextMenu.Header(Dialog.Clean("MENU_VARIANT_TITLE")));
+
+            menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_ORANGE")) { TextColor = Color.Goldenrod });
+            menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_BLUE")) { TextColor = Color.DeepSkyBlue, HeightExtra = 0f });
+
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MENU_VARIANT_SUBTITLE"), topPadding: true));
 
             addGameSpeed(menu, 16);
@@ -56,8 +62,13 @@ namespace ExtendedVariants.UI {
 
             TextMenu menu = self.Entities.ToAdd.OfType<TextMenu>().First();
             menu.Clear();
+            menu.CompactWidthMode = true;
 
             menu.Add(new TextMenu.Header(Dialog.Clean("MENU_ASSIST_TITLE")));
+
+            menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_ORANGE")) { TextColor = Color.Goldenrod });
+            menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_BLUE") + "\n") { TextColor = Color.DeepSkyBlue, HeightExtra = 0f });
+
             addGameSpeed(menu, 10);
             menu.Add(getToggleOption(Variant.InfiniteStamina, "MENU_ASSIST_INFINITE_STAMINA", SaveData.Instance.Assists.InfiniteStamina));
             addAirDashes(menu, self);
