@@ -1,5 +1,6 @@
 ﻿using Celeste.Mod;
 using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsSession : EverestModuleSession {
@@ -11,5 +12,9 @@ namespace ExtendedVariants.Module {
         public int DashCountOnLatestRespawn { get; set; } = -1;
 
         public bool ExtendedVariantsDisplayedOnScreenViaTrigger { get; set; } = false;
+
+        // Those are extended variant trigger manager variables that should not be saved, but should be reset with the session.
+        public Dictionary<ExtendedVariantsModule.Variant, object> OverriddenVariantsInRoom { get; set; } = new Dictionary<ExtendedVariantsModule.Variant, object>();
+        public Dictionary<ExtendedVariantsModule.Variant, object> OverriddenVariantsInRoomRevertOnLeave { get; set; } = new Dictionary<ExtendedVariantsModule.Variant, object>();
     }
 }
