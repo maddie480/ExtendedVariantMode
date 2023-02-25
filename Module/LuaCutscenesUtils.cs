@@ -8,6 +8,11 @@ namespace ExtendedVariants.Module {
     // luaCutscenesUtils.TriggerIntegerVariant(...)
     [ModExportName("ExtendedVariantMode")]
     public static class LuaCutscenesUtils {
+        public static object GetCurrentVariantValue(string variantString) {
+            ExtendedVariantsModule.Variant variant = (ExtendedVariantsModule.Variant) Enum.Parse(typeof(ExtendedVariantsModule.Variant), variantString);
+            return ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
+        }
+
         public static void TriggerIntegerVariant(string variant, int newValue, bool revertOnDeath) {
             TriggerVariant(variant, newValue, revertOnDeath);
         }
