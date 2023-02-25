@@ -14,21 +14,28 @@ using ExtendedVariants.Variants.Vanilla;
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
         public void Load() {
-            On.Celeste.Player.ctor += onPlayerSpawn;
+            On.Celeste.Player.ctor += onPlayerCreate;
+            Everest.Events.Player.OnSpawn += onPlayerSpawn;
             Everest.Events.Level.OnExit += onLevelExit;
             Everest.Events.Level.OnTransitionTo += onLevelTransitionTo;
             IL.Celeste.ChangeRespawnTrigger.OnEnter += modRespawnTriggerOnEnter;
         }
 
         public void Unload() {
-            On.Celeste.Player.ctor -= onPlayerSpawn;
+            On.Celeste.Player.ctor -= onPlayerCreate;
+            Everest.Events.Player.OnSpawn -= onPlayerSpawn;
             Everest.Events.Level.OnExit -= onLevelExit;
             Everest.Events.Level.OnTransitionTo -= onLevelTransitionTo;
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
         }
 
-        private void onPlayerSpawn(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
+        private void onPlayerCreate(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
             orig(self, position, spriteMode);
+            roomStateReset();
+        }
+
+        private void onPlayerSpawn(Player player) {
+            // This should already be done by onPlayerCreate... except in the case of a teleport.
             roomStateReset();
         }
 
