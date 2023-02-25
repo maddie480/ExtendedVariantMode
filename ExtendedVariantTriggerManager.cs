@@ -13,10 +13,6 @@ using ExtendedVariants.Variants.Vanilla;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
-
-        private Dictionary<ExtendedVariantsModule.Variant, object> overridenVariantsInRoom = new Dictionary<ExtendedVariantsModule.Variant, object>();
-        private Dictionary<ExtendedVariantsModule.Variant, object> overridenVariantsInRoomRevertOnLeave = new Dictionary<ExtendedVariantsModule.Variant, object>();
-
         public void Load() {
             On.Celeste.Player.ctor += onPlayerSpawn;
             Everest.Events.Level.OnExit += onLevelExit;
@@ -57,11 +53,11 @@ namespace ExtendedVariants {
         }
 
         private void commitVariantChanges() {
-            if (overridenVariantsInRoom.Count != 0) {
+            if (ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Count != 0) {
                 // "commit" variants set in the room to save slot
-                foreach (ExtendedVariantsModule.Variant v in overridenVariantsInRoom.Keys) {
-                    Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Committing variant change {v} to {overridenVariantsInRoom[v]}");
-                    setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, true, v, overridenVariantsInRoom[v]);
+                foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Keys) {
+                    Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Committing variant change {v} to {ExtendedVariantsModule.Session.OverriddenVariantsInRoom[v]}");
+                    setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, true, v, ExtendedVariantsModule.Session.OverriddenVariantsInRoom[v]);
                 }
 
                 // clear values
@@ -83,16 +79,16 @@ namespace ExtendedVariants {
                 // so that it can be reverted if we die, or saved if we save & quit later
                 // fade triggers get a special tag, because it can very quickly flood logs (1 line per frame) and needs to be turned on only when necessary.
                 if (revertOnLeave) {
-                    oldValue = setVariantValue(overridenVariantsInRoomRevertOnLeave, false, variantChange, newValue);
+                    oldValue = setVariantValue(ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave, false, variantChange, newValue);
                 } else {
-                    oldValue = setVariantValue(overridenVariantsInRoom, false, variantChange, newValue);
+                    oldValue = setVariantValue(ExtendedVariantsModule.Session.OverriddenVariantsInRoom, false, variantChange, newValue);
                 }
 
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager" + (isFade ? "-fade" : ""), $"Triggered ExtendedVariantTrigger: changed {variantChange} from {oldValue} to {newValue} (revertOnLeave = {revertOnLeave})");
             } else {
                 // remove the variant from the room state if it was in there...
-                overridenVariantsInRoom.Remove(variantChange);
-                overridenVariantsInRoomRevertOnLeave.Remove(variantChange);
+                ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Remove(variantChange);
+                ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave.Remove(variantChange);
 
                 // ... and save it straight into session.
                 oldValue = setVariantValue(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, true, variantChange, newValue);
@@ -104,7 +100,7 @@ namespace ExtendedVariants {
         }
 
         public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, object oldValueToRevertOnLeave) {
-            setVariantValue(overridenVariantsInRoomRevertOnLeave, true, variantChange, oldValueToRevertOnLeave);
+            setVariantValue(ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave, true, variantChange, oldValueToRevertOnLeave);
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Left ExtendedVariantTrigger: reverted {variantChange} to {oldValueToRevertOnLeave}");
         }
 
@@ -114,9 +110,9 @@ namespace ExtendedVariants {
 
         public object GetCurrentVariantValue(ExtendedVariantsModule.Variant variant) {
             if (ExtendedVariantsModule.Session != null && !ExtendedVariantsModule.Session.VariantsOverridenByUser.Contains(variant) && !(Engine.Scene is Overworld)) {
-                if (overridenVariantsInRoomRevertOnLeave.TryGetValue(variant, out object revertOnLeaveValue)) {
+                if (ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave.TryGetValue(variant, out object revertOnLeaveValue)) {
                     return revertOnLeaveValue;
-                } else if (overridenVariantsInRoom.TryGetValue(variant, out object roomValue)) {
+                } else if (ExtendedVariantsModule.Session.OverriddenVariantsInRoom.TryGetValue(variant, out object roomValue)) {
                     return roomValue;
                 } else if (ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.TryGetValue(variant, out object sessionValue)) {
                     return sessionValue;
@@ -132,9 +128,9 @@ namespace ExtendedVariants {
 
         public object GetCurrentMapDefinedVariantValue(ExtendedVariantsModule.Variant variant) {
             if (ExtendedVariantsModule.Session != null && !(Engine.Scene is Overworld)) {
-                if (overridenVariantsInRoomRevertOnLeave.TryGetValue(variant, out object revertOnLeaveValue)) {
+                if (ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave.TryGetValue(variant, out object revertOnLeaveValue)) {
                     return revertOnLeaveValue;
-                } else if (overridenVariantsInRoom.TryGetValue(variant, out object roomValue)) {
+                } else if (ExtendedVariantsModule.Session.OverriddenVariantsInRoom.TryGetValue(variant, out object roomValue)) {
                     return roomValue;
                 } else if (ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.TryGetValue(variant, out object sessionValue)) {
                     return sessionValue;
@@ -149,8 +145,8 @@ namespace ExtendedVariants {
             resetVariantsInList(ExtendedVariantsModule.Session.VariantsEnabledViaTrigger, isVanilla);
 
             // reset the variants set in the room
-            resetVariantsInList(overridenVariantsInRoom, isVanilla);
-            resetVariantsInList(overridenVariantsInRoomRevertOnLeave, isVanilla);
+            resetVariantsInList(ExtendedVariantsModule.Session.OverriddenVariantsInRoom, isVanilla);
+            resetVariantsInList(ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave, isVanilla);
         }
 
         private void resetVariantsInList(Dictionary<ExtendedVariantsModule.Variant, object> list, bool isVanilla) {
@@ -204,14 +200,14 @@ namespace ExtendedVariants {
 
         private void roomStateReset() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", "Room state reset");
-            foreach (ExtendedVariantsModule.Variant variant in overridenVariantsInRoom.Keys.ToList()) {
-                resetVariantValue(overridenVariantsInRoom, variant);
+            foreach (ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Keys.ToList()) {
+                resetVariantValue(ExtendedVariantsModule.Session.OverriddenVariantsInRoom, variant);
             }
-            foreach (ExtendedVariantsModule.Variant variant in overridenVariantsInRoomRevertOnLeave.Keys.ToList()) {
-                resetVariantValue(overridenVariantsInRoomRevertOnLeave, variant);
+            foreach (ExtendedVariantsModule.Variant variant in ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave.Keys.ToList()) {
+                resetVariantValue(ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave, variant);
             }
 
-            if (overridenVariantsInRoom.Count != 0 || overridenVariantsInRoomRevertOnLeave.Count != 0) {
+            if (ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Count != 0 || ExtendedVariantsModule.Session.OverriddenVariantsInRoomRevertOnLeave.Count != 0) {
                 Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantTriggerManager", "Room state reset did not reset all variants!");
             }
         }
