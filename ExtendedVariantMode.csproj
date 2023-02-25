@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MonoMod.RuntimeDetour" Version="22.1.4.3" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="NLua" Version="1.4.25" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="YamlDotNet" Version="8.1.2" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BetterRefillGems">
