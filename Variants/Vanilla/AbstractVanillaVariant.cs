@@ -9,8 +9,7 @@ namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
         private static bool vanillaVariantsHooked = false;
         private static bool overriding = false;
-
-        protected static Assists vanillaAssists;
+        private static Assists vanillaAssists;
 
         public override void Load() {
             if (!vanillaVariantsHooked) {
@@ -77,7 +76,7 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         protected abstract Assists applyVariantValue(Assists target, object value);
 
-        protected Assists applyAssists(Assists target, out bool updated) {
+        private Assists applyAssists(Assists target, out bool updated) {
             updated = false;
 
             foreach (KeyValuePair<ExtendedVariantsModule.Variant, AbstractExtendedVariant> variant in ExtendedVariantsModule.Instance.VariantHandlers) {
@@ -92,6 +91,10 @@ namespace ExtendedVariants.Variants.Vanilla {
                 }
             }
             return target;
+        }
+
+        protected Assists getActiveAssistValues() {
+            return applyAssists(vanillaAssists, out _);
         }
     }
 }
