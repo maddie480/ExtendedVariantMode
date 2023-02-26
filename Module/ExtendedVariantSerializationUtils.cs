@@ -12,7 +12,9 @@ namespace ExtendedVariants.Module {
     /// This is necessary to save the variant values and keep their types when loading them back.
     /// </summary>
     public static class ExtendedVariantSerializationUtils {
-        public static void FromSavableFormat(Dictionary<Variant, object> variantMap) {
+        public static Dictionary<Variant, object> FromSavableFormat(Dictionary<Variant, object> variantMap) {
+            Dictionary<Variant, object> convertedVariants = new Dictionary<Variant, object>();
+
             try {
                 foreach (Variant v in variantMap.Keys.ToList()) {
                     string value = variantMap[v].ToString();
@@ -22,45 +24,45 @@ namespace ExtendedVariants.Module {
 
                     switch (type) {
                         case "string":
-                            variantMap[v] = value;
+                            convertedVariants[v] = value;
                             break;
                         case "int":
-                            variantMap[v] = int.Parse(value);
+                            convertedVariants[v] = int.Parse(value);
                             break;
                         case "float":
-                            variantMap[v] = float.Parse(value);
+                            convertedVariants[v] = float.Parse(value);
                             break;
                         case "bool":
-                            variantMap[v] = bool.Parse(value);
+                            convertedVariants[v] = bool.Parse(value);
                             break;
                         case "DashDirection":
                             string[] split = value.Split(',');
-                            variantMap[v] = new bool[][] {
+                            convertedVariants[v] = new bool[][] {
                                 new bool[] { bool.Parse(split[0]),bool.Parse(split[1]),bool.Parse(split[2]) },
                                 new bool[] { bool.Parse(split[3]),bool.Parse(split[4]),bool.Parse(split[5]) },
                                 new bool[] { bool.Parse(split[6]),bool.Parse(split[7]),bool.Parse(split[8]) }
                             };
                             break;
                         case "DisplaySpeedometer":
-                            variantMap[v] = Enum.Parse(typeof(DisplaySpeedometer.SpeedometerConfiguration), value);
+                            convertedVariants[v] = Enum.Parse(typeof(DisplaySpeedometer.SpeedometerConfiguration), value);
                             break;
                         case "DontRefillDashOnGround":
-                            variantMap[v] = Enum.Parse(typeof(DontRefillDashOnGround.DashRefillOnGroundConfiguration), value);
+                            convertedVariants[v] = Enum.Parse(typeof(DontRefillDashOnGround.DashRefillOnGroundConfiguration), value);
                             break;
                         case "MadelineBackpackMode":
-                            variantMap[v] = Enum.Parse(typeof(MadelineBackpackMode.MadelineBackpackModes), value);
+                            convertedVariants[v] = Enum.Parse(typeof(MadelineBackpackMode.MadelineBackpackModes), value);
                             break;
                         case "WindEverywhere":
-                            variantMap[v] = Enum.Parse(typeof(WindEverywhere.WindPattern), value);
+                            convertedVariants[v] = Enum.Parse(typeof(WindEverywhere.WindPattern), value);
                             break;
                         case "JungleSpidersEverywhere":
-                            variantMap[v] = Enum.Parse(typeof(JungleSpidersEverywhere.SpiderType), value);
+                            convertedVariants[v] = Enum.Parse(typeof(JungleSpidersEverywhere.SpiderType), value);
                             break;
                         case "DashModes":
-                            variantMap[v] = Enum.Parse(typeof(Assists.DashModes), value);
+                            convertedVariants[v] = Enum.Parse(typeof(Assists.DashModes), value);
                             break;
                         case "DisableClimbingUpOrDown":
-                            variantMap[v] = Enum.Parse(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions), value);
+                            convertedVariants[v] = Enum.Parse(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions), value);
                             break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
@@ -70,56 +72,62 @@ namespace ExtendedVariants.Module {
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantModule", $"Failed to parse a value in session!");
                 Logger.LogDetailed(e);
             }
+
+            return convertedVariants;
         }
 
-        public static void ToSavableFormat(Dictionary<Variant, object> variantMap) {
+        public static Dictionary<Variant, object> ToSavableFormat(Dictionary<Variant, object> variantMap) {
+            Dictionary<Variant, object> convertedVariants = new Dictionary<Variant, object>();
+
             foreach (Variant v in variantMap.Keys.ToList()) {
                 object value = variantMap[v];
 
                 switch (value) {
                     case string castValue:
-                        variantMap[v] = "string:" + castValue;
+                        convertedVariants[v] = "string:" + castValue;
                         break;
                     case int castValue:
-                        variantMap[v] = "int:" + castValue;
+                        convertedVariants[v] = "int:" + castValue;
                         break;
                     case float castValue:
-                        variantMap[v] = "float:" + castValue;
+                        convertedVariants[v] = "float:" + castValue;
                         break;
                     case bool castValue:
-                        variantMap[v] = "bool:" + castValue;
+                        convertedVariants[v] = "bool:" + castValue;
                         break;
                     case bool[][] castValue:
-                        variantMap[v] = "DashDirection:" +
+                        convertedVariants[v] = "DashDirection:" +
                             castValue[0][0] + "," + castValue[0][1] + "," + castValue[0][2] + "," +
                             castValue[1][0] + "," + castValue[1][1] + "," + castValue[1][2] + "," +
                             castValue[2][0] + "," + castValue[2][1] + "," + castValue[2][2];
                         break;
                     case DisplaySpeedometer.SpeedometerConfiguration castValue:
-                        variantMap[v] = "DisplaySpeedometer:" + castValue;
+                        convertedVariants[v] = "DisplaySpeedometer:" + castValue;
                         break;
                     case DontRefillDashOnGround.DashRefillOnGroundConfiguration castValue:
-                        variantMap[v] = "DontRefillDashOnGround:" + castValue;
+                        convertedVariants[v] = "DontRefillDashOnGround:" + castValue;
                         break;
                     case MadelineBackpackMode.MadelineBackpackModes castValue:
-                        variantMap[v] = "MadelineBackpackMode:" + castValue;
+                        convertedVariants[v] = "MadelineBackpackMode:" + castValue;
                         break;
                     case WindEverywhere.WindPattern castValue:
-                        variantMap[v] = "WindEverywhere:" + castValue;
+                        convertedVariants[v] = "WindEverywhere:" + castValue;
                         break;
                     case JungleSpidersEverywhere.SpiderType castValue:
-                        variantMap[v] = "JungleSpidersEverywhere:" + castValue;
+                        convertedVariants[v] = "JungleSpidersEverywhere:" + castValue;
                         break;
                     case Assists.DashModes castValue:
-                        variantMap[v] = "DashModes:" + castValue;
+                        convertedVariants[v] = "DashModes:" + castValue;
                         break;
                     case DisableClimbingUpOrDown.ClimbUpOrDownOptions castValue:
-                        variantMap[v] = "DisableClimbingUpOrDown:" + castValue;
+                        convertedVariants[v] = "DisableClimbingUpOrDown:" + castValue;
                         break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
                 }
+
+                return convertedVariants;
             }
         }
     }
