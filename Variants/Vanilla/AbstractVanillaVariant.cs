@@ -40,7 +40,7 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         private void onPlayerSpawn(Player player) {
-            Assists.DashModes mapDefinedValue = applyAssists(vanillaAssists, out _).DashMode;
+            Assists.DashModes mapDefinedValue = getActiveAssistValues().DashMode;
             if (mapDefinedValue != SaveData.Instance.Assists.DashMode) {
                 // make sure the dash count is applied right away when the player died and Air Dashes was a revert on death variant.
                 SaveData.Instance.Assists.DashMode = mapDefinedValue;
