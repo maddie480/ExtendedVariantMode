@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants.Vanilla {
         }
 
         public override void VariantValueChanged() {
-            Assists.DashModes dashMode = applyAssists(vanillaAssists, out _).DashMode;
+            Assists.DashModes dashMode = getActiveAssistValues().DashMode;
 
             Player player = Engine.Scene?.Tracker.GetEntity<Player>();
             if (player != null) {
