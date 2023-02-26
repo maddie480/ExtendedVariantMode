@@ -605,9 +605,31 @@ namespace ExtendedVariants.Module {
         // they all turn into strings. aaaaaaaaaaaaaaaa
 
         public override void SaveSettings() {
-            ExtendedVariantSerializationUtils.ToSavableFormat(Settings.EnabledVariants);
-            base.SaveSettings();
-            ExtendedVariantSerializationUtils.FromSavableFormat(Settings.EnabledVariants);
+            ExtendedVariantsSettings savableSettings = new ExtendedVariantsSettings() {
+                MasterSwitch = Settings.MasterSwitch,
+                EnabledVariants = ExtendedVariantSerializationUtils.ToSavableFormat(Settings.EnabledVariants),
+                ChangeVariantsRandomly = Settings.ChangeVariantsRandomly,
+                VariantSet = Settings.VariantSet,
+                ChangeVariantsInterval = Settings.ChangeVariantsInterval,
+                RandomizerEnabledVariants = Settings.RandomizerEnabledVariants,
+                RerollMode = Settings.RerollMode,
+                MaxEnabledVariants = Settings.MaxEnabledVariants,
+                RandoSetSeed = Settings.RandoSetSeed,
+                Vanillafy = Settings.Vanillafy,
+                DisplayEnabledVariantsToScreen = Settings.DisplayEnabledVariantsToScreen
+            };
+
+            try {
+                using (FileStream stream = File.OpenWrite(path))
+                using (StreamWriter writer = new StreamWriter(stream)) {
+                    YamlHelper.Serializer.Serialize(writer, savableSettings, SettingsType);
+                    if (forceFlush || ((CoreModule.Settings.SaveDataFlush ?? true) && !MainThreadHelper.IsMainThread))
+                        stream.Flush(true);
+                }
+            } catch (Exception e) {
+                Logger.Log(LogLevel.Warn, "EverestModule", $"Failed to save the settings of {Metadata.Name}!");
+                Logger.LogDetailed(e);
+            }
         }
 
         public override void LoadSettings() {
