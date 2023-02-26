@@ -633,8 +633,6 @@ namespace ExtendedVariants.Module {
                 stream.Seek(0, SeekOrigin.Begin);
                 return stream.ToArray();
             }
-
-            return result;
         }
 
         public override void DeserializeSession(int index, byte[] data) {
