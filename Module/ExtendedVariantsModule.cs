@@ -616,9 +616,21 @@ namespace ExtendedVariants.Module {
         // ================ Fix types for deserialized sessions ================
 
         public override byte[] SerializeSession(int index) {
-            ExtendedVariantSerializationUtils.ToSavableFormat(Session.VariantsEnabledViaTrigger);
-            byte[] result = base.SerializeSession(index);
-            ExtendedVariantSerializationUtils.FromSavableFormat(Session.VariantsEnabledViaTrigger);
+            ExtendedVariantsSession savableSession = new ExtendedVariantsSession() {
+                VariantsEnabledViaTrigger = ExtendedVariantSerializationUtils.ToSavableFormat(Session.VariantsEnabledViaTrigger),
+                VariantsOverridenByUser = Session.VariantsOverridenByUser,
+                ExtendedVariantsWereUsed = Session.ExtendedVariantsWereUsed,
+                DashCountOnLatestRespawn = Session.DashCountOnLatestRespawn,
+                ExtendedVariantsDisplayedOnScreenViaTrigger = Session.ExtendedVariantsDisplayedOnScreenViaTrigger
+            };
+
+            using (MemoryStream stream = new MemoryStream()) {
+                using (StreamWriter writer = new StreamWriter(new UndisposableStream(stream)))
+                    YamlHelper.Serializer.Serialize(writer, savableSession, SessionType);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream.ToArray();
+            }
 
             return result;
         }
