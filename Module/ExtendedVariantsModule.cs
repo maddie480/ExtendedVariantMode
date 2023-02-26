@@ -17,6 +17,7 @@ using ExtendedVariants.Variants.Vanilla;
 using MonoMod.ModInterop;
 using System.IO;
 using Celeste.Mod.Helpers;
+using Celeste.Mod.Core;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
