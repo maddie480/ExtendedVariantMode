@@ -610,7 +610,7 @@ namespace ExtendedVariants.Module {
 
         public override void LoadSettings() {
             base.LoadSettings();
-            ExtendedVariantSerializationUtils.FromSavableFormat(Settings.EnabledVariants);
+            Settings.EnabledVariants = ExtendedVariantSerializationUtils.FromSavableFormat(Settings.EnabledVariants);
         }
 
         // ================ Fix types for deserialized sessions ================
@@ -625,7 +625,7 @@ namespace ExtendedVariants.Module {
 
         public override void DeserializeSession(int index, byte[] data) {
             base.DeserializeSession(index, data);
-            ExtendedVariantSerializationUtils.FromSavableFormat(Session.VariantsEnabledViaTrigger);
+            Session.VariantsEnabledViaTrigger = ExtendedVariantSerializationUtils.FromSavableFormat(Session.VariantsEnabledViaTrigger);
         }
 
         // ================ Common methods for multiple variants ================
