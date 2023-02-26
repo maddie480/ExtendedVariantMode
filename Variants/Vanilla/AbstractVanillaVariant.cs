@@ -1,14 +1,20 @@
 ﻿using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
-using static ExtendedVariants.Module.ExtendedVariantsModule;
+using System.Linq;
+using System.Reflection;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
         private static bool vanillaVariantsHooked = false;
-        private static Assists vanillaAssists;
+        private static ILHook isaGrabBagHook = null;
+
+        private static Assists vanillaAssists = Assists.Default;
 
         public override void Load() {
             if (!vanillaVariantsHooked) {
@@ -20,6 +26,35 @@ namespace ExtendedVariants.Variants.Vanilla {
             }
         }
 
+        public static void Initialize() {
+            if (isaGrabBagHook == null && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "IsaGrabBag", Version = new Version(1, 6, 10) })) {
+                MethodInfo variantMenuMethod = Everest.Modules.Where(m => m.Metadata?.Name == "IsaGrabBag").First().GetType().Assembly
+                    .GetType("Celeste.Mod.IsaGrabBag.ForceVariants")
+                    .GetMethod("OnVariantMenu", BindingFlags.NonPublic | BindingFlags.Static);
+
+                isaGrabBagHook = new ILHook(variantMenuMethod, modIsaGrabBag);
+            }
+        }
+
+        private static void modIsaGrabBag(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            if (cursor.TryGotoNext(instr => instr.MatchIsinst<TextMenu.OnOff>())) {
+                Logger.Log("ExtendedVariantMode/AbstractVanillaVariant", $"Adding extended variant mod option menu support at {cursor.Index} in IL for ForceVariants.OnVariantMenu");
+
+                cursor.Emit(OpCodes.Dup);
+                cursor.Index++;
+
+                // if (item is TextMenu.OnOff) => if (item is TextMenu.OnOff || item is TextMenuExt.OnOff)
+                // TextMenuExt.OnOff doesn't extend TextMenu.OnOff but does extend TextMenu.Option, so Isa's Grab Bag should just work (tm) with them.
+                cursor.EmitDelegate<Func<TextMenu.Item, TextMenu.OnOff, TextMenu.Item>>((item, itemCast) => {
+                    if (itemCast != null) return itemCast;
+                    if (item is ExtendedVariants.UI.TextMenuExt.OnOff onOff) return onOff;
+                    return null;
+                });
+            }
+        }
+
         public override void Unload() {
             if (vanillaVariantsHooked) {
                 On.Celeste.Level.Update -= onLevelUpdate;
@@ -28,6 +63,9 @@ namespace ExtendedVariants.Variants.Vanilla {
 
                 vanillaVariantsHooked = false;
             }
+
+            isaGrabBagHook?.Dispose();
+            isaGrabBagHook = null;
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
