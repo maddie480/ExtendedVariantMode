@@ -8,7 +8,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
         private static bool vanillaVariantsHooked = false;
-        private static bool overriding = false;
         private static Assists vanillaAssists;
 
         public override void Load() {
@@ -50,24 +49,24 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         private void swapOutForDurationOfOrigCall(Action orig) {
             vanillaAssists = SaveData.Instance.Assists;
-            Assists newAssists = applyAssists(vanillaAssists, out overriding);
+            Assists newAssists = applyAssists(vanillaAssists, out bool hasMapDefinedVariants);
 
-            if (overriding) {
+            if (hasMapDefinedVariants) {
+                // Apply the map-defined variants for the duration of the update/render,
+                // so that they "naturally" get reverted when leaving the map.
                 SaveData.Instance.Assists = newAssists;
                 orig();
                 SaveData.Instance.Assists = vanillaAssists;
             } else {
+                // We have no reason to mess with SaveData.Instance.Assists!
                 orig();
             }
         }
 
         public void VariantValueChangedByPlayer(object newValue) {
-            if (overriding) {
-                vanillaAssists = applyVariantValue(vanillaAssists, newValue);
-            } else {
-                SaveData.Instance.Assists = applyVariantValue(SaveData.Instance.Assists, newValue);
-                vanillaAssists = SaveData.Instance.Assists;
-            }
+            // Apply to both vanilla assists and overridden assists.
+            vanillaAssists = applyVariantValue(vanillaAssists, newValue);
+            SaveData.Instance.Assists = applyVariantValue(SaveData.Instance.Assists, newValue);
         }
 
         public bool IsSetToDefaultByPlayer() {
