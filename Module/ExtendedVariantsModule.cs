@@ -620,10 +620,12 @@ namespace ExtendedVariants.Module {
             };
 
             try {
+                string path = UserIO.GetSaveFilePath("modsettings-" + Metadata.Name);
+
                 using (FileStream stream = File.OpenWrite(path))
                 using (StreamWriter writer = new StreamWriter(stream)) {
                     YamlHelper.Serializer.Serialize(writer, savableSettings, SettingsType);
-                    if (forceFlush || ((CoreModule.Settings.SaveDataFlush ?? true) && !MainThreadHelper.IsMainThread))
+                    if ((CoreModule.Settings.SaveDataFlush ?? true) && !MainThreadHelper.IsMainThread)
                         stream.Flush(true);
                 }
             } catch (Exception e) {
