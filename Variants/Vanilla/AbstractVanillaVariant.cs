@@ -8,10 +8,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants.Vanilla {
     public abstract class AbstractVanillaVariant : AbstractExtendedVariant {
         private static bool vanillaVariantsHooked = false;
+        private static bool overriding = false;
 
         protected static Assists vanillaAssists;
-
-        private static bool overriding;
 
         public override void Load() {
             if (!vanillaVariantsHooked) {
