@@ -126,9 +126,9 @@ namespace ExtendedVariants.Module {
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
                 }
-
-                return convertedVariants;
             }
+
+            return convertedVariants;
         }
     }
 }
