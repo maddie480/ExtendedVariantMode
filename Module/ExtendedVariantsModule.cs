@@ -15,6 +15,7 @@ using ExtendedVariants.Entities;
 using System.Linq;
 using ExtendedVariants.Variants.Vanilla;
 using MonoMod.ModInterop;
+using System.IO;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
