@@ -15,6 +15,6 @@ namespace ExtendedVariants.Module {
 
         // Those are extended variant trigger manager variables that should not be saved, but should be reset with the session.
         public Dictionary<ExtendedVariantsModule.Variant, object> OverriddenVariantsInRoom { get; set; } = new Dictionary<ExtendedVariantsModule.Variant, object>();
-        public Dictionary<ExtendedVariantsModule.Variant, object> OverriddenVariantsInRoomRevertOnLeave { get; set; } = new Dictionary<ExtendedVariantsModule.Variant, object>();
+        public Dictionary<ExtendedVariantsModule.Variant, List<object>> RevertOnLeaveVariantsActive { get; set; } = new Dictionary<ExtendedVariantsModule.Variant, List<object>>();
     }
 }

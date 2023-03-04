@@ -10,7 +10,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         private bool enable;
         private bool revertOnLeave;
         private bool revertOnDeath;
-        private bool[][] oldValueToRevertOnLeave;
+        private bool[][] newValue;
 
         // we are using bit fields for backwards compatibility, but this can otherwise be seen as an enum.
         private const int TOP = 0b1000000000;
@@ -28,9 +28,6 @@ namespace ExtendedVariants.Entities.ForMappers {
             enable = data.Bool("enable", true);
             revertOnLeave = data.Bool("revertOnLeave", false);
             revertOnDeath = data.Bool("revertOnDeath", true);
-
-            // failsafe
-            oldValueToRevertOnLeave = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DashDirection);
         }
 
         public override void OnEnter(Player player) {
@@ -39,7 +36,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             bool[][] allowedDashDirections = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.DashDirection);
 
             // the new value is a copy of the old value with one boolean flipped.
-            bool[][] newValue = new bool[][] { new bool[3], new bool[3], new bool[3] };
+            newValue = new bool[][] { new bool[3], new bool[3], new bool[3] };
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     newValue[i][j] = allowedDashDirections[i][j];
@@ -60,18 +57,14 @@ namespace ExtendedVariants.Entities.ForMappers {
 
             newValue[y][x] = enable;
 
-            bool[][] oldValue = (bool[][]) ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
-
-            if (revertOnLeave) {
-                oldValueToRevertOnLeave = oldValue;
-            }
+            ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
         }
 
         public override void OnLeave(Player player) {
             base.OnLeave(player);
 
             if (revertOnLeave) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant.DashDirection, oldValueToRevertOnLeave);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue);
             }
         }
     }

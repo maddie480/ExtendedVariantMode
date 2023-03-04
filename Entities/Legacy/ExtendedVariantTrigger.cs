@@ -40,7 +40,6 @@ namespace ExtendedVariants.Entities.Legacy {
         private object newValue;
         private bool revertOnLeave;
         private bool revertOnDeath;
-        private object oldValueToRevertOnLeave;
         private bool withTeleport;
         private bool isLegacy = true;
 
@@ -57,21 +56,13 @@ namespace ExtendedVariants.Entities.Legacy {
                 isLegacy = false;
                 newValue = ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange);
             }
-
-            // failsafe
-            oldValueToRevertOnLeave = newValue;
         }
 
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            Action applyVariant = () => {
-                object oldValue = ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath, isLegacy);
-
-                if (revertOnLeave) {
-                    oldValueToRevertOnLeave = oldValue;
-                }
-            };
+            Action applyVariant = () =>
+                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath, isLegacy);
 
             if (withTeleport) {
                 onTeleport += applyVariant;
@@ -84,7 +75,7 @@ namespace ExtendedVariants.Entities.Legacy {
             base.OnLeave(player);
 
             if (revertOnLeave) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, oldValueToRevertOnLeave);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue);
             }
         }
     }

@@ -37,7 +37,6 @@ namespace ExtendedVariants.Entities.ForMappers {
         private bool revertOnLeave;
         private bool revertOnDeath;
         private bool delayRevertOnDeath;
-        private T oldValueToRevertOnLeave;
         private bool withTeleport;
         private bool coversScreen;
         private bool onlyOnce;
@@ -57,9 +56,6 @@ namespace ExtendedVariants.Entities.ForMappers {
                 // "disabling" a variant is actually just resetting its value to default
                 newValue = (T) ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange);
             }
-
-            // failsafe
-            oldValueToRevertOnLeave = newValue;
 
             // this is a replacement for the Flag-Toggled Extended Variant Trigger.
             if (!string.IsNullOrEmpty(data.Attr("flag"))) {
@@ -90,13 +86,8 @@ namespace ExtendedVariants.Entities.ForMappers {
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            Action applyVariant = () => {
-                T oldValue = (T) ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
-
-                if (revertOnLeave) {
-                    oldValueToRevertOnLeave = oldValue;
-                }
-            };
+            Action applyVariant = () =>
+                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
 
             if (withTeleport) {
                 AbstractExtendedVariantTriggerTeleportHandler.onTeleport += applyVariant;
@@ -113,7 +104,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             base.OnLeave(player);
 
             if (revertOnLeave && (!delayRevertOnDeath || !player.Dead)) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, oldValueToRevertOnLeave);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue);
             }
         }
 
