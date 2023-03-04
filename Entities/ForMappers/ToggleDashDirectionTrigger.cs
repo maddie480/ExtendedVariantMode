@@ -64,7 +64,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             base.OnLeave(player);
 
             if (revertOnLeave) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant.DashDirection, newValue, legacy: false);
             }
         }
     }

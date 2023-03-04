@@ -104,7 +104,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             base.OnLeave(player);
 
             if (revertOnLeave && (!delayRevertOnDeath || !player.Dead)) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue, legacy: false);
             }
         }
 

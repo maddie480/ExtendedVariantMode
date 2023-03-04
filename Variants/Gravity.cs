@@ -51,12 +51,27 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // find out where the constant 900 (downward acceleration) is loaded into the stack
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(900f))) {
+            while (cursor.TryGotoNext(
+                instr => instr.OpCode == OpCodes.Ldloc_S,
+                instr => instr.MatchLdcR4(900f))) {
                 Logger.Log("ExtendedVariantMode/Gravity", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
-                // add two instructions to multiply those constants with the "gravity factor"
-                cursor.EmitDelegate<Func<float>>(determineGravityFactor);
-                cursor.Emit(OpCodes.Mul);
+                cursor.Index++;
+                cursor.Emit(OpCodes.Dup);
+                cursor.Index++;
+                cursor.Emit(OpCodes.Ldarg_0);
+
+                cursor.EmitDelegate<Func<float, float, Player, float>>((target, gravity, player) => {
+                    float gravityMultiplier = GetVariantValue<float>(Variant.Gravity);
+
+                    if (gravityMultiplier < 0f && player.Speed.Y > target) {
+                        // if going faster than the target speed, do not invert gravity to avoid speeding Maddy up,
+                        // since the gravity is supposed to be negative and all that.
+                        return gravity * Math.Abs(gravityMultiplier);
+                    }
+
+                    return gravity * gravityMultiplier;
+                });
             }
 
             cursor.Index = 0;
@@ -83,14 +98,6 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Brtrue, afterCheck);
                 cursor.Emit(OpCodes.Ldarg_0);
             }
-        }
-
-        /// <summary>
-        /// Returns the currently configured gravity factor.
-        /// </summary>
-        /// <returns>The gravity factor (1 = default gravity)</returns>
-        private float determineGravityFactor() {
-            return GetVariantValue<float>(Variant.Gravity);
         }
 
         private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {

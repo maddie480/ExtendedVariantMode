@@ -105,7 +105,12 @@ namespace ExtendedVariants {
             return null;
         }
 
-        public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, object triggerValue) {
+        public void OnExitedRevertOnLeaveTrigger(ExtendedVariantsModule.Variant variantChange, object triggerValue, bool legacy) {
+            if (legacy) {
+                Logger.Log(LogLevel.Debug, "ExtendedVariantMode/ExtendedVariantTriggerManager", $"Encountered a trigger for reverting {variantChange} from legacy value {triggerValue}");
+                triggerValue = ExtendedVariantsModule.Instance.VariantHandlers[variantChange].ConvertLegacyVariantValue((int) triggerValue);
+            }
+
             if (ExtendedVariantsModule.Session.RevertOnLeaveVariantsActive.TryGetValue(variantChange, out List<object> valuesRevertOnLeave)) {
                 int index = valuesRevertOnLeave.FindIndex(v => AreValuesIdentical(v, triggerValue));
                 if (index >= 0) {
