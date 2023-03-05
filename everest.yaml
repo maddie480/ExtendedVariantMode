@@ -1,6 +1,9 @@
-﻿- Name: ExtendedVariantMode
-  Version: 0.26.4
+- Name: ExtendedVariantMode
+  Version: 0.26.5
   DLL: bin/Release/net452/ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
       Version: 1.3761.0
+  OptionalDependencies:
+    - Name: IsaGrabBag
+      Version: 1.6.10
