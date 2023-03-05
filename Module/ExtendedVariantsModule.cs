@@ -273,6 +273,7 @@ namespace ExtendedVariants.Module {
 
             UpsideDown.Initialize();
             AbstractVanillaVariant.Initialize();
+            VanillaVariantOptions.Initialize();
 
             if (DJMapHelperInstalled) {
                 // let's add this variant in now.

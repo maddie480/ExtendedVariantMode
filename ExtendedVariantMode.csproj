@@ -28,6 +28,10 @@
       <HintPath>lib-stripped\FNA.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="IsaMods">
+      <HintPath>lib-stripped\IsaGrabBag.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="JungleHelper">
       <HintPath>lib-stripped\JungleHelper.dll</HintPath>
       <Private>False</Private>

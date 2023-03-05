@@ -7,10 +7,17 @@ using Monocle;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Linq;
+using System.Reflection;
+using IsaVariant = Celeste.Mod.IsaGrabBag.Variant;
+using IsaVariantState = Celeste.Mod.IsaGrabBag.VariantState;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
     public static class VanillaVariantOptions {
+        private static Hook isaGrabBagHookSetVariant = null;
+        private static Hook isaGrabBagHookSetVariantInGame = null;
+        private static bool?[] activeIsaVariants = new bool?[11];
+
         public static void Load() {
             using (new DetourContext {
                 Before = { "*" } // we're replacing the menu, so we want to go first.
@@ -23,6 +30,44 @@ namespace ExtendedVariants.UI {
         public static void Unload() {
             On.Celeste.Level.VariantMode -= buildVariantModeMenu;
             On.Celeste.Level.AssistMode -= buildAssistModeMenu;
+
+            isaGrabBagHookSetVariant?.Dispose();
+            isaGrabBagHookSetVariant = null;
+            isaGrabBagHookSetVariantInGame?.Dispose();
+            isaGrabBagHookSetVariantInGame = null;
+        }
+
+        public static void Initialize() {
+            if (isaGrabBagHookSetVariant == null && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "IsaGrabBag", Version = new Version(1, 6, 10) })) {
+                hookIsaGrabBag();
+            }
+        }
+
+        private static void hookIsaGrabBag() {
+            Action<Action<IsaVariant, IsaVariantState>, IsaVariant, IsaVariantState> setVariantHook = (orig, variant, variantState) => {
+                orig(variant, variantState);
+
+                // set to default => set to null
+                if (variantState == IsaVariantState.SetToDefault) {
+                    Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag resetting {variant} to default");
+                    activeIsaVariants[(int) variant] = null;
+                }
+            };
+
+            isaGrabBagHookSetVariant = new Hook(
+                typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) }),
+                setVariantHook);
+
+            Action<Action<IsaVariant, bool>, IsaVariant, bool> setVariantInGameHook = (orig, variant, value) => {
+                orig(variant, value);
+
+                Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag setting {variant} to {value}");
+                activeIsaVariants[(int) variant] = value;
+            };
+
+            isaGrabBagHookSetVariantInGame = new Hook(
+                typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
+                setVariantInGameHook);
         }
 
         private static void buildVariantModeMenu(On.Celeste.Level.orig_VariantMode orig, Celeste.Level self, int returnIndex, bool minimal) {
@@ -40,21 +85,21 @@ namespace ExtendedVariants.UI {
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MENU_VARIANT_SUBTITLE"), topPadding: true));
 
             addGameSpeed(menu, 16);
-            menu.Add(getToggleOption(Variant.MirrorMode, "MENU_VARIANT_MIRROR", SaveData.Instance.Assists.MirrorMode));
-            menu.Add(getToggleOption(Variant.ThreeSixtyDashing, "MENU_VARIANT_360DASHING", SaveData.Instance.Assists.ThreeSixtyDashing));
-            menu.Add(getToggleOption(Variant.InvisibleMotion, "MENU_VARIANT_INVISMOTION", SaveData.Instance.Assists.InvisibleMotion));
-            menu.Add(getToggleOption(Variant.NoGrabbing, "MENU_VARIANT_NOGRABBING", SaveData.Instance.Assists.NoGrabbing));
-            menu.Add(getToggleOption(Variant.LowFriction, "MENU_VARIANT_LOWFRICTION", SaveData.Instance.Assists.LowFriction));
-            menu.Add(getToggleOption(Variant.SuperDashing, "MENU_VARIANT_SUPERDASHING", SaveData.Instance.Assists.SuperDashing));
-            menu.Add(getToggleOption(Variant.Hiccups, "MENU_VARIANT_HICCUPS", SaveData.Instance.Assists.Hiccups));
-            menu.Add(getToggleOption(Variant.PlayAsBadeline, "MENU_VARIANT_PLAYASBADELINE", SaveData.Instance.Assists.PlayAsBadeline));
+            menu.Add(getToggleOption(Variant.MirrorMode, "MENU_VARIANT_MIRROR", SaveData.Instance.Assists.MirrorMode, (int) IsaVariant.MirrorMode));
+            menu.Add(getToggleOption(Variant.ThreeSixtyDashing, "MENU_VARIANT_360DASHING", SaveData.Instance.Assists.ThreeSixtyDashing, (int) IsaVariant.ThreeSixtyDashing));
+            menu.Add(getToggleOption(Variant.InvisibleMotion, "MENU_VARIANT_INVISMOTION", SaveData.Instance.Assists.InvisibleMotion, (int) IsaVariant.InvisibleMotion));
+            menu.Add(getToggleOption(Variant.NoGrabbing, "MENU_VARIANT_NOGRABBING", SaveData.Instance.Assists.NoGrabbing, (int) IsaVariant.NoGrabbing));
+            menu.Add(getToggleOption(Variant.LowFriction, "MENU_VARIANT_LOWFRICTION", SaveData.Instance.Assists.LowFriction, (int) IsaVariant.LowFriction));
+            menu.Add(getToggleOption(Variant.SuperDashing, "MENU_VARIANT_SUPERDASHING", SaveData.Instance.Assists.SuperDashing, (int) IsaVariant.SuperDashing));
+            menu.Add(getToggleOption(Variant.Hiccups, "MENU_VARIANT_HICCUPS", SaveData.Instance.Assists.Hiccups, (int) IsaVariant.Hiccups));
+            menu.Add(getToggleOption(Variant.PlayAsBadeline, "MENU_VARIANT_PLAYASBADELINE", SaveData.Instance.Assists.PlayAsBadeline, (int) IsaVariant.PlayAsBadeline));
 
             menu.Add(new TextMenu.SubHeader(Dialog.Clean("MENU_ASSIST_SUBTITLE"), topPadding: true));
 
-            menu.Add(getToggleOption(Variant.InfiniteStamina, "MENU_ASSIST_INFINITE_STAMINA", SaveData.Instance.Assists.InfiniteStamina));
+            menu.Add(getToggleOption(Variant.InfiniteStamina, "MENU_ASSIST_INFINITE_STAMINA", SaveData.Instance.Assists.InfiniteStamina, (int) IsaVariant.InfiniteStamina));
             addAirDashes(menu, self);
-            menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist));
-            menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible));
+            menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist, (int) IsaVariant.DashAssist));
+            menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible, (int) IsaVariant.Invincible));
 
             menu.Selection = menu.FirstPossibleSelection;
         }
@@ -72,10 +117,10 @@ namespace ExtendedVariants.UI {
             menu.Add(new Celeste.TextMenuExt.SubHeaderExt(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COLOR_BLUE") + "\n") { TextColor = Color.DeepSkyBlue, HeightExtra = 0f });
 
             addGameSpeed(menu, 10);
-            menu.Add(getToggleOption(Variant.InfiniteStamina, "MENU_ASSIST_INFINITE_STAMINA", SaveData.Instance.Assists.InfiniteStamina));
+            menu.Add(getToggleOption(Variant.InfiniteStamina, "MENU_ASSIST_INFINITE_STAMINA", SaveData.Instance.Assists.InfiniteStamina, (int) IsaVariant.InfiniteStamina));
             addAirDashes(menu, self);
-            menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist));
-            menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible));
+            menu.Add(getToggleOption(Variant.DashAssist, "MENU_ASSIST_DASH_ASSIST", SaveData.Instance.Assists.DashAssist, (int) IsaVariant.DashAssist));
+            menu.Add(getToggleOption(Variant.Invincible, "MENU_ASSIST_INVINCIBLE", SaveData.Instance.Assists.Invincible, (int) IsaVariant.Invincible));
 
             menu.Selection = menu.FirstPossibleSelection;
         }
@@ -113,12 +158,16 @@ namespace ExtendedVariants.UI {
             }
         }
 
-        private static TextMenuExt.OnOff getToggleOption(Variant variant, string variantName, bool variantValue) {
+        private static TextMenuExt.OnOff getToggleOption(Variant variant, string variantName, bool variantValue, int isaVariantIndex) {
+            // only read the extended variants-defined value if Isa's grab bag did not set anything on its end.
+            bool mapDefinedVariantValue = activeIsaVariants[isaVariantIndex] ??
+                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant);
+
             return (TextMenuExt.OnOff) new TextMenuExt.OnOff(
                 Dialog.Clean(variantName),
                 variantValue,
                 (bool) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
-                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))
+                mapDefinedVariantValue)
                     .Change(b => SetVariantValue(variant, b));
         }
 
