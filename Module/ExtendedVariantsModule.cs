@@ -18,6 +18,7 @@ using MonoMod.ModInterop;
 using System.IO;
 using Celeste.Mod.Helpers;
 using Celeste.Mod.Core;
+using System.Reflection;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -251,9 +252,11 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
 
             if (stuffIsHooked) {
-                UnhookStuff();
+                unhookStuffRightNow();
             }
         }
+
+        private static bool gameInitialized => (bool) typeof(Everest).GetField("_Initialized", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
 
         public override void Initialize() {
             base.Initialize();
@@ -271,9 +274,9 @@ namespace ExtendedVariants.Module {
             JungleHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "JungleHelper", Version = new Version(1, 1, 2) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Jungle Helper installed = {JungleHelperInstalled}");
 
-            UpsideDown.Initialize();
-            AbstractVanillaVariant.Initialize();
-            VanillaVariantOptions.Initialize();
+            if (Settings.MasterSwitch) {
+                initializeStuff();
+            }
 
             if (DJMapHelperInstalled) {
                 // let's add this variant in now.
@@ -326,7 +329,39 @@ namespace ExtendedVariants.Module {
 
         private ILHook hookOnVersionNumberAndVariants;
 
+        // A simple component that allows us to hook/unhook all the variants outside of the Engine.Update method...
+        // since some hooks hook Engine.Update.
+        private class DoTheThingLater : GameComponent {
+            public Action Thing { get; set; }
+
+            public DoTheThingLater() : base(Celeste.Celeste.Instance) {
+            }
+
+            public override void Update(GameTime gameTime) {
+                Thing();
+                Celeste.Celeste.Instance.Components.Remove(this);
+            }
+        }
+
         public void HookStuff() {
+            if (gameInitialized) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "We're not in game startup, deferring the hooking of all the things");
+                Celeste.Celeste.Instance.Components.Add(new DoTheThingLater { Thing = hookStuffRightNow });
+            } else {
+                hookStuffRightNow();
+            }
+        }
+
+        public void UnhookStuff() {
+            if (gameInitialized) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "We're not in game startup, deferring the unhooking of all the things");
+                Celeste.Celeste.Instance.Components.Add(new DoTheThingLater { Thing = unhookStuffRightNow });
+            } else {
+                unhookStuffRightNow();
+            }
+        }
+
+        private void hookStuffRightNow() {
             if (stuffIsHooked) return;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant common methods...");
@@ -355,10 +390,21 @@ namespace ExtendedVariants.Module {
 
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
+            if (gameInitialized) {
+                initializeStuff();
+            }
+
             stuffIsHooked = true;
         }
 
-        public void UnhookStuff() {
+        private void initializeStuff() {
+            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Loading mod hooks...");
+            UpsideDown.Initialize();
+            AbstractVanillaVariant.Initialize();
+            VanillaVariantOptions.Initialize();
+        }
+
+        public void unhookStuffRightNow() {
             if (!stuffIsHooked) return;
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant common methods...");
