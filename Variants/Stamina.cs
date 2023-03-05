@@ -75,8 +75,13 @@ namespace ExtendedVariants.Variants {
 
                 cursor.EmitDelegate<Func<float, float>>(orig => {
                     if (GetVariantValue<bool>(Variant.DontRefillStaminaOnGround) && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina) {
-                        // return the player stamina: this will result in player.Stamina = player.Stamina, thus doing absolutely nothing.
-                        return Engine.Scene.Tracker.GetEntity<Player>()?.Stamina ?? determineBaseStamina();
+                        float playerStamina = Engine.Scene.Tracker.GetEntity<Player>()?.Stamina ?? determineBaseStamina();
+
+                        // don't prevent refilling stamina on ground if the player has *too much* stamina.
+                        if (playerStamina <= GetVariantValue<int>(Variant.Stamina)) {
+                            // return the player stamina: this will result in player.Stamina = player.Stamina, thus doing absolutely nothing.
+                            return playerStamina;
+                        }
                     }
                     if (GetVariantValue<int>(Variant.Stamina) != 110) {
                         // mod the stamina amount to refill.
