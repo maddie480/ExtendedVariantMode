@@ -38,6 +38,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() {
             IL.Celeste.Player.SwimUpdate -= modSwimUpdate;
+            IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
         }
 
         private void modSwimUpdate(ILContext il) {
