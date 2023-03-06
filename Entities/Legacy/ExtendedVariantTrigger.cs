@@ -75,7 +75,7 @@ namespace ExtendedVariants.Entities.Legacy {
             base.OnLeave(player);
 
             if (revertOnLeave) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue, legacy: true);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue, isLegacy);
             }
         }
     }
