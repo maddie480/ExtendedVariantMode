@@ -10,6 +10,10 @@ namespace ExtendedVariants.Variants {
     public class ColorGrading : AbstractExtendedVariant {
         private static FieldInfo everestContentLoaded = typeof(Everest).GetField("_ContentLoaded", BindingFlags.NonPublic | BindingFlags.Static);
 
+        private static HashSet<string> vanillaColorGrades = new HashSet<string> {
+            "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden"
+        };
+
         public static List<string> ExistingColorGrades = new List<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden",
             "max480/extendedvariants/celsius/tetris", // thanks 0x0ade!
@@ -60,7 +64,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private string modColorGrading(string vanillaValue) {
-            if (GetVariantValue<string>(Variant.ColorGrading) == "" || !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + GetVariantValue<string>(Variant.ColorGrading))) {
+            if (GetVariantValue<string>(Variant.ColorGrading) == "" || (!vanillaColorGrades.Contains(GetVariantValue<string>(Variant.ColorGrading))
+                && !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + GetVariantValue<string>(Variant.ColorGrading)))) {
+
                 return vanillaValue;
             }
 

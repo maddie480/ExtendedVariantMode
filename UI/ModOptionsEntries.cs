@@ -109,6 +109,11 @@ namespace ExtendedVariants.UI {
         }
 
         private int valueToIndex<T>(T value, List<T> choices) where T : IComparable {
+            // if the value is on the scale, simply return its index.
+            if (choices.Contains(value)) {
+                return choices.IndexOf(value);
+            }
+
             // go forward until choices[position] is higher or equal to our value
             int position = 0;
             while (position < choices.Count && value.CompareTo(choices[position]) > 0) {
