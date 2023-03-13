@@ -4,6 +4,7 @@ using System;
 using Monocle;
 using Microsoft.Xna.Framework;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
+using MonoMod.RuntimeDetour;
 
 namespace ExtendedVariants.Variants {
     public class NoFreezeFrames : AbstractExtendedVariant {
@@ -22,7 +23,11 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             On.Monocle.Engine.Update += onEngineUpdate;
-            On.Celeste.Celeste.Freeze += onCelesteFreeze;
+
+            // this one cuts off calls to orig, so we want to make sure it as close to vanilla as possible.
+            using (new DetourContext { Before = { "*" } }) {
+                On.Celeste.Celeste.Freeze += onCelesteFreeze;
+            }
         }
 
         public override void Unload() {
