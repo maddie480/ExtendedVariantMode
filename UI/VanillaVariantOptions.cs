@@ -39,35 +39,40 @@ namespace ExtendedVariants.UI {
 
         public static void Initialize() {
             if (isaGrabBagHookSetVariant == null && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "IsaGrabBag", Version = new Version(1, 6, 10) })) {
-                hookIsaGrabBag();
+                IsaContainmentChamber.hookIsaGrabBag();
             }
         }
 
-        private static void hookIsaGrabBag() {
-            Action<Action<IsaVariant, IsaVariantState>, IsaVariant, IsaVariantState> setVariantHook = (orig, variant, variantState) => {
-                orig(variant, variantState);
+        // we need the inner class because the actions and such are getting stored together in a '<>c' inner class, and
+        // Mono freaks out on Mac/Linux if there is a field with an unknown type *next* to one that is getting used.
+        // So yeah, containment chamber it is.
+        private static class IsaContainmentChamber {
+            public static void hookIsaGrabBag() {
+                Action<Action<IsaVariant, IsaVariantState>, IsaVariant, IsaVariantState> setVariantHook = (orig, variant, variantState) => {
+                    orig(variant, variantState);
 
-                // set to default => set to null
-                if (variantState == IsaVariantState.SetToDefault) {
-                    Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag resetting {variant} to default");
-                    activeIsaVariants[(int) variant] = null;
-                }
-            };
+                    // set to default => set to null
+                    if (variantState == IsaVariantState.SetToDefault) {
+                        Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag resetting {variant} to default");
+                        activeIsaVariants[(int) variant] = null;
+                    }
+                };
 
-            isaGrabBagHookSetVariant = new Hook(
-                typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) }),
-                setVariantHook);
+                isaGrabBagHookSetVariant = new Hook(
+                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) }),
+                    setVariantHook);
 
-            Action<Action<IsaVariant, bool>, IsaVariant, bool> setVariantInGameHook = (orig, variant, value) => {
-                orig(variant, value);
+                Action<Action<IsaVariant, bool>, IsaVariant, bool> setVariantInGameHook = (orig, variant, value) => {
+                    orig(variant, value);
 
-                Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag setting {variant} to {value}");
-                activeIsaVariants[(int) variant] = value;
-            };
+                    Logger.Log("ExtendedVariantMode/VanillaVariantOptions", $"Intercepted Isa's Grab Bag setting {variant} to {value}");
+                    activeIsaVariants[(int) variant] = value;
+                };
 
-            isaGrabBagHookSetVariantInGame = new Hook(
-                typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
-                setVariantInGameHook);
+                isaGrabBagHookSetVariantInGame = new Hook(
+                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
+                    setVariantInGameHook);
+            }
         }
 
         private static void buildVariantModeMenu(On.Celeste.Level.orig_VariantMode orig, Celeste.Level self, int returnIndex, bool minimal) {
