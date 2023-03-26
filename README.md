@@ -23,6 +23,7 @@ Adds some options to the Mod Options menu:
 *   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair.
     *    **Refill Jumps on Dash Refill** will give you back your extra jumps whenever you get your dash back.
     *    **Reset Jump Count on Ground** allows you to choose whether you want to refill jumps on ground (if you have a base Jump Count higher than 1) or whether you get to keep extra jumps when landing on the ground in maps using jump refills!
+    *    **Delay Between Midair Jumps** adds a cooldown between two midair jumps, to prevent the player from using them too fast.
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 *   **Explode Launch Speed**: Modifies the speed given by bumpers, puffer fish and respawning seekers. You can also choose to **disable super boosts** that you get by holding away from the explosion.

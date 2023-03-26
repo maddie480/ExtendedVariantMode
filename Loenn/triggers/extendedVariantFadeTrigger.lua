@@ -41,6 +41,7 @@ trigger.fieldInformation = {
             "HorizontalSpringBounceDuration",
             "HorizontalWallJumpDuration",
             "HyperdashSpeed",
+            "JumpCooldown",
             "JumpDuration",
             "JumpHeight",
             "MinimumDelayBeforeThrowing",

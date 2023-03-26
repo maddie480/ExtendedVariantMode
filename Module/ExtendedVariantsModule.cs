@@ -56,7 +56,7 @@ namespace ExtendedVariants.Module {
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
-            ResetJumpCountOnGround, UltraSpeedMultiplier,
+            ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -75,6 +75,7 @@ namespace ExtendedVariants.Module {
             TriggerManager = new ExtendedVariantTriggerManager();
 
             DashCount dashCount;
+            JumpCooldown jumpCooldown;
             ZoomLevel zoomLevel;
             VariantHandlers[Variant.Gravity] = new Gravity();
             VariantHandlers[Variant.FallSpeed] = new FallSpeed();
@@ -92,7 +93,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableWallJumping] = new DisableWallJumping();
             VariantHandlers[Variant.DisableClimbJumping] = new DisableClimbJumping();
             VariantHandlers[Variant.DisableJumpingOutOfWater] = new DisableJumpingOutOfWater();
-            VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount);
+            VariantHandlers[Variant.JumpCooldown] = (jumpCooldown = new JumpCooldown());
+            VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount, jumpCooldown);
             VariantHandlers[Variant.ZoomLevel] = (zoomLevel = new ZoomLevel());
             VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();

@@ -277,7 +277,7 @@ namespace ExtendedVariants.UI {
                     Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
-                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection
+                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -341,6 +341,7 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill));
                 menu.Add(getToggleOption(Variant.ResetJumpCountOnGround));
+                menu.Add(getScaleOption(Variant.JumpCooldown, "s", multiplierScale));
 
                 TextMenuExt.OnOff everyJumpIsUltraOption;
                 menu.Add(everyJumpIsUltraOption = getToggleOption(Variant.EveryJumpIsUltra));

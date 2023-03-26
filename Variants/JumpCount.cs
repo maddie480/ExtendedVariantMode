@@ -19,8 +19,11 @@ namespace ExtendedVariants.Variants {
 
         private static int jumpBuffer = 0;
 
-        public JumpCount(DashCount dashCount) {
+        private JumpCooldown jumpCooldown;
+
+        public JumpCount(DashCount dashCount, JumpCooldown jumpCooldown) {
             dashCount.OnDashRefill += dashRefilled;
+            this.jumpCooldown = jumpCooldown;
         }
 
         public override Type GetVariantType() {
@@ -229,14 +232,15 @@ namespace ExtendedVariants.Variants {
                 // because inserting extra jumps would kill wall jumping
                 return initialJumpGraceTimer;
             }
-            if (initialJumpGraceTimer > 0f || (GetVariantValue<int>(Variant.JumpCount) != int.MaxValue && jumpBuffer <= 0)) {
+            if (initialJumpGraceTimer > 0f || (GetVariantValue<int>(Variant.JumpCount) != int.MaxValue && jumpBuffer <= 0) || jumpCooldown.CheckCooldown()) {
                 // return the default value because we don't want to change anything
-                // (our jump buffer ran out, or vanilla Celeste allows jumping anyway)
+                // (our jump buffer ran out, we're in cooldown, or vanilla Celeste allows jumping anyway)
                 return initialJumpGraceTimer;
             }
 
             // consume an Extended Variant Jump(TM)
             jumpBuffer--;
+            jumpCooldown.ArmCooldown();
 
             // be sure that the sound played is not the dream jump one.
             playerDreamJump.SetValue(self, false);

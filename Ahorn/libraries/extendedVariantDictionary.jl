@@ -40,6 +40,7 @@ const FloatVariants = [
     "HorizontalSpringBounceDuration",
     "HorizontalWallJumpDuration",
     "HyperdashSpeed",
+    "JumpCooldown",
     "JumpDuration",
     "JumpHeight",
     "MinimumDelayBeforeThrowing",
