@@ -128,7 +128,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://max480.ovh/celeste/dl?id=ExtendedVariantMode&mirror=1&twoclick=1)
+You can download this mod [here!](https://max480.ovh/celeste/dl?id=ExtendedVariantMode&twoclick=1)
 
 To build the project yourself:
 * Clone or download the repo
