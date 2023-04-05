@@ -106,9 +106,9 @@ Adds some options to the Mod Options menu:
 This can be extended by downloading other mods:
 
 *   Get [DJ Map Helper](https://gamebanana.com/gamefiles/8458) to add a **Reverse Oshiro Everywhere** option to Extended Variants!
-*   Get the [2020 Celeste Spring Community Collab](https://gamebanana.com/maps/211745) or [max480's Helping Hand](https://github.com/max4805/MaxHelpingHand) (1.14.6 or newer) to add a visual option called **Madeline is a Silhouette**, allowing you to play as a ghost playback.
-*   Get [max480's Helping Hand](https://github.com/max4805/MaxHelpingHand) (1.17.3 or newer) to add a visual option called **Madeline has a Ponytail**, which changes Madeline's hair to look like a ponytail, with different hair colors.
-*   Get [Jungle Helper](https://github.com/max4805/JungleHelper) (1.1.2 or newer) to add a **Jungle Spiders Everywhere** option, to spawn spiders falling from the top of the screen (found in [Into the Jungle](https://gamebanana.com/mods/292719)) on every screen of the game!
+*   Get the [2020 Celeste Spring Community Collab](https://gamebanana.com/maps/211745) or [Maddie's Helping Hand](https://github.com/maddie480/MaddieHelpingHand) (1.14.6 or newer) to add a visual option called **Madeline is a Silhouette**, allowing you to play as a ghost playback.
+*   Get [Maddie's Helping Hand](https://github.com/maddie480/MaddieHelpingHand) (1.17.3 or newer) to add a visual option called **Madeline has a Ponytail**, which changes Madeline's hair to look like a ponytail, with different hair colors.
+*   Get [Jungle Helper](https://github.com/maddie480/JungleHelper) (1.1.2 or newer) to add a **Jungle Spiders Everywhere** option, to spawn spiders falling from the top of the screen (found in [Into the Jungle](https://gamebanana.com/mods/292719)) on every screen of the game!
 
 
 This mod also includes a **Variant Randomizer**. You get a big bunch of options for that too:
@@ -128,7 +128,7 @@ Also includes entities and triggers for use with maps:
 
 ## How to install
 
-You can download this mod [here!](https://max480.ovh/celeste/dl?id=ExtendedVariantMode&twoclick=1)
+You can download this mod [here!](https://maddie480.ovh/celeste/dl?id=ExtendedVariantMode&twoclick=1)
 
 To build the project yourself:
 * Clone or download the repo

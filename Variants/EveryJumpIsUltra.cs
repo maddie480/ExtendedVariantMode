@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
 
         private void forceUltra(Player self) {
             if (GetVariantValue<bool>(Variant.EveryJumpIsUltra)) {
-                // I don't know what an ultra is, I'm a beginner-intermediate player, so I hope this is the piece of code I was supposed to copy to replicate one. ~ max480
+                // I don't know what an ultra is, I'm a beginner-intermediate player, so I hope this is the piece of code I was supposed to copy to replicate one. ~ Maddie
                 self.DashDir.X = Math.Sign(self.DashDir.X);
                 self.DashDir.Y = 0f;
                 // self.Speed.Y = 0f; // this seems a bit counter-productive when applied after a jump...

@@ -108,7 +108,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             }
         }
 
-        // This comes from the flag-toggled camera triggers in max480's Helping Hand, which come from the Spring Collab.
+        // This comes from the flag-toggled camera triggers in Maddie's Helping Hand, which come from the Spring Collab.
         // Recycling is good.
         internal class FlagToggleComponent : Component {
             public bool Enabled = true;
