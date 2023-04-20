@@ -31,7 +31,7 @@ namespace ExtendedVariants.Module {
         public bool JungleHelperInstalled { get; private set; }
 
         private bool stuffIsHooked = false;
-        private bool triggerIsHooked = false;
+        private bool forceEnabled = false;
         private bool isLevelEnding = false;
 
         public override Type SettingsType => typeof(ExtendedVariantsSettings);
@@ -210,11 +210,11 @@ namespace ExtendedVariants.Module {
             if (inGame) {
                 // build the menu with only the master switch
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, false, false,
-                    null /* don't care, no submenu */, menu, inGame, triggerIsHooked);
+                    null /* don't care, no submenu */, menu, inGame, forceEnabled);
             } else {
                 // build the menu with the master switch + submenus + randomizer options
                 new ModOptionsEntries().CreateAllOptions(ModOptionsEntries.VariantCategory.None, true, true, true,
-                    () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, triggerIsHooked);
+                    () => OuiModOptions.Instance.Overworld.Goto<OuiModOptions>(), menu, inGame, forceEnabled);
             }
         }
 
@@ -234,9 +234,7 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
-            On.Celeste.LevelEnter.Go += checkForceEnableVariantsOnLevelEnter;
-            On.Celeste.LevelLoader.ctor += checkForceEnableVariantsOnLevelLoad;
-            On.Celeste.LevelExit.ctor += checkForTriggerUnhooking;
+            On.Celeste.LevelLoader.ctor += checkForceEnableVariants;
 
             typeof(LuaCutscenesUtils).ModInterop();
 
@@ -249,9 +247,7 @@ namespace ExtendedVariants.Module {
         public override void Unload() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Unloading Extended Variant Mode");
 
-            On.Celeste.LevelEnter.Go -= checkForceEnableVariantsOnLevelEnter;
-            On.Celeste.LevelLoader.ctor -= checkForceEnableVariantsOnLevelLoad;
-            On.Celeste.LevelExit.ctor -= checkForTriggerUnhooking;
+            On.Celeste.LevelLoader.ctor -= checkForceEnableVariants;
 
             if (stuffIsHooked) {
                 unhookStuffRightNow();
@@ -390,6 +386,10 @@ namespace ExtendedVariants.Module {
 
             LeakPreventionHack.Load();
 
+            TriggerManager.Load();
+            Entities.Legacy.ExtendedVariantTrigger.Load();
+            Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Load();
+
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
             if (gameInitialized) {
@@ -437,74 +437,30 @@ namespace ExtendedVariants.Module {
 
             LeakPreventionHack.Unload();
 
-            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
-
-            stuffIsHooked = false;
-        }
-
-        private void hookTrigger() {
-            if (triggerIsHooked) return;
-
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant trigger manager...");
-            TriggerManager.Load();
-            Entities.Legacy.ExtendedVariantTrigger.Load();
-            Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Load();
-
-            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done loading variant trigger manager.");
-
-            triggerIsHooked = true;
-        }
-
-        private void unhookTrigger() {
-            if (!triggerIsHooked) return;
-
-            Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant trigger manager...");
             TriggerManager.Unload();
             Entities.Legacy.ExtendedVariantTrigger.Unload();
             Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Unload();
 
-            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", $"Done unloading variant trigger manager.");
+            Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
 
-            triggerIsHooked = false;
-        }
-
-        // this one is for the normal case (entering a level from the overworld or opening a save)
-        private void checkForceEnableVariantsOnLevelEnter(On.Celeste.LevelEnter.orig_Go orig, Session session, bool fromSaveData) {
-            checkForceEnableVariants(session);
-
-            orig(session, fromSaveData);
-        }
-
-        // this one is for breaking in a level directly (typically due to a console load command)
-        // this is a fallback, and since we don't go through the level enter routine, we can't show the postcard.
-        private void checkForceEnableVariantsOnLevelLoad(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
-            if (triggerIsHooked && Engine.Scene is Level) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Loading level from level (console load?), running level exit hooks!");
-                unhookTrigger();
-            }
-
-            if (!triggerIsHooked) {
-                checkForceEnableVariants(session);
-            }
-
-            orig(self, session, startPosition);
+            stuffIsHooked = false;
         }
 
         private bool isExtendedVariantEntity(string name) {
             return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
         }
 
-        private void checkForceEnableVariants(Session session) {
+        private void checkForceEnableVariants(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            forceEnabled = false;
+
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
                 levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
                 levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
 
-                // the level we're entering has an Extended Variant Trigger: load the trigger on-demand.
-                hookTrigger();
-
-                bool variantsWereDisabled = !Settings.MasterSwitch;
+                // the level we're entering has an Extended Variant Trigger: force-enable extended variants.
+                forceEnabled = true;
 
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
@@ -513,22 +469,8 @@ namespace ExtendedVariants.Module {
                     HookStuff();
                 }
             }
-        }
 
-        private void checkForTriggerUnhooking(On.Celeste.LevelExit.orig_ctor orig, LevelExit self, LevelExit.Mode mode, Session session, HiresSnow snow) {
-            orig(self, mode, session, snow);
-
-            // SaveAndQuit => leaving
-            // GiveUp => leaving
-            // Restart => restarting
-            // GoldenBerryRestart => restarting
-            // Completed => leaving
-            // CompletedInterlude => leaving
-            // we want to unhook the trigger if and only if we are actually leaving the level.
-            if (triggerIsHooked && mode != LevelExit.Mode.Restart && mode != LevelExit.Mode.GoldenBerryRestart) {
-                // we want to get rid of the trigger now.
-                unhookTrigger();
-            }
+            orig(self, session, startPosition);
         }
 
         /// <summary>
