@@ -614,6 +614,7 @@ namespace ExtendedVariants.Module {
 
             try {
                 string path = UserIO.GetSaveFilePath("modsettings-" + Metadata.Name);
+                if (File.Exists(path)) File.Delete(path);
 
                 using (FileStream stream = File.OpenWrite(path))
                 using (StreamWriter writer = new StreamWriter(stream)) {
