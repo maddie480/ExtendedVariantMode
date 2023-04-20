@@ -126,6 +126,15 @@ Also includes entities and triggers for use with maps:
 *   give the player extra midair jumps with **Jump Refills**. Recover Jump Refills give the player back their midair jumps (much like vanilla refills do with dashes), while Extra Jump Refills gives more jumps to the player, even if that exceeds the Jump Count variant setting.
 *   if you want to get a Theo Crystal with the same properties as the extended variant (doesn't crash when moving up, can be left behind, or can be thrown offscreen in any direction), you can either use an Extended Variants Trigger or place an **Extended Variant Theo Crystal**.
 
+You can trigger variants from [Lua Cutscenes](https://gamebanana.com/mods/53678) as well, by doing:
+
+```lua
+local luaCutscenesUtils = require("#ExtendedVariants.Module.LuaCutscenesUtils")
+luaCutscenesUtils.TriggerIntegerVariant("JumpCount", 2, false)
+```
+
+The methods are `TriggerIntegerVariant`, `TriggerBooleanVariant`, `TriggerFloatVariant` and `TriggerVariant`. The third parameter (`true` or `false`) indicates whether the variant should revert if the player dies before changing rooms or hitting a change respawn trigger. You can also use these methods from other code mods.
+
 ## How to install
 
 You can download this mod [here!](https://maddie480.ovh/celeste/dl?id=ExtendedVariantMode&twoclick=1)
