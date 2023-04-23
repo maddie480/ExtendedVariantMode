@@ -15,8 +15,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class UpsideDown : AbstractExtendedVariant {
-        private static FieldInfo inputFeather = typeof(Input).GetField("Feather"); // only exists on the beta! will be null on 1.3.1.2
-
         private static ZoomLevel zoomLevelVariant;
 
         private static ILHook hdParallaxHook;
@@ -47,10 +45,10 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.Update -= onLevelUpdate;
 
             // be sure the controls are not upside down anymore
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = false));
-            if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = false;
-            }
+            Input.Aim.InvertedY = false;
+            Input.GliderMoveY.Inverted = false;
+            Input.MoveY.Inverted = false;
+            Input.Feather.InvertedY = false;
 
             hdParallaxHook?.Dispose();
             hdParallaxHook = null;
@@ -143,10 +141,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
-            Input.Aim.InvertedY = (Input.GliderMoveY.Inverted = (Input.MoveY.Inverted = isUpsideDown()));
-            if (inputFeather != null) {
-                (inputFeather.GetValue(null) as VirtualJoystick).InvertedY = isUpsideDown();
-            }
+            Input.Aim.InvertedY = isUpsideDown();
+            Input.GliderMoveY.Inverted = isUpsideDown();
+            Input.MoveY.Inverted = isUpsideDown();
+            Input.Feather.InvertedY = isUpsideDown();
 
             orig(self);
         }
