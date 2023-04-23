@@ -31,7 +31,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
-            if (Input.Aim == null || Input.GliderMoveY == null || Input.MoveY == null) {
+            if (Input.Aim == null || Input.GliderMoveY == null || Input.MoveY == null || Input.Feather == null) {
                 orig(self);
                 return;
             }
@@ -51,6 +51,7 @@ namespace ExtendedVariants.Variants {
             Input.Aim.InvertedY = expectedValue;
             Input.MoveY.Inverted = expectedValue;
             Input.GliderMoveY.Inverted = expectedValue;
+            Input.Feather.InvertedY = expectedValue;
         }
     }
 }
