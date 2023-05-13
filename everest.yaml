@@ -1,9 +1,15 @@
 - Name: ExtendedVariantMode
-  Version: 0.26.11
+  Version: 0.26.12
   DLL: bin/Release/net452/ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
       Version: 1.3761.0
   OptionalDependencies:
+    - Name: BetterRefillGems
+      Version: 1.0.1
+    - Name: DJMapHelper
+      Version: 1.13.2
     - Name: IsaGrabBag
-      Version: 1.6.10
+      Version: 1.6.12
+    - Name: JungleHelper
+      Version: 1.1.5
