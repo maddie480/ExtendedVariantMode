@@ -245,3 +245,14 @@ placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.
 placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 placements.triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Spinner Color Trigger
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.newValue=The new value for the variant.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.flag=The flag this trigger should react to.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+placements.triggers.ExtendedVariantMode/SpinnerColorTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.

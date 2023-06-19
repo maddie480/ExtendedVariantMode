@@ -117,6 +117,7 @@ const SpecialHandlingVariants = [
     "JumpCount", # integer but with special "infinite" value
     "JungleSpidersEverywhere", # enum
     "MadelineBackpackMode", # enum
+    "SpinnerColor", # enum
     "WindEverywhere" # enum
 ]
 

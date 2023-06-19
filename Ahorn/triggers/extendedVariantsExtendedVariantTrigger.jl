@@ -76,6 +76,10 @@ using ..Ahorn, Maple
     newValue::String="Both", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
     flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/SpinnerColorTrigger" SpinnerColorTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+    newValue::String="Default", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
+    flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
     "Extended Variant Trigger – Generic (On/Off Toggles) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         BooleanExtendedVariantTrigger,
@@ -143,6 +147,10 @@ const placements = Ahorn.PlacementDict(
     ),
     "Extended Variant Trigger (Disable Climbing Up or Down) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         DisableClimbingUpOrDownTrigger,
+        "rectangle"
+    ),
+    "Extended Variant Trigger (Spinner Color) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+        SpinnerColorTrigger,
         "rectangle"
     ),
 )
@@ -271,6 +279,9 @@ Ahorn.editingOptions(trigger::AirDashesTrigger) = Dict{String, Any}(
 )
 Ahorn.editingOptions(trigger::DisableClimbingUpOrDownTrigger) = Dict{String, Any}(
     "newValue" => [ "Disabled", "Up", "Down", "Both" ]
+)
+Ahorn.editingOptions(trigger::SpinnerColorTrigger) = Dict{String, Any}(
+    "newValue" => [ "Default", "Red", "Purple", "Blue", "Rainbow" ]
 )
 
 Ahorn.editingOrder(trigger::DashDirectionTrigger) = String["x", "y", "width", "height", "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"]

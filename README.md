@@ -51,6 +51,7 @@ Adds some options to the Mod Options menu:
 
     *   **Disable Madeline Spotlight**: Prevents Madeline from emiting light. That's some way to spice up the Invisible Motion variant for example.
     *   **Disable Keys Spotlight**: Prevents keys from emitting light. This can be used in combination with Disable Madeline Spotlight for more darkness if Madeline is carrying a key.
+    *   **Spinner Color**: Changes the color of all of the spinners in the level to one of the vanilla colors: Blue, Red, Purple or Rainbow. Also affects custom spinners from Frost Helper and Viv Helper!
     *   **Display Dash Count**: displays how many dashes Madeline has with a number floating over her head. Useful if you are in a map with a lot of dashes and can't use hair colors to tell how many dashes you have left... or if you just gave yourself 10 dashes through the Dash Count variant.
     *   **Display Speedometer**: shows Madeline's horizontal, vertical or overall speed over her head.
 

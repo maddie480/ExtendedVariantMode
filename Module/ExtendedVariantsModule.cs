@@ -56,7 +56,7 @@ namespace ExtendedVariants.Module {
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
-            ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown,
+            ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -185,6 +185,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AlwaysInvisible] = new AlwaysInvisible();
             VariantHandlers[Variant.DisplaySpeedometer] = new DisplaySpeedometer();
             VariantHandlers[Variant.LegacyDashSpeedBehavior] = new LegacyDashSpeedBehavior();
+            VariantHandlers[Variant.SpinnerColor] = new SpinnerColor();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();
@@ -262,6 +263,7 @@ namespace ExtendedVariants.Module {
             DashCountIndicator.Initialize();
             JumpIndicator.Initialize();
             (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
+            (VariantHandlers[Variant.SpinnerColor] as SpinnerColor).Initialize();
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 8, 35) });
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"DJ Map Helper installed = {DJMapHelperInstalled}");

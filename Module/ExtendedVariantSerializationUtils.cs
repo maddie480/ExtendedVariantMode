@@ -64,6 +64,9 @@ namespace ExtendedVariants.Module {
                         case "DisableClimbingUpOrDown":
                             convertedVariants[v] = Enum.Parse(typeof(DisableClimbingUpOrDown.ClimbUpOrDownOptions), value);
                             break;
+                        case "SpinnerColor":
+                            convertedVariants[v] = Enum.Parse(typeof(SpinnerColor.Color), value);
+                            break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
                     }
@@ -121,6 +124,9 @@ namespace ExtendedVariants.Module {
                         break;
                     case DisableClimbingUpOrDown.ClimbUpOrDownOptions castValue:
                         convertedVariants[v] = "DisableClimbingUpOrDown:" + castValue;
+                        break;
+                    case SpinnerColor.Color castValue:
+                        convertedVariants[v] = "SpinnerColor:" + castValue;
                         break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");

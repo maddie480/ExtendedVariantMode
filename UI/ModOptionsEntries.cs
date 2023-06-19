@@ -293,7 +293,7 @@ namespace ExtendedVariants.UI {
                     Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
                     Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
                     Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
-                    Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight
+                    Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight, Variant.SpinnerColor
                 });
 
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -581,6 +581,9 @@ namespace ExtendedVariants.UI {
                 }));
 
                 menu.Add(getToggleOption(Variant.DisableKeysSpotlight));
+                menu.Add(getScaleOption(Variant.SpinnerColor, "", new SpinnerColor.Color[] {
+                    SpinnerColor.Color.Default, SpinnerColor.Color.Blue, SpinnerColor.Color.Red, SpinnerColor.Color.Purple, SpinnerColor.Color.Rainbow
+                }, i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SPINNERCOLOR_" + i)));
                 menu.Add(getScaleOption(Variant.ScreenShakeIntensity, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.FriendlyBadelineFollower));
             }
