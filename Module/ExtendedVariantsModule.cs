@@ -379,7 +379,7 @@ namespace ExtendedVariants.Module {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
             Randomizer.Load();
 
-            foreach (Variant variant in VariantHandlers.Keys) {
+            foreach (Variant variant in VariantHandlers.Keys.ToList()) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant {variant}...");
                 VariantHandlers[variant].Load();
             }
