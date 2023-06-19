@@ -189,6 +189,7 @@ placements.triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.to
 # Extended Variant Theo Crystal
 placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowThrowingOffscreen=Whether Theo can be thrown off-screen, allowing the player to exit in the direction he was thrown in.\nIf unchecked, Theo will bounce on the edges of the screen.
 placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowLeavingBehind=Whether the player can leave the room without grabbing Theo.
+placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.forceSpawn=Forces the Theo Crystal to spawn, even if the player is bringing a Theo Crystal from another room.
 
 # Set Jump Count Trigger
 placements.triggers.ExtendedVariantMode/SetJumpCountTrigger.tooltips.jumpCount=The (maximum) extra jump count the player should have when entering the trigger.

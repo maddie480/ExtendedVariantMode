@@ -8,7 +8,8 @@ theoCrystal.placements = {
     name = "theo_crystal",
     data = {
         allowThrowingOffscreen = false,
-        allowLeavingBehind = false
+        allowLeavingBehind = false,
+        forceSpawn = false
     }
 }
 

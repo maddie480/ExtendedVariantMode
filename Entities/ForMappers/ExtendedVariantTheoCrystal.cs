@@ -12,6 +12,8 @@ namespace ExtendedVariants.Entities.ForMappers {
         public bool AllowLeavingBehind { get; private set; } = false;
         public bool SpawnedAsEntity { get; private set; } = false;
 
+        private bool forceSpawn = false;
+
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {
             ExtendedVariantTheoCrystal crystal;
             if (entityData.Bool("allowThrowingOffscreen")) {
@@ -21,6 +23,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             }
             crystal.SpawnedAsEntity = true;
             crystal.AllowLeavingBehind = entityData.Bool("allowLeavingBehind");
+            crystal.forceSpawn = entityData.Bool("forceSpawn");
             return crystal;
         }
 
@@ -31,7 +34,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         public override void Added(Scene scene) {
             base.Added(scene);
 
-            if (SpawnedAsEntity) {
+            if (SpawnedAsEntity && !forceSpawn) {
                 foreach (ExtendedVariantTheoCrystal entity in Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>()) {
                     if (entity != this && entity.Hold.IsHeld) {
                         RemoveSelf();

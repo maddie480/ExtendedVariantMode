@@ -4,6 +4,7 @@ mods.ExtendedVariantMode.name=Extended Variant Mode
 entities.ExtendedVariantMode/TheoCrystal.placements.name.theo_crystal=Extended Variant Theo Crystal
 entities.ExtendedVariantMode/TheoCrystal.attributes.description.allowThrowingOffscreen=Whether Theo can be thrown off-screen, allowing the player to exit in the direction he was thrown in.\nIf unchecked, Theo will bounce on the edges of the screen.
 entities.ExtendedVariantMode/TheoCrystal.attributes.description.allowLeavingBehind=Whether the player can leave the room without grabbing Theo.
+entities.ExtendedVariantMode/TheoCrystal.attributes.description.forceSpawn=Forces the Theo Crystal to spawn, even if the player is bringing a Theo Crystal from another room.
 
 # Extra Jump Refill
 entities.ExtendedVariantMode/ExtraJumpRefill.placements.name.default=Extra Jump Refill
