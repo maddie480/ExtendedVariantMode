@@ -276,7 +276,7 @@ triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.attributes.descripti
 triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 triggers.ExtendedVariantMode/DisableClimbingUpOrDownTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
-# Disable Climbing Up or Down Trigger
+# Spinner Color Trigger
 triggers.ExtendedVariantMode/SpinnerColorTrigger.placements.name.trigger=Extended Variant (Spinner Color)
 triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.newValue=The new value for the variant.
 triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.

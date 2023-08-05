@@ -30,7 +30,9 @@ trigger.fieldInformation = {
             "JellyfishEverywhere",
             "OshiroCount",
             "ReverseOshiroCount",
-            "Stamina"
+            "Stamina",
+            "WallBounceDistance",
+            "WallJumpDistance"
         },
         editable = false
     },

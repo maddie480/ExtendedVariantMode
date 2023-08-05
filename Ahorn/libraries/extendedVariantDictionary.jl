@@ -12,7 +12,9 @@ const IntegerVariants = [
     "JellyfishEverywhere",
     "OshiroCount",
     "ReverseOshiroCount",
-    "Stamina"
+    "Stamina",
+    "WallBounceDistance",
+    "WallJumpDistance"
 ]
 
 const FloatVariants = [

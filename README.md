@@ -97,6 +97,7 @@ Adds some options to the Mod Options menu:
 *   **Preserve Extra Dashes Underwater**: if you have 2 dashes with a max of 1 (like in Farewell with double dash crystals), dashing in water would usually make you keep this second dash. this setting allows you to turn that behavior off.
 *   **Disable Dash Cooldown**: makes it so you don't have to wait for 0.2 seconds after a dash before being able to dash again.
 *   **Corner Correction**: when you dash into a wall corner, Madeline can slide by up to 4 pixels to get around the corner. This variant allows you to remove this behavior or to amplify it!
+*   **Wall Jump Distance** and **Wall Bounce Distance**: allow Madeline to only wall jump or wall bounce while being closer to the wall... or allow her to wall jump from further away!
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
 *   A few variants related to **holdables** (like **Theo and jellies**):
     * **Pickup Duration**: the time it takes for Madeline to take the holdable. If you make this delay bigger, the animation will be slowed down, and Madeline's position will be frozen for longer.
