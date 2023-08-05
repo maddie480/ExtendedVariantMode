@@ -1,13 +1,37 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using System;
 
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/TheoCrystal")]
     [Tracked(true)]
     public class ExtendedVariantTheoCrystal : TheoCrystal {
+        private static ILHook hookTheoCrystalCtor;
+        private static string spritePath = null;
+
+        public static void Load() {
+            hookTheoCrystalCtor = new ILHook(typeof(TheoCrystal).GetMethod("orig_ctor"), modTheoCrystalCtor);
+        }
+
+        public static void Unload() {
+            hookTheoCrystalCtor?.Dispose();
+            hookTheoCrystalCtor = null;
+        }
+
+        private static void modTheoCrystalCtor(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("theo_crystal"))) {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTheoCrystal", $"Modding sprite path at {cursor.Index} in IL for TheoCrystal constructor");
+                cursor.EmitDelegate<Func<string, string>>(orig => spritePath ?? orig);
+            }
+        }
+
         // true if Theo can be left behind, false if the player is blocked if they leave Theo behind, null if it was spawned through the extended variant
         public bool AllowLeavingBehind { get; private set; } = false;
         public bool SpawnedAsEntity { get; private set; } = false;
@@ -15,12 +39,17 @@ namespace ExtendedVariants.Entities.ForMappers {
         private bool forceSpawn = false;
 
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {
+            spritePath = entityData.Attr("sprite", defaultValue: "theo_crystal");
+
             ExtendedVariantTheoCrystal crystal;
             if (entityData.Bool("allowThrowingOffscreen")) {
                 crystal = new ExtendedVariantTheoCrystalGoingOffscreen(entityData.Position + offset);
             } else {
                 crystal = new ExtendedVariantTheoCrystal(entityData.Position + offset);
             }
+
+            spritePath = null;
+
             crystal.SpawnedAsEntity = true;
             crystal.AllowLeavingBehind = entityData.Bool("allowLeavingBehind");
             crystal.forceSpawn = entityData.Bool("forceSpawn");

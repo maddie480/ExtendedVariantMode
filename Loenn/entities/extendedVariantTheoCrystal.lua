@@ -9,7 +9,8 @@ theoCrystal.placements = {
     data = {
         allowThrowingOffscreen = false,
         allowLeavingBehind = false,
-        forceSpawn = false
+        forceSpawn = false,
+        sprite = "theo_crystal"
     }
 }
 
