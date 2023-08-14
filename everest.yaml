@@ -1,9 +1,9 @@
 - Name: ExtendedVariantMode
-  Version: 0.27.1
+  Version: 0.27.2
   DLL: bin/Release/net452/ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
-      Version: 1.3761.0
+      Version: 1.3971.0
   OptionalDependencies:
     - Name: BetterRefillGems
       Version: 1.0.1
