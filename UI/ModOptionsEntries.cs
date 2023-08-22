@@ -159,6 +159,7 @@ namespace ExtendedVariants.UI {
             if (!mapDefaultValue) {
                 if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange))) {
                     Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the default value, so it was removed from the settings.");
+                    ExtendedVariantsModule.Settings.EnabledVariants.Remove(variantChange);
                 } else {
                     Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was set.");
                     ExtendedVariantsModule.Settings.EnabledVariants[variantChange] = newValue;
