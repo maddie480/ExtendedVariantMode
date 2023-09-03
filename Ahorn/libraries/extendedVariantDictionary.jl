@@ -121,7 +121,7 @@ const SpecialHandlingVariants = [
     "MadelineBackpackMode", # enum
     "SpinnerColor", # enum
     "WindEverywhere", # enum
-    "DashRestriction", # enum
+    "DashRestriction" # enum
 ]
 
 const UnavailableVariants = [

@@ -160,7 +160,7 @@ const placements = Ahorn.PlacementDict(
     "Extended Variant Trigger (Dash Restriction) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         DashRestrictionTrigger,
         "rectangle"
-    ),
+    )
 )
 
 Ahorn.editingOptions(trigger::BooleanExtendedVariantTrigger) = Dict{String, Any}(
@@ -295,7 +295,7 @@ Ahorn.editingOptions(trigger::DashRestrictionTrigger) = Dict{String, Any}(
     "newValue" => Dict{String, String}(
         "None" => "None",
         "Grounded Only" => "GroundedOnly",
-        "Airborne Only" => "AirborneOnly",
+        "Airborne Only" => "AirborneOnly"
     )
 )
 
