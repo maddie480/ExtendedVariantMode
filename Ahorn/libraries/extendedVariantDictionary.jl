@@ -120,7 +120,8 @@ const SpecialHandlingVariants = [
     "JungleSpidersEverywhere", # enum
     "MadelineBackpackMode", # enum
     "SpinnerColor", # enum
-    "WindEverywhere" # enum
+    "WindEverywhere", # enum
+    "DashRestriction", # enum
 ]
 
 const UnavailableVariants = [

@@ -273,9 +273,9 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                    Variant.DontRefillDashOnGround, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.SuperdashSteeringSpeed,
-                    Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra, Variant.CoyoteTime,
-                    Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
+                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
+                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra,
+                    Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance
@@ -438,6 +438,13 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.HeldDash));
                 menu.Add(getScaleOption(Variant.DontRefillDashOnGround, "", getEnumValues<DontRefillDashOnGround.DashRefillOnGroundConfiguration>(),
                     i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[(int) i]));
+                menu.Add(getScaleOption(Variant.DashRestriction, "", getEnumValues<DashRestriction.DashRestrictionType>(),
+                    i => new string[] {
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_NONE"),
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_GROUNDED"),
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_AIRBORNE")
+                    }[(int) i]
+                ));
                 menu.Add(getToggleOption(Variant.DisableRefillsOnScreenTransition));
                 menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
 
