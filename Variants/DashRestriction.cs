@@ -1,7 +1,5 @@
 ﻿using Celeste;
 using ExtendedVariants.Module;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
@@ -26,7 +24,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             canDashHook = new Hook(
                 typeof(Player).GetProperty("CanDash").GetGetMethod(),
-                modCanDash
+                typeof(DashRestriction).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Static)
             );
         }
 
@@ -35,7 +33,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static bool modCanDash(Func<Player, bool> orig, Player self) {
-            DashRestrictionType dashRestrictionType = (DashRestrictionType)ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(
+            DashRestrictionType dashRestrictionType = (DashRestrictionType) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(
                 ExtendedVariantsModule.Variant.DashRestriction
             );
 
@@ -44,7 +42,7 @@ namespace ExtendedVariants.Variants {
 
             bool isGrounded = self.OnGround() || DynamicData.For(self).Get<float>("jumpGraceTimer") > 0f;
 
-            if ((dashRestrictionType == DashRestrictionType.GroundedOnly && !isGrounded) 
+            if ((dashRestrictionType == DashRestrictionType.GroundedOnly && !isGrounded)
                 || (dashRestrictionType == DashRestrictionType.AirborneOnly && isGrounded))
                 return false;
             return orig(self);

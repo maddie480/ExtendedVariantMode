@@ -5,7 +5,7 @@ trigger.placements = {
     name = "trigger",
     data = {
         enable = true,
-        newValue = 0,
+        newValue = "None",
         revertOnLeave = false,
         revertOnDeath = true,
         delayRevertOnDeath = false,
@@ -19,10 +19,10 @@ trigger.placements = {
 
 trigger.fieldInformation = {
     newValue = {
-        options = { 
-            ["None"] = 0, 
-            ["Grounded Only"] = 1, 
-            ["Airborne Only"] = 2
+        options = {
+            ["None"] = "None",
+            ["Grounded Only"] = "GroundedOnly",
+            ["Airborne Only"] = "AirborneOnly"
         },
         editable = false
     }
