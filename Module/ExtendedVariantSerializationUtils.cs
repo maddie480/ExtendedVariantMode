@@ -67,6 +67,9 @@ namespace ExtendedVariants.Module {
                         case "SpinnerColor":
                             convertedVariants[v] = Enum.Parse(typeof(SpinnerColor.Color), value);
                             break;
+                        case "DashRestrictionType":
+                            convertedVariants[v] = Enum.Parse(typeof(DashRestriction.DashRestrictionType), value);
+                            break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
                     }
@@ -127,6 +130,9 @@ namespace ExtendedVariants.Module {
                         break;
                     case SpinnerColor.Color castValue:
                         convertedVariants[v] = "SpinnerColor:" + castValue;
+                        break;
+                    case DashRestriction.DashRestrictionType castValue:
+                        convertedVariants[v] = "DashRestrictionType:" + castValue;
                         break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");

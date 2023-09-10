@@ -287,3 +287,15 @@ triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.flag=The
 triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 triggers.ExtendedVariantMode/SpinnerColorTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Dash Restriction Trigger
+triggers.ExtendedVariantMode/DashRestrictionTrigger.placements.name.trigger=Extended Variant (Dash Restriction)
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.newValue=The new value for the variant.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.withTeleport=Check this option if you are overlapping this trigger with a teleport trigger, to synchronize the teleport with the variant activation.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.flag=The flag this trigger should react to.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
+triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
