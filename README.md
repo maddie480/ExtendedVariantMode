@@ -73,7 +73,7 @@ Adds some options to the Mod Options menu:
 *   **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
 *   **Invert Dash**: Dash right by pressing Left + Dash.
 *   **Dash Direction**: Prevent yourself from dashing diagonally, or on the contrary, only allow diagonal dashes. You can even disable individual dash directions if you want.
-
+*   **Dash Restriction**: Only allow yourself to dash when airborne or only on the ground.
 *   **Invert Grab**: Grab on walls by _not_ pressing the Grab key. And you have to press Grab if you don't want to grab.
 *   **Invert Horizontal Controls** and **Invert Vertical Controls**: Pressing Left makes Madeline go right, and/or pressing Up makes Madeline crouch.
 
