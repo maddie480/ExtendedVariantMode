@@ -29,6 +29,7 @@ trigger.fieldInformation = {
             "BadelineChasersEverywhere",
             "BounceEverywhere",
             "ChangePatternsOfExistingBosses",
+            "CorrectedMirrorMode",
             "DashTrailAllTheTime",
             "DisableClimbJumping",
             "DisableDashCooldown",

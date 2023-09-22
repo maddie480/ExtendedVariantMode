@@ -22,6 +22,7 @@ namespace ExtendedVariants.UI {
     public class ModOptionsEntries {
         private ExtendedVariantsSettings Settings => ExtendedVariantsModule.Settings;
 
+        private TextMenuExt.OnOff correctedMirrorModeOption;
         private TextMenuOptionExt<int> oshiroCountOption;
         private TextMenuOptionExt<int> reverseOshiroCountOption;
         private TextMenu.Item randomizerOptions;
@@ -300,7 +301,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
@@ -617,6 +618,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.HiccupStrength, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.AllStrawberriesAreGoldens));
                 menu.Add(getToggleOption(Variant.AlwaysInvisible));
+                menu.Add(correctedMirrorModeOption = getToggleOption(Variant.CorrectedMirrorMode));
 
                 menu.Add(buildHeading(menu, "TROLL"));
                 menu.Add(getToggleOption(Variant.ForceDuckOnGround));
@@ -664,6 +666,7 @@ namespace ExtendedVariants.UI {
             if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
             if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
             if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
+            if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !((bool)triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
