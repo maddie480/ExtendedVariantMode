@@ -268,3 +268,8 @@ placements.triggers.ExtendedVariantMode/DashRestrictionTrigger.tooltips.flag=The
 placements.triggers.ExtendedVariantMode/DashRestrictionTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/DashRestrictionTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 placements.triggers.ExtendedVariantMode/DashRestrictionTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+
+# Variant Toggle Controller
+placements.entities.ExtendedVariantMode/VariantToggleController.tooltips.flag=The flag that controls the variants (variants set on true).
+placements.entities.ExtendedVariantMode/VariantToggleController.tooltips.variantList=A comma separated of list of variantName value pairs representing the variant changes. In the form "variantName:value,variant2Name:value2,...".\nFor example: "DashRestriction:AirborneOnly,InvertDashes:true,Gravity:0.1"
+placements.entities.ExtendedVariantMode/VariantToggleController.tooltips.defaultValue=The value to set the flag to when the room is loaded (true sets variants on entry).
