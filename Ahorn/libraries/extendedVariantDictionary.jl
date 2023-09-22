@@ -72,6 +72,7 @@ const BooleanVariants = [
     "BadelineChasersEverywhere",
     "BounceEverywhere",
     "ChangePatternsOfExistingBosses",
+    "CorrectedMirrorMode",
     "DashTrailAllTheTime",
     "DisableClimbJumping",
     "DisableDashCooldown",
