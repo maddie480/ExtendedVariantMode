@@ -265,6 +265,7 @@ namespace ExtendedVariants.Module {
 
             DashCountIndicator.Initialize();
             JumpIndicator.Initialize();
+            TheoCrystalsEverywhere.Initialize();
             (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
             (VariantHandlers[Variant.SpinnerColor] as SpinnerColor).Initialize();
 

@@ -18,6 +18,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class TheoCrystalsEverywhere : AbstractExtendedVariant {
         private static ILHook hookTempleGateClose = null;
+        private static ILHook hookCrystallineHelperFlagCrystal = null;
 
         public override Type GetVariantType() {
             return typeof(bool);
@@ -41,6 +42,15 @@ namespace ExtendedVariants.Variants {
                 addExtendedVariantTheoCrystalToCollideCheck);
         }
 
+        public static void Initialize() {
+            if (Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "CrystallineHelper", Version = new Version(1, 15, 0) })) {
+                MethodInfo flagCrystalTheoIsNearby = Everest.Modules.FirstOrDefault(m => m.Metadata?.Name == "CrystallineHelper").GetType().Assembly
+                    .GetType("vitmod.FlagCrystal").GetMethod("TempleGate_TheoIsNearby");
+
+                hookCrystallineHelperFlagCrystal = new ILHook(flagCrystalTheoIsNearby, addExtendedVariantTheoCrystalToCollideCheck);
+            }
+        }
+
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.EnforceBounds -= modEnforceBounds;
@@ -48,6 +58,9 @@ namespace ExtendedVariants.Variants {
 
             hookTempleGateClose?.Dispose();
             hookTempleGateClose = null;
+
+            hookCrystallineHelperFlagCrystal?.Dispose();
+            hookCrystallineHelperFlagCrystal = null;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
