@@ -16,6 +16,7 @@ namespace ExtendedVariants.Variants {
 
         private Hook canDashHook;
         private int dashCountBeforeDash;
+        private Vector2 dashDirectionBeforeDash;
 
         public override Type GetVariantType() {
             return typeof(bool[][]);
@@ -79,6 +80,7 @@ namespace ExtendedVariants.Variants {
 
         private int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
             dashCountBeforeDash = self.Dashes;
+            dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
             return orig(self);
         }
 
@@ -110,32 +112,45 @@ namespace ExtendedVariants.Variants {
                 direction = (Vector2) playerLastAim.GetValue(self);
             }
 
-            if (!isDashDirectionAllowed(direction)) {
-                // forbidden direction! aaa
-
-                // prevent DashEnd from triggering dash events (no dash sound)
-                playerCalledDashEvents.SetValue(self, true);
-                // restore pre-dash speed
-                self.Speed = (Vector2) playerBeforeDashSpeed.GetValue(self);
-                // restore pre-dash dash count
-                self.Dashes = dashCountBeforeDash;
-                // prevent the hair from flashing
-                playerLastDashes.SetValue(self, self.Dashes);
-
-                // if in a bubble, make the bubble explode
-                if (self.CurrentBooster != null) {
-                    self.CurrentBooster.PlayerReleased();
-                    self.CurrentBooster = null;
-                }
-
-                // kick the player back to the normal state
-                self.StateMachine.State = 0;
-            } else {
+            if (isDashDirectionAllowed(direction)) {
                 // continue with the dash like normal.
                 while (vanillaCoroutine.MoveNext()) {
                     yield return vanillaCoroutine.Current;
                 }
+
+                yield break;
             }
+
+            // forbidden direction! aaa
+            if (direction != dashDirectionBeforeDash && isDashDirectionAllowed(dashDirectionBeforeDash)) {
+                // an allowed dash direction was held before the freeze frames, so just redirect the dash
+                playerLastAim.SetValue(self, dashDirectionBeforeDash);
+
+                // continue with the dash like normal.
+                while (vanillaCoroutine.MoveNext()) {
+                    yield return vanillaCoroutine.Current;
+                }
+
+                yield break;
+            }
+
+            // prevent DashEnd from triggering dash events (no dash sound)
+            playerCalledDashEvents.SetValue(self, true);
+            // restore pre-dash speed
+            self.Speed = (Vector2) playerBeforeDashSpeed.GetValue(self);
+            // restore pre-dash dash count
+            self.Dashes = dashCountBeforeDash;
+            // prevent the hair from flashing
+            playerLastDashes.SetValue(self, self.Dashes);
+
+            // if in a bubble, make the bubble explode
+            if (self.CurrentBooster != null) {
+                self.CurrentBooster.PlayerReleased();
+                self.CurrentBooster = null;
+            }
+
+            // kick the player back to the normal state
+            self.StateMachine.State = 0;
         }
 
         private bool areAllDirectionsAllowed() {
