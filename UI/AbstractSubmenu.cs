@@ -139,7 +139,13 @@ namespace ExtendedVariants.UI {
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AbstractSubmenu", $"Overworld does not exist, instanciating submenu {typeof(T)} on the spot!");
                 return (T) Activator.CreateInstance(typeof(T));
             }
-            return OuiModOptions.Instance.Overworld.GetUI<T>();
+            var ui = OuiModOptions.Instance.Overworld.GetUI<T>();
+            if (ui == null) {
+                // The UI might be null after a code hot-reload
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/AbstractSubmenu", $"UI of submenu {typeof(T)} does not exist, instanciating one on the spot!");
+                return (T) Activator.CreateInstance(typeof(T));
+            }
+            return ui;
         }
 
         /// <summary>
