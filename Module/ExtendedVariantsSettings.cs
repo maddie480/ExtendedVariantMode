@@ -3,6 +3,7 @@ using ExtendedVariants.UI;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 using System.Collections.Generic;
 using ExtendedVariants.Variants;
+using YamlDotNet.Serialization;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsSettings : EverestModuleSettings {
@@ -47,467 +48,685 @@ namespace ExtendedVariants.Module {
         private void SetVariant(Variant variant, object value) => ModOptionsEntries.SetVariantValue(variant, value);
 
         // Movement - Vertical speed
+        [YamlIgnore]
+        [SettingIgnore]
         public float Gravity {
             get => (float)GetVariant(Variant.Gravity);
             set => SetVariant(Variant.Gravity, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public float FallSpeed {
             get => (float)GetVariant(Variant.FallSpeed);
             set => SetVariant(Variant.FallSpeed, value);
         }
 
         // Movement - Jumping
+        [YamlIgnore]
+        [SettingIgnore]
         public float JumpHeight {
             get => (float)GetVariant(Variant.JumpHeight);
             set => SetVariant(Variant.JumpHeight, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public float JumpDuration {
             get => (float)GetVariant(Variant.JumpDuration);
             set => SetVariant(Variant.JumpDuration, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public float WallBouncingSpeed {
             get => (float)GetVariant(Variant.WallBouncingSpeed);
             set => SetVariant(Variant.WallBouncingSpeed, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public bool DisableWallJumping {
             get => (bool)GetVariant(Variant.DisableWallJumping);
             set => SetVariant(Variant.DisableWallJumping, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public bool DisableClimbJumping {
             get => (bool)GetVariant(Variant.DisableClimbJumping);
             set => SetVariant(Variant.DisableClimbJumping, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public bool DisableJumpingOutOfWater {
             get => (bool)GetVariant(Variant.DisableJumpingOutOfWater);
             set => SetVariant(Variant.DisableJumpingOutOfWater, value);
         }
-        public bool /*                    */DisableNeutralJumping {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableNeutralJumping {
             get => (bool)GetVariant(Variant.DisableNeutralJumping);
-            set => /*  */SetVariant(Variant.DisableNeutralJumping, value);
+            set => SetVariant(Variant.DisableNeutralJumping, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public int WallJumpDistance {
             get => (int)GetVariant(Variant.WallJumpDistance);
             set => SetVariant(Variant.WallJumpDistance, value);
         }
-        public int /*                    */WallBounceDistance {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int WallBounceDistance {
             get => (int)GetVariant(Variant.WallBounceDistance);
-            set => /* */SetVariant(Variant.WallBounceDistance, value);
+            set => SetVariant(Variant.WallBounceDistance, value);
         }
-        public float /*                    */HorizontalWallJumpDuration {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float HorizontalWallJumpDuration {
             get => (float)GetVariant(Variant.HorizontalWallJumpDuration);
-            set => /*   */SetVariant(Variant.HorizontalWallJumpDuration, value);
+            set => SetVariant(Variant.HorizontalWallJumpDuration, value);
         }
-        public int /*                    */JumpCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int JumpCount {
             get => (int)GetVariant(Variant.JumpCount);
-            set => /* */SetVariant(Variant.JumpCount, value);
+            set => SetVariant(Variant.JumpCount, value);
         }
-        public bool /*                    */RefillJumpsOnDashRefill {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool RefillJumpsOnDashRefill {
             get => (bool)GetVariant(Variant.RefillJumpsOnDashRefill);
-            set => /*  */SetVariant(Variant.RefillJumpsOnDashRefill, value);
+            set => SetVariant(Variant.RefillJumpsOnDashRefill, value);
         }
-        public bool /*                    */ResetJumpCountOnGround {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool ResetJumpCountOnGround {
             get => (bool)GetVariant(Variant.ResetJumpCountOnGround);
-            set => /*  */SetVariant(Variant.ResetJumpCountOnGround, value);
+            set => SetVariant(Variant.ResetJumpCountOnGround, value);
         }
-        public float /*                    */JumpCooldown {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float JumpCooldown {
             get => (float)GetVariant(Variant.JumpCooldown);
-            set => /*   */SetVariant(Variant.JumpCooldown, value);
+            set => SetVariant(Variant.JumpCooldown, value);
         }
-        public bool /*                    */EveryJumpIsUltra {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool EveryJumpIsUltra {
             get => (bool)GetVariant(Variant.EveryJumpIsUltra);
-            set => /*  */SetVariant(Variant.EveryJumpIsUltra, value);
+            set => SetVariant(Variant.EveryJumpIsUltra, value);
         }
-        public float /*                    */CoyoteTime {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float CoyoteTime {
             get => (float)GetVariant(Variant.CoyoteTime);
-            set => /*   */SetVariant(Variant.CoyoteTime, value);
+            set => SetVariant(Variant.CoyoteTime, value);
         }
 
         // Movement - Dashing
-        public float /*                    */DashSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DashSpeed {
             get => (float)GetVariant(Variant.DashSpeed);
-            set => /*   */SetVariant(Variant.DashSpeed, value);
+            set => SetVariant(Variant.DashSpeed, value);
         }
-        public bool /*                    */LegacyDashSpeedBehavior {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool LegacyDashSpeedBehavior {
             get => (bool)GetVariant(Variant.LegacyDashSpeedBehavior);
-            set => /*  */SetVariant(Variant.LegacyDashSpeedBehavior, value);
+            set => SetVariant(Variant.LegacyDashSpeedBehavior, value);
         }
-        public float /*                    */DashLength {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DashLength {
             get => (float)GetVariant(Variant.DashLength);
-            set => /*   */SetVariant(Variant.DashLength, value);
+            set => SetVariant(Variant.DashLength, value);
         }
-        public float /*                    */DashTimerMultiplier {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DashTimerMultiplier {
             get => (float)GetVariant(Variant.DashTimerMultiplier);
-            set => /*   */SetVariant(Variant.DashTimerMultiplier, value);
+            set => SetVariant(Variant.DashTimerMultiplier, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public bool[][] DashDirection {
             get => (bool[][])GetVariant(Variant.DashDirection);
             set => SetVariant(Variant.DashDirection, value);
         }
-        public float /*                    */HyperdashSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float HyperdashSpeed {
             get => (float)GetVariant(Variant.HyperdashSpeed);
-            set => /*   */SetVariant(Variant.HyperdashSpeed, value);
+            set => SetVariant(Variant.HyperdashSpeed, value);
         }
-        public float /*                    */SuperdashSteeringSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float SuperdashSteeringSpeed {
             get => (float)GetVariant(Variant.SuperdashSteeringSpeed);
-            set => /*   */SetVariant(Variant.SuperdashSteeringSpeed, value);
+            set => SetVariant(Variant.SuperdashSteeringSpeed, value);
         }
-        public float /*                    */UltraSpeedMultiplier {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float UltraSpeedMultiplier {
             get => (float)GetVariant(Variant.UltraSpeedMultiplier);
-            set => /*   */SetVariant(Variant.UltraSpeedMultiplier, value);
+            set => SetVariant(Variant.UltraSpeedMultiplier, value);
         }
-        public int /*                    */DashCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int DashCount {
             get => (int)GetVariant(Variant.DashCount);
-            set => /* */SetVariant(Variant.DashCount, value);
+            set => SetVariant(Variant.DashCount, value);
         }
-        public bool /*                    */HeldDash {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool HeldDash {
             get => (bool)GetVariant(Variant.HeldDash);
-            set => /*  */SetVariant(Variant.HeldDash, value);
+            set => SetVariant(Variant.HeldDash, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public DontRefillDashOnGround.DashRefillOnGroundConfiguration DontRefillDashOnGround {
             get => (DontRefillDashOnGround.DashRefillOnGroundConfiguration)GetVariant(Variant.DontRefillDashOnGround);
             set => SetVariant(Variant.DontRefillDashOnGround, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public DashRestriction.DashRestrictionType DashRestriction {
             get => (DashRestriction.DashRestrictionType)GetVariant(Variant.DashRestriction);
             set => SetVariant(Variant.DashRestriction, value);
         }
-        public bool /*                    */DisableRefillsOnScreenTransition {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableRefillsOnScreenTransition {
             get => (bool)GetVariant(Variant.DisableRefillsOnScreenTransition);
-            set => /*  */SetVariant(Variant.DisableRefillsOnScreenTransition, value);
+            set => SetVariant(Variant.DisableRefillsOnScreenTransition, value);
         }
-        public bool /*                    */DontRefillStaminaOnGround {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DontRefillStaminaOnGround {
             get => (bool)GetVariant(Variant.DontRefillStaminaOnGround);
-            set => /*  */SetVariant(Variant.DontRefillStaminaOnGround, value);
+            set => SetVariant(Variant.DontRefillStaminaOnGround, value);
         }
-        public bool /*                    */RestoreDashesOnRespawn {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool RestoreDashesOnRespawn {
             get => (bool)GetVariant(Variant.RestoreDashesOnRespawn);
-            set => /*  */SetVariant(Variant.RestoreDashesOnRespawn, value);
+            set => SetVariant(Variant.RestoreDashesOnRespawn, value);
         }
-        public bool /*                    */PreserveExtraDashesUnderwater {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool PreserveExtraDashesUnderwater {
             get => (bool)GetVariant(Variant.PreserveExtraDashesUnderwater);
-            set => /*  */SetVariant(Variant.PreserveExtraDashesUnderwater, value);
+            set => SetVariant(Variant.PreserveExtraDashesUnderwater, value);
         }
-        public bool /*                    */DisableDashCooldown {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableDashCooldown {
             get => (bool)GetVariant(Variant.DisableDashCooldown);
-            set => /*  */SetVariant(Variant.DisableDashCooldown, value);
+            set => SetVariant(Variant.DisableDashCooldown, value);
         }
-        public int /*                    */CornerCorrection {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int CornerCorrection {
             get => (int)GetVariant(Variant.CornerCorrection);
-            set => /* */SetVariant(Variant.CornerCorrection, value);
+            set => SetVariant(Variant.CornerCorrection, value);
         }
 
         // Movement - Moving around
-        public float /*                    */SpeedX {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float SpeedX {
             get => (float)GetVariant(Variant.SpeedX);
-            set => /*   */SetVariant(Variant.SpeedX, value);
+            set => SetVariant(Variant.SpeedX, value);
         }
-        public float /*                    */SwimmingSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float SwimmingSpeed {
             get => (float)GetVariant(Variant.SwimmingSpeed);
-            set => /*   */SetVariant(Variant.SwimmingSpeed, value);
+            set => SetVariant(Variant.SwimmingSpeed, value);
         }
-        public float /*                    */Friction {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float Friction {
             get => (float)GetVariant(Variant.Friction);
-            set => /*   */SetVariant(Variant.Friction, value);
+            set => SetVariant(Variant.Friction, value);
         }
-        public float /*                    */AirFriction {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float AirFriction {
             get => (float)GetVariant(Variant.AirFriction);
-            set => /*   */SetVariant(Variant.AirFriction, value);
+            set => SetVariant(Variant.AirFriction, value);
         }
-        public float /*                    */ExplodeLaunchSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float ExplodeLaunchSpeed {
             get => (float)GetVariant(Variant.ExplodeLaunchSpeed);
-            set => /*   */SetVariant(Variant.ExplodeLaunchSpeed, value);
+            set => SetVariant(Variant.ExplodeLaunchSpeed, value);
         }
-        public float /*                    */WallSlidingSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float WallSlidingSpeed {
             get => (float)GetVariant(Variant.WallSlidingSpeed);
-            set => /*   */SetVariant(Variant.WallSlidingSpeed, value);
+            set => SetVariant(Variant.WallSlidingSpeed, value);
         }
-        public bool /*                    */DisableSuperBoosts {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableSuperBoosts {
             get => (bool)GetVariant(Variant.DisableSuperBoosts);
-            set => /*  */SetVariant(Variant.DisableSuperBoosts, value);
+            set => SetVariant(Variant.DisableSuperBoosts, value);
         }
-        public float /*                    */BoostMultiplier {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float BoostMultiplier {
             get => (float)GetVariant(Variant.BoostMultiplier);
-            set => /*   */SetVariant(Variant.BoostMultiplier, value);
+            set => SetVariant(Variant.BoostMultiplier, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public DisableClimbingUpOrDown.ClimbUpOrDownOptions DisableClimbingUpOrDown {
             get => (DisableClimbingUpOrDown.ClimbUpOrDownOptions)GetVariant(Variant.DisableClimbingUpOrDown);
             set => SetVariant(Variant.DisableClimbingUpOrDown, value);
         }
-        public float /*                    */HorizontalSpringBounceDuration {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float HorizontalSpringBounceDuration {
             get => (float)GetVariant(Variant.HorizontalSpringBounceDuration);
-            set => /*   */SetVariant(Variant.HorizontalSpringBounceDuration, value);
+            set => SetVariant(Variant.HorizontalSpringBounceDuration, value);
         }
         
         // Movement - Holdable items
-        public float /*                    */PickupDuration {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float PickupDuration {
             get => (float)GetVariant(Variant.PickupDuration);
-            set => /*   */SetVariant(Variant.PickupDuration, value);
+            set => SetVariant(Variant.PickupDuration, value);
         }
-        public float /*                    */MinimumDelayBeforeThrowing {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float MinimumDelayBeforeThrowing {
             get => (float)GetVariant(Variant.MinimumDelayBeforeThrowing);
-            set => /*   */SetVariant(Variant.MinimumDelayBeforeThrowing, value);
+            set => SetVariant(Variant.MinimumDelayBeforeThrowing, value);
         }
-        public float /*                    */DelayBeforeRegrabbing {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DelayBeforeRegrabbing {
             get => (float)GetVariant(Variant.DelayBeforeRegrabbing);
-            set => /*   */SetVariant(Variant.DelayBeforeRegrabbing, value);
+            set => SetVariant(Variant.DelayBeforeRegrabbing, value);
         }
 
         // Game Elements - Badeline Chasers
-        public bool /*                    */BadelineChasersEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool BadelineChasersEverywhere {
             get => (bool)GetVariant(Variant.BadelineChasersEverywhere);
-            set => /*  */SetVariant(Variant.BadelineChasersEverywhere, value);
+            set => SetVariant(Variant.BadelineChasersEverywhere, value);
         }
-        public int /*                    */ChaserCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int ChaserCount {
             get => (int)GetVariant(Variant.ChaserCount);
-            set => /* */SetVariant(Variant.ChaserCount, value);
+            set => SetVariant(Variant.ChaserCount, value);
         }
-        public bool /*                    */AffectExistingChasers {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool AffectExistingChasers {
             get => (bool)GetVariant(Variant.AffectExistingChasers);
-            set => /*  */SetVariant(Variant.AffectExistingChasers, value);
+            set => SetVariant(Variant.AffectExistingChasers, value);
         }
-        public float /*                    */BadelineLag {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float BadelineLag {
             get => (float)GetVariant(Variant.BadelineLag);
-            set => /*   */SetVariant(Variant.BadelineLag, value);
+            set => SetVariant(Variant.BadelineLag, value);
         }
-        public float /*                    */DelayBetweenBadelines {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float DelayBetweenBadelines {
             get => (float)GetVariant(Variant.DelayBetweenBadelines);
-            set => /*   */SetVariant(Variant.DelayBetweenBadelines, value);
+            set => SetVariant(Variant.DelayBetweenBadelines, value);
         }
 
         // Game Elements - Badeline Bosses
-        public bool /*                    */BadelineBossesEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool BadelineBossesEverywhere {
             get => (bool)GetVariant(Variant.BadelineBossesEverywhere);
-            set => /*  */SetVariant(Variant.BadelineBossesEverywhere, value);
+            set => SetVariant(Variant.BadelineBossesEverywhere, value);
         }
-        public int /*                    */BadelineAttackPattern {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int BadelineAttackPattern {
             get => (int)GetVariant(Variant.BadelineAttackPattern);
-            set => /* */SetVariant(Variant.BadelineAttackPattern, value);
+            set => SetVariant(Variant.BadelineAttackPattern, value);
         }
-        public bool /*                    */ChangePatternsOfExistingBosses {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool ChangePatternsOfExistingBosses {
             get => (bool)GetVariant(Variant.ChangePatternsOfExistingBosses);
-            set => /*  */SetVariant(Variant.ChangePatternsOfExistingBosses, value);
+            set => SetVariant(Variant.ChangePatternsOfExistingBosses, value);
         }
-        public bool /*                    */FirstBadelineSpawnRandom {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool FirstBadelineSpawnRandom {
             get => (bool)GetVariant(Variant.FirstBadelineSpawnRandom);
-            set => /*  */SetVariant(Variant.FirstBadelineSpawnRandom, value);
+            set => SetVariant(Variant.FirstBadelineSpawnRandom, value);
         }
-        public int /*                    */BadelineBossCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int BadelineBossCount {
             get => (int)GetVariant(Variant.BadelineBossCount);
-            set => /* */SetVariant(Variant.BadelineBossCount, value);
+            set => SetVariant(Variant.BadelineBossCount, value);
         }
-        public int /*                    */BadelineBossNodeCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int BadelineBossNodeCount {
             get => (int)GetVariant(Variant.BadelineBossNodeCount);
-            set => /* */SetVariant(Variant.BadelineBossNodeCount, value);
+            set => SetVariant(Variant.BadelineBossNodeCount, value);
         }
 
         // Game Elements - Oshiro
-        public bool /*                    */OshiroEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool OshiroEverywhere {
             get => (bool)GetVariant(Variant.OshiroEverywhere);
-            set => /*  */SetVariant(Variant.OshiroEverywhere, value);
+            set => SetVariant(Variant.OshiroEverywhere, value);
         }
-        public int /*                    */OshiroCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int OshiroCount {
             get => (int)GetVariant(Variant.OshiroCount);
-            set => /* */SetVariant(Variant.OshiroCount, value);
+            set => SetVariant(Variant.OshiroCount, value);
         }
-        public bool /*                    */DisableOshiroSlowdown {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableOshiroSlowdown {
             get => (bool)GetVariant(Variant.DisableOshiroSlowdown);
-            set => /*  */SetVariant(Variant.DisableOshiroSlowdown, value);
+            set => SetVariant(Variant.DisableOshiroSlowdown, value);
         }
 
         // Game Elements - Theo Crystals
-        public bool /*                    */TheoCrystalsEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool TheoCrystalsEverywhere {
             get => (bool)GetVariant(Variant.TheoCrystalsEverywhere);
-            set => /*  */SetVariant(Variant.TheoCrystalsEverywhere, value);
+            set => SetVariant(Variant.TheoCrystalsEverywhere, value);
         }
-        public bool /*                    */AllowThrowingTheoOffscreen {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool AllowThrowingTheoOffscreen {
             get => (bool)GetVariant(Variant.AllowThrowingTheoOffscreen);
-            set => /*  */SetVariant(Variant.AllowThrowingTheoOffscreen, value);
+            set => SetVariant(Variant.AllowThrowingTheoOffscreen, value);
         }
-        public bool /*                    */AllowLeavingTheoBehind {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool AllowLeavingTheoBehind {
             get => (bool)GetVariant(Variant.AllowLeavingTheoBehind);
-            set => /*  */SetVariant(Variant.AllowLeavingTheoBehind, value);
+            set => SetVariant(Variant.AllowLeavingTheoBehind, value);
         }
 
         // Game Elements - Other
+        [YamlIgnore]
+        [SettingIgnore]
         public WindEverywhere.WindPattern   WindEverywhere {
             get => (WindEverywhere.WindPattern)GetVariant(Variant.WindEverywhere);
             set => SetVariant(Variant.WindEverywhere, value);
         }
-        public bool /*                    */SnowballsEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool SnowballsEverywhere {
             get => (bool)GetVariant(Variant.SnowballsEverywhere);
-            set => /*  */SetVariant(Variant.SnowballsEverywhere, value);
+            set => SetVariant(Variant.SnowballsEverywhere, value);
         }
-        public float /*                    */SnowballDelay {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float SnowballDelay {
             get => (float)GetVariant(Variant.SnowballDelay);
-            set => /*   */SetVariant(Variant.SnowballDelay, value);
+            set => SetVariant(Variant.SnowballDelay, value);
         }
-        public int /*                    */AddSeekers {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int AddSeekers {
             get => (int)GetVariant(Variant.AddSeekers);
-            set => /* */SetVariant(Variant.AddSeekers, value);
+            set => SetVariant(Variant.AddSeekers, value);
         }
-        public bool /*                    */DisableSeekerSlowdown {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableSeekerSlowdown {
             get => (bool)GetVariant(Variant.DisableSeekerSlowdown);
-            set => /*  */SetVariant(Variant.DisableSeekerSlowdown, value);
+            set => SetVariant(Variant.DisableSeekerSlowdown, value);
         }
-        public int /*                    */JellyfishEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int JellyfishEverywhere {
             get => (int)GetVariant(Variant.JellyfishEverywhere);
-            set => /* */SetVariant(Variant.JellyfishEverywhere, value);
+            set => SetVariant(Variant.JellyfishEverywhere, value);
         }
-        public bool /*                    */RisingLavaEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool RisingLavaEverywhere {
             get => (bool)GetVariant(Variant.RisingLavaEverywhere);
-            set => /*  */SetVariant(Variant.RisingLavaEverywhere, value);
+            set => SetVariant(Variant.RisingLavaEverywhere, value);
         }
-        public float /*                    */RisingLavaSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float RisingLavaSpeed {
             get => (float)GetVariant(Variant.RisingLavaSpeed);
-            set => /*   */SetVariant(Variant.RisingLavaSpeed, value);
+            set => SetVariant(Variant.RisingLavaSpeed, value);
         }
 
         // Visual - Madeline
-        public bool /*                    */DisableMadelineSpotlight {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableMadelineSpotlight {
             get => (bool)GetVariant(Variant.DisableMadelineSpotlight);
-            set => /*  */SetVariant(Variant.DisableMadelineSpotlight, value);
+            set => SetVariant(Variant.DisableMadelineSpotlight, value);
         }
-        public bool /*                    */DashTrailAllTheTime {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DashTrailAllTheTime {
             get => (bool)GetVariant(Variant.DashTrailAllTheTime);
-            set => /*  */SetVariant(Variant.DashTrailAllTheTime, value);
+            set => SetVariant(Variant.DashTrailAllTheTime, value);
         }
-        public bool /*                    */DisplayDashCount {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisplayDashCount {
             get => (bool)GetVariant(Variant.DisplayDashCount);
-            set => /*  */SetVariant(Variant.DisplayDashCount, value);
+            set => SetVariant(Variant.DisplayDashCount, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public DisplaySpeedometer.SpeedometerConfiguration DisplaySpeedometer {
             get => (DisplaySpeedometer.SpeedometerConfiguration)GetVariant(Variant.DisplaySpeedometer);
-            set => /*  */SetVariant(Variant.DisplaySpeedometer, value);
+            set => SetVariant(Variant.DisplaySpeedometer, value);
         }
+        [YamlIgnore]
+        [SettingIgnore]
         public MadelineBackpackMode.MadelineBackpackModes MadelineBackpackMode {
             get => (MadelineBackpackMode.MadelineBackpackModes)GetVariant(Variant.MadelineBackpackMode);
-            set => /*  */SetVariant(Variant.MadelineBackpackMode, value);
+            set => SetVariant(Variant.MadelineBackpackMode, value);
         }
 
         // Visual - Level
-        public bool /*                    */UpsideDown {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool UpsideDown {
             get => (bool)GetVariant(Variant.UpsideDown);
-            set => /*  */SetVariant(Variant.UpsideDown, value);
+            set => SetVariant(Variant.UpsideDown, value);
         }
-        public float /*                    */RoomLighting {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float RoomLighting {
             get => (float)GetVariant(Variant.RoomLighting);
-            set => /*   */SetVariant(Variant.RoomLighting, value);
+            set => SetVariant(Variant.RoomLighting, value);
         }
-        public float /*                    */BackgroundBrightness {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float BackgroundBrightness {
             get => (float)GetVariant(Variant.BackgroundBrightness);
-            set => /*   */SetVariant(Variant.BackgroundBrightness, value);
+            set => SetVariant(Variant.BackgroundBrightness, value);
         }
-        public float /*                    */ForegroundEffectOpacity {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float ForegroundEffectOpacity {
             get => (float)GetVariant(Variant.ForegroundEffectOpacity);
-            set => /*   */SetVariant(Variant.ForegroundEffectOpacity, value);
+            set => SetVariant(Variant.ForegroundEffectOpacity, value);
         }
-        public float /*                    */RoomBloom {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float RoomBloom {
             get => (float)GetVariant(Variant.RoomBloom);
-            set => /*   */SetVariant(Variant.RoomBloom, value);
+            set => SetVariant(Variant.RoomBloom, value);
         }
-        public float /*                    */GlitchEffect {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float GlitchEffect {
             get => (float)GetVariant(Variant.GlitchEffect);
-            set => /*   */SetVariant(Variant.GlitchEffect, value);
+            set => SetVariant(Variant.GlitchEffect, value);
         }
-        public float /*                    */AnxietyEffect {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float AnxietyEffect {
             get => (float)GetVariant(Variant.AnxietyEffect);
-            set => /*   */SetVariant(Variant.AnxietyEffect, value);
+            set => SetVariant(Variant.AnxietyEffect, value);
         }
-        public float /*                    */BlurLevel {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float BlurLevel {
             get => (float)GetVariant(Variant.BlurLevel);
-            set => /*   */SetVariant(Variant.BlurLevel, value);
+            set => SetVariant(Variant.BlurLevel, value);
         }
-        public float /*                    */BackgroundBlurLevel {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float BackgroundBlurLevel {
             get => (float)GetVariant(Variant.BackgroundBlurLevel);
-            set => /*   */SetVariant(Variant.BackgroundBlurLevel, value);
+            set => SetVariant(Variant.BackgroundBlurLevel, value);
         }
-        public float /*                    */ZoomLevel {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float ZoomLevel {
             get => (float)GetVariant(Variant.ZoomLevel);
-            set => /*   */SetVariant(Variant.ZoomLevel, value);
+            set => SetVariant(Variant.ZoomLevel, value);
         }
-        public string /*                    */ColorGrading {
+        [YamlIgnore]
+        [SettingIgnore]
+        public string ColorGrading {
             get => (string)GetVariant(Variant.ColorGrading);
-            set => /*   */SetVariant(Variant.ColorGrading, value);
+            set => SetVariant(Variant.ColorGrading, value);
         }
-        public bool /*                    */DisableKeysSpotlight {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool DisableKeysSpotlight {
             get => (bool)GetVariant(Variant.DisableKeysSpotlight);
-            set => /*  */SetVariant(Variant.DisableKeysSpotlight, value);
+            set => SetVariant(Variant.DisableKeysSpotlight, value);
         }
-        public SpinnerColor.Color /*                    */SpinnerColor {
+        [YamlIgnore]
+        [SettingIgnore]
+        public SpinnerColor.Color SpinnerColor {
             get => (SpinnerColor.Color)GetVariant(Variant.SpinnerColor);
-            set => /*  */SetVariant(Variant.SpinnerColor, value);
+            set => SetVariant(Variant.SpinnerColor, value);
         }
-        public float /*                    */ScreenShakeIntensity {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float ScreenShakeIntensity {
             get => (float)GetVariant(Variant.ScreenShakeIntensity);
-            set => /*   */SetVariant(Variant.ScreenShakeIntensity, value);
+            set => SetVariant(Variant.ScreenShakeIntensity, value);
         }
-        public bool /*                    */FriendlyBadelineFollower {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool FriendlyBadelineFollower {
             get => (bool)GetVariant(Variant.FriendlyBadelineFollower);
-            set => /*  */SetVariant(Variant.FriendlyBadelineFollower, value);
+            set => SetVariant(Variant.FriendlyBadelineFollower, value);
         }
 
         // Gameplay Tweaks
-        public float /*                    */GameSpeed {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float GameSpeed {
             get => (float)GetVariant(Variant.GameSpeed);
-            set => /*   */SetVariant(Variant.GameSpeed, value);
+            set => SetVariant(Variant.GameSpeed, value);
         }
-        public bool /*                    */NoFreezeFrames {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool NoFreezeFrames {
             get => (bool)GetVariant(Variant.NoFreezeFrames);
-            set => /*  */SetVariant(Variant.NoFreezeFrames, value);
+            set => SetVariant(Variant.NoFreezeFrames, value);
         }
-        public bool /*                    */EverythingIsUnderwater {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool EverythingIsUnderwater {
             get => (bool)GetVariant(Variant.EverythingIsUnderwater);
-            set => /*  */SetVariant(Variant.EverythingIsUnderwater, value);
+            set => SetVariant(Variant.EverythingIsUnderwater, value);
         }
-        public int /*                    */Stamina {
+        [YamlIgnore]
+        [SettingIgnore]
+        public int Stamina {
             get => (int)GetVariant(Variant.Stamina);
-            set => /* */SetVariant(Variant.Stamina, value);
+            set => SetVariant(Variant.Stamina, value);
         }
-        public float /*                    */RegularHiccups {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float RegularHiccups {
             get => (float)GetVariant(Variant.RegularHiccups);
-            set => /*   */SetVariant(Variant.RegularHiccups, value);
+            set => SetVariant(Variant.RegularHiccups, value);
         }
-        public float /*                    */HiccupStrength {
+        [YamlIgnore]
+        [SettingIgnore]
+        public float HiccupStrength {
             get => (float)GetVariant(Variant.HiccupStrength);
-            set => /*   */SetVariant(Variant.HiccupStrength, value);
+            set => SetVariant(Variant.HiccupStrength, value);
         }
-        public bool /*                    */AllStrawberriesAreGoldens {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool AllStrawberriesAreGoldens {
             get => (bool)GetVariant(Variant.AllStrawberriesAreGoldens);
-            set => /*  */SetVariant(Variant.AllStrawberriesAreGoldens, value);
+            set => SetVariant(Variant.AllStrawberriesAreGoldens, value);
         }
-        public bool /*                    */AlwaysInvisible {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool AlwaysInvisible {
             get => (bool)GetVariant(Variant.AlwaysInvisible);
-            set => /*  */SetVariant(Variant.AlwaysInvisible, value);
+            set => SetVariant(Variant.AlwaysInvisible, value);
         }
-        public bool /*                    */CorrectedMirrorMode {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool CorrectedMirrorMode {
             get => (bool)GetVariant(Variant.CorrectedMirrorMode);
-            set => /*  */SetVariant(Variant.CorrectedMirrorMode, value);
+            set => SetVariant(Variant.CorrectedMirrorMode, value);
         }
 
         // Gameplay Tweaks - Trolls
-        public bool /*                    */ForceDuckOnGround {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool ForceDuckOnGround {
             get => (bool)GetVariant(Variant.ForceDuckOnGround);
-            set => /*  */SetVariant(Variant.ForceDuckOnGround, value);
+            set => SetVariant(Variant.ForceDuckOnGround, value);
         }
-        public bool /*                    */InvertDashes {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool InvertDashes {
             get => (bool)GetVariant(Variant.InvertDashes);
-            set => /*  */SetVariant(Variant.InvertDashes, value);
+            set => SetVariant(Variant.InvertDashes, value);
         }
-        public bool /*                    */InvertGrab {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool InvertGrab {
             get => (bool)GetVariant(Variant.InvertGrab);
-            set => /*  */SetVariant(Variant.InvertGrab, value);
+            set => SetVariant(Variant.InvertGrab, value);
         }
-        public bool /*                    */InvertHorizontalControls {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool InvertHorizontalControls {
             get => (bool)GetVariant(Variant.InvertHorizontalControls);
-            set => /*  */SetVariant(Variant.InvertHorizontalControls, value);
+            set => SetVariant(Variant.InvertHorizontalControls, value);
         }
-        public bool /*                    */InvertVerticalControls {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool InvertVerticalControls {
             get => (bool)GetVariant(Variant.InvertVerticalControls);
-            set => /*  */SetVariant(Variant.InvertVerticalControls, value);
+            set => SetVariant(Variant.InvertVerticalControls, value);
         }
-        public bool /*                    */BounceEverywhere {
+        [YamlIgnore]
+        [SettingIgnore]
+        public bool BounceEverywhere {
             get => (bool)GetVariant(Variant.BounceEverywhere);
-            set => /*  */SetVariant(Variant.BounceEverywhere, value);
+            set => SetVariant(Variant.BounceEverywhere, value);
         }
     }
 }
