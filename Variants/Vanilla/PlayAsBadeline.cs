@@ -1,6 +1,5 @@
 ﻿using Celeste;
-using Celeste.Mod;
-using ExtendedVariants.Module;
+using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 
@@ -8,6 +7,7 @@ namespace ExtendedVariants.Variants.Vanilla
 {
     public class PlayAsBadeline : AbstractVanillaVariant
     {
+        private static Player latestPlayer = null;
         public override Type GetVariantType()
         {
             return typeof(bool);
@@ -23,27 +23,22 @@ namespace ExtendedVariants.Variants.Vanilla
             return value != 0;
         }
 
-        public static void ChangePlayerSprite(Player player, bool playAsBadeline)
-        {
-            PlayerSpriteMode mode = playAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode;
-            if (player.Active)
-            {
-                player.ResetSpriteNextFrame(mode);
-            }
-            else
-            {
-                player.ResetSprite(mode);
-            }
-        }
-
         public override void VariantValueChanged()
         {
             bool playAsBadeline = getActiveAssistValues().PlayAsBadeline;
-            Player player = Engine.Scene?.Tracker.GetEntity<Player>();
+            Player player = Engine.Scene?.Tracker.GetEntity<Player>() ?? latestPlayer;
 
             if (player != null)
             {
-                ChangePlayerSprite(player, playAsBadeline);
+                PlayerSpriteMode mode = playAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode;
+                if (player.Active)
+                {
+                    player.ResetSpriteNextFrame(mode);
+                }
+                else
+                {
+                    player.ResetSprite(mode);
+                }
             }
         }
 
@@ -56,18 +51,18 @@ namespace ExtendedVariants.Variants.Vanilla
 
         public override void Load()
         {
-            Everest.Events.Player.OnSpawn += Player_OnSpawn;
+            On.Celeste.Player.ctor += Player_Constructor;
         }
 
         public override void Unload()
         {
-            Everest.Events.Player.OnSpawn -= Player_OnSpawn;
+            On.Celeste.Player.ctor -= Player_Constructor;
         }
 
-        private static void Player_OnSpawn(Player player)
+        private static void Player_Constructor(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode)
         {
-            bool playAsBadeline = (bool)ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.PlayAsBadeline);
-            ChangePlayerSprite(player, playAsBadeline);
+            orig(self, position, spriteMode);
+            latestPlayer = self;
         }
 
     }
