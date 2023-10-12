@@ -1,9 +1,11 @@
 ﻿using Celeste;
+using Microsoft.Xna.Framework;
 using Monocle;
 using System;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public class PlayAsBadeline : AbstractVanillaVariant {
+        private static Player latestPlayer = null;
         public override Type GetVariantType() {
             return typeof(bool);
         }
@@ -16,12 +18,20 @@ namespace ExtendedVariants.Variants.Vanilla {
             return value != 0;
         }
 
+        public override void Load() {
+            On.Celeste.Player.ctor += onPlayerConstructor;
+        }
+
+        public override void Unload() {
+            On.Celeste.Player.ctor -= onPlayerConstructor;
+        }
+
         public override void VariantValueChanged() {
             bool playAsBadeline = getActiveAssistValues().PlayAsBadeline;
+            Player player = Engine.Scene?.Tracker.GetEntity<Player>() ?? latestPlayer;
 
-            Player player = Engine.Scene?.Tracker.GetEntity<Player>();
             if (player != null) {
-                PlayerSpriteMode mode = (playAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode);
+                PlayerSpriteMode mode = playAsBadeline ? PlayerSpriteMode.MadelineAsBadeline : player.DefaultSpriteMode;
                 if (player.Active) {
                     player.ResetSpriteNextFrame(mode);
                 } else {
@@ -34,5 +44,11 @@ namespace ExtendedVariants.Variants.Vanilla {
             target.PlayAsBadeline = (bool) value;
             return target;
         }
+
+        private static void onPlayerConstructor(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
+            orig(self, position, spriteMode);
+            latestPlayer = self;
+        }
+
     }
 }
