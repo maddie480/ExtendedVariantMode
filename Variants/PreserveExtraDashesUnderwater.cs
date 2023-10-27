@@ -28,8 +28,12 @@ namespace ExtendedVariants.Variants {
         private int onSwimUpdate(On.Celeste.Player.orig_SwimUpdate orig, Player self) {
             int result = orig(self);
 
-            if (!GetVariantValue<bool>(Variant.PreserveExtraDashesUnderwater) && result == Player.StDash && self.Dashes > self.MaxDashes) {
-                // if we're dashing and have more than our dash count, consume a dash!
+            if (!GetVariantValue<bool>(Variant.PreserveExtraDashesUnderwater)
+                    && result == Player.StDash
+                    && (self.Dashes > self.MaxDashes || (self.Inventory.NoRefills && self.Dashes > 0))) {
+                // consume a dash, if we're dashing and...
+                // - have more than our dash count
+                // - core mode is enabled and we have dashes
                 self.Dashes--;
             }
 
