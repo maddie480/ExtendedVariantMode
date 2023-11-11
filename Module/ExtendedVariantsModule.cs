@@ -224,7 +224,7 @@ namespace ExtendedVariants.Module {
         }
 
         private void onCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal) {
-            int optionsIndex = menu.GetItems().FindIndex(item =>
+            int optionsIndex = menu.Items.FindIndex(item =>
                 item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button) item).Label == Dialog.Clean("menu_pause_options"));
 
             // insert ourselves just before Options if required (this is below Variants if variant mode is enabled)
