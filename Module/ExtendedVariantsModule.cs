@@ -514,11 +514,20 @@ namespace ExtendedVariants.Module {
 
                 if (variant is AbstractVanillaVariant vanillaVariant) {
                     Session?.VariantsOverridenByUser.Remove(variantId);
-                    vanillaVariant.VariantValueChangedByPlayer(variant.GetDefaultVariantValue());
+                    vanillaVariant.VariantValueChangedByPlayer(TriggerManager.GetCurrentVariantValue(variantId));
                     variant.VariantValueChanged();
                     Randomizer.RefreshEnabledVariantsDisplayList();
                 }
             }
+
+            if (Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "IsaGrabBag", Version = new Version(1, 6, 10) })) {
+                resetIsaGrabBagToDefault();
+            }
+        }
+
+        private void resetIsaGrabBagToDefault() {
+            typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("set_Variants_Default", BindingFlags.NonPublic | BindingFlags.Static)
+                .Invoke(null, new object[] { new bool[11] { false, false, false, false, false, false, false, false, false, false, false } });
         }
 
         // ==================== Reset Variants commands =====================
