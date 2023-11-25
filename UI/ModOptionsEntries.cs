@@ -666,7 +666,7 @@ namespace ExtendedVariants.UI {
             if (allowThrowingTheoOffscreenOption != null) allowThrowingTheoOffscreenOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
             if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
             if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
-            if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
+            if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !(Engine.Scene is Level) || !((bool) triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
