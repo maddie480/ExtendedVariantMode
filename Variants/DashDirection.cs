@@ -58,6 +58,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(DashDirection).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
             On.Celeste.Player.StartDash += onStartDash;
+            On.Celeste.Player.BoostEnd += onBoostEnd;
             On.Celeste.Player.DashCoroutine += onDashCoroutine;
             On.Celeste.Player.RedDashCoroutine += onRedDashCoroutine;
         }
@@ -65,6 +66,7 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             canDashHook?.Dispose();
             On.Celeste.Player.StartDash -= onStartDash;
+            On.Celeste.Player.BoostEnd -= onBoostEnd;
             On.Celeste.Player.DashCoroutine -= onDashCoroutine;
             On.Celeste.Player.RedDashCoroutine -= onRedDashCoroutine;
         }
@@ -82,6 +84,15 @@ namespace ExtendedVariants.Variants {
             dashCountBeforeDash = self.Dashes;
             dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
             return orig(self);
+        }
+
+        private void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
+            if (self.StateMachine.State == Player.StDash || self.StateMachine.State == Player.StRedDash) {
+                dashCountBeforeDash = self.Dashes;
+                dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
+            }
+
+            orig(self);
         }
 
         private IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
