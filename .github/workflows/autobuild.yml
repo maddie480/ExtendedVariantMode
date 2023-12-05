@@ -24,7 +24,7 @@ jobs:
         grep "" matches.txt && exit 1 || echo "No trailing space found!"
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 2.2.108
 
