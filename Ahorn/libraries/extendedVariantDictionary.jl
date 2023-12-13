@@ -33,6 +33,7 @@ const FloatVariants = [
     "DelayBetweenBadelines",
     "ExplodeLaunchSpeed",
     "FallSpeed",
+    "FastFallAcceleration",
     "ForegroundEffectOpacity",
     "Friction",
     "GameSpeed",

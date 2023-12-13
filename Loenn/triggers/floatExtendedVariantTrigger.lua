@@ -36,6 +36,7 @@ trigger.fieldInformation = {
             "DelayBetweenBadelines",
             "ExplodeLaunchSpeed",
             "FallSpeed",
+            "FastFallAcceleration",
             "ForegroundEffectOpacity",
             "Friction",
             "GameSpeed",

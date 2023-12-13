@@ -279,7 +279,8 @@ namespace ExtendedVariants.UI {
                     Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
-                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance
+                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
+                    Variant.FastFallAcceleration,
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -473,6 +474,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
                     i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
