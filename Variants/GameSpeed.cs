@@ -1,16 +1,20 @@
 ﻿
 using System;
+using System.Reflection;
 using Celeste;
 using Celeste.Mod;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class GameSpeed : AbstractExtendedVariant {
         private float previousGameSpeed = 1f;
+
+        private ILHook hookAntiSoftlock = null;
 
         public override Type GetVariantType() {
             return typeof(float);
@@ -27,11 +31,27 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             IL.Celeste.Level.Update += modLevelUpdate;
             IL.Monocle.VirtualButton.Update += modVirtualButtonUpdate;
+
+            // turns out GetMethod("TransitionRoutine").GetStateMachineTarget() gives me <TransitionRoutine>d__126 when I want the other one.
+            // The other one being <TransitionRoutine>d__29 on Core and <TransitionRoutine>d__26 on non-Core. :FRICK:
+            // I harness the power of brute force
+            Type nestedTransitionRoutineType = null;
+            for (int i = 0; i < 126; i++) {
+                nestedTransitionRoutineType = typeof(Level).Assembly.GetType($"Celeste.Level+<TransitionRoutine>d__{i}");
+                if (nestedTransitionRoutineType != null) break;
+            }
+
+            hookAntiSoftlock = new ILHook(
+                nestedTransitionRoutineType.GetMethod("MoveNext", BindingFlags.NonPublic | BindingFlags.Instance),
+                fixupAntiSoftlockDelay);
         }
 
         public override void Unload() {
             IL.Celeste.Level.Update -= modLevelUpdate;
             IL.Monocle.VirtualButton.Update -= modVirtualButtonUpdate;
+
+            hookAntiSoftlock?.Dispose();
+            hookAntiSoftlock = null;
 
             previousGameSpeed = 10;
         }
@@ -152,6 +172,29 @@ namespace ExtendedVariants.Variants {
             }
             // return the original value
             return Engine.DeltaTime;
+        }
+
+        private void fixupAntiSoftlockDelay(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR8(5.0))) {
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Fixing up anti-softlock delay at {cursor.Index} in IL for Level.TransitionRoutine ({il.Method.DeclaringType.Name})");
+                cursor.EmitDelegate<Func<double, double>>(orig => {
+                    float gameSpeed = GetVariantValue<float>(Variant.GameSpeed);
+                    if (gameSpeed <= 0 || !(Engine.Scene is Level level)) {
+                        return orig;
+                    }
+
+                    // make sure the softlock timer gives at least the theoretical transition time + 2 seconds.
+                    float transitionDuration = (level.NextTransitionDuration / gameSpeed) + 2f;
+                    if (transitionDuration > orig) {
+                        Logger.Log("ExtendedVariantMode/GameSpeed", $"Extending allowed transition duration to {transitionDuration} seconds!");
+                        return transitionDuration;
+                    }
+
+                    return orig;
+                });
+            }
         }
     }
 }
