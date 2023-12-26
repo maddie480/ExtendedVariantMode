@@ -68,6 +68,7 @@ const BooleanVariants = [
     "AllStrawberriesAreGoldens",
     "AllowLeavingTheoBehind",
     "AllowThrowingTheoOffscreen",
+    "AlwaysFeather",
     "AlwaysInvisible",
     "BadelineBossesEverywhere",
     "BadelineChasersEverywhere",
