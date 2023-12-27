@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
@@ -41,9 +40,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private static int modPlayerNormalUpdate(On.Celeste.Player.orig_NormalUpdate orig, Player self) {
-            if (!IsFeatherForced)
+            if (!IsFeatherForced) {
                 // just call orig if variant is disabled
                 return orig(self);
+            }
 
             // else force them into feather
             self.StartStarFly();
@@ -58,7 +58,7 @@ namespace ExtendedVariants.Variants {
             //+    return Player.StStarFly;
             //+else if (WasFeatherForced && !WasAlreadyInFeather)
             //+    return Player.StNormal;
-            //+ 
+            //+
             // if (Input.Jump.Pressed)
 
             ILCursor cursor = new ILCursor(il);
@@ -73,7 +73,7 @@ namespace ExtendedVariants.Variants {
                 ILLabel @continue = cursor.DefineLabel();
                 cursor.Emit<AlwaysFeather>(OpCodes.Ldsfld, nameof(IsFeatherForced));
                 cursor.Emit(OpCodes.Brfalse, @continue);
-                cursor.Emit(OpCodes.Ldc_I4_S, (sbyte)Player.StStarFly);
+                cursor.Emit(OpCodes.Ldc_I4_S, (sbyte) Player.StStarFly);
                 cursor.Emit(OpCodes.Ret);
                 cursor.MarkLabel(@continue);
 
@@ -92,10 +92,13 @@ namespace ExtendedVariants.Variants {
 
         private void modPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             WasFeatherForced = IsFeatherForced;
-            IsFeatherForced = (bool)ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.AlwaysFeather);
+            IsFeatherForced = GetVariantValue<bool>(Variant.AlwaysFeather);
+
             orig(self);
-            if (!IsFeatherForced)
+
+            if (!IsFeatherForced) {
                 WasAlreadyInFeather = self.StateMachine.State == Player.StStarFly;
+            }
         }
     }
 }
