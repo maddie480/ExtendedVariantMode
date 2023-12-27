@@ -70,6 +70,7 @@ Adds some options to the Mod Options menu:
     *   **Madeline's Backpack**: makes Madeline have a backpack or not in every map.
 
 *   **Everything is Underwater**: All levels are now water levels! You get to swim through Summit for example.
+*   **Always In Feather**: Madeline is flying at all times, as if she collected a feather that never runs out!
 *   **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
 *   **Invert Dash**: Dash right by pressing Left + Dash.
 *   **Dash Direction**: Prevent yourself from dashing diagonally, or on the contrary, only allow diagonal dashes. You can even disable individual dash directions if you want.
