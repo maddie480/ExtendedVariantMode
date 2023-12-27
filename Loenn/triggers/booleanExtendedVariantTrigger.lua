@@ -24,6 +24,7 @@ trigger.fieldInformation = {
             "AllStrawberriesAreGoldens",
             "AllowLeavingTheoBehind",
             "AllowThrowingTheoOffscreen",
+            "AlwaysFeather",
             "AlwaysInvisible",
             "BadelineBossesEverywhere",
             "BadelineChasersEverywhere",
