@@ -57,7 +57,7 @@ namespace ExtendedVariants.Module {
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
-            FastFallAcceleration, AlwaysFeather,
+            FastFallAcceleration, AlwaysFeather, PermanentDashAttack,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -193,6 +193,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.CorrectedMirrorMode] = new CorrectedMirrorMode();
             VariantHandlers[Variant.FastFallAcceleration] = new FastFallAcceleration();
             VariantHandlers[Variant.AlwaysFeather] = new AlwaysFeather();
+            VariantHandlers[Variant.PermanentDashAttack] = new PermanentDashAttack();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();

@@ -58,6 +58,7 @@ trigger.fieldInformation = {
             "LegacyDashSpeedBehavior",
             "NoFreezeFrames",
             "OshiroEverywhere",
+            "PermanentDashAttack",
             "PreserveExtraDashesUnderwater",
             "RefillJumpsOnDashRefill",
             "ResetJumpCountOnGround",

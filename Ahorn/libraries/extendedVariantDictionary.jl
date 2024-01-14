@@ -102,6 +102,7 @@ const BooleanVariants = [
     "LegacyDashSpeedBehavior",
     "NoFreezeFrames",
     "OshiroEverywhere",
+    "PermanentDashAttack",
     "PreserveExtraDashesUnderwater",
     "RefillJumpsOnDashRefill",
     "ResetJumpCountOnGround",
