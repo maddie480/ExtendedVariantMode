@@ -48,6 +48,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate += patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill += modUseRefill;
             On.Celeste.Player.DreamDashEnd += modDreamDashEnd;
+            On.Celeste.Player.ClimbHopBlockedCheck += modClimbHopBlockedCheck;
             On.Celeste.Level.LoadLevel += modLoadLevel;
             IL.Celeste.Player.DreamDashUpdate += preventDreamJumping;
 
@@ -63,6 +64,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate -= patchJumpGraceTimer;
             IL.Celeste.Player.UseRefill -= modUseRefill;
             On.Celeste.Player.DreamDashEnd -= modDreamDashEnd;
+            On.Celeste.Player.ClimbHopBlockedCheck -= modClimbHopBlockedCheck;
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             IL.Celeste.Player.DreamDashUpdate -= preventDreamJumping;
         }
@@ -256,6 +258,19 @@ namespace ExtendedVariants.Variants {
                 // without this, jumps are only refilled when the coyote jump timer is filled: it only happens on horizontal dream dashes.
                 RefillJumpBuffer();
             }
+        }
+
+        private bool modClimbHopBlockedCheck(On.Celeste.Player.orig_ClimbHopBlockedCheck orig, Player self) {
+            if (orig(self)) {
+                return true;
+            }
+
+            // if landing on the ground would reduce the number of jumps we have, prevent an automatic climb hop
+            if (GetVariantValue<bool>(Variant.ResetJumpCountOnGround) && jumpBuffer > GetVariantValue<int>(Variant.JumpCount) - 1) {
+                return true;
+            }
+
+            return false;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
