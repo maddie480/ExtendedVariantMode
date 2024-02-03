@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Sprites>
+    <ExtendedVariantMode_JumpRefill_Green path="objects/ExtendedVariantMode/jumprefill/" start="idle">
+        <Center/>
+        <Loop id="idle" path="idle" delay="0.1"/>
+        <Loop id="oneuse_idle" path="oneuse_idle" delay="0.1"/>
+        <Anim id="flash" path="flash" delay="0.05"/>
+    </ExtendedVariantMode_JumpRefill_Green>
+    <ExtendedVariantMode_JumpRefill_Blue path="objects/ExtendedVariantMode/jumprefillblue/" start="idle">
+        <Center/>
+        <Loop id="idle" path="idle" delay="0.1"/>
+        <Loop id="oneuse_idle" path="oneuse_idle" delay="0.1"/>
+        <Anim id="flash" path="flash" delay="0.05"/>
+    </ExtendedVariantMode_JumpRefill_Blue>
+</Sprites>
