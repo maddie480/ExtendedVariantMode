@@ -77,11 +77,18 @@ namespace ExtendedVariants.UI {
         };
 
         private TextMenuOptionExt<int> getScaleOption<T>(Variant variant, string suffix, T[] scale, Func<T, string> formatter = null) where T : IComparable {
-            List<T> choices = new List<T>(scale);
+            return getNonVariantScaleOption<T>(variant.ToString(), suffix, scale,
+                currentValue: (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                mapDefinedValue: (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant),
+                defaultValue: (T) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
+                valueSetter: newValue => setVariantValue(variant, newValue),
+                formatter);
+        }
 
-            T currentValue = (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
-            T mapDefinedValue = (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant);
-            T defaultValue = (T) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue();
+        private TextMenuOptionExt<int> getNonVariantScaleOption<T>(string label, string suffix, T[] scale,
+            T currentValue, T mapDefinedValue, T defaultValue, Action<T> valueSetter, Func<T, string> formatter = null) where T : IComparable {
+
+            List<T> choices = new List<T>(scale);
 
             // we run valueToIndex a first time in order to insert values in the choices if necessary.
             // the second run will then be able to get the definitive indices of the values without risking being thrown off by a later insert.
@@ -89,7 +96,7 @@ namespace ExtendedVariants.UI {
             valueToIndex(mapDefinedValue, choices);
             valueToIndex(defaultValue, choices);
 
-            TextMenuExt.Slider slider = new TextMenuExt.Slider(Dialog.Clean($"modoptions_extendedvariants_{variant}"),
+            TextMenuExt.Slider slider = new TextMenuExt.Slider(Dialog.Clean($"modoptions_extendedvariants_{label}"),
                 i => {
                     T valueToFormat = choices[i];
                     if (formatter != null) {
@@ -104,7 +111,7 @@ namespace ExtendedVariants.UI {
                 },
                 0, choices.Count - 1, valueToIndex(currentValue, choices), valueToIndex(defaultValue, choices), valueToIndex(mapDefinedValue, choices));
 
-            slider.Change(i => setVariantValue(variant, choices[i]));
+            slider.Change(i => valueSetter(choices[i]));
 
             return slider;
         }
@@ -443,8 +450,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.DashRestriction, "", getEnumValues<DashRestriction.DashRestrictionType>(),
                     i => new string[] {
                         Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_NONE"),
-                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_GROUNDED"),
-                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_AIRBORNE")
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_GROUNDEDONLY"),
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_AIRBORNEONLY")
                     }[(int) i]
                 ));
                 menu.Add(getToggleOption(Variant.DisableRefillsOnScreenTransition));
@@ -634,6 +641,29 @@ namespace ExtendedVariants.UI {
             }
 
             if (includeRandomizer) {
+                menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSD")));
+
+                TextMenuOptionExt<int> text = getNonVariantScaleOption("OSD_TEXTOPACITY", "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
+                    Settings.OnScreenDisplayTextOpacity, 1f, 1f, newValue => Settings.OnScreenDisplayTextOpacity = newValue, v => (int) (v * 100) + "%");
+                TextMenuOptionExt<int> bg = getNonVariantScaleOption("OSD_BGOPACITY", "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
+                    Settings.OnScreenDisplayBackgroundOpacity, 0.8f, 0.8f, newValue => Settings.OnScreenDisplayBackgroundOpacity = newValue, v => "" + (int) (v * 100) + "%");
+
+                Action onOSDToggle = () => {
+                    text.Disabled = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
+                    bg.Disabled = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
+                };
+                onOSDToggle();
+
+                menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN"), ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen)
+                    .Change(newValue => {
+                        ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue;
+                        onOSDToggle();
+                    }));
+
+                menu.Add(text);
+                menu.Add(bg);
+
+
                 menu.Add(buildHeading(menu, "RANDOMIZER"));
 
                 menu.Add((TextMenuExt.OnOff) new TextMenuExt.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_CHANGEVARIANTSRANDOMLY"), Settings.ChangeVariantsRandomly, false, false)

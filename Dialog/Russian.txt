@@ -273,8 +273,8 @@ MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC= Изменяет 1.2x м�
 
 MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION= Ограничить дэши
 MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_NONE= Нет
-MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_GROUNDED= Только наземные
-MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_AIRBORNE= Только в воздухе
+MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_GROUNDEDONLY= Только наземные
+MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_AIRBORNEONLY= Только в воздухе
 
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME=         Койот-фреймы
 MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=    Время, после схождения с поверхности, в которое вы можете отпрыгнуть от воздуха

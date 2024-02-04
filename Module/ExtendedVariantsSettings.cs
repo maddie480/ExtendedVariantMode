@@ -35,7 +35,15 @@ namespace ExtendedVariants.Module {
         [SettingIgnore]
         public int Vanillafy { get; set; } = 0;
 
+        // ======================================
+
         [SettingIgnore]
         public bool DisplayEnabledVariantsToScreen { get; set; } = false;
+
+        [SettingIgnore]
+        public float OnScreenDisplayTextOpacity { get; set; } = 1f;
+
+        [SettingIgnore]
+        public float OnScreenDisplayBackgroundOpacity { get; set; } = 0.8f;
     }
 }

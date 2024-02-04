@@ -97,7 +97,7 @@ namespace ExtendedVariants {
             orig(self, scene);
 
             if ((
-                    (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen) ||
+                    ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen ||
                     (ExtendedVariantsModule.Session != null && ExtendedVariantsModule.Session.ExtendedVariantsDisplayedOnScreenViaTrigger)
                 )
                 && !((scene as Level)?.Paused ?? false)) {

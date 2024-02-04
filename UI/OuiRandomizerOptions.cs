@@ -110,9 +110,6 @@ namespace ExtendedVariants.UI {
                     ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
                 }));
 
-            menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN"), ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen)
-                .Change(newValue => ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue));
-
             if (!inGame) {
                 TextMenu.Button seedButton = new TextMenu.Button(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDINPUT") + " " + ExtendedVariantsModule.Settings.RandoSetSeed);
                 seedButton.Pressed(() => {

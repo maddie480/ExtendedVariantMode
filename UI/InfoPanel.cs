@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Monocle;
 using Celeste;
+using ExtendedVariants.Module;
 
 namespace ExtendedVariants.UI {
     // This class is heavily based on https://github.com/mrstaneh/CrowControl/blob/master/UI/InfoPanel.cs
@@ -42,10 +43,10 @@ namespace ExtendedVariants.UI {
             }
 
             if (texts.Count != 0) {
-                Draw.SpriteBatch.Draw(pixel, new Rectangle((int) uiPos.X, (int) uiPos.Y + 5, maxWidth + 10, (texts.Count * 35) + 10), new Color(10, 10, 10, 200));
+                Draw.SpriteBatch.Draw(pixel, new Rectangle((int) uiPos.X, (int) uiPos.Y + 5, maxWidth + 10, (texts.Count * 35) + 10), new Color(10, 10, 10) * ExtendedVariantsModule.Settings.OnScreenDisplayBackgroundOpacity);
 
                 for (int i = 0; i < texts.Count; i++) {
-                    ActiveFont.Draw(texts[i], new Vector2(uiPos.X + 5, uiPos.Y + 5 + (i * 35)), new Vector2(0, 0), new Vector2(0.7f, 0.7f), Color.White);
+                    ActiveFont.Draw(texts[i], new Vector2(uiPos.X + 5, uiPos.Y + 5 + (i * 35)), new Vector2(0, 0), new Vector2(0.7f, 0.7f), Color.White * ExtendedVariantsModule.Settings.OnScreenDisplayTextOpacity);
                 }
             }
         }
