@@ -72,6 +72,7 @@ Adds some options to the Mod Options menu:
 *   **Everything is Underwater**: All levels are now water levels! You get to swim through Summit for example.
 *   **Always In Feather**: Madeline is flying at all times, as if she collected a feather that never runs out!
 *   **Permanent Dash Attack**: Triggers all the things that are usually triggered by dashing (such as breaking dash blocks, or wallbouncing) all the time! Combine this with Always In Feather to be able to advance past dash blocks while flying around.
+*   **Permanent Bino Interaction Storage**: Reproduces the effect of a technique that resets the state of Madeline to "normal" on screen transitions, allowing to do weird stuff like canceling Badeline launches and red boosters.
 *   **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
 *   **Invert Dash**: Dash right by pressing Left + Dash.
 *   **Dash Direction**: Prevent yourself from dashing diagonally, or on the contrary, only allow diagonal dashes. You can even disable individual dash directions if you want.
