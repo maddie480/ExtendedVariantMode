@@ -1,24 +1,9 @@
 ﻿using Celeste;
-using ExtendedVariants.Module;
 using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class PermanentBinoStorage : AbstractExtendedVariant {
-        public override void Load() {
-            On.Celeste.Player.OnTransition += Player_OnTransition;
-        }
-
-        public override void Unload() {
-            On.Celeste.Player.OnTransition -= Player_OnTransition;
-        }
-
-        private void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self) {
-            if ((bool)ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.PermanentBinoStorage)) {
-                self.StateMachine.State = Player.StNormal;
-            }
-            orig(self);
-        }
-
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
         }
@@ -30,5 +15,22 @@ namespace ExtendedVariants.Variants {
         public override Type GetVariantType() {
             return typeof(bool);
         }
+
+        public override void Load() {
+            On.Celeste.Player.OnTransition += Player_OnTransition;
+        }
+
+        public override void Unload() {
+            On.Celeste.Player.OnTransition -= Player_OnTransition;
+        }
+
+        private void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self) {
+            if (GetVariantValue<bool>(Variant.PermanentBinoStorage)) {
+                self.StateMachine.State = Player.StNormal;
+            }
+
+            orig(self);
+        }
+
     }
 }
