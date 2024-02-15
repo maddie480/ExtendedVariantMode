@@ -287,7 +287,7 @@ namespace ExtendedVariants.UI {
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration,
+                    Variant.FastFallAcceleration, Variant.UltraProtection, Variant.LiftboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -482,6 +482,11 @@ namespace ExtendedVariants.UI {
                     i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
+
+                menu.Add(getToggleOption(Variant.UltraProtection));
+                menu.Add(getToggleOption(Variant.LiftboostProtection));
+                menu.Add(getToggleOption(Variant.TrueNoGrabbing));
+                menu.Add(getToggleOption(Variant.BufferableGrab));
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
