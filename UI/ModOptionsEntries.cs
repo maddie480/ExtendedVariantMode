@@ -483,10 +483,12 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
 
-                menu.Add(getToggleOption(Variant.UltraProtection));
-                menu.Add(getToggleOption(Variant.LiftboostProtection));
-                menu.Add(getToggleOption(Variant.TrueNoGrabbing));
-                menu.Add(getToggleOption(Variant.BufferableGrab));
+                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab }) {
+                    TextMenuExt.OnOff option = getToggleOption(variant);
+                    menu.Add(option);
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
+                }
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
