@@ -57,7 +57,7 @@ namespace ExtendedVariants.Module {
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
-            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage,
+            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, TrueNoGrabbing, BufferableGrab,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -195,6 +195,10 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AlwaysFeather] = new AlwaysFeather();
             VariantHandlers[Variant.PermanentDashAttack] = new PermanentDashAttack();
             VariantHandlers[Variant.PermanentBinoStorage] = new PermanentBinoStorage();
+            VariantHandlers[Variant.UltraProtection] = new UltraProtection();
+            VariantHandlers[Variant.LiftboostProtection] = new LiftboostProtection();
+            VariantHandlers[Variant.TrueNoGrabbing] = new TrueNoGrabbing();
+            VariantHandlers[Variant.BufferableGrab] = new BufferableGrab();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();

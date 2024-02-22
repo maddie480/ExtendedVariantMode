@@ -329,3 +329,12 @@ MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_SEEDDESCRIPTION2= the variants will be th
 MODOPTIONS_EXTENDEDVARIANTS_OSD= Variants - In-Game Display
 MODOPTIONS_EXTENDEDVARIANTS_OSD_TEXTOPACITY= Text Opacity
 MODOPTIONS_EXTENDEDVARIANTS_OSD_BGOPACITY= Background Opacity
+
+MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION=Ultra Protection
+MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION_HINT=Ensures that the player gains ultra speed even when buffering a jump or dash upon reaching the ground
+MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTPROTECTION=Liftboost Protection
+MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTPROTECTION_HINT=Ensures that the player gets liftboost when buffering any type of jump off of a moving platform
+MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING=True No Grabbing
+MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT=Completely disables the grab input check. Useful for maps that repurpose the grab input
+MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB=Bufferable Grab
+MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB_HINT=Makes the grab input bufferable, for maps that introduce a new action when pressing grab
