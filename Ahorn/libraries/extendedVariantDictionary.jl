@@ -73,7 +73,7 @@ const BooleanVariants = [
     "BadelineBossesEverywhere",
     "BadelineChasersEverywhere",
     "BounceEverywhere",
-	"BufferableGrab",
+    "BufferableGrab",
     "ChangePatternsOfExistingBosses",
     "CorrectedMirrorMode",
     "DashTrailAllTheTime",
@@ -101,7 +101,7 @@ const BooleanVariants = [
     "InvertHorizontalControls",
     "InvertVerticalControls",
     "LegacyDashSpeedBehavior",
-	"LiftboostProtection",
+    "LiftboostProtection",
     "NoFreezeFrames",
     "OshiroEverywhere",
     "PermanentBinoStorage",
@@ -113,8 +113,8 @@ const BooleanVariants = [
     "RisingLavaEverywhere",
     "SnowballsEverywhere",
     "TheoCrystalsEverywhere",
-	"TrueNoGrabbing",
-	"UltraProtection",
+    "TrueNoGrabbing",
+    "UltraProtection",
     "UpsideDown"
 ]
 

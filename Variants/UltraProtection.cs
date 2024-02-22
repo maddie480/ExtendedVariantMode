@@ -3,7 +3,7 @@ using Celeste;
 using ExtendedVariants.Module;
 using MonoMod.Utils;
 
-namespace ExtendedVariants.Variants; 
+namespace ExtendedVariants.Variants;
 
 public class UltraProtection : AbstractExtendedVariant {
     public override void Load() {
@@ -21,7 +21,7 @@ public class UltraProtection : AbstractExtendedVariant {
     public override object GetDefaultVariantValue() => false;
 
     public override object ConvertLegacyVariantValue(int value) => value != 0;
-    
+
     private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
             && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f
@@ -30,10 +30,10 @@ public class UltraProtection : AbstractExtendedVariant {
             player.DashDir.Y = 0f;
             player.Speed.X *= 1.2f;
         }
-        
+
         jump(player, particles, playsfx);
     }
-    
+
     private void Player_DashBegin(On.Celeste.Player.orig_DashBegin dashBegin, Player player) {
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
             && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f

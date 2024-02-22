@@ -29,7 +29,7 @@ trigger.fieldInformation = {
             "BadelineBossesEverywhere",
             "BadelineChasersEverywhere",
             "BounceEverywhere",
-			"BufferableGrab",
+            "BufferableGrab",
             "ChangePatternsOfExistingBosses",
             "CorrectedMirrorMode",
             "DashTrailAllTheTime",
@@ -57,7 +57,7 @@ trigger.fieldInformation = {
             "InvertHorizontalControls",
             "InvertVerticalControls",
             "LegacyDashSpeedBehavior",
-			"LiftboostProtection",
+            "LiftboostProtection",
             "NoFreezeFrames",
             "OshiroEverywhere",
             "PermanentBinoStorage",
@@ -69,8 +69,8 @@ trigger.fieldInformation = {
             "RisingLavaEverywhere",
             "SnowballsEverywhere",
             "TheoCrystalsEverywhere",
-			"TrueNoGrabbing",
-			"UltraProtection",
+            "TrueNoGrabbing",
+            "UltraProtection",
             "UpsideDown"
         },
         editable = false

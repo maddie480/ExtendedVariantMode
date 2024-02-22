@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace ExtendedVariants.Variants; 
+namespace ExtendedVariants.Variants;
 
 public class LiftboostProtection : AbstractExtendedVariant {
     public override void Load() {
@@ -48,13 +48,13 @@ public class LiftboostProtection : AbstractExtendedVariant {
     public override object GetDefaultVariantValue() => false;
 
     public override object ConvertLegacyVariantValue(int value) => value != 0;
-    
+
     private static void CheckForLiftboost(Player player, Vector2 dir) {
         if (player.LiftSpeed != Vector2.Zero)
             return;
 
         Platform platform;
-        
+
         if (dir.X == 0f && dir.Y > 0f)
             platform = player.CollideFirst<Platform>(player.Position + dir);
         else
@@ -63,25 +63,25 @@ public class LiftboostProtection : AbstractExtendedVariant {
         if (platform != null)
             player.LiftSpeed = platform.LiftSpeed;
     }
-    
+
     private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
             CheckForLiftboost(player, Vector2.UnitY);
-        
+
         jump(player, particles, playsfx);
     }
-    
+
     private void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
             CheckForLiftboost(player, Vector2.UnitY);
-        
+
         superJump(player);
     }
-    
+
     private void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump superWallJump, Player player, int dir) {
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
             CheckForLiftboost(player, -5 * dir * Vector2.UnitX);
-        
+
         superWallJump(player, dir);
     }
 
@@ -112,7 +112,7 @@ public class LiftboostProtection : AbstractExtendedVariant {
                 => GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) && value == 0f ? platform.LiftSpeed.X : value);
         }
     }
-    
+
     private void PatchLiftboostProtectionY(ILContext il) {
         var cursor = new ILCursor(il);
 
