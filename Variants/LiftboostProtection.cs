@@ -19,9 +19,9 @@ namespace ExtendedVariants.Variants {
 
             return platform != null;
         }
-    
+
         private ILHook il_Celeste_Player_Orig_WallJump;
-    
+
         public override void Load() {
             On.Celeste.Player.Jump += Player_Jump;
             On.Celeste.Player.SuperJump += Player_SuperJump;
@@ -64,20 +64,20 @@ namespace ExtendedVariants.Variants {
         public override object GetDefaultVariantValue() => false;
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
-    
+
         private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) 
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform))
                 player.LiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-        
+
             jump(player, particles, playsfx);
         }
-    
+
         private void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform))
                 player.LiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-        
+
             superJump(player);
         }
 
@@ -91,21 +91,21 @@ namespace ExtendedVariants.Variants {
             cursor.EmitDelegate<Func<Vector2, Solid, int, Vector2>>((value, solid, dir) => {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
                     return value;
-        
+
                 var safeLiftSpeed = DynamicData.For(solid).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-                
+
                 if (Math.Sign(safeLiftSpeed.X) == dir)
                     return safeLiftSpeed.X * Vector2.UnitX;
 
                 return value;
             });
         }
-    
+
         private void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump superWallJump, Player player, int dir) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, -5 * dir * Vector2.UnitX, out var platform)) {
                 var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-            
+
                 if (Math.Sign(safeLiftSpeed.X) == dir)
                     player.LiftSpeed = safeLiftSpeed.X * Vector2.UnitX;
             }
@@ -130,7 +130,7 @@ namespace ExtendedVariants.Variants {
             cursor.EmitDelegate<Func<float, Platform, float>>((value, platform) => {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) || value == 0f)
                     return value;
-        
+
                 var dynamicData = DynamicData.For(platform);
                 var safeLiftSpeed = dynamicData.Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
 
@@ -150,7 +150,7 @@ namespace ExtendedVariants.Variants {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                     || move != 0 || platform.LiftSpeed.X == 0f || !platform.Collidable || platform is not Solid solid)
                     return move;
-                
+
                 foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
                     var actor = (Actor) entity;
 
@@ -161,7 +161,7 @@ namespace ExtendedVariants.Variants {
                 return move;
             });
         }
-    
+
         private void PatchLiftboostProtectionY(ILContext il) {
             var cursor = new ILCursor(il);
 
@@ -172,7 +172,7 @@ namespace ExtendedVariants.Variants {
             cursor.EmitDelegate<Func<float, Platform, float>>((value, platform) => {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) || value == 0f)
                     return value;
-        
+
                 var dynamicData = DynamicData.For(platform);
                 var safeLiftSpeed = dynamicData.Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
 
@@ -181,7 +181,7 @@ namespace ExtendedVariants.Variants {
 
                 return value;
             });
-            
+
             cursor.GotoNext(
                 instr => instr.OpCode == OpCodes.Ldloc_0,
                 instr => instr.MatchBrfalse(out _));
