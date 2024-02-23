@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
         private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
-            if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) 
+            if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform))
                 player.LiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
 
