@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Celeste;
-using Celeste.Mod;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
