@@ -126,14 +126,14 @@ namespace ExtendedVariants.Variants {
             cursor.Index = -1;
             cursor.GotoPrev(instr => instr.MatchLdflda<Platform>("LiftSpeed"));
             cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<Vector2>("X"));
-            
+
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate<Action<Platform>>(platform => {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
                     return;
 
                 float liftSpeed = platform.LiftSpeed.X;
-                
+
                 if (liftSpeed == 0f)
                     return;
 
@@ -175,7 +175,7 @@ namespace ExtendedVariants.Variants {
                     return;
 
                 float liftSpeed = platform.LiftSpeed.Y;
-                
+
                 if (liftSpeed == 0f)
                     return;
 
