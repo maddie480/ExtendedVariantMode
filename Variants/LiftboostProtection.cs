@@ -67,16 +67,24 @@ namespace ExtendedVariants.Variants {
 
         private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
-                && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform))
-                player.LiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
+                var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+
+                if (platform is not JumpThru || safeLiftSpeed.Y != 0f)
+                    player.LiftSpeed = safeLiftSpeed;
+            }
 
             jump(player, particles, playsfx);
         }
 
         private void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
-                && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform))
-                player.LiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
+                var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+
+                if (platform is not JumpThru || safeLiftSpeed.Y != 0f)
+                    player.LiftSpeed = safeLiftSpeed;
+            }
 
             superJump(player);
         }
