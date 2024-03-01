@@ -58,6 +58,7 @@ namespace ExtendedVariants.Module {
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, TrueNoGrabbing, BufferableGrab,
+            WalllessWallbounce,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -199,6 +200,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.LiftboostProtection] = new LiftboostProtection();
             VariantHandlers[Variant.TrueNoGrabbing] = new TrueNoGrabbing();
             VariantHandlers[Variant.BufferableGrab] = new BufferableGrab();
+            VariantHandlers[Variant.WalllessWallbounce] = new WalllessWallbounce();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();

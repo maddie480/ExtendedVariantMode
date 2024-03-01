@@ -115,7 +115,8 @@ const BooleanVariants = [
     "TheoCrystalsEverywhere",
     "TrueNoGrabbing",
     "UltraProtection",
-    "UpsideDown"
+    "UpsideDown",
+    "WalllessWallbounce"
 ]
 
 const SpecialHandlingVariants = [

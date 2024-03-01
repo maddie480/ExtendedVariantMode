@@ -71,7 +71,8 @@ trigger.fieldInformation = {
             "TheoCrystalsEverywhere",
             "TrueNoGrabbing",
             "UltraProtection",
-            "UpsideDown"
+            "UpsideDown",
+            "WalllessWallbounce"
         },
         editable = false
     }
