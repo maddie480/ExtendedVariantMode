@@ -68,7 +68,7 @@ namespace ExtendedVariants.Variants {
 
             // yoink, you'll be needed later
             Instruction brfalse_Continue = cursor.Prev;
-            ILLabel @continue = (ILLabel)brfalse_Continue.Operand;
+            ILLabel @continue = (ILLabel) brfalse_Continue.Operand;
 
             cursor.GotoNext(MoveType.After, instr => instr.MatchRet());
             ILLabel tryWalllessWallbounce = cursor.MarkLabel();
@@ -76,7 +76,7 @@ namespace ExtendedVariants.Variants {
             // don't cursor.MoveAfterLabels();, else you'll emit IL in the wrong place
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate(WalllessWallbounceDashCheck);
+            cursor.EmitDelegate<Func<Player, bool>>(WalllessWallbounceDashCheck);
             cursor.Emit(OpCodes.Brfalse, @continue);
             cursor.Emit(OpCodes.Ldc_I4_0);
             cursor.Emit(OpCodes.Ret);
@@ -112,7 +112,7 @@ namespace ExtendedVariants.Variants {
             // {
 
             // yoink, you'll be needed later
-            ILLabel @continue = (ILLabel)cursor.Next.Operand;
+            ILLabel @continue = (ILLabel) cursor.Next.Operand;
 
             cursor.Index++;
 
@@ -120,26 +120,29 @@ namespace ExtendedVariants.Variants {
             cursor.MoveAfterLabels();
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.Emit(OpCodes.Ldloc_S, (byte)14);
-            cursor.EmitDelegate(WalllessWallbounceNormalCheck);
+            cursor.Emit(OpCodes.Ldloc_S, (byte) 14);
+            cursor.EmitDelegate<Func<Player, bool, bool>>(WalllessWallbounceNormalCheck);
             cursor.Emit(OpCodes.Brtrue_S, @continue);
         }
 
         private static bool WalllessWallbounceDashCheck(Player player) {
-            bool canWallbounce = (bool)Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
+            bool canWallbounce = (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
             if (canWallbounce)
                 DoWallbounce(player);
             return canWallbounce;
         }
 
         private static bool WalllessWallbounceNormalCheck(Player player, bool canUnDuck) {
+            bool variantEnabled = (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
+            if (!variantEnabled) return false;
+
             DynamicData playerData = DynamicData.For(player);
 
             bool canWallbounce
                 = canUnDuck
                 && player.DashAttacking
                 && playerData.Invoke<bool>("get_SuperWallJumpAngleCheck")
-                && (bool)Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
+                && variantEnabled;
 
             if (canWallbounce)
                 DoWallbounce(player);
@@ -147,7 +150,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void DoWallbounce(Player player) {
-            DynamicData.For(player).Invoke("SuperWallJump", (int)player.Facing);
+            DynamicData.For(player).Invoke("SuperWallJump", (int) player.Facing);
         }
     }
 }

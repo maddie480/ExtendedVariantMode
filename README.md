@@ -113,6 +113,7 @@ Adds some options to the Mod Options menu:
 *   **Liftboost Protection**: Ensures that you get a liftboost when buffering any type of jump off of a moving platform.
 *   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input.
 *   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab.
+*   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present!
 
 
 This can be extended by downloading other mods:

@@ -342,3 +342,6 @@ MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2=pour les mods qui lui donnent 
 MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB=Buffer pour la touche "Attraper"
 MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB_HINT_1=La touche "Attraper" aura un effet même si le joueur appuie
 MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB_HINT_2=légèrement trop tôt, utile si elle a une fonction particulière
+
+MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE=Dash + Saut mural sans mur
+MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT=Reproduit l'effet d'un dash + saut mural, même s'il n'y a pas de mur
