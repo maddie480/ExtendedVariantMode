@@ -287,7 +287,7 @@ namespace ExtendedVariants.UI {
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration, Variant.UltraProtection, Variant.LiftboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab
+                    Variant.WalllessWallbounce, Variant.FastFallAcceleration, Variant.UltraProtection, Variant.LiftboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -339,6 +339,10 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.DisableNeutralJumping));
                 menu.Add(getScaleOption(Variant.WallJumpDistance, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
                 menu.Add(getScaleOption(Variant.WallBounceDistance, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
+
+                TextMenuExt.OnOff walllessWallbounceOption;
+                menu.Add(walllessWallbounceOption = getToggleOption(Variant.WalllessWallbounce));
+                walllessWallbounceOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT"));
 
                 TextMenuOptionExt<int> horizontalWallJumpDurationOption;
                 menu.Add(horizontalWallJumpDurationOption = getScaleOption(Variant.HorizontalWallJumpDuration, "x", multiplierScale));
