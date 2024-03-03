@@ -57,8 +57,8 @@ namespace ExtendedVariants.Module {
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
-            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, TrueNoGrabbing, BufferableGrab,
-            WalllessWallbounce,
+            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, CornerboostProtection, TrueNoGrabbing,
+            BufferableGrab, AlternativeBuffering, WalllessWallbounce,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -198,8 +198,10 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.PermanentBinoStorage] = new PermanentBinoStorage();
             VariantHandlers[Variant.UltraProtection] = new UltraProtection();
             VariantHandlers[Variant.LiftboostProtection] = new LiftboostProtection();
+            VariantHandlers[Variant.CornerboostProtection] = new CornerboostProtection();
             VariantHandlers[Variant.TrueNoGrabbing] = new TrueNoGrabbing();
             VariantHandlers[Variant.BufferableGrab] = new BufferableGrab();
+            VariantHandlers[Variant.AlternativeBuffering] = new AlternativeBuffering();
             VariantHandlers[Variant.WalllessWallbounce] = new WalllessWallbounce();
 
             // vanilla variants

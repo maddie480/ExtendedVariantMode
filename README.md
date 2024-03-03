@@ -110,10 +110,12 @@ Adds some options to the Mod Options menu:
     * **Delay Before Regrabbing**: the minimum delay after throwing a holdable before you can grab it again.
 
 *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
-*   **Liftboost Protection**: Ensures that you get a liftboost when buffering any type of jump off of a moving platform.
+*   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
+*   **Cornerboost Protection**: Ensures that you gain jump speed when buffering a cornerboost.
 *   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input.
 *   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab.
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present!
+*   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early.
 
 
 This can be extended by downloading other mods:
