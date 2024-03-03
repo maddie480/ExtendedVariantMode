@@ -57,7 +57,8 @@ namespace ExtendedVariants.Module {
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
-            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, CornerboostProtection, TrueNoGrabbing, BufferableGrab, AlternativeBuffering, WalllessWallbounce,
+            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, CornerboostProtection, TrueNoGrabbing,
+            BufferableGrab, AlternativeBuffering, WalllessWallbounce,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
