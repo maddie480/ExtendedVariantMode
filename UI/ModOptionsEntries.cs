@@ -671,6 +671,10 @@ namespace ExtendedVariants.UI {
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
+
+                    if (variant == Variant.UltraProtection) {
+                        option.OnEnter.Invoke();
+                    }
                 }
             }
 
