@@ -219,7 +219,7 @@ namespace ExtendedVariants.UI {
         }
 
         public enum VariantCategory {
-            Movement, GameElements, Visual, GameplayTweaks, None
+            Movement, GameElements, Visual, GameplayTweaks, QualityOfLife, None
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace ExtendedVariants.UI {
                     ExtendedVariantsModule.Instance.ResetExtendedVariantsToDefaultSettings();
                 }));
 
-                TextMenuButtonExt movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu;
+                TextMenuButtonExt movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu, qualityOfLifeSubmenu;
                 TextMenu.SubHeader title;
 
                 menu.Add(title = new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING")));
@@ -275,6 +275,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(gameElementsSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameElements }));
                 menu.Add(visualSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.Visual }));
                 menu.Add(gameplayTweaksSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.GameplayTweaks }));
+                menu.Add(qualityOfLifeSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.QualityOfLife }));
 
                 // each submenu entry should be highlighted if one of the options in it has a non-default value.
 
@@ -287,7 +288,7 @@ namespace ExtendedVariants.UI {
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration, Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce
+                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -309,7 +310,11 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.AlternativeBuffering
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage
+                });
+
+                qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
+                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
@@ -487,7 +492,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
 
-                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.TrueNoGrabbing, Variant.BufferableGrab }) {
+                foreach (Variant variant in new Variant[] { Variant.TrueNoGrabbing, Variant.BufferableGrab }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
@@ -647,11 +652,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.AlwaysInvisible));
                 menu.Add(correctedMirrorModeOption = getToggleOption(Variant.CorrectedMirrorMode));
 
-                TextMenuExt.OnOff alternativeBufferingToggle;
-                menu.Add(alternativeBufferingToggle = getToggleOption(Variant.AlternativeBuffering));
-                alternativeBufferingToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING_HINT_2"));
-                alternativeBufferingToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING_HINT_1"));
-
                 menu.Add(buildHeading(menu, "TROLL"));
                 menu.Add(getToggleOption(Variant.ForceDuckOnGround));
                 menu.Add(getToggleOption(Variant.InvertDashes));
@@ -659,6 +659,23 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.InvertHorizontalControls));
                 menu.Add(getToggleOption(Variant.InvertVerticalControls));
                 menu.Add(getToggleOption(Variant.BounceEverywhere));
+            }
+
+            // ======
+
+            if (category == VariantCategory.QualityOfLife) {
+                menu.Add(buildHeading(menu, "QUALITYOFLIFE"));
+
+                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering }) {
+                    TextMenuExt.OnOff option = getToggleOption(variant);
+                    menu.Add(option);
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
+
+                    if (variant == Variant.UltraProtection) {
+                        option.OnEnter.Invoke();
+                    }
+                }
             }
 
             if (includeRandomizer) {
