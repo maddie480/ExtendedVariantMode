@@ -664,6 +664,8 @@ namespace ExtendedVariants.UI {
             // ======
 
             if (category == VariantCategory.QualityOfLife) {
+                menu.Add(buildHeading(menu, "QUALITYOFLIFE"));
+
                 foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
