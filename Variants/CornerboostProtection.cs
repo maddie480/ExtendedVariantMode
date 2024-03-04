@@ -44,8 +44,9 @@ namespace ExtendedVariants.Variants {
             cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<Player>("wallSpeedRetained"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Action<Player>>(player => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection))
+            cursor.Emit(OpCodes.Ldarg_1);
+            cursor.EmitDelegate<Action<Player, CollisionData>>((player, data) => {
+                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection) || Math.Abs(data.Moved.X) <= 2)
                     return;
 
                 int state = player.StateMachine.State;
