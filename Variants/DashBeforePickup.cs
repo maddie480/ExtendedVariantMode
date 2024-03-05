@@ -22,8 +22,9 @@ public class DashBeforePickup : AbstractExtendedVariant {
     private void Player_NormalUpdate_il(ILContext il) {
         var cursor = new ILCursor(il);
 
-        cursor.GotoNext(instr => instr.MatchCallvirt<Player>("get_Holding"));
-        cursor.GotoPrev(MoveType.AfterLabel, instr => instr.OpCode == OpCodes.Ldarg_0);
+        cursor.GotoNext(MoveType.After,
+            instr => instr.MatchCallvirt<Player>("get_Holding"),
+            instr => instr.OpCode == OpCodes.Brtrue);
 
         var label = cursor.DefineLabel();
 
