@@ -70,13 +70,13 @@ Adds some options to the Mod Options menu:
     *   **Madeline's Backpack**: makes Madeline have a backpack or not in every map.
 
 *   **Everything is Underwater**: All levels are now water levels! You get to swim through Summit for example.
-*   **Always In Feather**: Madeline is flying at all times, as if she collected a feather that never runs out!
+*   **Always In Feather**: Madeline is flying at all times, as if she collected a feather that never runs out! (brought to you by @SnipUndercover)
 *   **Permanent Dash Attack**: Triggers all the things that are usually triggered by dashing (such as breaking dash blocks, or wallbouncing) all the time! Combine this with Always In Feather to be able to advance past dash blocks while flying around.
-*   **Permanent Bino Interaction Storage**: Reproduces the effect of a technique that resets the state of Madeline to "normal" on screen transitions, allowing to do weird stuff like canceling Badeline launches and red boosters.
+*   **Permanent Bino Interaction Storage**: Reproduces the effect of a technique that resets the state of Madeline to "normal" on screen transitions, allowing to do weird stuff like canceling Badeline launches and red boosters. (brought to you by @SnipUndercover)
 *   **Force Duck on Ground**: Exactly what it says, you have to duck whenever you touch the ground!
 *   **Invert Dash**: Dash right by pressing Left + Dash.
 *   **Dash Direction**: Prevent yourself from dashing diagonally, or on the contrary, only allow diagonal dashes. You can even disable individual dash directions if you want.
-*   **Dash Restriction**: Only allow yourself to dash when airborne or only on the ground.
+*   **Dash Restriction**: Only allow yourself to dash when airborne or only on the ground. (brought to you by @SnipUndercover)
 *   **Invert Grab**: Grab on walls by _not_ pressing the Grab key. And you have to press Grab if you don't want to grab.
 *   **Invert Horizontal Controls** and **Invert Vertical Controls**: Pressing Left makes Madeline go right, and/or pressing Up makes Madeline crouch.
 
@@ -90,7 +90,7 @@ Adds some options to the Mod Options menu:
 *   **Restore Dashes on Respawn**: saves your dash count when you hit a respawn point, and restores it when you respawn. Makes sense when used with no ground refills.
 
 *   **Game Speed**: Like the vanilla assist/variant, but it goes down to 0x and up to 100x! This stacks up with the vanilla variant if you enable both.
-*   **No Freeze Frames**: disables the freeze frames that happen when you dash, collect crystals, etc.
+*   **No Freeze Frames**: disables the freeze frames that happen when you dash, collect crystals, etc. (brought to you by @WEGFan)
 *   **Jellyfish Everywhere**: Have a jellyfish spawn above you on each screen if you don't already have one.
 *   **Steering Speed for Super Dashes**: turn quicker or slower in the air when you have the Super Dashing variant enabled.
 *   **Screen Shake Intensity**: just in case you want super screen shake for some reason. _Seizure warning on this one!_
@@ -103,21 +103,23 @@ Adds some options to the Mod Options menu:
 *   **Wall Jump Distance** and **Wall Bounce Distance**: allow Madeline to only wall jump or wall bounce while being closer to the wall... or allow her to wall jump from further away!
 *   **Fast Fall Acceleration**: tunes how fast Madeline's speed switches from slow to fast falling.
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
-*   **Corrected Mirror Mode**: Fixes Mirror Mode so that holding 2 opposite directions doesn't make Madeline freak out in place.
+*   **Corrected Mirror Mode**: Fixes Mirror Mode so that holding 2 opposite directions doesn't make Madeline freak out in place. (brought to you by @nhruo123)
 *   A few variants related to **holdables** (like **Theo and jellies**):
     * **Pickup Duration**: the time it takes for Madeline to take the holdable. If you make this delay bigger, the animation will be slowed down, and Madeline's position will be frozen for longer.
     * **Minimum Delay Before Throwing**: the minimum delay after grabbing the holdable before you can throw it away.
     * **Delay Before Regrabbing**: the minimum delay after throwing a holdable before you can grab it again.
 
-*   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
-*   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
-*   **Cornerboost Protection**: Ensures that you gain jump speed when buffering a cornerboost.
-*   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input.
-*   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab.
-*   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present!
-*   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early.
-*   **Safer Diagonal Smuggle**: Makes the position window for diagonal dream smuggles the same as for horizontal smuggles.
-*   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform.
+*   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input. (brought to you by @DominicAglialoro)
+*   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab. (brought to you by @DominicAglialoro)
+*   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present! (brought to you by @SnipUndercover)
+
+*   A few **quality of life improvements** to make some tech more lenient, brought to you by @DominicAglialoro:
+    *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
+    *   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
+    *   **Cornerboost Protection**: Ensures that you gain jump speed when buffering a cornerboost.
+    *   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early.
+    *   **Safer Diagonal Smuggle**: Makes the position window for diagonal dream smuggles the same as for horizontal smuggles.
+    *   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform.
 
 
 This can be extended by downloading other mods:
