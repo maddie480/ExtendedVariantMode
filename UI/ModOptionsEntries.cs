@@ -314,7 +314,7 @@ namespace ExtendedVariants.UI {
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering
+                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.SaferDiagonalSmuggles, Variant.DashBeforePickup
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
@@ -666,7 +666,7 @@ namespace ExtendedVariants.UI {
             if (category == VariantCategory.QualityOfLife) {
                 menu.Add(buildHeading(menu, "QUALITYOFLIFE"));
 
-                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering }) {
+                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.SaferDiagonalSmuggles, Variant.DashBeforePickup }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));

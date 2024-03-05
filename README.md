@@ -116,6 +116,8 @@ Adds some options to the Mod Options menu:
 *   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab.
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present!
 *   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early.
+*   **Safer Diagonal Smuggle**: Makes the position window for diagonal dream smuggles the same as for horizontal smuggles.
+*   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform.
 
 
 This can be extended by downloading other mods:
