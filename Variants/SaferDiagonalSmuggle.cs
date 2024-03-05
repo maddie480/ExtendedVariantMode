@@ -7,7 +7,7 @@ using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants;
 
-public class SaferDiagonalSmuggles : AbstractExtendedVariant {
+public class SaferDiagonalSmuggle : AbstractExtendedVariant {
     private const float ADD_DASH_ATTACK = 0.0167f;
 
     public override void Load() => On.Celeste.Player.PickupCoroutine += Player_PickupCoroutine;
@@ -21,7 +21,7 @@ public class SaferDiagonalSmuggles : AbstractExtendedVariant {
     public override object ConvertLegacyVariantValue(int value) => value != 0;
 
     private IEnumerator Player_PickupCoroutine(On.Celeste.Player.orig_PickupCoroutine pickupCoroutine, Player player) {
-        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.SaferDiagonalSmuggles) && player.DashDir.X != 0f && player.DashDir.Y < 0f) {
+        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.SaferDiagonalSmuggle) && player.DashDir.X != 0f && player.DashDir.Y < 0f) {
             var dynamicData = DynamicData.For(player);
             float dashAttackTimer = dynamicData.Get<float>("dashAttackTimer");
 
