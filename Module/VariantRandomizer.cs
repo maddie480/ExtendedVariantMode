@@ -19,6 +19,8 @@ namespace ExtendedVariants {
         private float vanillafyTimer = -1f;
 
         private InfoPanel infoPanel = new InfoPanel();
+        private VariantsIndicator variantsIndicator = new VariantsIndicator();
+
 
         public void Load() {
             On.Celeste.Level.Begin += onLevelBegin;
@@ -95,15 +97,19 @@ namespace ExtendedVariants {
 
         private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
             orig(self, scene);
+            if (!((scene as Level)?.Paused ?? false)) {
+                Draw.SpriteBatch.Begin();
 
-            if ((
+                if (
                     ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen ||
                     (ExtendedVariantsModule.Session != null && ExtendedVariantsModule.Session.ExtendedVariantsDisplayedOnScreenViaTrigger)
-                )
-                && !((scene as Level)?.Paused ?? false)) {
+                   ) {
 
-                Draw.SpriteBatch.Begin();
-                infoPanel.Render();
+                    infoPanel.Render();
+                } else {
+                    variantsIndicator.Render();
+                }
+
                 Draw.SpriteBatch.End();
             }
         }
@@ -462,6 +468,7 @@ namespace ExtendedVariants {
             }
 
             infoPanel.Update(enabledVariantsToDisplay);
+            variantsIndicator.Update(ExtendedVariantsModule.Settings.EnabledVariants.Keys);
         }
 
         public static string GetVanillaVariantLabel(ExtendedVariantsModule.Variant variant) {
