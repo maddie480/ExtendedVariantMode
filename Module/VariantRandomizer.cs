@@ -468,7 +468,7 @@ namespace ExtendedVariants {
             }
 
             infoPanel.Update(enabledVariantsToDisplay);
-            variantsIndicator.Update(ExtendedVariantsModule.Settings.EnabledVariants.Keys);
+            variantsIndicator.Update(ExtendedVariantsModule.Settings.EnabledVariants.Keys.Concat(enabledVanillaVariants));
         }
 
         public static string GetVanillaVariantLabel(ExtendedVariantsModule.Variant variant) {

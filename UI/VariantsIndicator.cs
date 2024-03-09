@@ -6,7 +6,7 @@ using ExtendedVariants.Module;
 using System.Linq;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
-// UI class for clear verification purposes. Any 
+// UI class for clear verification purposes.
 namespace ExtendedVariants.UI
 {
     public class VariantsIndicator
@@ -26,12 +26,13 @@ namespace ExtendedVariants.UI
             Variant.CornerboostProtection,
             Variant.AlternativeBuffering,
             Variant.SaferDiagonalSmuggle,
-            Variant.DashBeforePickup
+            Variant.DashBeforePickup,
+            Variant.Invincible,
+            Variant.InfiniteStamina,
         };
 
-        public void Update(IEnumerable<ExtendedVariantsModule.Variant> userVariants)
-        {
-            hasPlayerOverrideVariant = userVariants.Intersect(watermarkedVariants).Any();
+        public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings, IEnumerable<ExtendedVariantsModule.Variant> vanillaVariants) {
+            hasPlayerOverrideVariant = userSettings.Concat(vanillaVariants).Intersect(watermarkedVariants).Any();
         }
 
         public void Render()
