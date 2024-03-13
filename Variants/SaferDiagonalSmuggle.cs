@@ -7,7 +7,7 @@ using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class SaferDiagonalSmuggle : AbstractExtendedVariant {
-        private const float ADD_DASH_ATTACK = 0.0167f;
+        private const float ADD_DASH_ATTACK = 0.033f;
 
         public override void Load() => On.Celeste.Player.PickupCoroutine += Player_PickupCoroutine;
 

@@ -314,7 +314,7 @@ namespace ExtendedVariants.UI {
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup
+                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
@@ -666,7 +666,7 @@ namespace ExtendedVariants.UI {
             if (category == VariantCategory.QualityOfLife) {
                 menu.Add(buildHeading(menu, "QUALITYOFLIFE"));
 
-                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup }) {
+                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
@@ -675,6 +675,19 @@ namespace ExtendedVariants.UI {
                     if (variant == Variant.UltraProtection) {
                         option.OnEnter.Invoke();
                     }
+                }
+
+                TextMenuOptionExt<int> multiBufferingOption = getScaleOption(Variant.MultiBuffering, "", new int[] { 1, 2, 3 },
+                    value => value == 1 ? Dialog.Clean("options_off") : value.ToString());
+                menu.Add(multiBufferingOption);
+                multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_2"));
+                multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_1"));
+
+                foreach (Variant variant in new Variant[] { Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup }) {
+                    TextMenuExt.OnOff option = getToggleOption(variant);
+                    menu.Add(option);
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
+                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
                 }
             }
 
