@@ -27,12 +27,13 @@ namespace ExtendedVariants.UI
             Variant.AlternativeBuffering,
             Variant.SaferDiagonalSmuggle,
             Variant.DashBeforePickup,
+            Variant.MultiBuffering,
             Variant.Invincible,
             Variant.InfiniteStamina,
         };
 
-        public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings, IEnumerable<ExtendedVariantsModule.Variant> vanillaVariants) {
-            hasPlayerOverrideVariant = userSettings.Concat(vanillaVariants).Intersect(watermarkedVariants).Any();
+        public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {
+            hasPlayerOverrideVariant = userSettings.Intersect(watermarkedVariants).Any();
         }
 
         public void Render()

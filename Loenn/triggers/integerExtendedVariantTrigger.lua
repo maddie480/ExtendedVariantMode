@@ -28,7 +28,7 @@ trigger.fieldInformation = {
             "CornerCorrection",
             "DashCount",
             "JellyfishEverywhere",
-			"MultiBuffering",
+            "MultiBuffering",
             "OshiroCount",
             "ReverseOshiroCount",
             "Stamina",

@@ -10,7 +10,7 @@ const IntegerVariants = [
     "CornerCorrection",
     "DashCount",
     "JellyfishEverywhere",
-	"MultiBuffering",
+    "MultiBuffering",
     "OshiroCount",
     "ReverseOshiroCount",
     "Stamina",
