@@ -66,6 +66,9 @@ namespace ExtendedVariants.Entities.ForMappers {
             outline.CenterOrigin();
             outline.Visible = false;
 
+            bool oneUseSprite = data.Bool("oneUse") && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "BetterRefillGems", Version = new Version(1, 0, 1) })
+                && betterRefillGemsEnabled() && GFX.Game.Has($"objects/{texture}/oneuse_idle00");
+
             if (texture == "ExtendedVariantMode/jumprefill") {
                 Add(sprite = GFX.SpriteBank.Create("ExtendedVariantMode_JumpRefill_Green"));
                 Add(flash = GFX.SpriteBank.Create("ExtendedVariantMode_JumpRefill_Green"));
@@ -78,16 +81,15 @@ namespace ExtendedVariants.Entities.ForMappers {
                 // build new sprites from scratch!
                 Add(sprite = new Sprite(GFX.Game, $"objects/{texture}/"));
                 sprite.AddLoop("idle", "idle", 0.1f);
-                sprite.AddLoop("oneuse_idle", "oneuse_idle", 0.1f);
+                if (oneUseSprite) {
+                    sprite.AddLoop("oneuse_idle", "oneuse_idle", 0.1f);
+                }
                 sprite.CenterOrigin();
 
                 Add(flash = new Sprite(GFX.Game, $"objects/{texture}/flash"));
                 flash.Add("flash", "", 0.05f);
                 flash.CenterOrigin();
             }
-
-            bool oneUseSprite = data.Bool("oneUse") && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "BetterRefillGems", Version = new Version(1, 0, 1) })
-                && betterRefillGemsEnabled() && GFX.Game.Has($"objects/{texture}/oneuse_idle00");
 
             sprite.Play(oneUseSprite ? "oneuse_idle" : "idle");
 
