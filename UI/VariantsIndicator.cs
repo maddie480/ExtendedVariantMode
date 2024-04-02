@@ -27,9 +27,7 @@ namespace ExtendedVariants.UI
             Variant.AlternativeBuffering,
             Variant.SaferDiagonalSmuggle,
             Variant.DashBeforePickup,
-            Variant.MultiBuffering,
-            Variant.Invincible,
-            Variant.InfiniteStamina,
+            Variant.MultiBuffering
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {
