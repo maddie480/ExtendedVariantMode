@@ -643,7 +643,9 @@ namespace ExtendedVariants.Module {
                 MaxEnabledVariants = Settings.MaxEnabledVariants,
                 RandoSetSeed = Settings.RandoSetSeed,
                 Vanillafy = Settings.Vanillafy,
-                DisplayEnabledVariantsToScreen = Settings.DisplayEnabledVariantsToScreen
+                DisplayEnabledVariantsToScreen = Settings.DisplayEnabledVariantsToScreen,
+                OnScreenDisplayTextOpacity = Settings.OnScreenDisplayTextOpacity,
+                OnScreenDisplayBackgroundOpacity = Settings.OnScreenDisplayBackgroundOpacity
             };
 
             try {
