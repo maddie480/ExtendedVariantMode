@@ -113,7 +113,7 @@ Adds some options to the Mod Options menu:
 *   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab. (brought to you by @DominicAglialoro)
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present! (brought to you by @SnipUndercover)
 
-*   A few **quality of life improvements** to make some tech more lenient, brought to you by @DominicAglialoro:
+*   A few **consistency and leniency improvements**, brought to you by @DominicAglialoro:
     *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
     *   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
     *   **Cornerboost Protection**: Ensures that you gain jump speed when buffering a cornerboost.
