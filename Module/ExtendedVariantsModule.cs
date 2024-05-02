@@ -302,6 +302,8 @@ namespace ExtendedVariants.Module {
             if (DJMapHelperInstalled) {
                 // let's add this variant in now.
                 VariantHandlers[Variant.ReverseOshiroCount] = new ReverseOshiroCount();
+            } else {
+                Settings.EnabledVariants.Remove(Variant.ReverseOshiroCount);
             }
 
             if (SpringCollab2020Installed || MaxHelpingHandInstalled) {
@@ -312,6 +314,8 @@ namespace ExtendedVariants.Module {
                     // and activate it if all others are already active!
                     VariantHandlers[Variant.MadelineIsSilhouette].Load();
                 }
+            } else {
+                Settings.EnabledVariants.Remove(Variant.MadelineIsSilhouette);
             }
 
             if (MaxHelpingHandInstalled) {
@@ -322,6 +326,8 @@ namespace ExtendedVariants.Module {
                     // and activate it if all others are already active!
                     VariantHandlers[Variant.MadelineHasPonytail].Load();
                 }
+            } else {
+                Settings.EnabledVariants.Remove(Variant.MadelineHasPonytail);
             }
 
             if (JungleHelperInstalled) {
@@ -332,6 +338,8 @@ namespace ExtendedVariants.Module {
                     // and activate it if all others are already active!
                     VariantHandlers[Variant.JungleSpidersEverywhere].Load();
                 }
+            } else {
+                Settings.EnabledVariants.Remove(Variant.JungleSpidersEverywhere);
             }
 
             // filter out settings for variants that don't exist (optional dependencies that got disabled / uninstalled).
