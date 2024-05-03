@@ -27,7 +27,8 @@ namespace ExtendedVariants.UI
             Variant.AlternativeBuffering,
             Variant.SaferDiagonalSmuggle,
             Variant.DashBeforePickup,
-            Variant.MultiBuffering
+            Variant.MultiBuffering,
+            Variant.MidairTech // Could be used to fudge a super
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {

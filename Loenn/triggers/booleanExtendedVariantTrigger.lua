@@ -76,7 +76,8 @@ trigger.fieldInformation = {
             "TrueNoGrabbing",
             "UltraProtection",
             "UpsideDown",
-            "WalllessWallbounce"
+            "WalllessWallbounce",
+            "MidairTech"
         },
         editable = false
     }

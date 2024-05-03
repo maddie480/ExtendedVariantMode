@@ -362,3 +362,6 @@ MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_2=the same as for horizont
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP=Dash Before Pickup
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_1=Gives dashing input priority over picking up throwables,
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_2=making instant dash regrabs easier to perform
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH=Mid-air Tech
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1=Allows tech that uses superjumping (e.g. supers, hypers) in midair
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2=Hypers can be input upwards, and must be input before Madeline starts moving vertically

@@ -58,7 +58,7 @@ namespace ExtendedVariants.Module {
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, CornerboostProtection, TrueNoGrabbing,
-            BufferableGrab, AlternativeBuffering, WalllessWallbounce, SaferDiagonalSmuggle, DashBeforePickup, MultiBuffering,
+            BufferableGrab, AlternativeBuffering, WalllessWallbounce, SaferDiagonalSmuggle, DashBeforePickup, MultiBuffering, MidairTech,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -206,6 +206,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.WalllessWallbounce] = new WalllessWallbounce();
             VariantHandlers[Variant.SaferDiagonalSmuggle] = new SaferDiagonalSmuggle();
             VariantHandlers[Variant.DashBeforePickup] = new DashBeforePickup();
+            VariantHandlers[Variant.MidairTech] = new MidairTech();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();

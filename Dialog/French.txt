@@ -362,3 +362,6 @@ MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_2=sera le même en diagona
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP=Dash avant de ramasser
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_1=Si tu saisis un objet et dash en même temps, le dash aura la priorité,
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_2=ce qui simplifie la technique "lâcher, dash, puis rattraper l'objet"
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH=Technique Aérienne
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1=Permet l'utilisation de techniques utilisant le "superjumping" (ex. supers, hypers) dans les airs
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2=Les hypers peuvent être exécutés vers le haut et doivent être exécutés avant que Madeline commence à bouger verticalement
