@@ -3,32 +3,31 @@ using Celeste;
 using ExtendedVariants.Module;
 using MonoMod.Cil;
 
-namespace ExtendedVariants.Variants;
+namespace ExtendedVariants.Variants {
+    public class ThrowIgnoresForcedMove : AbstractExtendedVariant {
+        public override void Load() => IL.Celeste.Player.Throw += Player_Throw_il;
 
-public class ThrowIgnoresForcedMove : AbstractExtendedVariant {
+        public override void Unload() => IL.Celeste.Player.Throw -= Player_Throw_il;
 
-    public override void Load() => IL.Celeste.Player.Throw += Player_Throw_il;
+        public override Type GetVariantType() => typeof(bool);
 
-    public override void Unload() => IL.Celeste.Player.Throw -= Player_Throw_il;
+        public override object GetDefaultVariantValue() => false;
 
-    public override Type GetVariantType() => typeof(bool);
+        public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-    public override object GetDefaultVariantValue() => false;
+        private void Player_Throw_il(ILContext il) {
+            var cursor = new ILCursor(il);
 
-    public override object ConvertLegacyVariantValue(int value) => value != 0;
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("Facing"))) {
+                cursor.EmitDelegate<Func<Facings, Facings>>(facing => {
+                    if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.ThrowIgnoresForcedMove))
+                        return facing;
 
-    private void Player_Throw_il(ILContext il) {
-        var cursor = new ILCursor(il);
+                    int moveX = Input.MoveX.Value;
 
-        while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("Facing"))) {
-            cursor.EmitDelegate<Func<Facings, Facings>>(facing => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.ThrowIgnoresForcedMove))
-                    return facing;
-
-                int moveX = Input.MoveX.Value;
-
-                return moveX != 0 ? (Facings) moveX : facing;
-            });
+                    return moveX != 0 ? (Facings) moveX : facing;
+                });
+            }
         }
     }
 }
