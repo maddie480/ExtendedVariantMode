@@ -349,11 +349,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(walllessWallbounceOption = getToggleOption(Variant.WalllessWallbounce));
                 walllessWallbounceOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT"));
 
-                TextMenuExt.OnOff midairTechToggle;
-                menu.Add(midairTechToggle = getToggleOption(Variant.MidairTech));
-                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2"));
-                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1"));
-
                 TextMenuOptionExt<int> horizontalWallJumpDurationOption;
                 menu.Add(horizontalWallJumpDurationOption = getScaleOption(Variant.HorizontalWallJumpDuration, "x", multiplierScale));
                 horizontalWallJumpDurationOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HORIZONTALWALLJUMPDURATION_HINT"));
@@ -479,6 +474,11 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.DisableDashCooldown));
                 menu.Add(getScaleOption(Variant.CornerCorrection, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
 
+                TextMenuExt.OnOff midairTechToggle;
+                menu.Add(midairTechToggle = getToggleOption(Variant.MidairTech));
+                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2"));
+                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1"));
+                
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));
