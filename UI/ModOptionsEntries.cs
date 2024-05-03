@@ -10,7 +10,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
@@ -314,7 +313,8 @@ namespace ExtendedVariants.UI {
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering, Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup
+                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering, Variant.MultiBuffering,
+                    Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
@@ -492,12 +492,10 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
 
-                foreach (Variant variant in new Variant[] { Variant.TrueNoGrabbing, Variant.BufferableGrab }) {
-                    TextMenuExt.OnOff option = getToggleOption(variant);
-                    menu.Add(option);
-                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
-                    option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
-                }
+                TextMenuExt.OnOff trueNoGrabbingOption;
+                menu.Add(trueNoGrabbingOption = getToggleOption(Variant.TrueNoGrabbing));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2"));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1"));
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
@@ -666,7 +664,7 @@ namespace ExtendedVariants.UI {
             if (category == VariantCategory.QualityOfLife) {
                 menu.Add(buildHeading(menu, "QUALITYOFLIFE"));
 
-                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.AlternativeBuffering }) {
+                foreach (Variant variant in new Variant[] { Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
@@ -683,7 +681,7 @@ namespace ExtendedVariants.UI {
                 multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_2"));
                 multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_1"));
 
-                foreach (Variant variant in new Variant[] { Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup }) {
+                foreach (Variant variant in new Variant[] { Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));

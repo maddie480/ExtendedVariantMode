@@ -24,9 +24,11 @@ namespace ExtendedVariants.UI
             Variant.UltraProtection,
             Variant.LiftboostProtection,
             Variant.CornerboostProtection,
+            Variant.CrouchDashFix,
             Variant.AlternativeBuffering,
             Variant.SaferDiagonalSmuggle,
             Variant.DashBeforePickup,
+            Variant.ThrowIgnoresForcedMove,
             Variant.MultiBuffering
         };
 
