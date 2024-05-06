@@ -57,8 +57,8 @@ namespace ExtendedVariants.Module {
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
-            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, UltraProtection, LiftboostProtection, CornerboostProtection, TrueNoGrabbing,
-            BufferableGrab, AlternativeBuffering, WalllessWallbounce, SaferDiagonalSmuggle, DashBeforePickup, MultiBuffering,
+            FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
+            CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -196,16 +196,18 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.AlwaysFeather] = new AlwaysFeather();
             VariantHandlers[Variant.PermanentDashAttack] = new PermanentDashAttack();
             VariantHandlers[Variant.PermanentBinoStorage] = new PermanentBinoStorage();
+            VariantHandlers[Variant.WalllessWallbounce] = new WalllessWallbounce();
+            VariantHandlers[Variant.TrueNoGrabbing] = new TrueNoGrabbing();
+            VariantHandlers[Variant.BufferableGrab] = new BufferableGrab();
             VariantHandlers[Variant.UltraProtection] = new UltraProtection();
             VariantHandlers[Variant.LiftboostProtection] = new LiftboostProtection();
             VariantHandlers[Variant.CornerboostProtection] = new CornerboostProtection();
-            VariantHandlers[Variant.TrueNoGrabbing] = new TrueNoGrabbing();
-            VariantHandlers[Variant.BufferableGrab] = new BufferableGrab();
+            VariantHandlers[Variant.CrouchDashFix] = new CrouchDashFix();
             VariantHandlers[Variant.AlternativeBuffering] = new AlternativeBuffering();
             VariantHandlers[Variant.MultiBuffering] = new MultiBuffering();
-            VariantHandlers[Variant.WalllessWallbounce] = new WalllessWallbounce();
             VariantHandlers[Variant.SaferDiagonalSmuggle] = new SaferDiagonalSmuggle();
             VariantHandlers[Variant.DashBeforePickup] = new DashBeforePickup();
+            VariantHandlers[Variant.ThrowIgnoresForcedMove] = new ThrowIgnoresForcedMove();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();
