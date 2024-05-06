@@ -332,6 +332,13 @@ MODOPTIONS_EXTENDEDVARIANTS_OSD= Variantes - Affichage en jeu
 MODOPTIONS_EXTENDEDVARIANTS_OSD_TEXTOPACITY= Opacité du texte
 MODOPTIONS_EXTENDEDVARIANTS_OSD_BGOPACITY= Opacité de l'arrière-plan
 
+MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE=Dash + Saut mural sans mur
+MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT=Reproduit l'effet d'un dash + saut mural, même s'il n'y a pas de mur
+
+MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING=Désactiver la touche "Attraper"
+MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1=Désactive complètement la touche "Attraper", y compris
+MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2=pour les mods qui lui donnent une fonction particulière
+
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION=Protéger les "ultras"
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION_HINT_1=Te donne la vitesse d'un "ultra" même si tu
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION_HINT_2=sautes trop tôt ou si tu dash trop tard
@@ -341,12 +348,9 @@ MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTPROTECTION_HINT_2=à Madeline par les plate
 MODOPTIONS_EXTENDEDVARIANTS_CORNERBOOSTPROTECTION=Protéger les "corner boosts"
 MODOPTIONS_EXTENDEDVARIANTS_CORNERBOOSTPROTECTION_HINT_1=S'assure que tu obtiennes la vitesse d'un
 MODOPTIONS_EXTENDEDVARIANTS_CORNERBOOSTPROTECTION_HINT_2="corner boost" même si tu sautes trop tôt
-MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING=Désactiver la touche "Attraper"
-MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1=Désactive complètement la touche "Attraper", y compris
-MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2=pour les mods qui lui donnent une fonction particulière
-MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB=Buffer pour la touche "Attraper"
-MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB_HINT_1=La touche "Attraper" aura un effet même si tu appuies
-MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB_HINT_2=légèrement trop tôt, utile si elle a une fonction particulière
+MODOPTIONS_EXTENDEDVARIANTS_CROUCHDASHFIX=Cohérence des dash accroupis
+MODOPTIONS_EXTENDEDVARIANTS_CROUCHDASHFIX_HINT_1=S'assure que Madeline soit accroupie ou non
+MODOPTIONS_EXTENDEDVARIANTS_CROUCHDASHFIX_HINT_2=quand tu effectues un dash normal ou accroupi
 
 MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING="Buffering" alternatif
 MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING_HINT_1=Les actions qui se produisent même si tu appuies trop tôt
@@ -354,11 +358,12 @@ MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING_HINT_2=se produiront également
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING="Buffering" multiple
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_1=Le jeu réagira comme si tu avais appuyé plusieurs fois sur
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_2=un bouton, même si tu le relâches trop tôt
-MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE=Dash + Saut mural sans mur
-MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT=Reproduit l'effet d'un dash + saut mural, même s'il n'y a pas de mur
 MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE=Safer Diagonal Smuggle
 MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_1=Le timing pour entrer dans un "dream block" avec un objet
 MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_2=sera le même en diagonale et à l'horizontale
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP=Dash avant de ramasser
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_1=Si tu saisis un objet et dash en même temps, le dash aura la priorité,
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_2=ce qui simplifie la technique "lâcher, dash, puis rattraper l'objet"
+MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE=Lancer dans toutes directions
+MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_1=Te permet de lancer l'objet que tu tiens à gauche ou à droite
+MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_2=même si quelque chose te force à regarder dans une direction
