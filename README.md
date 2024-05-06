@@ -117,10 +117,12 @@ Adds some options to the Mod Options menu:
     *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
     *   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
     *   **Cornerboost Protection**: Ensures that you gain jump speed when buffering a cornerboost.
+	*   **Crouch Dash Fix**: Ensures that you have the expected crouch state when performing a normal or crouched dash
     *   **Multi Buffering**: Allows you to buffer multiple of the same input before it is consumed.
     *   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early.
     *   **Safer Diagonal Smuggle**: Makes the position window for diagonal dream smuggles the same as for horizontal smuggles.
     *   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform.
+	*   **Throw Ignores Forced Move**: Allows you to throw in either direction, even when an interaction forces you to move in one direction
 
 
 This can be extended by downloading other mods:

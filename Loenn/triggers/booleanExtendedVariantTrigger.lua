@@ -34,6 +34,7 @@ trigger.fieldInformation = {
             "ChangePatternsOfExistingBosses",
             "CornerboostProtection",
             "CorrectedMirrorMode",
+			"CrouchDashFix",
             "DashBeforePickup",
             "DashTrailAllTheTime",
             "DisableClimbJumping",
@@ -73,6 +74,7 @@ trigger.fieldInformation = {
             "SaferDiagonalSmuggle",
             "SnowballsEverywhere",
             "TheoCrystalsEverywhere",
+			"ThrowIgnoresForcedMove"
             "TrueNoGrabbing",
             "UltraProtection",
             "UpsideDown",
