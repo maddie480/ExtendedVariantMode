@@ -367,3 +367,6 @@ MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_2=ce qui simplifie la techniqu
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE=Lancer dans toutes directions
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_1=Te permet de lancer l'objet que tu tiens à gauche ou à droite
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_2=même si quelque chose te force à regarder dans une direction
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH=Technique Aérienne
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1=Permet l'utilisation de techniques utilisant le "superjumping" (ex. supers, hypers) dans les airs
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2=Les hypers peuvent être exécutés vers le haut et doivent être exécutés avant que Madeline commence à bouger verticalement

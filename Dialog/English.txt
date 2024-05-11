@@ -366,3 +366,6 @@ MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP_HINT_2=making instant dash regrabs 
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE=Throw Ignores Forced Move
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_1=Allows the player to throw in either direction even when
 MODOPTIONS_EXTENDEDVARIANTS_THROWIGNORESFORCEDMOVE_HINT_2=an interaction forces the player to move in one direction
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH=Mid-air Tech
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1=Allows tech that uses superjumping (e.g. supers, hypers) in midair
+MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2=Hypers can be input upwards, and must be input before Madeline starts moving vertically

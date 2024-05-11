@@ -123,7 +123,8 @@ const BooleanVariants = [
     "TrueNoGrabbing",
     "UltraProtection",
     "UpsideDown",
-    "WalllessWallbounce"
+    "WalllessWallbounce",
+    "MidairTech"
 ]
 
 const SpecialHandlingVariants = [

@@ -287,7 +287,7 @@ namespace ExtendedVariants.UI {
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce
+                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -474,6 +474,11 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.DisableDashCooldown));
                 menu.Add(getScaleOption(Variant.CornerCorrection, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
 
+                TextMenuExt.OnOff midairTechToggle;
+                menu.Add(midairTechToggle = getToggleOption(Variant.MidairTech));
+                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2"));
+                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1"));
+                
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));
