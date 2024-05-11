@@ -478,7 +478,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(midairTechToggle = getToggleOption(Variant.MidairTech));
                 midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2"));
                 midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1"));
-                
+
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));

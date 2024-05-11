@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
                 instr => instr.MatchLdarg(0),
                 instr => instr.MatchLdfld<Player>("jumpGraceTimer")
             )) { return; }
-               
+
             int before = cursor.Index;
 
             if (!cursor.TryGotoNext(
@@ -51,12 +51,12 @@ namespace ExtendedVariants.Variants {
             )) { return; }
 
             Logger.Log("ExtendedVariantMode/MidairTech", $"Modding midair check in CIL code for {cursor.Method.Name}");
-                
+
             cursor.MarkLabel(labelPastCheck);
 
             cursor.Index = before;
             cursor.MoveAfterLabels();
-                
+
             cursor.EmitDelegate<Func<bool>>(GetMidairTechAllowed);
             cursor.Emit(OpCodes.Brtrue, labelPastCheck);
         }
