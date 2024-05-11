@@ -112,6 +112,7 @@ Adds some options to the Mod Options menu:
 *   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input. (brought to you by @DominicAglialoro)
 *   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab. (brought to you by @DominicAglialoro)
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present! (brought to you by @SnipUndercover)
+*   **Mid-Air Tech**: This variant allows for inputting supers, hypers, etc. in midair. Goes well with wall-less wallbounces. (brought to you by @balt-dev)
 
 *   A few **consistency and leniency improvements**, brought to you by @DominicAglialoro:
     *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
