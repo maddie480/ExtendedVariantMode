@@ -339,6 +339,8 @@ MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING=Désactiver la touche "Attraper"
 MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1=Désactive complètement la touche "Attraper", y compris
 MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2=pour les mods qui lui donnent une fonction particulière
 
+MODOPTIONS_EXTENDEDVARIANTS_BUFFERABLEGRAB=Buffer pour la touche "Attraper"
+
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION=Protéger les "ultras"
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION_HINT_1=Te donne la vitesse d'un "ultra" même si tu
 MODOPTIONS_EXTENDEDVARIANTS_ULTRAPROTECTION_HINT_2=sautes trop tôt ou si tu dash trop tard
@@ -358,7 +360,8 @@ MODOPTIONS_EXTENDEDVARIANTS_ALTERNATIVEBUFFERING_HINT_2=se produiront également
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING="Buffering" multiple
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_1=Le jeu réagira comme si tu avais appuyé plusieurs fois sur
 MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_2=un bouton, même si tu le relâches trop tôt
-MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE=Safer Diagonal Smuggle
+# "Entrer plus facilement en diagonale avec un objet dans un bloc" is way too long :FRICK:
+MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE="Dream Smuggle" diagonal simplifié
 MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_1=Le timing pour entrer dans un "dream block" avec un objet
 MODOPTIONS_EXTENDEDVARIANTS_SAFERDIAGONALSMUGGLE_HINT_2=sera le même en diagonale et à l'horizontale
 MODOPTIONS_EXTENDEDVARIANTS_DASHBEFOREPICKUP=Dash avant de ramasser
