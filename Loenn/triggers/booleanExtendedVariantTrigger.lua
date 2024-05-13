@@ -74,7 +74,7 @@ trigger.fieldInformation = {
             "SaferDiagonalSmuggle",
             "SnowballsEverywhere",
             "TheoCrystalsEverywhere",
-            "ThrowIgnoresForcedMove"
+            "ThrowIgnoresForcedMove",
             "TrueNoGrabbing",
             "UltraProtection",
             "UpsideDown",
