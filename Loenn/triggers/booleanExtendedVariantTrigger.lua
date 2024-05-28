@@ -62,7 +62,9 @@ trigger.fieldInformation = {
             "InvertVerticalControls",
             "LegacyDashSpeedBehavior",
             "LiftboostProtection",
+            "MidairTech",
             "NoFreezeFrames",
+            "NoFreezeFramesAdvanceCassetteBlocks",
             "OshiroEverywhere",
             "PermanentBinoStorage",
             "PermanentDashAttack",
@@ -78,8 +80,7 @@ trigger.fieldInformation = {
             "TrueNoGrabbing",
             "UltraProtection",
             "UpsideDown",
-            "WalllessWallbounce",
-            "MidairTech"
+            "WalllessWallbounce"
         },
         editable = false
     }

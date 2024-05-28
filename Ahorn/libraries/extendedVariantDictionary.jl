@@ -107,7 +107,9 @@ const BooleanVariants = [
     "InvertVerticalControls",
     "LegacyDashSpeedBehavior",
     "LiftboostProtection",
+    "MidairTech",
     "NoFreezeFrames",
+    "NoFreezeFramesAdvanceCassetteBlocks",
     "OshiroEverywhere",
     "PermanentBinoStorage",
     "PermanentDashAttack",
@@ -123,8 +125,7 @@ const BooleanVariants = [
     "TrueNoGrabbing",
     "UltraProtection",
     "UpsideDown",
-    "WalllessWallbounce",
-    "MidairTech"
+    "WalllessWallbounce"
 ]
 
 const SpecialHandlingVariants = [

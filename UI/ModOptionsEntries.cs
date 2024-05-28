@@ -30,6 +30,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<int> badelineBossNodeCountOption;
         private TextMenuOptionExt<bool> allowThrowingTheoOffscreenOption;
         private TextMenuOptionExt<bool> allowLeavingTheoBehindOption;
+        private TextMenuOptionExt<bool> noFreezeFramesAdvanceCassetteBlocksOption;
         private TextMenuOptionExt<int> dashDirection;
         private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
         private List<TextMenu.Item> elementsToHideOnToggle;
@@ -309,7 +310,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -638,8 +639,14 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.GameSpeed, "x", multiplierScale));
 
                 TextMenuExt.OnOff noFreezeFramesOption;
-                menu.Add(noFreezeFramesOption = getToggleOption(Variant.NoFreezeFrames));
+                menu.Add(noFreezeFramesOption = (TextMenuExt.OnOff) getToggleOption(Variant.NoFreezeFrames)
+                    .Change(newValue => {
+                        setVariantValue(Variant.NoFreezeFrames, newValue);
+                        refreshOptionMenuEnabledStatus();
+                    }));
                 noFreezeFramesOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC"));
+
+                menu.Add(noFreezeFramesAdvanceCassetteBlocksOption = getToggleOption(Variant.NoFreezeFramesAdvanceCassetteBlocks));
 
                 menu.Add(getToggleOption(Variant.EverythingIsUnderwater));
                 menu.Add(getToggleOption(Variant.AlwaysFeather));
@@ -759,6 +766,7 @@ namespace ExtendedVariants.UI {
             if (allowLeavingTheoBehindOption != null) allowLeavingTheoBehindOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.TheoCrystalsEverywhere));
             if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
             if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !(Engine.Scene is Level) || !((bool) triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
+            if (noFreezeFramesAdvanceCassetteBlocksOption != null) noFreezeFramesAdvanceCassetteBlocksOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.NoFreezeFrames));
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3

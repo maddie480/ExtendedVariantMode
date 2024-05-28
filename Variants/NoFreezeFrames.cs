@@ -1,4 +1,5 @@
-﻿using Celeste.Mod;
+﻿using Celeste;
+using Celeste.Mod;
 using MonoMod.Cil;
 using System;
 using Monocle;
@@ -37,13 +38,21 @@ namespace ExtendedVariants.Variants {
 
         private void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
             if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
+                if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
+                    Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(time);
+                }
+
                 return;
             }
             orig(time);
         }
 
         private void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
-            if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
+            if (GetVariantValue<bool>(Variant.NoFreezeFrames) && Engine.FreezeTimer > 0f) {
+                if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
+                    Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(Engine.FreezeTimer);
+                }
+
                 Engine.FreezeTimer = 0f;
             }
 

@@ -283,6 +283,7 @@ MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC=    Temps pendant lequel tu peux sau
 
 MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES= Désactiver les "freeze frames"
 MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMES_DESC=    Ne pas geler le jeu pendant quelques instants au dash, etc.
+MODOPTIONS_EXTENDEDVARIANTS_NOFREEZEFRAMESADVANCECASSETTEBLOCKS= Accélérer les blocs cassette pour compenser
 
 MODOPTIONS_EXTENDEDVARIANTS_PRESERVEEXTRADASHESUNDERWATER=  Conserver les dash supplémentaires dans l'eau
 
