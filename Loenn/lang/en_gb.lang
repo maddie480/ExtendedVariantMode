@@ -6,6 +6,7 @@ entities.ExtendedVariantMode/TheoCrystal.attributes.description.allowThrowingOff
 entities.ExtendedVariantMode/TheoCrystal.attributes.description.allowLeavingBehind=Whether the player can leave the room without grabbing Theo.
 entities.ExtendedVariantMode/TheoCrystal.attributes.description.forceSpawn=Forces the Theo Crystal to spawn, even if the player is bringing a Theo Crystal from another room.
 entities.ExtendedVariantMode/TheoCrystal.attributes.description.sprite=The sprite that the Theo Crystal should use, from your map's Sprites.xml.
+entities.ExtendedVariantMode/TheoCrystal.attributes.description.deathEffectColor=The color of the particles that appear when the Theo Crystal dies.
 
 # Extra Jump Refill
 entities.ExtendedVariantMode/ExtraJumpRefill.placements.name.default=Extra Jump Refill
