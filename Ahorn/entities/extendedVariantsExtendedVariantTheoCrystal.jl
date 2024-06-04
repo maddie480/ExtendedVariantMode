@@ -3,7 +3,7 @@
 using ..Ahorn, Maple
 
 @mapdef Entity "ExtendedVariantMode/TheoCrystal" ExtendedVariantTheoCrystal(x::Integer, y::Integer,
-    allowThrowingOffscreen::Bool=false, allowLeavingBehind::Bool=false, forceSpawn::Bool=false, sprite::String="theo_crystal")
+    allowThrowingOffscreen::Bool=false, allowLeavingBehind::Bool=false, forceSpawn::Bool=false, sprite::String="theo_crystal", deathEffectColor::String="228B22")
 
 const placements = Ahorn.PlacementDict(
     "Extended Variant Theo Crystal\n(Extended Variant Mode)" => Ahorn.EntityPlacement(

@@ -191,6 +191,7 @@ placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowThrowingOffscr
 placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.allowLeavingBehind=Whether the player can leave the room without grabbing Theo.
 placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.forceSpawn=Forces the Theo Crystal to spawn, even if the player is bringing a Theo Crystal from another room.
 placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.sprite=The sprite that the Theo Crystal should use, from your map's Sprites.xml.
+placements.entities.ExtendedVariantMode/TheoCrystal.tooltips.deathEffectColor=The color of the particles that appear when the Theo Crystal dies.
 
 # Set Jump Count Trigger
 placements.triggers.ExtendedVariantMode/SetJumpCountTrigger.tooltips.jumpCount=The (maximum) extra jump count the player should have when entering the trigger.
