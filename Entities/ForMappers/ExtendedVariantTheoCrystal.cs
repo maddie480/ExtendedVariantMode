@@ -3,6 +3,7 @@ using Celeste.Mod;
 using Celeste.Mod.Entities;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
@@ -17,11 +18,13 @@ namespace ExtendedVariants.Entities.ForMappers {
 
         public static void Load() {
             hookTheoCrystalCtor = new ILHook(typeof(TheoCrystal).GetMethod("orig_ctor"), modTheoCrystalCtor);
+            IL.Celeste.TheoCrystal.Die += modTheoCrystalDie;
         }
 
         public static void Unload() {
             hookTheoCrystalCtor?.Dispose();
             hookTheoCrystalCtor = null;
+            IL.Celeste.TheoCrystal.Die -= modTheoCrystalDie;
         }
 
         private static void modTheoCrystalCtor(ILContext il) {
@@ -32,11 +35,28 @@ namespace ExtendedVariants.Entities.ForMappers {
             }
         }
 
+        private static void modTheoCrystalDie(ILContext il)
+        {
+            ILCursor cursor = new ILCursor(il);
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Color>("get_ForestGreen")))
+            {
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTheoCrystal", $"Modding death effect color at {cursor.Index} in IL for TheoCrystal.Die");
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Func<Color, TheoCrystal, Color>>(ModDeathEffectColor);
+            }
+            return;
+
+            static Color ModDeathEffectColor(Color orig, TheoCrystal self)
+                => self is ExtendedVariantTheoCrystal crystal ? (crystal.deathEffectColor ?? orig) : orig;
+        }
+
         // true if Theo can be left behind, false if the player is blocked if they leave Theo behind, null if it was spawned through the extended variant
         public bool AllowLeavingBehind { get; private set; } = false;
         public bool SpawnedAsEntity { get; private set; } = false;
 
         private bool forceSpawn = false;
+
+        private Color? deathEffectColor = null;
 
         public static Entity Load(Level level, LevelData levelData, Vector2 offset, EntityData entityData) {
             spritePath = entityData.Attr("sprite", defaultValue: "theo_crystal");
@@ -53,6 +73,10 @@ namespace ExtendedVariants.Entities.ForMappers {
             crystal.SpawnedAsEntity = true;
             crystal.AllowLeavingBehind = entityData.Bool("allowLeavingBehind");
             crystal.forceSpawn = entityData.Bool("forceSpawn");
+
+            if (entityData.Has("deathEffectColor"))
+                crystal.deathEffectColor = entityData.HexColor("deathEffectColor", defaultValue: Color.ForestGreen);
+
             return crystal;
         }
 

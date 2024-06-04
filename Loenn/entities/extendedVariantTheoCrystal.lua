@@ -4,13 +4,19 @@ local theoCrystal = {}
 
 theoCrystal.name = "ExtendedVariantMode/TheoCrystal"
 theoCrystal.depth = 100
+theoCrystal.fieldInformation = {
+    deathEffectColor = {
+        fieldType = "color"
+    }
+}
 theoCrystal.placements = {
     name = "theo_crystal",
     data = {
         allowThrowingOffscreen = false,
         allowLeavingBehind = false,
         forceSpawn = false,
-        sprite = "theo_crystal"
+        sprite = "theo_crystal",
+        deathEffectColor = "228B22"
     }
 }
 
