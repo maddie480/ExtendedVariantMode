@@ -58,7 +58,7 @@ namespace ExtendedVariants.Variants {
                 return actualValue;
             }
 
-            if (moveX == 0 - self.Facing) {
+            if (moveX == 0 - (int) self.Facing) {
                 // This will lead to a wall jump. We want to kill climb jumping. So let it go
                 return actualValue;
             }

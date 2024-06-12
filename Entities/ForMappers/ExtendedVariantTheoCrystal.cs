@@ -12,6 +12,7 @@ using System;
 namespace ExtendedVariants.Entities.ForMappers {
     [CustomEntity("ExtendedVariantMode/TheoCrystal")]
     [Tracked(true)]
+    [TrackedAs(typeof(TheoCrystal))]
     public class ExtendedVariantTheoCrystal : TheoCrystal {
         private static ILHook hookTheoCrystalCtor;
         private static string spritePath = null;
@@ -43,11 +44,11 @@ namespace ExtendedVariants.Entities.ForMappers {
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Color>("get_ForestGreen"))) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTheoCrystal", $"Modding death effect color at {cursor.Index} in IL for TheoCrystal.Die");
                 cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Func<Color, TheoCrystal, Color>>(ModDeathEffectColor);
+                cursor.EmitDelegate<Func<Color, TheoCrystal, Color>>(modDeathEffectColor);
             }
         }
 
-        private static Color ModDeathEffectColor(Color orig, TheoCrystal self) {
+        private static Color modDeathEffectColor(Color orig, TheoCrystal self) {
             return self is ExtendedVariantTheoCrystal crystal ? (crystal.deathEffectColor ?? orig) : orig;
         }
 

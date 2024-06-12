@@ -1,8 +1,10 @@
 ﻿using Celeste;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
+using Monocle;
 
 namespace ExtendedVariants.Entities.ForMappers {
+    [TrackedAs(typeof(TheoCrystal))]
     public class ExtendedVariantTheoCrystalGoingOffscreen : ExtendedVariantTheoCrystal {
         public ExtendedVariantTheoCrystalGoingOffscreen(Vector2 position) : base(position) { }
 

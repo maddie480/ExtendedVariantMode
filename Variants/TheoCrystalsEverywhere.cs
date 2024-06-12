@@ -1,25 +1,17 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using ExtendedVariants.Entities;
 using ExtendedVariants.Entities.ForMappers;
 using Microsoft.Xna.Framework;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class TheoCrystalsEverywhere : AbstractExtendedVariant {
-        private static ILHook hookTempleGateClose = null;
-        private static ILHook hookCrystallineHelperFlagCrystal = null;
-
         public override Type GetVariantType() {
             return typeof(bool);
         }
@@ -35,32 +27,13 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.EnforceBounds += modEnforceBounds;
-            IL.Celeste.TempleGate.TheoIsNearby += addExtendedVariantTheoCrystalToCollideCheck;
-
-            hookTempleGateClose = new ILHook(
-                typeof(TempleGate).GetMethod("CloseBehindPlayerAndTheo", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(),
-                addExtendedVariantTheoCrystalToCollideCheck);
-        }
-
-        public static void Initialize() {
-            if (Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "CrystallineHelper", Version = new Version(1, 15, 0) })) {
-                MethodInfo flagCrystalTheoIsNearby = Everest.Modules.FirstOrDefault(m => m.Metadata?.Name == "CrystallineHelper").GetType().Assembly
-                    .GetType("vitmod.FlagCrystal").GetMethod("TempleGate_TheoIsNearby");
-
-                hookCrystallineHelperFlagCrystal = new ILHook(flagCrystalTheoIsNearby, addExtendedVariantTheoCrystalToCollideCheck);
-            }
+            IL.Celeste.Level.EnforceBounds += excludeExtendedVariantTheoCrystalFromEnforceBounds;
         }
 
         public override void Unload() {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.EnforceBounds -= modEnforceBounds;
-            IL.Celeste.TempleGate.TheoIsNearby -= addExtendedVariantTheoCrystalToCollideCheck;
-
-            hookTempleGateClose?.Dispose();
-            hookTempleGateClose = null;
-
-            hookCrystallineHelperFlagCrystal?.Dispose();
-            hookCrystallineHelperFlagCrystal = null;
+            IL.Celeste.Level.EnforceBounds -= excludeExtendedVariantTheoCrystalFromEnforceBounds;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -152,6 +125,26 @@ namespace ExtendedVariants.Variants {
             }
         }
 
+        private void excludeExtendedVariantTheoCrystalFromEnforceBounds(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Scene>("get_Tracker"))) {
+                cursor.Index++;
+                Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Excluding Extended Variant Theo Crystals at {cursor.Index} from Level.EnforceBounds");
+
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.EmitDelegate<Func<TheoCrystal, Level, TheoCrystal>>((orig, self) => {
+                    if (orig is not ExtendedVariantTheoCrystal) return orig;
+
+                    // find the first TheoCrystal that is *not* an ExtendedVariantTheoCrystal, and return it instead.
+                    return self.Tracker.GetEntities<TheoCrystal>()
+                        .Where(crystal => crystal is not ExtendedVariantTheoCrystal)
+                        .OfType<TheoCrystal>()
+                        .FirstOrDefault();
+                });
+            }
+        }
+
         private bool isTheoCrystalsEverywhere() {
             // the variant is on, or an Extended Variant Theo crystal is in the level.
             return GetVariantValue<bool>(Variant.TheoCrystalsEverywhere) ||
@@ -169,22 +162,6 @@ namespace ExtendedVariants.Variants {
             } else {
                 // allow leaving Theo behind of all Theos on the screen can be left behind.
                 return entities.All(t => t.AllowLeavingBehind);
-            }
-        }
-
-        private static void addExtendedVariantTheoCrystalToCollideCheck(ILContext il) {
-            ILCursor cursor = new ILCursor(il);
-
-            while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).FullName == "T Monocle.Tracker::GetEntity<Celeste.TheoCrystal>()")) {
-                Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Patching Theo collide check to include extended variant Theo crystals at {cursor.Index} in IL for {il.Method.FullName}");
-
-                cursor.EmitDelegate<Func<TheoCrystal, TheoCrystal>>(orig => {
-                    if (orig != null) {
-                        return orig;
-                    }
-
-                    return Engine.Scene.Tracker.GetEntity<ExtendedVariantTheoCrystal>();
-                });
             }
         }
     }

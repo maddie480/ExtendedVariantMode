@@ -287,7 +287,6 @@ namespace ExtendedVariants.Module {
 
             DashCountIndicator.Initialize();
             JumpIndicator.Initialize();
-            TheoCrystalsEverywhere.Initialize();
             (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
             (VariantHandlers[Variant.SpinnerColor] as SpinnerColor).Initialize();
 
@@ -494,8 +493,8 @@ namespace ExtendedVariants.Module {
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
-                levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
-                levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
+                    levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
+                    levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: force-enable extended variants.
                 forceEnabled = true;
