@@ -288,7 +288,8 @@ namespace ExtendedVariants.UI {
                     Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech
+                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed,
+                    Variant.StretchUpDashes
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -349,6 +350,10 @@ namespace ExtendedVariants.UI {
                 TextMenuExt.OnOff walllessWallbounceOption;
                 menu.Add(walllessWallbounceOption = getToggleOption(Variant.WalllessWallbounce));
                 walllessWallbounceOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_WALLLESSWALLBOUNCE_HINT"));
+
+                TextMenuExt.OnOff preserveWallbounceSpeedToggle;
+                menu.Add(preserveWallbounceSpeedToggle = getToggleOption(Variant.PreserveWallbounceSpeed));
+                preserveWallbounceSpeedToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PRESERVEWALLBOUNCESPEED_HINT"));
 
                 TextMenuOptionExt<int> horizontalWallJumpDurationOption;
                 menu.Add(horizontalWallJumpDurationOption = getScaleOption(Variant.HorizontalWallJumpDuration, "x", multiplierScale));
@@ -447,6 +452,11 @@ namespace ExtendedVariants.UI {
                 TextMenuOptionExt<int> ultraSpeedMultiplierOption;
                 menu.Add(ultraSpeedMultiplierOption = getScaleOption(Variant.UltraSpeedMultiplier, "x", multiplierScale));
                 ultraSpeedMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_ULTRASPEEDMULTIPLIER_DESC"));
+
+                TextMenuExt.OnOff stretchUpDashesToggle;
+                menu.Add(stretchUpDashesToggle = getToggleOption(Variant.StretchUpDashes));
+                stretchUpDashesToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_2"));
+                stretchUpDashesToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_1"));
 
                 menu.Add(getScaleOption(Variant.DashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
                     if (i == -1) {
