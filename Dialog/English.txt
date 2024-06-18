@@ -376,3 +376,5 @@ MODOPTIONS_EXTENDEDVARIANTS_PRESERVEWALLBOUNCESPEED_HINT=Allows Madeline to keep
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES=Speed-Based Upwards Dash Stretching
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_1=Having a lot of horizontal speed causes Madeline's dash to stretch horizontally
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_2=This variant allows Madeline's upwards dashes to also stretch, if she has enough speed
+MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING=Disable Jump Gravity Lowering
+MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT=You won't be able to divide the gravity by 2 by holding Jump anymore

@@ -41,7 +41,7 @@ namespace ExtendedVariants.Variants {
             cursor.Emit<Player>(OpCodes.Ldfld, "beforeDashSpeed");
 
             // ref dashSpeed
-            cursor.Emit(OpCodes.Ldloca_S, (byte)3);
+            cursor.Emit(OpCodes.Ldloca_S, (byte) 3);
 
             cursor.EmitDelegate(DoUpDashStretch);
         }
@@ -65,10 +65,9 @@ namespace ExtendedVariants.Variants {
                 dashSpeed.Y = beforeDashSpeed.Y;
         }
 
-        private static bool FoundILSequence(ILCursor cursor)
-        {
+        private static bool FoundILSequence(ILCursor cursor) {
             // try to find the most fitting match in a sequence of IL
-            // 
+            //
             // is this probably overkill? yes.
             // did i have fun writing this? yes.
 

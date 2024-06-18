@@ -289,7 +289,7 @@ namespace ExtendedVariants.UI {
                     Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
                     Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
                     Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed,
-                    Variant.StretchUpDashes
+                    Variant.StretchUpDashes, Variant.DisableJumpGravityLowering
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -377,6 +377,10 @@ namespace ExtendedVariants.UI {
                 TextMenuOptionExt<int> coyoteTimeOption;
                 menu.Add(coyoteTimeOption = getScaleOption(Variant.CoyoteTime, "x", multiplierScale));
                 coyoteTimeOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_COYOTETIME_DESC"));
+
+                TextMenuExt.OnOff disableJumpGravityLoweringOption;
+                menu.Add(disableJumpGravityLoweringOption = getToggleOption(Variant.DisableJumpGravityLowering));
+                disableJumpGravityLoweringOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT"));
 
                 menu.Add(buildHeading(menu, "DASHING"));
                 menu.Add(getScaleOption(Variant.DashSpeed, "x", multiplierScale));
