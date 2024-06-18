@@ -114,6 +114,10 @@ Adds some options to the Mod Options menu:
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present! (brought to you by @SnipUndercover)
 *   **Mid-Air Tech**: This variant allows for inputting supers, hypers, etc. in midair. Goes well with wall-less wallbounces. (brought to you by @balt-dev)
 
+*   **Preserve Wallbounce Speed**: Allows Madeline to keep her vertical speed when wallbouncing. (brought to you by @SnipUndercover)
+*   **Speed-Based Upwards Dash Stretching**<!-- SBUDS :tm: -->: Having a lot of horizontal speed causes Madeline's dash to stretch horizontally. This variant allows Madeline's upwards dashes to also stretch, if she has enough speed. (brought to you by @SnipUndercover)
+*   **Disable Jump Gravity Lowering**: You won't be able to divide the gravity by 2 during a jump by holding the button anymore!
+
 *   A few **consistency and leniency improvements**, brought to you by @DominicAglialoro:
     *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
     *   **Liftboost Protection**: Fixes various inconsistencies with inheriting speed from moving platforms.
