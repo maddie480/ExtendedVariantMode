@@ -1,5 +1,6 @@
 using Celeste.Mod;
 using ExtendedVariants.Module;
+using Monocle;
 using MonoMod.Cil;
 using System;
 
@@ -27,13 +28,13 @@ namespace ExtendedVariants.Variants {
             if (cursor.TryGotoNext(MoveType.After,
                 instr => instr.MatchCall(typeof(Math), "Abs"),
                 instr => instr.MatchLdcR4(40f)
-            )) {
+            ) && cursor.TryGotoNext(MoveType.After,
+                instr => instr.MatchCallvirt<VirtualButton>("get_Check"))
+            ) {
                 Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling jump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
 
-                // turn the Math.Abs(...) < 40f check into Math.Abs(...) < -1f, making it always false.
-                cursor.EmitDelegate<Func<float, float>>(orig =>
-                    GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering) ? -1f : orig
-                );
+                cursor.EmitDelegate<Func<bool, bool>>(
+                    orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering));
             }
         }
     }
