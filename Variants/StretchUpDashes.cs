@@ -36,19 +36,15 @@ namespace ExtendedVariants.Variants {
             Logger.Log(LogLevel.Error, "ExtendedVariantMode/StretchUpDashes",
                 $"Emitting dash stretch delegate in {il.Method.FullName} @ {cursor.Instrs[cursor.Index]}");
 
-            // this.BeforeDashSpeed
+            // dashSpeed = doUpDashStretch(this.beforeDashSpeed, dashSpeed);
             cursor.Emit(OpCodes.Ldloc_1);
             cursor.Emit<Player>(OpCodes.Ldfld, "beforeDashSpeed");
-
-            // ref dashSpeed
-            cursor.Emit(OpCodes.Ldloca_S, (byte) 3);
-
-            cursor.EmitDelegate<DoUpDashStretchDelegate>(doUpDashStretch);
+            cursor.Emit(OpCodes.Ldloc_S, (byte) 3);
+            cursor.EmitDelegate(doUpDashStretch);
+            cursor.Emit(OpCodes.Stloc_S, (byte)3);
         }
 
-        private delegate void DoUpDashStretchDelegate(Vector2 beforeDashSpeed, ref Vector2 dashSpeed);
-
-        private void doUpDashStretch(Vector2 beforeDashSpeed, ref Vector2 dashSpeed) {
+        private Vector2 doUpDashStretch(Vector2 beforeDashSpeed, Vector2 dashSpeed) {
             // the part which stretches dashes in the x direction based on velocity looks like this:
             //
             // if (Math.Sign(this.beforeDashSpeed.X) == Math.Sign(dashSpeed.X)
@@ -65,6 +61,7 @@ namespace ExtendedVariants.Variants {
                     && Math.Sign(beforeDashSpeed.Y) == Math.Sign(dashSpeed.Y)
                     && Math.Abs(beforeDashSpeed.Y) > Math.Abs(dashSpeed.Y))
                 dashSpeed.Y = beforeDashSpeed.Y;
+            return dashSpeed;
         }
 
         private static bool foundILSequence(ILCursor cursor) {
