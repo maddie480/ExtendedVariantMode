@@ -11,23 +11,23 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class StretchUpDashes : AbstractExtendedVariant {
-        private static ILHook Hook_DashCoroutine;
+        private static ILHook dashCoroutineHook;
 
         public override void Load() {
-            Hook_DashCoroutine = new(
+            dashCoroutineHook = new ILHook(
                 typeof(Player).GetMethod("DashCoroutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(),
                 Player_DashCoroutine
             );
         }
 
         public override void Unload() {
-            Hook_DashCoroutine?.Dispose();
+            dashCoroutineHook?.Dispose();
         }
 
         private void Player_DashCoroutine(ILContext il) {
-            ILCursor cursor = new(il);
+            ILCursor cursor = new ILCursor(il);
 
-            if (!FoundILSequence(cursor)) {
+            if (!foundILSequence(cursor)) {
                 Logger.Log(LogLevel.Error, "ExtendedVariantMode/StretchUpDashes",
                     $"Could not find IL sequence to hook in {il.Method.FullName}!");
                 return;
@@ -43,10 +43,12 @@ namespace ExtendedVariants.Variants {
             // ref dashSpeed
             cursor.Emit(OpCodes.Ldloca_S, (byte) 3);
 
-            cursor.EmitDelegate(DoUpDashStretch);
+            cursor.EmitDelegate<DoUpDashStretchDelegate>(doUpDashStretch);
         }
 
-        private void DoUpDashStretch(Vector2 beforeDashSpeed, ref Vector2 dashSpeed) {
+        private delegate void DoUpDashStretchDelegate(Vector2 beforeDashSpeed, ref Vector2 dashSpeed);
+
+        private void doUpDashStretch(Vector2 beforeDashSpeed, ref Vector2 dashSpeed) {
             // the part which stretches dashes in the x direction based on velocity looks like this:
             //
             // if (Math.Sign(this.beforeDashSpeed.X) == Math.Sign(dashSpeed.X)
@@ -65,13 +67,13 @@ namespace ExtendedVariants.Variants {
                 dashSpeed.Y = beforeDashSpeed.Y;
         }
 
-        private static bool FoundILSequence(ILCursor cursor) {
+        private static bool foundILSequence(ILCursor cursor) {
             // try to find the most fitting match in a sequence of IL
             //
             // is this probably overkill? yes.
-            // did i have fun writing this? yes.
+            // did I have fun writing this? yes.
 
-            const int MaxIndexDiff = 0x10;
+            const int maxIndexDiff = 0x10;
 
             Func<Instruction, bool>[] ilSequence = {
                 static instr => instr.MatchLdloca(3),
@@ -94,7 +96,7 @@ namespace ExtendedVariants.Variants {
                     if (!cursor.TryGotoNext(MoveType.After, matcher))
                         goto FailedToMatch;
 
-                    if (cursor.Index - beforeMoveIndex > MaxIndexDiff)
+                    if (cursor.Index - beforeMoveIndex > maxIndexDiff)
                         goto FailedToMatch;
                 }
                 // we found a match!
