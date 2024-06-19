@@ -40,7 +40,7 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Ldloc_1);
             cursor.Emit<Player>(OpCodes.Ldfld, "beforeDashSpeed");
             cursor.Emit(OpCodes.Ldloc_S, (byte) 3);
-            cursor.EmitDelegate(doUpDashStretch);
+            cursor.EmitDelegate<Func<Vector2, Vector2, Vector2>>(doUpDashStretch);
             cursor.Emit(OpCodes.Stloc_S, (byte)3);
         }
 
