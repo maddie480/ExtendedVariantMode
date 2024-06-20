@@ -33,7 +33,7 @@ namespace ExtendedVariants.Variants {
                 return;
             }
 
-            Logger.Log(LogLevel.Error, "ExtendedVariantMode/StretchUpDashes",
+            Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/StretchUpDashes",
                 $"Emitting dash stretch delegate in {il.Method.FullName} @ {cursor.Instrs[cursor.Index]}");
 
             // dashSpeed = doUpDashStretch(this.beforeDashSpeed, dashSpeed);

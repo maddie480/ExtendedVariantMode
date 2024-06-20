@@ -35,7 +35,7 @@ namespace ExtendedVariants.Variants {
                 return;
             }
 
-            Logger.Log(LogLevel.Error, "ExtendedVariantMode/PreserveWallbounceSpeed",
+            Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/PreserveWallbounceSpeed",
                 $"Modifying wallbounce speed in {il.Method.FullName} @ {cursor.Instrs[cursor.Index]}");
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.EmitDelegate<Func<float, Player, float>>(wallbounceSpeedModifier);
