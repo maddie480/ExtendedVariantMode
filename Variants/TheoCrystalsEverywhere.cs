@@ -30,6 +30,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.EnforceBounds += modEnforceBounds;
             IL.Celeste.Level.EnforceBounds += excludeExtendedVariantTheoCrystalFromEnforceBounds;
             IL.Celeste.CassetteBlock.BlockedCheck += excludeExtendedVariantTheoCrystalFromCassetteBlockBlockedCheck;
+            IL.Celeste.TheoCrystal.Added += excludeExtendedVariantTheoCrystalFromAdded;
         }
 
         public override void Unload() {
@@ -37,6 +38,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.EnforceBounds -= modEnforceBounds;
             IL.Celeste.Level.EnforceBounds -= excludeExtendedVariantTheoCrystalFromEnforceBounds;
             IL.Celeste.CassetteBlock.BlockedCheck -= excludeExtendedVariantTheoCrystalFromCassetteBlockBlockedCheck;
+            IL.Celeste.TheoCrystal.Added -= excludeExtendedVariantTheoCrystalFromAdded;
         }
 
         private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
@@ -140,6 +142,18 @@ namespace ExtendedVariants.Variants {
                     if (orig is not ExtendedVariantTheoCrystal) return orig;
                     return findFirstNonExtendedTheoCrystal(self.Tracker.GetEntities<TheoCrystal>());
                 });
+            }
+        }
+
+        private void excludeExtendedVariantTheoCrystalFromAdded(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Scene>("get_Tracker"))) {
+                cursor.Index++;
+                Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Excluding Extended Variant Theo Crystals at {cursor.Index} from TheoCrystal.Added");
+
+                cursor.EmitDelegate<Func<List<Entity>, List<Entity>>>(orig =>
+                    orig.Where(entity => entity is not ExtendedVariantTheoCrystal).ToList());
             }
         }
 
