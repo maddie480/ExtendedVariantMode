@@ -52,15 +52,16 @@ namespace ExtendedVariants.Module {
             Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround,
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
-            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
-            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
-            MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
+            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, [Obsolete("This variant has been superseded.")] SwimmingSpeed,
+            BoostMultiplier, FriendlyBadelineFollower, DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail,
+            MadelineBackpackMode, InvertVerticalControls, DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater,
+            AlwaysInvisible, DisplaySpeedometer, WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection,
+            PickupDuration, MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
-            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering,
+            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
+            WaterSurfaceSpeedX, WaterSurfaceSpeedY,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -176,6 +177,10 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.MinimumDelayBeforeThrowing] = new MinimumDelayBeforeThrowing();
             VariantHandlers[Variant.DelayBeforeRegrabbing] = new DelayBeforeRegrabbing();
             VariantHandlers[Variant.SwimmingSpeed] = new SwimmingSpeed();
+            VariantHandlers[Variant.UnderwaterSpeedX] = new UnderwaterSpeedX();
+            VariantHandlers[Variant.UnderwaterSpeedY] = new UnderwaterSpeedY();
+            VariantHandlers[Variant.WaterSurfaceSpeedX] = new WaterSurfaceSpeedX();
+            VariantHandlers[Variant.WaterSurfaceSpeedY] = new WaterSurfaceSpeedY();
             VariantHandlers[Variant.BoostMultiplier] = new BoostMultiplier();
             VariantHandlers[Variant.FriendlyBadelineFollower] = new FriendlyBadelineFollower();
             VariantHandlers[Variant.DisableRefillsOnScreenTransition] = new DisableRefillsOnScreenTransition();
