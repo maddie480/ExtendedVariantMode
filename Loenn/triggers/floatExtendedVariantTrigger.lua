@@ -61,8 +61,12 @@ trigger.fieldInformation = {
             "SuperdashSteeringSpeed",
             "SwimmingSpeed",
             "UltraSpeedMultiplier",
+            "UnderwaterSpeedX",
+            "UnderwaterSpeedY",
             "WallBouncingSpeed",
             "WallSlidingSpeed",
+            "WaterSurfaceSpeedX",
+            "WaterSurfaceSpeedY",
             "ZoomLevel"
         },
         editable = false

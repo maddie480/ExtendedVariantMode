@@ -19,11 +19,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.Player.SwimUpdate += patchSwimUpdate;
+            //IL.Celeste.Player.SwimUpdate += patchSwimUpdate;
         }
 
         public override void Unload() {
-            IL.Celeste.Player.SwimUpdate -= patchSwimUpdate;
+            //IL.Celeste.Player.SwimUpdate -= patchSwimUpdate;
         }
 
         private void patchSwimUpdate(ILContext il) {

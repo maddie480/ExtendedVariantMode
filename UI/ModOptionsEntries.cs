@@ -76,6 +76,24 @@ namespace ExtendedVariants.UI {
             2.5f, 3, 3.5f, 4, 4.5f, 5, 6, 7, 8, 9, 10, 25, 50, 100
         };
 
+        private static float[] waterSpeed80 = new float[] {
+            0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
+            80,
+            85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160,
+            170, 180, 190, 200, 210, 220, 230, 240,
+            260, 280, 300, 320, 340, 360, 380, 400,
+            440, 480, 520, 560, 600, 640, 680, 720, 760, 800
+        };
+
+        private static float[] waterSpeed60 = new float[] {
+            0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55,
+            60,
+            65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120,
+            130, 140, 150, 160, 170, 180,
+            200, 220, 240, 260, 280, 300,
+            340, 380, 420, 460, 500, 540, 580, 600
+        };
+
         private TextMenuOptionExt<int> getScaleOption<T>(Variant variant, string suffix, T[] scale, Func<T, string> formatter = null) where T : IComparable {
             return getNonVariantScaleOption<T>(variant.ToString(), suffix, scale,
                 currentValue: (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
@@ -282,14 +300,15 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.SwimmingSpeed, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
-                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.EveryJumpIsUltra,
-                    Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior, Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround,
-                    Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing,
-                    Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier, Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration,
-                    Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier, Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance,
-                    Variant.FastFallAcceleration, Variant.TrueNoGrabbing, Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed,
-                    Variant.StretchUpDashes, Variant.DisableJumpGravityLowering
+                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.SwimmingSpeed, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
+                    Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
+                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
+                    Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
+                    Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround, Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown,
+                    Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
+                    Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
+                    Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
+                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -501,6 +520,10 @@ namespace ExtendedVariants.UI {
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));
+                menu.Add(getScaleOption(Variant.UnderwaterSpeedX, "px/s", waterSpeed60));
+                menu.Add(getScaleOption(Variant.UnderwaterSpeedY, "px/s", waterSpeed80));
+                menu.Add(getScaleOption(Variant.WaterSurfaceSpeedX, "px/s", waterSpeed80));
+                menu.Add(getScaleOption(Variant.WaterSurfaceSpeedY, "px/s", waterSpeed80));
                 menu.Add(getScaleOption(Variant.Friction, "x", multiplierScaleFriction));
                 menu.Add(getScaleOption(Variant.AirFriction, "x", multiplierScaleFriction));
                 menu.Add(getScaleOption(Variant.ExplodeLaunchSpeed, "x", multiplierScale));

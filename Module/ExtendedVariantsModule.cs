@@ -19,6 +19,7 @@ using System.IO;
 using Celeste.Mod.Helpers;
 using Celeste.Mod.Core;
 using System.Reflection;
+using Mono.Cecil.Cil;
 
 namespace ExtendedVariants.Module {
     public class ExtendedVariantsModule : EverestModule {
@@ -51,15 +52,16 @@ namespace ExtendedVariants.Module {
             Stamina, UpsideDown, DisableNeutralJumping, RegularHiccups, HiccupStrength, RoomLighting, RoomBloom, GlitchEffect, EverythingIsUnderwater, ForceDuckOnGround,
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
-            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, SwimmingSpeed, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
-            DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
-            WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
-            MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
+            ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, [Obsolete("This variant has been superseded.")] SwimmingSpeed,
+            BoostMultiplier, FriendlyBadelineFollower, DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail,
+            MadelineBackpackMode, InvertVerticalControls, DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater,
+            AlwaysInvisible, DisplaySpeedometer, WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection,
+            PickupDuration, MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
-            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering,
+            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
+            WaterSurfaceSpeedX, WaterSurfaceSpeedY,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -175,6 +177,10 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.MinimumDelayBeforeThrowing] = new MinimumDelayBeforeThrowing();
             VariantHandlers[Variant.DelayBeforeRegrabbing] = new DelayBeforeRegrabbing();
             VariantHandlers[Variant.SwimmingSpeed] = new SwimmingSpeed();
+            VariantHandlers[Variant.UnderwaterSpeedX] = new UnderwaterSpeedX();
+            VariantHandlers[Variant.UnderwaterSpeedY] = new UnderwaterSpeedY();
+            VariantHandlers[Variant.WaterSurfaceSpeedX] = new WaterSurfaceSpeedX();
+            VariantHandlers[Variant.WaterSurfaceSpeedY] = new WaterSurfaceSpeedY();
             VariantHandlers[Variant.BoostMultiplier] = new BoostMultiplier();
             VariantHandlers[Variant.FriendlyBadelineFollower] = new FriendlyBadelineFollower();
             VariantHandlers[Variant.DisableRefillsOnScreenTransition] = new DisableRefillsOnScreenTransition();
@@ -755,6 +761,192 @@ namespace ExtendedVariants.Module {
             return (player != null && (player.StateMachine.State == 10 || player.StateMachine.State == 11) && !badelineBoosting)
                 || prologueEndingCutscene // this kills Oshiro, that prevents the Prologue ending cutscene from even triggering.
                 || !Instance.stuffIsHooked; // this makes all the mess instant vanish when Extended Variants are disabled entirely.
+        }
+
+        // helpers for finding the next fitting match in a sequence of IL, with some level of tolerance 
+        // (i.e. if some other mod hooks the same set of instructions)
+        // - Snip
+        //
+        // is this probably overkill? yes.
+        // did I have fun writing this? yes.
+
+        /// <summary>
+        ///   Go to the next match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
+        ///   (i.e. if something else hooks the same sequence)
+        /// </summary>
+        /// 
+        /// <param name="cursor">
+        ///   The IL cursor to look for a match in.
+        /// </param>
+        /// <param name="moveType">
+        ///   The move type to use.
+        /// </param>
+        /// <param name="predicates">
+        ///   The IL instructions to match against.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   Whether a match has been found, and the cursor has been moved.
+        /// </returns>
+        public static bool TryGotoNextBestFit(ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
+            return TryGotoNextBestFit(cursor, moveType, 0x10, predicates);
+        }
+
+        /// <summary>
+        ///   Go to the next match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
+        ///   (i.e. if something else hooks the same sequence)
+        /// </summary>
+        /// 
+        /// <param name="cursor">
+        ///   The IL cursor to look for a match in.
+        /// </param>
+        /// <param name="moveType">
+        ///   The move type to use.
+        /// </param>
+        /// <param name="maxIndexDiff">
+        ///   The amount of instructions between predicate matches to still consider as a successful match.
+        /// </param>
+        /// <param name="predicates">
+        ///   The IL instructions to match against.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   Whether a match has been found, and the cursor has been moved.
+        /// </returns>
+        public static bool TryGotoNextBestFit(ILCursor cursor, MoveType moveType, int maxIndexDiff, params Func<Instruction, bool>[] predicates) {
+            if (predicates.Length == 0)
+                throw new ArgumentException("No predicates given.");
+
+            if (predicates.Length == 1)
+                return cursor.TryGotoNext(moveType, predicates[0]);
+
+            int initialPosition = cursor.Index;
+
+            // go to each instance of the first predicate
+            while (cursor.TryGotoNext(MoveType.After, predicates[0])) {
+                int savedCursorPosition = cursor.Index;
+
+                // then try to match the rest of the predicates, making sure
+                // the cursor has not gone further than maxIndexDiff instructions
+                for (int i = 1; i < predicates.Length; i++) {
+                    Func<Instruction, bool> matcher = predicates[i];
+                    int beforeMoveIndex = cursor.Index;
+
+                    if (!cursor.TryGotoNext(MoveType.After, matcher))
+                        goto FailedToMatch;
+
+                    if (cursor.Index - beforeMoveIndex > maxIndexDiff)
+                        goto FailedToMatch;
+                }
+
+                // we found a match!
+                // now put the cursor where we should be before returning
+                if (moveType is MoveType.Before or MoveType.AfterLabel)
+                    // -1 because we used After
+                    cursor.Index = savedCursorPosition - 1;
+                if (moveType is MoveType.AfterLabel)
+                    cursor.MoveAfterLabels();
+                return true;
+
+            FailedToMatch:
+                // we go again
+                cursor.Index = savedCursorPosition;
+            }
+
+            // no match :c
+            // put the cursor back to where it was
+            cursor.Index = initialPosition;
+            return false;
+        }
+
+        /// <summary>
+        ///   Go to the previous match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
+        ///   (i.e. if something else hooks the same sequence)
+        /// </summary>
+        /// 
+        /// <param name="cursor">
+        ///   The IL cursor to look for a match in.
+        /// </param>
+        /// <param name="moveType">
+        ///   The move type to use.
+        /// </param>
+        /// <param name="predicates">
+        ///   The IL instructions to match against.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   Whether a match has been found, and the cursor has been moved.
+        /// </returns>
+        public static bool TryGotoPrevBestFit(ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
+            return TryGotoPrevBestFit(cursor, moveType, 0x10, predicates);
+        }
+
+        /// <summary>
+        ///   Go to the previous match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
+        ///   (i.e. if something else hooks the same sequence)
+        /// </summary>
+        /// 
+        /// <param name="cursor">
+        ///   The IL cursor to look for a match in.
+        /// </param>
+        /// <param name="moveType">
+        ///   The move type to use.
+        /// </param>
+        /// <param name="maxIndexDiff">
+        ///   The amount of instructions between predicate matches to still consider as a successful match.
+        /// </param>
+        /// <param name="predicates">
+        ///   The IL instructions to match against.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   Whether a match has been found, and the cursor has been moved.
+        /// </returns>
+        public static bool TryGotoPrevBestFit(ILCursor cursor, MoveType moveType, int maxIndexDiff, params Func<Instruction, bool>[] predicates) {
+            if (predicates.Length == 0)
+                throw new ArgumentException("No predicates given.");
+
+            if (predicates.Length == 1)
+                return cursor.TryGotoPrev(moveType, predicates[0]);
+
+            int initialPosition = cursor.Index;
+
+            // go to each instance of the first predicate
+            while (cursor.TryGotoPrev(MoveType.After, predicates[0])) {
+                int savedCursorPosition = cursor.Index;
+
+                // then try to match the rest of the predicates, making sure
+                // the cursor has not gone further than maxIndexDiff instructions
+                for (int i = 1; i < predicates.Length; i++) {
+                    Func<Instruction, bool> matcher = predicates[i];
+                    int beforeMoveIndex = cursor.Index;
+
+                    // don't TryGotoPrev here! this'll reverse the order of predicates!
+                    if (!cursor.TryGotoNext(MoveType.After, matcher))
+                        goto FailedToMatch;
+
+                    if (cursor.Index - beforeMoveIndex > maxIndexDiff)
+                        goto FailedToMatch;
+                }
+
+                // we found a match!
+                // now put the cursor where we should be before returning
+                if (moveType is MoveType.Before or MoveType.AfterLabel)
+                    // -1 because we used After
+                    cursor.Index = savedCursorPosition - 1;
+                if (moveType is MoveType.AfterLabel)
+                    cursor.MoveAfterLabels();
+                return true;
+
+            FailedToMatch:
+                // we go again
+                cursor.Index = savedCursorPosition;
+            }
+
+            // no match :c
+            // put the cursor back to where it was
+            cursor.Index = initialPosition;
+            return false;
         }
 
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
