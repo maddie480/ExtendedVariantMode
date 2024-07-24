@@ -32,7 +32,6 @@ namespace ExtendedVariants.Variants {
         }
 
         private void Player_SwimUpdate(ILContext il) {
-            Logger.Log(LogLevel.Verbose, LogID, "\n" + il);
             ILCursor xSpeedVariable = new ILCursor(il);
             if (!xSpeedVariable.TryGotoNext(MoveType.AfterLabel, static instr => instr.MatchStloc(2))) {
                 Logger.Log(LogLevel.Error, LogID,
