@@ -762,7 +762,7 @@ namespace ExtendedVariants.Module {
                 || !Instance.stuffIsHooked; // this makes all the mess instant vanish when Extended Variants are disabled entirely.
         }
 
-        // helpers for finding the next fitting match in a sequence of IL, with some level of tolerance 
+        // helpers for finding the next fitting match in a sequence of IL, with some level of tolerance
         // (i.e. if some other mod hooks the same set of instructions)
         // - Snip
         //
@@ -773,7 +773,7 @@ namespace ExtendedVariants.Module {
         ///   Go to the next match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
         ///   (i.e. if something else hooks the same sequence)
         /// </summary>
-        /// 
+        ///
         /// <param name="cursor">
         ///   The IL cursor to look for a match in.
         /// </param>
@@ -783,7 +783,7 @@ namespace ExtendedVariants.Module {
         /// <param name="predicates">
         ///   The IL instructions to match against.
         /// </param>
-        /// 
+        ///
         /// <returns>
         ///   Whether a match has been found, and the cursor has been moved.
         /// </returns>
@@ -795,7 +795,7 @@ namespace ExtendedVariants.Module {
         ///   Go to the next match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
         ///   (i.e. if something else hooks the same sequence)
         /// </summary>
-        /// 
+        ///
         /// <param name="cursor">
         ///   The IL cursor to look for a match in.
         /// </param>
@@ -808,7 +808,7 @@ namespace ExtendedVariants.Module {
         /// <param name="predicates">
         ///   The IL instructions to match against.
         /// </param>
-        /// 
+        ///
         /// <returns>
         ///   Whether a match has been found, and the cursor has been moved.
         /// </returns>
@@ -862,7 +862,7 @@ namespace ExtendedVariants.Module {
         ///   Go to the previous match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
         ///   (i.e. if something else hooks the same sequence)
         /// </summary>
-        /// 
+        ///
         /// <param name="cursor">
         ///   The IL cursor to look for a match in.
         /// </param>
@@ -872,7 +872,7 @@ namespace ExtendedVariants.Module {
         /// <param name="predicates">
         ///   The IL instructions to match against.
         /// </param>
-        /// 
+        ///
         /// <returns>
         ///   Whether a match has been found, and the cursor has been moved.
         /// </returns>
@@ -884,7 +884,7 @@ namespace ExtendedVariants.Module {
         ///   Go to the previous match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
         ///   (i.e. if something else hooks the same sequence)
         /// </summary>
-        /// 
+        ///
         /// <param name="cursor">
         ///   The IL cursor to look for a match in.
         /// </param>
@@ -897,7 +897,7 @@ namespace ExtendedVariants.Module {
         /// <param name="predicates">
         ///   The IL instructions to match against.
         /// </param>
-        /// 
+        ///
         /// <returns>
         ///   Whether a match has been found, and the cursor has been moved.
         /// </returns>
