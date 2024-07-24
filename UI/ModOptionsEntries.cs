@@ -121,10 +121,15 @@ namespace ExtendedVariants.UI {
                         return formatter(valueToFormat);
                     }
 
-                    if (valueToFormat is float f && (int) f == f) {
-                        // float that represents an integer value, like 5.0f => 5
-                        return $"{f:n0}{suffix}";
+                    if (valueToFormat is float f) {
+                        string formatted = $"{f:n3}";
+                        // trim trailing zeroes
+                        while (formatted.EndsWith("0")) formatted = formatted.Substring(0, formatted.Length - 1);
+                        // if we trimmed all zeroes, trim the dot as well
+                        if (formatted.EndsWith(".")) formatted = formatted.Substring(0, formatted.Length - 1);
+                        return formatted + suffix;
                     }
+
                     return valueToFormat + suffix;
                 },
                 0, choices.Count - 1, valueToIndex(currentValue, choices), valueToIndex(defaultValue, choices), valueToIndex(mapDefinedValue, choices));
