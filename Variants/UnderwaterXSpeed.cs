@@ -71,24 +71,24 @@ namespace ExtendedVariants.Variants {
 
             Logger.Log(LogLevel.Verbose, LogID,
                 $"Overriding water X speed at {ToString(xSpeedVariable.Next)}");
-            xSpeedVariable.EmitDelegate(OverrideWaterXSpeed);
+            xSpeedVariable.EmitDelegate<Func<float, float>>(OverrideWaterXSpeed);
 
             Logger.Log(LogLevel.Verbose, LogID,
                 $"Overriding water Y speed at {ToString(ySpeedVariable.Next)}");
             ySpeedVariable.Emit(OpCodes.Ldloc_0);
-            ySpeedVariable.EmitDelegate(OverrideWaterYSpeed);
+            ySpeedVariable.EmitDelegate<Func<float, bool, float>>(OverrideWaterYSpeed);
 
             Logger.Log(LogLevel.Verbose, LogID,
                 $"Replacing 80f constant in X deceleration check at {ToString(xIfCheck.Next)}");
             xIfCheck.Emit(OpCodes.Ldloc_2);
             xIfCheck.Emit(OpCodes.Ldloc_0);
-            xIfCheck.EmitDelegate(OverrideXSwimSpeedThreshold);
+            xIfCheck.EmitDelegate<Func<float, float, bool, float>>(OverrideXSwimSpeedThreshold);
 
             Logger.Log(LogLevel.Verbose, LogID,
                 $"Replacing 80f constant in Y deceleration check at {ToString(yIfCheck.Next)}");
             yIfCheck.Emit(OpCodes.Ldloc_3);
             yIfCheck.Emit(OpCodes.Ldloc_0);
-            yIfCheck.EmitDelegate(OverrideYSwimSpeedThreshold);
+            yIfCheck.EmitDelegate<Func<float, float, bool, float>>(OverrideYSwimSpeedThreshold);
         }
 
         private float OverrideWaterXSpeed(float previousSpeedX) {
