@@ -160,11 +160,11 @@ namespace ExtendedVariants.UI {
 
         private TextMenuExt.OnOff getToggleOption(Variant variant) {
             return (TextMenuExt.OnOff) new TextMenuExt.OnOff(
-                Dialog.Clean($"modoptions_extendedvariants_{variant}"),
-                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
-                (bool) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
-                (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))
-                    .Change(b => setVariantValue(variant, b));
+                    Dialog.Clean($"modoptions_extendedvariants_{variant}"),
+                    (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
+                    (bool) ExtendedVariantsModule.Instance.VariantHandlers[variant].GetDefaultVariantValue(),
+                    (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variant))
+                .Change(b => setVariantValue(variant, b));
         }
 
         public static void SetVariantValue(Variant variantChange, object newValue) {
@@ -257,8 +257,8 @@ namespace ExtendedVariants.UI {
             if (includeMasterSwitch) {
                 // create the "master switch" option with specific enable/disable handling.
                 menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MASTERSWITCH"), Settings.MasterSwitch) {
-                    Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
-                }
+                        Disabled = forceEnabled // if variants are force-enabled, you can't disable them, so you have to disable the master switch.
+                    }
                     .Change(v => {
                         Settings.MasterSwitch = v;
                         refreshOptionMenuEnabledStatus();
@@ -300,7 +300,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.SwimmingSpeed, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
+                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
                     Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
                     Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
@@ -415,12 +415,12 @@ namespace ExtendedVariants.UI {
                 dashTimerMultiplierOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHTIMERMULTIPLIER_DESCRIPTION"));
 
                 menu.Add(dashDirection = (TextMenuExt.Slider) new TextMenuExt.Slider(
-                    Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
-                    i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"),
-                    0, 3,
-                    GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.DashDirection)),
-                    0, // default
-                    GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(Variant.DashDirection)))
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION"),
+                        i => Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_{i}"),
+                        0, 3,
+                        GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.DashDirection)),
+                        0, // default
+                        GetDashDirectionIndex((bool[][]) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(Variant.DashDirection)))
                     .Change(i => {
                         switch (i) {
                             case 1:
@@ -519,7 +519,6 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
-                menu.Add(getScaleOption(Variant.SwimmingSpeed, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.UnderwaterSpeedX, "px/s", waterSpeed60));
                 menu.Add(getScaleOption(Variant.UnderwaterSpeedY, "px/s", waterSpeed80));
                 menu.Add(getScaleOption(Variant.WaterSurfaceSpeedX, "px/s", waterSpeed80));
@@ -597,8 +596,9 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.JellyfishEverywhere, "", new int[] { 0, 1, 2, 3 }));
                 menu.Add(getToggleOption(Variant.RisingLavaEverywhere));
                 menu.Add(getScaleOption(Variant.RisingLavaSpeed, "x", multiplierScale));
-                if (Instance.JungleHelperInstalled) menu.Add(getScaleOption(Variant.JungleSpidersEverywhere, "", getEnumValues<JungleSpidersEverywhere.SpiderType>(),
-                    e => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE_" + e)));
+                if (Instance.JungleHelperInstalled)
+                    menu.Add(getScaleOption(Variant.JungleSpidersEverywhere, "", getEnumValues<JungleSpidersEverywhere.SpiderType>(),
+                        e => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUNGLESPIDERSEVERYWHERE_" + e)));
             }
 
             // ======
@@ -630,7 +630,8 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.AnxietyEffect, "", new float[] { -1f, 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f },
                     f => f == -1f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT") : $"{f * 100}%"));
                 menu.Add(getScaleOption(Variant.BlurLevel, "", new float[] { 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f }, f => $"{f * 100}%"));
-                menu.Add(getScaleOption(Variant.BackgroundBlurLevel, "", new float[] { 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f }, f => $"{f * 100}%"));
+                menu.Add(getScaleOption(Variant.BackgroundBlurLevel, "", new float[] { 0f, 0.05f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.65f, 0.7f, 0.75f, 0.8f, 0.85f, 0.9f, 0.95f, 1f },
+                    f => $"{f * 100}%"));
                 menu.Add(getScaleOption(Variant.ZoomLevel, "x", multiplierScale));
 
                 // go through all Everest mod assets, and list all color grades that exist.

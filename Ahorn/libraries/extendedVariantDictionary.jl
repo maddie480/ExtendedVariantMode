@@ -57,7 +57,6 @@ const FloatVariants = [
     "SnowballDelay",
     "SpeedX",
     "SuperdashSteeringSpeed",
-    "SwimmingSpeed",
     "UltraSpeedMultiplier",
     "UnderwaterSpeedX",
     "UnderwaterSpeedY",

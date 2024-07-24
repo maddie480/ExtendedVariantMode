@@ -54,7 +54,6 @@ trigger.fieldInformation = {
             "SnowballDelay",
             "SpeedX",
             "SuperdashSteeringSpeed",
-            "SwimmingSpeed",
             "UnderwaterSpeedX",
             "UnderwaterSpeedY",
             "UltraSpeedMultiplier",
