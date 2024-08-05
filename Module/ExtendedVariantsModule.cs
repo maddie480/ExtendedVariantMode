@@ -61,7 +61,7 @@ namespace ExtendedVariants.Module {
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
-            WaterSurfaceSpeedX, WaterSurfaceSpeedY,
+            WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -219,6 +219,9 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.PreserveWallbounceSpeed] = new PreserveWallbounceSpeed();
             VariantHandlers[Variant.StretchUpDashes] = new StretchUpDashes();
             VariantHandlers[Variant.DisableJumpGravityLowering] = new DisableJumpGravityLowering();
+            VariantHandlers[Variant.LiftboostCapX] = new LiftboostCapX();
+            VariantHandlers[Variant.LiftboostCapUp] = new LiftboostCapUp();
+            VariantHandlers[Variant.LiftboostCapDown] = new LiftboostCapDown();
 
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();

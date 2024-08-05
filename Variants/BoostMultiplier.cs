@@ -41,6 +41,20 @@ namespace ExtendedVariants.Variants {
 
         private Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
             Vector2 result = orig(self);
+            
+            float capX = GetVariantValue<float>(Variant.LiftboostCapX);
+            float capUp = GetVariantValue<float>(Variant.LiftboostCapUp);
+            float capDown = GetVariantValue<float>(Variant.LiftboostCapDown);
+            
+            if (capX < 0.0f) capX = float.MaxValue;
+            if (capUp > 0.0f) capUp = -float.MaxValue;
+            if (capDown < 0.0f) capDown = float.MaxValue;
+            
+            if (capX != LiftboostCapX.Default)
+                result.X = Calc.Clamp(self.LiftSpeed.X, -capX, capX);
+            if (capUp != LiftboostCapUp.Default || capDown != LiftboostCapDown.Default)
+                result.Y = Calc.Clamp(self.LiftSpeed.Y, Math.Min(capUp, capDown), Math.Max(capUp, capDown));
+            
             if (!isBoostMultiplierApplied) return result;
 
             if (GetVariantValue<float>(Variant.BoostMultiplier) < 0f) {
