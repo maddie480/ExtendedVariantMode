@@ -31,6 +31,7 @@ Adds some options to the Mod Options menu:
 *   **Wall Sliding Speed**: Modifies the speed Madeline gets when sliding on a wall. She usually slows down for a bit while friction particles appear, but you can make her accelerate instead!
 
 *   **Boost Multiplier**: Makes the speed you get from jumping from a moving block smaller or bigger. You can also _invert_ the direction of that boost.
+*   **Horizontal Liftboost Cap** / **Upwards Liftboost Cap** / **Downwards Liftboost Cap**: modifies the maximum speed you get from jumping from a moving block... or makes it outright unlimited. (brought to you by @psyGamer)
 
 *   **Disable neutral jumping**: Prevents you from using that technique to climb walls without losing stamina. Neutral jumps now behave like normal jumps!
 *   **Horizontal Wall Jump Duration**: When you don't neutral jump, the game forces Madeline to go in the opposite direction for a bit. You can make that delay shorter or longer with this variant. _Setting that to 0x allows you to neutral jump by just moving towards the wall and jumping!_
