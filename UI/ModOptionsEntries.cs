@@ -539,19 +539,19 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(getScaleOption(Variant.BoostMultiplier, "x", multiplierScaleWithNegatives));
 
-                menu.Add(getScaleOption(Variant.LiftboostCapX, "", [0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 225.0f, 250.0f, 275.0f, 300.0f, 400.0f, 500.0f, -1.0f], i => {
+                menu.Add(getScaleOption(Variant.LiftboostCapX, "", new float[] { 0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 225.0f, 250.0f, 275.0f, 300.0f, 400.0f, 500.0f, -1.0f }, i => {
                     if (i < 0.0f) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
                     }
                     return $"{i:F1}px/s";
                 }));
-                menu.Add(getScaleOption(Variant.LiftboostCapUp, "", [0.0f, -10.0f, -20.0f, -30.0f, -40.0f, -50.0f, -75.0f, -100.0f, -110.0f, -120.0f, -130.0f, -140.0f, -150.0f, -200.0f, -250.0f, -300.0f, -400.0f, -500.0f, 1.0f], i => {
+                menu.Add(getScaleOption(Variant.LiftboostCapUp, "", new float[] { 0.0f, -10.0f, -20.0f, -30.0f, -40.0f, -50.0f, -75.0f, -100.0f, -110.0f, -120.0f, -130.0f, -140.0f, -150.0f, -200.0f, -250.0f, -300.0f, -400.0f, -500.0f, 1.0f }, i => {
                     if (i > 0.0f) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
                     }
                     return $"{i:F1}px/s";
                 }));
-                menu.Add(getScaleOption(Variant.LiftboostCapDown, "", [0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 240.0f, 250.0f, 300.0f, 400.0f, 500.0f, -1.0f], i => {
+                menu.Add(getScaleOption(Variant.LiftboostCapDown, "", new float[] { 0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 240.0f, 250.0f, 300.0f, 400.0f, 500.0f, -1.0f }, i => {
                     if (i < 0.0f) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
                     }
