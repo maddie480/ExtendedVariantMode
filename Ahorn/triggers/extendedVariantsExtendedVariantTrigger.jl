@@ -9,7 +9,7 @@ using ..Ahorn, Maple
 
 @mapdef Trigger "ExtendedVariantMode/BooleanExtendedVariantTrigger" BooleanExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     variantChange::String="DisableNeutralJumping", newValue::Bool=true, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
-    coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+    coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false, toggle::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/IntegerExtendedVariantTrigger" IntegerExtendedVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     variantChange::String="DashCount", enable::Bool=true, newValue::Int=1, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
@@ -62,7 +62,7 @@ using ..Ahorn, Maple
 
 @mapdef Trigger "ExtendedVariantMode/BooleanVanillaVariantTrigger" BooleanVanillaVariantTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     variantChange::String="Invincible", newValue::Bool=true, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
-    coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+    coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false, toggle::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/GameSpeedTrigger" GameSpeedTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     variantChange::String="VanillaGameSpeed", enable::Bool=true, newValue::Int=10, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,

@@ -13,7 +13,8 @@ trigger.placements = {
         coversScreen = false,
         flag = "",
         flagInverted = false,
-        onlyOnce = false
+        onlyOnce = false,
+        toggle = false
     }
 }
 

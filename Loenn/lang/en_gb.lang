@@ -49,6 +49,7 @@ triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.descriptio
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.attributes.description.toggle=If checked, the trigger will toggle the value of the variant, disabling it if it is active, and vice versa.\nAs a result, the "New Value" checkbox will be ignored.
 
 # Integer Extended Variants Trigger
 triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.placements.name.trigger=Extended Variant – Generic (Whole Numbers)
@@ -238,6 +239,7 @@ triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.attributes.description.toggle=If checked, the trigger will toggle the value of the variant, disabling it if it is active, and vice versa.\nAs a result, the "New Value" checkbox will be ignored.
 
 # Air Dashes Trigger
 triggers.ExtendedVariantMode/AirDashesTrigger.placements.name.trigger=Vanilla Variant (Air Dashes)

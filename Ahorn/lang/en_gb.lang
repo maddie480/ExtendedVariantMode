@@ -9,6 +9,7 @@ placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.f
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+placements.triggers.ExtendedVariantMode/BooleanExtendedVariantTrigger.tooltips.toggle=If checked, the trigger will toggle the value of the variant, disabling it if it is active, and vice versa.\nAs a result, the "New Value" checkbox will be ignored.
 
 # Integer Extended Variants Trigger
 placements.triggers.ExtendedVariantMode/IntegerExtendedVariantTrigger.tooltips.variantChange=The variant to change.
@@ -212,6 +213,7 @@ placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.fl
 placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.flagInverted=If checked, the trigger will be disabled when the flag is active.\nIf unchecked, the trigger will be enabled when the flag is active.
 placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.coversScreen=If checked, the trigger will be extended to cover the whole screen, and will act like a "controller".\nThis is a convenience to avoid having big triggers covering the screen.
 placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
+placements.triggers.ExtendedVariantMode/BooleanVanillaVariantTrigger.tooltips.toggle=If checked, the trigger will toggle the value of the variant, disabling it if it is active, and vice versa.\nAs a result, the "New Value" checkbox will be ignored.
 
 # Air Dashes Trigger
 placements.triggers.ExtendedVariantMode/AirDashesTrigger.tooltips.newValue=The new value for the variant.

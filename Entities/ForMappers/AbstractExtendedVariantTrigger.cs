@@ -33,7 +33,8 @@ namespace ExtendedVariants.Entities.ForMappers {
 
     public abstract class AbstractExtendedVariantTrigger<T> : Trigger {
         private ExtendedVariantsModule.Variant variantChange;
-        private T newValue;
+        private Func<T> newValueGetter;
+        private T valueToRevertOnLeave;
         private bool revertOnLeave;
         private bool revertOnDeath;
         private bool delayRevertOnDeath;
@@ -44,7 +45,7 @@ namespace ExtendedVariants.Entities.ForMappers {
         public AbstractExtendedVariantTrigger(EntityData data, Vector2 offset) : base(data, offset) {
             // parse the trigger parameters
             variantChange = getVariant(data);
-            newValue = getNewValue(data);
+            newValueGetter = () => getNewValue(data);
             revertOnLeave = data.Bool("revertOnLeave", false);
             revertOnDeath = data.Bool("revertOnDeath", true);
             delayRevertOnDeath = data.Bool("delayRevertOnDeath", false);
@@ -54,8 +55,10 @@ namespace ExtendedVariants.Entities.ForMappers {
 
             if (!data.Bool("enable", true)) {
                 // "disabling" a variant is actually just resetting its value to default
-                newValue = (T) ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange);
+                newValueGetter = () => (T) ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange);
             }
+
+            valueToRevertOnLeave = newValueGetter();
 
             // this is a replacement for the Flag-Toggled Extended Variant Trigger.
             if (!string.IsNullOrEmpty(data.Attr("flag"))) {
@@ -86,8 +89,11 @@ namespace ExtendedVariants.Entities.ForMappers {
         public override void OnEnter(Player player) {
             base.OnEnter(player);
 
-            Action applyVariant = () =>
-                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, newValue, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
+            Action applyVariant = () => {
+                T value = newValueGetter();
+                ExtendedVariantsModule.Instance.TriggerManager.OnEnteredInTrigger(variantChange, value, revertOnLeave, isFade: false, revertOnDeath, legacy: false);
+                valueToRevertOnLeave = value;
+            };
 
             if (withTeleport) {
                 AbstractExtendedVariantTriggerTeleportHandler.onTeleport += applyVariant;
@@ -104,7 +110,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             base.OnLeave(player);
 
             if (revertOnLeave && (!delayRevertOnDeath || !player.Dead)) {
-                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, newValue, legacy: false);
+                ExtendedVariantsModule.Instance.TriggerManager.OnExitedRevertOnLeaveTrigger(variantChange, valueToRevertOnLeave, legacy: false);
             }
         }
 
