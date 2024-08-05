@@ -307,7 +307,7 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                     Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
                     Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
-                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
+                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
                     Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround, Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown,
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
@@ -538,6 +538,26 @@ namespace ExtendedVariants.UI {
                 disableSuperBoostsOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLESUPERBOOSTS_NOTE"));
 
                 menu.Add(getScaleOption(Variant.BoostMultiplier, "x", multiplierScaleWithNegatives));
+
+                menu.Add(getScaleOption(Variant.LiftboostCapX, "", [0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 225.0f, 250.0f, 275.0f, 300.0f, 400.0f, 500.0f, -1.0f], i => {
+                    if (i < 0.0f) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
+                    }
+                    return $"{i:F1}px/s";
+                }));
+                menu.Add(getScaleOption(Variant.LiftboostCapUp, "", [0.0f, -10.0f, -20.0f, -30.0f, -40.0f, -50.0f, -75.0f, -100.0f, -110.0f, -120.0f, -130.0f, -140.0f, -150.0f, -200.0f, -250.0f, -300.0f, -400.0f, -500.0f, 1.0f], i => {
+                    if (i > 0.0f) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
+                    }
+                    return $"{i:F1}px/s";
+                }));
+                menu.Add(getScaleOption(Variant.LiftboostCapDown, "", [0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 75.0f, 100.0f, 150.0f, 200.0f, 240.0f, 250.0f, 300.0f, 400.0f, 500.0f, -1.0f], i => {
+                    if (i < 0.0f) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_LIFTBOOSTUNCAPPED");
+                    }
+                    return $"{i:F1}px/s";
+                }));
+
                 menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
                     i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
