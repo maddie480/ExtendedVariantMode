@@ -7,6 +7,7 @@ trigger.placements = {
         variantChange = "JumpCount",
         newValue = 1,
         infinite = false,
+        capOnChange = false,
         revertOnLeave = false,
         revertOnDeath = true,
         delayRevertOnDeath = false,

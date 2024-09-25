@@ -92,6 +92,7 @@ placements.triggers.ExtendedVariantMode/DontRefillDashOnGroundTrigger.tooltips.o
 # Jump Count Trigger
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.newValue=The new jump count.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.infinite=Whether the player should have infinite jumps. If checked, the "New Value" field will be ignored.
+placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.capOnChange=If checked, whenever the trigger changes the maximum jump count, it will also limit the amount of jumps the player currently has to the new maximum.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.revertOnLeave=If checked, the previous value for the variant will be restored upon exiting the trigger. "Revert On Death" must be checked, and "Only Once" must NOT be checked for this to work.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 placements.triggers.ExtendedVariantMode/JumpCountTrigger.tooltips.delayRevertOnDeath=If this is checked along with "Revert On Leave" and the player dies inside the trigger, the variant will be reverted when the player respawns instead of right when they die.

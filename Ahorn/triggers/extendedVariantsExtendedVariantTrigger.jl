@@ -37,8 +37,8 @@ using ..Ahorn, Maple
     flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/JumpCountTrigger" JumpCountTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
-    variantChange::String="JumpCount", newValue::Int=1, infinite::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
-    coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+    variantChange::String="JumpCount", newValue::Int=1, infinite::Bool=false, capOnChange::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true,
+    delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
 @mapdef Trigger "ExtendedVariantMode/MaxFallSpeedTrigger" MaxFallSpeedTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     newValue::Number=1.0, legacy::Bool=false, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false,
