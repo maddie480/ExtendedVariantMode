@@ -343,7 +343,7 @@ namespace ExtendedVariants.UI {
                     Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove
                 });
 
-                elementsToHideOnToggle = new List<TextMenu.Item>() { resetExtendedVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu };
+                elementsToHideOnToggle = new List<TextMenu.Item>() { resetVanillaVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu, qualityOfLifeSubmenu };
             } else {
                 elementsToHideOnToggle = new List<TextMenu.Item>();
             }
