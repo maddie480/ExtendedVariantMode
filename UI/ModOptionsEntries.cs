@@ -771,25 +771,13 @@ namespace ExtendedVariants.UI {
             if (includeRandomizer) {
                 menu.Add(new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_OSD")));
 
-                TextMenuOptionExt<int> text = getNonVariantScaleOption("OSD_TEXTOPACITY", "", new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
-                    Settings.OnScreenDisplayTextOpacity, 1f, 1f, newValue => Settings.OnScreenDisplayTextOpacity = newValue, v => (int) (v * 100) + "%");
-                TextMenuOptionExt<int> bg = getNonVariantScaleOption("OSD_BGOPACITY", "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
-                    Settings.OnScreenDisplayBackgroundOpacity, 0.8f, 0.8f, newValue => Settings.OnScreenDisplayBackgroundOpacity = newValue, v => "" + (int) (v * 100) + "%");
-
-                Action onOSDToggle = () => {
-                    text.Disabled = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
-                    bg.Disabled = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
-                };
-                onOSDToggle();
-
                 menu.Add(new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN"), ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen)
-                    .Change(newValue => {
-                        ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue;
-                        onOSDToggle();
-                    }));
+                    .Change(newValue => ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = newValue));
 
-                menu.Add(text);
-                menu.Add(bg);
+                menu.Add(getNonVariantScaleOption("OSD_TEXTOPACITY", "", new float[] { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
+                    Settings.OnScreenDisplayTextOpacity, 1f, 1f, newValue => Settings.OnScreenDisplayTextOpacity = newValue, v => (int) (v * 100) + "%"));
+                menu.Add(getNonVariantScaleOption("OSD_BGOPACITY", "", new float[] { 0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f },
+                    Settings.OnScreenDisplayBackgroundOpacity, 0.8f, 0.8f, newValue => Settings.OnScreenDisplayBackgroundOpacity = newValue, v => "" + (int) (v * 100) + "%"));
 
 
                 menu.Add(buildHeading(menu, "RANDOMIZER"));
