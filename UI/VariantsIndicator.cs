@@ -7,10 +7,8 @@ using System.Linq;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 // UI class for clear verification purposes.
-namespace ExtendedVariants.UI
-{
-    public class VariantsIndicator
-    {
+namespace ExtendedVariants.UI {
+    public class VariantsIndicator {
         private MTexture indicatorSprite = null;
 
         private float opacity = 0.15f;
@@ -20,7 +18,7 @@ namespace ExtendedVariants.UI
         private Vector2 uiPos = new Vector2(20, 229);
         private Vector2 origin = new Vector2(0, 0);
 
-        private ExtendedVariantsModule.Variant[] watermarkedVariants = new ExtendedVariantsModule.Variant[] {
+        public static readonly ExtendedVariantsModule.Variant[] WatermarkedVariants = new ExtendedVariantsModule.Variant[] {
             Variant.UltraProtection,
             Variant.LiftboostProtection,
             Variant.CornerboostProtection,
@@ -34,13 +32,11 @@ namespace ExtendedVariants.UI
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {
-            hasPlayerOverrideVariant = userSettings.Intersect(watermarkedVariants).Any();
+            hasPlayerOverrideVariant = userSettings.Intersect(WatermarkedVariants).Any();
         }
 
-        public void Render()
-        {
-            if (hasPlayerOverrideVariant)
-            {
+        public void Render() {
+            if (hasPlayerOverrideVariant) {
                 indicatorSprite ??= GFX.Gui["ExtendedVariantMode/complete_screen_stamp"];
                 indicatorSprite.Draw(uiPos, origin, Color.White * opacity, 0.5f);
             }

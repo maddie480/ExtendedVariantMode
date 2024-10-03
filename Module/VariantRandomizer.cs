@@ -20,6 +20,7 @@ namespace ExtendedVariants {
 
         private InfoPanel infoPanel = new InfoPanel();
         private VariantsIndicator variantsIndicator = new VariantsIndicator();
+        private bool mustUpdateDisplayedVariantList = false;
 
 
         public void Load() {
@@ -100,10 +101,12 @@ namespace ExtendedVariants {
             if (!((scene as Level)?.Paused ?? false)) {
                 Draw.SpriteBatch.Begin();
 
-                if (
-                    ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen ||
-                    (ExtendedVariantsModule.Session != null && ExtendedVariantsModule.Session.ExtendedVariantsDisplayedOnScreenViaTrigger)
-                   ) {
+                if (shouldDisplayEnabledVariantsOnScreen()) {
+                    if (mustUpdateDisplayedVariantList) {
+                        Logger.Log("ExtendedVariantMode/VariantRandomizer", "Late update of displayed enabled variants on-screen");
+                        RefreshEnabledVariantsDisplayList();
+                        mustUpdateDisplayedVariantList = false;
+                    }
 
                     infoPanel.Render();
                 } else {
@@ -112,6 +115,11 @@ namespace ExtendedVariants {
 
                 Draw.SpriteBatch.End();
             }
+        }
+
+        private bool shouldDisplayEnabledVariantsOnScreen() {
+            return ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen ||
+                (ExtendedVariantsModule.Session != null && ExtendedVariantsModule.Session.ExtendedVariantsDisplayedOnScreenViaTrigger);
         }
 
         public void UpdateCountersFromSettings() {
@@ -384,12 +392,26 @@ namespace ExtendedVariants {
         }
 
         public void RefreshEnabledVariantsDisplayList() {
-            List<string> enabledVariantsToDisplay = new List<string>();
+            bool listShown = shouldDisplayEnabledVariantsOnScreen();
 
             IEnumerable<ExtendedVariantsModule.Variant> enabledVanillaVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys
-                .Where(variant => !isDefaultValue(variant) && ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant);
+                .Where(variant => ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant 
+                        && (listShown || VariantsIndicator.WatermarkedVariants.Contains(variant))
+                        && !isDefaultValue(variant));
+
             IEnumerable<ExtendedVariantsModule.Variant> enabledExtendedVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys
-                .Where(variant => !isDefaultValue(variant) && ExtendedVariantsModule.Instance.VariantHandlers[variant] is not AbstractVanillaVariant);
+                .Where(variant => ExtendedVariantsModule.Instance.VariantHandlers[variant] is not AbstractVanillaVariant
+                        && (listShown || VariantsIndicator.WatermarkedVariants.Contains(variant))
+                        && !isDefaultValue(variant));
+
+            variantsIndicator.Update(ExtendedVariantsModule.Settings.EnabledVariants.Keys.Concat(enabledVanillaVariants));
+
+            if (!listShown) {
+                mustUpdateDisplayedVariantList = true;
+                return;
+            }
+
+            List<string> enabledVariantsToDisplay = new List<string>();
 
             foreach (ExtendedVariantsModule.Variant variant in enabledVanillaVariants) {
                 if (variant == ExtendedVariantsModule.Variant.AirDashes) enabledVariantsToDisplay.Add($"{GetVanillaVariantLabel(variant)}: " + Dialog.Clean($"MENU_ASSIST_AIR_DASHES_{SaveData.Instance.Assists.DashMode.ToString()}"));
@@ -468,7 +490,6 @@ namespace ExtendedVariants {
             }
 
             infoPanel.Update(enabledVariantsToDisplay);
-            variantsIndicator.Update(ExtendedVariantsModule.Settings.EnabledVariants.Keys.Concat(enabledVanillaVariants));
         }
 
         public static string GetVanillaVariantLabel(ExtendedVariantsModule.Variant variant) {
