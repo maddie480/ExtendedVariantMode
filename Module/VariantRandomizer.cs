@@ -395,7 +395,7 @@ namespace ExtendedVariants {
             bool listShown = shouldDisplayEnabledVariantsOnScreen();
 
             IEnumerable<ExtendedVariantsModule.Variant> enabledVanillaVariants = ExtendedVariantsModule.Instance.VariantHandlers.Keys
-                .Where(variant => ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant 
+                .Where(variant => ExtendedVariantsModule.Instance.VariantHandlers[variant] is AbstractVanillaVariant
                         && (listShown || VariantsIndicator.WatermarkedVariants.Contains(variant))
                         && !isDefaultValue(variant));
 
