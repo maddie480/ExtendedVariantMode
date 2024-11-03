@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.UI {
@@ -791,8 +792,33 @@ namespace ExtendedVariants.UI {
                 menu.Add(randomizerOptions = AbstractSubmenu.BuildOpenMenuButton<OuiRandomizerOptions>(menu, inGame, submenuBackAction, new object[0]));
             }
 
+            // ======
+
+            // The reference assembly of this project are a bit old, but here we need to use a newer Everest feature, so do it by reflection.
+            if (OuiModOptions_AddSearchBox != null) {
+                InputSearchUI SearchUI = InputSearchUI.Instance;
+                Overworld overworld = inGame ? null : OuiModOptions.Instance.Overworld;
+                if (SearchUI == null || SearchUI.Overworld != overworld)
+                    SearchUI = new InputSearchUI(overworld);
+                SearchUI.ShowSearchUI = category != VariantCategory.None;
+
+                if (SearchUI.ShowSearchUI) {
+                    Action startSearching = OuiModOptions_AddSearchBox.Invoke(null, new object[] { menu, null }) as Action;
+                    // Remove Celeste.TextMenuExt+SearchToolTip added in the previous line
+                    menu.Remove(menu.Items[menu.Items.Count - 1]);
+
+                    Engine.Scene.Add(SearchUI);
+                    menu.OnClose += () => SearchUI.ShowSearchUI = false;
+                    menu.OnUpdate += () => {
+                        if (InputSearchUI.Instance.Key.Pressed == true)
+                            startSearching.Invoke();
+                    };
+                }
+            }
+
             refreshOptionMenuEnabledStatus();
         }
+        private static MethodInfo OuiModOptions_AddSearchBox = typeof(OuiModOptions).GetMethod("AddSearchBox", BindingFlags.Public | BindingFlags.Static);
 
         private TextMenu.SubHeader buildHeading(TextMenu menu, string headingNameResource) {
             return new TextMenu.SubHeader(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING") + " - " + Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_HEADING_" + headingNameResource));
