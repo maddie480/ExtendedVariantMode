@@ -32,7 +32,7 @@ namespace ExtendedVariants.Variants {
 
             if (Engine.Scene is Level) {
                 // we are already in a map, aaaaa, create the black mask real quick
-                blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", 320, 180);
+                ensureBufferIsCorrect();
             }
         }
 
@@ -45,6 +45,13 @@ namespace ExtendedVariants.Variants {
             // dispose the black mask, or it will just be laying around for no reason.
             blackMask?.Dispose();
             blackMask = null;
+        }
+
+        private void ensureBufferIsCorrect() {
+            if (blackMask == null || blackMask.Width != GameplayBuffers.Gameplay.Width || blackMask.Height != GameplayBuffers.Gameplay.Height) {
+                blackMask?.Dispose();
+                blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+            }
         }
 
         private void modLevelRender(ILContext il) {
@@ -68,6 +75,7 @@ namespace ExtendedVariants.Variants {
 
             if (blackMask != null) {
                 // ensure the black mask is... well, black.
+                ensureBufferIsCorrect();
                 Engine.Graphics.GraphicsDevice.SetRenderTarget(blackMask);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Black);
             }
@@ -86,7 +94,7 @@ namespace ExtendedVariants.Variants {
             orig();
 
             // create the black mask as well.
-            blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", 320, 180);
+            ensureBufferIsCorrect();
         }
 
         private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {

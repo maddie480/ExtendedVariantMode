@@ -30,7 +30,7 @@ namespace ExtendedVariants.Variants {
 
             if (Engine.Scene is Level) {
                 // we are already in a map, aaaaa, create the blur temp buffer real quick
-                tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-bg-blur-buffer", 320, 180);
+                ensureBufferIsCorrect();
             }
         }
 
@@ -42,6 +42,13 @@ namespace ExtendedVariants.Variants {
             // dispose the blur temp buffer, or it will just be laying around for no reason.
             tempBuffer?.Dispose();
             tempBuffer = null;
+        }
+
+        private void ensureBufferIsCorrect() {
+            if (tempBuffer == null || tempBuffer.Width != GameplayBuffers.Gameplay.Width || tempBuffer.Height != GameplayBuffers.Gameplay.Height) {
+                tempBuffer?.Dispose();
+                tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-bg-blur-buffer", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+            }
         }
 
         private void modLevelRender(ILContext il) {
@@ -61,6 +68,7 @@ namespace ExtendedVariants.Variants {
         private void BackgroundBlurLevelBuffer() {
             if (GetVariantValue<float>(Variant.BackgroundBlurLevel) > 0) {
                 // what if... I just gaussian blur the level buffer
+                ensureBufferIsCorrect();
                 GaussianBlur.Blur(GameplayBuffers.Level.Target, tempBuffer, GameplayBuffers.Level, 0, true, GaussianBlur.Samples.Nine, GetVariantValue<float>(Variant.BackgroundBlurLevel));
             }
         }
@@ -69,7 +77,7 @@ namespace ExtendedVariants.Variants {
             orig();
 
             // create the blur temp buffer as well.
-            tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-bg-blur-buffer", 320, 180);
+            ensureBufferIsCorrect();
         }
 
         private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {

@@ -35,6 +35,13 @@ namespace ExtendedVariants.Variants {
             On.Celeste.GameplayBuffers.Unload -= onGameplayBuffersUnload;
         }
 
+        private void ensureBufferIsCorrect() {
+            if (foregroundEffectBuffer == null || foregroundEffectBuffer.Width != GameplayBuffers.Gameplay.Width || foregroundEffectBuffer.Height != GameplayBuffers.Gameplay.Height) {
+                foregroundEffectBuffer?.Dispose();
+                foregroundEffectBuffer = VirtualContent.CreateRenderTarget("foreground-effect-buffer", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+            }
+        }
+
         private void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
@@ -55,6 +62,7 @@ namespace ExtendedVariants.Variants {
         private void prepareForegroundOpacityEffect() {
             if (GetVariantValue<float>(Variant.ForegroundEffectOpacity) < 1f) {
                 // redirect the foreground rendering to our render target.
+                ensureBufferIsCorrect();
                 Engine.Graphics.GraphicsDevice.SetRenderTarget(foregroundEffectBuffer);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Transparent);
             }
@@ -76,7 +84,7 @@ namespace ExtendedVariants.Variants {
             orig();
 
             // create the foreground effect buffer as well.
-            foregroundEffectBuffer = VirtualContent.CreateRenderTarget("foreground-effect-buffer", 320, 180);
+            ensureBufferIsCorrect();
         }
 
         private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {

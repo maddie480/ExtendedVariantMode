@@ -63,8 +63,8 @@ namespace ExtendedVariants.Variants {
             }
 
             // compute the size difference between regular screen and zoomed in screen
-            Vector2 screenSize = new Vector2(320f, 180f) * GetVariantValue<float>(Variant.ZoomLevel);
-            Vector2 diff = screenSize - new Vector2(320f, 180f);
+            Vector2 screenSize = new Vector2(GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height) * GetVariantValue<float>(Variant.ZoomLevel);
+            Vector2 diff = screenSize - new Vector2(GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
 
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
             if (GetVariantValue<float>(Variant.ZoomLevel) > 1f && player != null) {
