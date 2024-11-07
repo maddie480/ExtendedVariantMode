@@ -48,9 +48,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void ensureBufferIsCorrect() {
-            if (blackMask == null || blackMask.Width != GameplayBuffers.Gameplay.Width || blackMask.Height != GameplayBuffers.Gameplay.Height) {
+            if (blackMask == null || blackMask.Width != GameplayWidth || blackMask.Height != GameplayHeight) {
                 blackMask?.Dispose();
-                blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+                blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", GameplayWidth, GameplayHeight);
             }
         }
 

@@ -36,9 +36,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void ensureBufferIsCorrect() {
-            if (foregroundEffectBuffer == null || foregroundEffectBuffer.Width != GameplayBuffers.Gameplay.Width || foregroundEffectBuffer.Height != GameplayBuffers.Gameplay.Height) {
+            if (foregroundEffectBuffer == null || foregroundEffectBuffer.Width != GameplayWidth || foregroundEffectBuffer.Height != GameplayHeight) {
                 foregroundEffectBuffer?.Dispose();
-                foregroundEffectBuffer = VirtualContent.CreateRenderTarget("foreground-effect-buffer", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+                foregroundEffectBuffer = VirtualContent.CreateRenderTarget("foreground-effect-buffer", GameplayWidth, GameplayHeight);
             }
         }
 

@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
                 Player player = self.Tracker.GetEntity<Player>();
                 if (player != null) {
                     // the anxiety comes from the player
-                    GFX.FxDistort.Parameters["anxietyOrigin"].SetValue(new Vector2((player.Center.X - camera.X) / GameplayBuffers.Gameplay.Width, (player.Center.Y - camera.Y) / GameplayBuffers.Gameplay.Height));
+                    GFX.FxDistort.Parameters["anxietyOrigin"].SetValue(new Vector2((player.Center.X - camera.X) / GameplayWidth, (player.Center.Y - camera.Y) / GameplayHeight));
                 } else {
                     // there is no player; the anxiety come from the screen center
                     GFX.FxDistort.Parameters["anxietyOrigin"].SetValue(new Vector2(0.5f, 0.5f));

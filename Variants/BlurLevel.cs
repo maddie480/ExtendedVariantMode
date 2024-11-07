@@ -44,9 +44,9 @@ namespace ExtendedVariants.Variants {
         }
 
         private void ensureBufferIsCorrect() {
-            if (tempBuffer == null || tempBuffer.Width != GameplayBuffers.Gameplay.Width || tempBuffer.Height != GameplayBuffers.Gameplay.Height) {
+            if (tempBuffer == null || tempBuffer.Width != GameplayWidth || tempBuffer.Height != GameplayHeight) {
                 tempBuffer?.Dispose();
-                tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-blur-buffer", GameplayBuffers.Gameplay.Width, GameplayBuffers.Gameplay.Height);
+                tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-blur-buffer", GameplayWidth, GameplayHeight);
             }
         }
 

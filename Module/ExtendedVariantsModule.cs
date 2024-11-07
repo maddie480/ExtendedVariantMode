@@ -41,6 +41,10 @@ namespace ExtendedVariants.Module {
         public static ExtendedVariantsSettings Settings => (ExtendedVariantsSettings) Instance._Settings;
         public static ExtendedVariantsSession Session => (ExtendedVariantsSession) Instance._Session;
 
+        // size of the screen, taking zooming out into account (Extended Camera Dynamics mod)
+        public static int GameplayWidth => GameplayBuffers.Gameplay?.Width ?? 320;
+        public static int GameplayHeight => GameplayBuffers.Gameplay?.Height ?? 180;
+
         public VariantRandomizer Randomizer;
 
         public enum Variant {
