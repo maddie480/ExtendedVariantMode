@@ -440,6 +440,7 @@ namespace ExtendedVariants.Module {
             Entities.Legacy.ExtendedVariantTrigger.Load();
             Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Load();
             Entities.ForMappers.ExtendedVariantTheoCrystal.Load();
+            InputSearchUI.Load();
 
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done hooking stuff.");
 
@@ -492,6 +493,7 @@ namespace ExtendedVariants.Module {
             Entities.Legacy.ExtendedVariantTrigger.Unload();
             Entities.ForMappers.AbstractExtendedVariantTriggerTeleportHandler.Unload();
             Entities.ForMappers.ExtendedVariantTheoCrystal.Unload();
+            InputSearchUI.Unload();
 
             Logger.Log(LogLevel.Info, "ExtendedVariantMode/ExtendedVariantsModule", "Done unhooking stuff.");
 
