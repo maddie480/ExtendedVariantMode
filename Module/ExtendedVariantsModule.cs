@@ -260,6 +260,8 @@ namespace ExtendedVariants.Module {
         }
 
         private void onCreatePauseMenuButtons(Level level, TextMenu menu, bool minimal) {
+            if (CoreModule.Settings != null && !CoreModule.Settings.ShowModOptionsInGame) return;
+
             int optionsIndex = menu.Items.FindIndex(item =>
                 item.GetType() == typeof(TextMenu.Button) && ((TextMenu.Button) item).Label == Dialog.Clean("menu_pause_options"));
 
