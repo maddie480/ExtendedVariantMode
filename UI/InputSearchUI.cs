@@ -22,7 +22,7 @@ namespace ExtendedVariants.UI {
 
         private static void onOverworldConstruct(On.Celeste.Overworld.orig_ctor orig, Overworld self, OverworldLoader loader) {
             orig(self, loader);
-            self.Add(Instance = new InputSearchUI(self));
+            Instance = new InputSearchUI(self);
         }
 
         public static InputSearchUI Instance { get; private set; }
@@ -71,6 +71,9 @@ namespace ExtendedVariants.UI {
         public void RegisterMenuEvents(TextMenu menu, bool showSearchUI) {
             this.showSearchUI = showSearchUI;
             if (!showSearchUI) return;
+
+            // make sure the button is part of the current scene (Level or Overworld)
+            if (Scene != Engine.Scene) Engine.Scene.Add(this);
 
             Action startSearching = ouiModOptionsAddSearchBox.Invoke(null, new object[] { menu, null }) as Action;
             // Remove Celeste.TextMenuExt+SearchToolTip added in the previous line
