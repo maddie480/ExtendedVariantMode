@@ -22,7 +22,7 @@ namespace ExtendedVariants.UI {
 
         private static void onOverworldConstruct(On.Celeste.Overworld.orig_ctor orig, Overworld self, OverworldLoader loader) {
             orig(self, loader);
-            Instance = new InputSearchUI(self);
+            self.Add(Instance = new InputSearchUI(self));
         }
 
         public static InputSearchUI Instance { get; private set; }
