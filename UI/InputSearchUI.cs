@@ -72,10 +72,13 @@ namespace ExtendedVariants.UI {
             this.showSearchUI = showSearchUI;
             if (!showSearchUI) return;
 
+            Overworld overworld = Engine.Scene as Overworld;
             // make sure the button is part of the current scene (Level or Overworld)
-            if (Scene != Engine.Scene) Engine.Scene.Add(this);
-
-            Action startSearching = ouiModOptionsAddSearchBox.Invoke(null, new object[] { menu, null }) as Action;
+            if (Scene != Engine.Scene) {
+                Engine.Scene.Add(this);
+                this.overworld = overworld;
+            }
+            Action startSearching = ouiModOptionsAddSearchBox.Invoke(null, new object[] { menu, overworld }) as Action;
             // Remove Celeste.TextMenuExt+SearchToolTip added in the previous line
             menu.Remove(menu.Items[menu.Items.Count - 1]);
 
