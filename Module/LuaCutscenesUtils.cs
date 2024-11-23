@@ -37,5 +37,10 @@ namespace ExtendedVariants.Module {
         public static void CapJumpCount(int jumpCount) {
             JumpCount.SetJumpCount(jumpCount, cap: true);
         }
+
+        public static int GetJumpCount()
+        {
+            return JumpCount.GetJumpBuffer();
+        }
     }
 }
