@@ -45,5 +45,10 @@ namespace ExtendedVariants.Module {
 
         [SettingIgnore]
         public float OnScreenDisplayBackgroundOpacity { get; set; } = 0.8f;
+
+        // ======================================
+
+        [SettingName("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN")]
+        public ButtonBinding HotKey_DisplayEnabledVariantsToScreen { get; set; }
     }
 }
