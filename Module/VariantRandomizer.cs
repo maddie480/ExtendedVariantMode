@@ -101,6 +101,10 @@ namespace ExtendedVariants {
             if (!((scene as Level)?.Paused ?? false)) {
                 Draw.SpriteBatch.Begin();
 
+                if (ExtendedVariantsModule.Settings.HotKey_DisplayEnabledVariantsToScreen?.Pressed == true)  {
+                    ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
+                }
+
                 if (shouldDisplayEnabledVariantsOnScreen()) {
                     if (mustUpdateDisplayedVariantList) {
                         Logger.Log("ExtendedVariantMode/VariantRandomizer", "Late update of displayed enabled variants on-screen");
