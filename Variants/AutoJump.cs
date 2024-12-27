@@ -3,6 +3,7 @@ using Celeste;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using MonoMod.Utils;
+using static Celeste.TrackSpinner;
 
 namespace ExtendedVariants.Variants;
 
@@ -47,19 +48,7 @@ public class AutoJump : AbstractExtendedVariant {
 
     private static void ForceJump(Player self)
     {
-        if (self.AutoJumpTimer > 0f)
-            return;
-
         DynamicData selfData = DynamicData.For(self);
-
-        if (self.OnGround())
-        {
-            self.Jump();
-            self.RefillDash();
-            self.RefillStamina();
-            SetAutoJump(self);
-            return;
-        }
 
         bool canUnDuck = self.CanUnDuck;
         if (!canUnDuck)
@@ -68,33 +57,65 @@ public class AutoJump : AbstractExtendedVariant {
         if (selfData.Invoke<bool>("WallJumpCheck", 1))
         {
             if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck"))
+            {
                 selfData.Invoke("SuperWallJump", -1);
+                SetAutoJump(self, 0.25f);
+            }
             else
+            {
                 selfData.Invoke("WallJump", -1);
-            SetAutoJump(self);
+                SetAutoJump(self);
+            }
         }
         else if (selfData.Invoke<bool>("WallJumpCheck", -1))
         {
             if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck"))
+            {
                 selfData.Invoke("SuperWallJump", 1);
+                SetAutoJump(self);
+            }
             else
+            {
                 selfData.Invoke("WallJump", 1);
-            SetAutoJump(self);
+                SetAutoJump(self);
+            }
         }
         else
         {
-            if (self.CollideFirst<Water>(self.Position + Vector2.UnitY * 2f) is not { } water)
-                return;
+            if (self.AutoJumpTimer > 0f) return;
 
-            self.Jump();
-            water.TopSurface.DoRipple(self.Position, 1f);
-            SetAutoJump(self);
+            if (self.CollideFirst<Water>(self.Position + Vector2.UnitY * 2f) is { } water && selfData.Invoke<bool>("SwimJumpCheck"))
+            {
+                self.Jump();
+                water.TopSurface.DoRipple(self.Position, 1f);
+                SetAutoJump(self);
+            }
+
+            if (self.OnGround())
+            {
+                if ((self.StateMachine.State is Player.StDash or Player.StRedDash) && self.CanUnDuck && self.DashDir.X != 0)
+                {
+                    if(self.DashDir.Y == 1f && self.StateMachine.State is Player.StDash) self.Ducking = true;
+                    selfData.Invoke("SuperJump");
+                    SetAutoJump(self);
+                }
+                else
+                {
+                    self.Jump();
+                    SetAutoJump(self);
+                }
+                self.RefillDash();
+                self.RefillStamina();
+
+                return;
+            }
         }
     }
 
-    private static void SetAutoJump(Player self, float duration = 0.5f)
+    private static void SetAutoJump(Player self, float duration = 0.5f, bool resetState = true)
     {
         self.AutoJump = true;
         self.AutoJumpTimer = duration;
+        if (resetState) self.StateMachine.State = Player.StNormal;
     }
 }
