@@ -387,3 +387,6 @@ MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_1=Having a lot of horizontal sp
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_2=This variant allows Madeline's upwards dashes to also stretch, if she has enough speed
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING=Disable Jump Gravity Lowering
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT=You won't be able to divide the gravity by 2 by holding Jump anymore
+
+MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP=Auto Jump
+MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT=Forces Madeline to jump when possible.

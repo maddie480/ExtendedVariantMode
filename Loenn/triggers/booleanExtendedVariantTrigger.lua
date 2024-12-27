@@ -28,6 +28,7 @@ trigger.fieldInformation = {
             "AlternativeBuffering",
             "AlwaysFeather",
             "AlwaysInvisible",
+            "AutoJump",
             "BadelineBossesEverywhere",
             "BadelineChasersEverywhere",
             "BounceEverywhere",
