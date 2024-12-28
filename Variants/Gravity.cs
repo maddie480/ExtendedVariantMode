@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using System;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
@@ -25,7 +26,9 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            IL.Celeste.Player.NormalUpdate += modNormalUpdate;
+            using (new DetourContext { After = { "*" } }) { // make sure to be applied after Xaphan Helper
+                IL.Celeste.Player.NormalUpdate += modNormalUpdate;
+            }
 
             On.Celeste.Player.Update += modUpdate;
             On.Celeste.Player.ClimbJump += modClimbJump;
@@ -52,11 +55,18 @@ namespace ExtendedVariants.Variants {
 
             // find out where the constant 900 (downward acceleration) is loaded into the stack
             while (cursor.TryGotoNext(
-                instr => instr.OpCode == OpCodes.Ldloc_S,
-                instr => instr.MatchLdcR4(900f))) {
+                    instr => instr.OpCode == OpCodes.Ldloc_S,
+                    instr => instr.MatchLdcR4(900f))
+                // Xaphan Helper might have inserted a dup, so check for that as well
+                || cursor.TryGotoNext(
+                    instr => instr.OpCode == OpCodes.Ldloc_S,
+                    instr => instr.MatchDup(),
+                    instr => instr.MatchLdcR4(900f))) {
+
                 Logger.Log("ExtendedVariantMode/Gravity", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                 cursor.Index++;
+                if(cursor.Next.OpCode == OpCodes.Dup) cursor.Index++;
                 cursor.Emit(OpCodes.Dup);
                 cursor.Index++;
                 cursor.Emit(OpCodes.Ldarg_0);
