@@ -101,7 +101,7 @@ namespace ExtendedVariants {
             if (!((scene as Level)?.Paused ?? false)) {
                 Draw.SpriteBatch.Begin();
 
-                if (ExtendedVariantsModule.Settings.HotKey_DisplayEnabledVariantsToScreen?.Pressed == true)  {
+                if (ExtendedVariantsModule.Settings.HotKey_DisplayEnabledVariantsToScreen?.Pressed == true) {
                     ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
                 }
 

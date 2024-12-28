@@ -277,11 +277,10 @@ namespace ExtendedVariants.Module {
             shouldCreateKeyBindingsMenu = false;
         }
         private bool shouldCreateKeyBindingsMenu = false;
-        
+
         protected override void CreateModMenuSectionKeyBindings(TextMenu menu, bool inGame, EventInstance snapshot) {
             // Prevent base.CreateModMenuSection call this method and make the key configuration menu on top of everything
-            if (shouldCreateKeyBindingsMenu)
-            {
+            if (shouldCreateKeyBindingsMenu) {
                 base.CreateModMenuSectionKeyBindings(menu, inGame, snapshot);
             }
         }
