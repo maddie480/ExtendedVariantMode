@@ -78,6 +78,7 @@ const BooleanVariants = [
     "AlternativeBuffering",
     "AlwaysFeather",
     "AlwaysInvisible",
+    "AutoJump",
     "BadelineBossesEverywhere",
     "BadelineChasersEverywhere",
     "BounceEverywhere",

@@ -336,7 +336,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -715,6 +715,10 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.EverythingIsUnderwater));
                 menu.Add(getToggleOption(Variant.AlwaysFeather));
                 menu.Add(getToggleOption(Variant.PermanentDashAttack));
+
+                TextMenuExt.OnOff autoJumpToggle;
+                menu.Add(autoJumpToggle = getToggleOption(Variant.AutoJump));
+                autoJumpToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT"));
 
                 TextMenuExt.OnOff binoStorageToggle;
                 menu.Add(binoStorageToggle = getToggleOption(Variant.PermanentBinoStorage));
