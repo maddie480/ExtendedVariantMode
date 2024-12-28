@@ -387,3 +387,6 @@ MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_1=Les dashes horizontaux s'éti
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_2=Cette variante applique le même principe aux dashes vers le haut
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING=Désactiver la réduction de gravité lors des sauts
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT=Tu ne pourras plus diviser la gravité par 2 en maintenant le bouton appuyé
+
+MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP=Saut automatique
+MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT=Force Madeline à sauter quand c'est possible.
