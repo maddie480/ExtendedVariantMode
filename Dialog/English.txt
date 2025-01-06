@@ -386,7 +386,10 @@ MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES=Speed-Based Upwards Dash Stretching
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_1=Having a lot of horizontal speed causes Madeline's dash to stretch horizontally
 MODOPTIONS_EXTENDEDVARIANTS_STRETCHUPDASHES_HINT_2=This variant allows Madeline's upwards dashes to also stretch, if she has enough speed
 MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING=Disable Jump Gravity Lowering
-MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT=You won't be able to divide the gravity by 2 by holding Jump anymore
-
+MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT=You won't be able to alter the gravity by holding Jump anymore
 MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP=Auto Jump
 MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT=Forces Madeline to jump when possible.
+MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLGRAVITYMULTIPLIER=Slowfall Gravity Multiplier
+MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLGRAVITYMULTIPLIER_HINT=Madeline's slowfall gravity factor, when under the speed treshold and holding Jump
+MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTRESHOLD=Slowfall Speed Treshold
+MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTRESHOLD_HINT=The speed treshold for the slowfall gravity change to occur

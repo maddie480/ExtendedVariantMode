@@ -314,7 +314,8 @@ namespace ExtendedVariants.UI {
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
-                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering
+                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering,
+                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedTreshold
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -406,6 +407,14 @@ namespace ExtendedVariants.UI {
                 TextMenuExt.OnOff disableJumpGravityLoweringOption;
                 menu.Add(disableJumpGravityLoweringOption = getToggleOption(Variant.DisableJumpGravityLowering));
                 disableJumpGravityLoweringOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT"));
+
+                TextMenuOptionExt<int> slowfallGravityMult;
+                menu.Add(slowfallGravityMult = getScaleOption(Variant.SlowfallGravityMultiplier, "x", multiplierScale));
+                slowfallGravityMult.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLGRAVITYMULTIPLIER_HINT"));
+
+                TextMenuOptionExt<int> slowfallSpeedTreshold;
+                menu.Add(slowfallSpeedTreshold = getScaleOption(Variant.SlowfallSpeedTreshold, "px/s", new float[] { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 }));
+                slowfallSpeedTreshold.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTRESHOLD_HINT"));
 
                 menu.Add(buildHeading(menu, "DASHING"));
                 menu.Add(getScaleOption(Variant.DashSpeed, "x", multiplierScale));
