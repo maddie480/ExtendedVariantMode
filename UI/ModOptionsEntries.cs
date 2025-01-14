@@ -94,6 +94,10 @@ namespace ExtendedVariants.UI {
             340, 380, 420, 460, 500, 540, 580, 600
         };
 
+        private static float[] multiplierScaleDashRefillCooldown = new float[] {
+            -1, 0.01f, 0.05f, 0.1f, 0.25f, 0.5f, 0.75f, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 25, 50, 100, float.PositiveInfinity
+        };
+
         private TextMenuOptionExt<int> getScaleOption<T>(Variant variant, string suffix, T[] scale, Func<T, string> formatter = null) where T : IComparable {
             return getNonVariantScaleOption<T>(variant.ToString(), suffix, scale,
                 currentValue: (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant),
@@ -305,7 +309,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
+                    Variant.DontRefillDashOnGround, Variant.DashRefillCooldown, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
                     Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
                     Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
@@ -335,7 +339,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump, Variant.AutoDash
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -495,6 +499,19 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.HeldDash));
                 menu.Add(getScaleOption(Variant.DontRefillDashOnGround, "", getEnumValues<DontRefillDashOnGround.DashRefillOnGroundConfiguration>(),
                     i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[(int) i]));
+
+                TextMenuOptionExt<int> dashRefillCooldown;
+                menu.Add(dashRefillCooldown = getScaleOption(Variant.DashRefillCooldown, "", multiplierScaleDashRefillCooldown, i =>
+                {
+                    if (i == -1) return "0s";
+                    if (float.IsPositiveInfinity(i)) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHREFILLCOOLDOWN_INFINITE");
+                    return i.ToString() + "s";
+                }));
+
+
+
+                dashRefillCooldown.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHREFILLCOOLDOWN_HINT"));
+
                 menu.Add(getScaleOption(Variant.DashRestriction, "", getEnumValues<DashRestriction.DashRestrictionType>(),
                     i => new string[] {
                         Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_NONE"),
@@ -718,6 +735,10 @@ namespace ExtendedVariants.UI {
                 TextMenuExt.OnOff autoJumpToggle;
                 menu.Add(autoJumpToggle = getToggleOption(Variant.AutoJump));
                 autoJumpToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT"));
+
+                TextMenuExt.OnOff autoDashToggle;
+                menu.Add(autoDashToggle = getToggleOption(Variant.AutoDash));
+                autoDashToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTODASH_HINT"));
 
                 TextMenuExt.OnOff binoStorageToggle;
                 menu.Add(binoStorageToggle = getToggleOption(Variant.PermanentBinoStorage));

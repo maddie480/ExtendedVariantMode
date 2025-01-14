@@ -30,6 +30,7 @@ trigger.fieldInformation = {
             "BoostMultiplier",
             "CoyoteTime",
             "DashLength",
+            "DashRefillCooldown",
             "DashSpeed",
             "DashTimerMultiplier",
             "DelayBeforeRegrabbing",
