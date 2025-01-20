@@ -276,6 +276,7 @@ namespace ExtendedVariants.UI {
                         if (v) ExtendedVariantsModule.Instance.HookStuff();
                         else ExtendedVariantsModule.Instance.UnhookStuff();
                     }));
+                ExtendedVariantsModule.Instance.CreateKeyBindingsMenu(menu, inGame, null);
             }
 
             // ======

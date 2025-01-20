@@ -273,6 +273,20 @@ namespace ExtendedVariants.Module {
                 null /* this is not used when in-game anyway */, new object[] { true }));
         }
 
+        public void CreateKeyBindingsMenu(TextMenu menu, bool inGame, EventInstance snapshot) {
+            shouldCreateKeyBindingsMenu = true;
+            CreateModMenuSectionKeyBindings(menu, inGame, snapshot);
+            shouldCreateKeyBindingsMenu = false;
+        }
+        private bool shouldCreateKeyBindingsMenu = false;
+
+        protected override void CreateModMenuSectionKeyBindings(TextMenu menu, bool inGame, EventInstance snapshot) {
+            // Prevent base.CreateModMenuSection call this method and make the key configuration menu on top of everything
+            if (shouldCreateKeyBindingsMenu) {
+                base.CreateModMenuSectionKeyBindings(menu, inGame, snapshot);
+            }
+        }
+
         // ================ Variants hooking / unhooking ================
 
         public override void Load() {
@@ -679,7 +693,8 @@ namespace ExtendedVariants.Module {
                 Vanillafy = Settings.Vanillafy,
                 DisplayEnabledVariantsToScreen = Settings.DisplayEnabledVariantsToScreen,
                 OnScreenDisplayTextOpacity = Settings.OnScreenDisplayTextOpacity,
-                OnScreenDisplayBackgroundOpacity = Settings.OnScreenDisplayBackgroundOpacity
+                OnScreenDisplayBackgroundOpacity = Settings.OnScreenDisplayBackgroundOpacity,
+                HotKey_DisplayEnabledVariantsToScreen = Settings.HotKey_DisplayEnabledVariantsToScreen,
             };
 
             try {
