@@ -33,6 +33,9 @@ namespace ExtendedVariants.Variants {
         private void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.AutoJump))
+                return;
+
             if (JumpRefillTimer > 0f) JumpRefillTimer -= Engine.DeltaTime;
 
             if (!IsValidJumpState(self.StateMachine.State))
@@ -41,6 +44,9 @@ namespace ExtendedVariants.Variants {
             ForceJump(self);
         }
 
+        private static bool IsValidJumpState(int currentState)
+            => currentState is Player.StNormal or Player.StDash or Player.StRedDash or Player.StStarFly or Player.StSwim;
+
         private void ForceJump(Player self) {
             if (!JumpFrameDelay) {
                 JumpFrameDelay = true;
@@ -48,6 +54,10 @@ namespace ExtendedVariants.Variants {
             }
 
             DynamicData selfData = DynamicData.For(self);
+
+            bool canUnDuck = self.CanUnDuck;
+            if (!canUnDuck)
+                return;
 
             if (selfData.Invoke<bool>("WallJumpCheck", 1)) {
                 if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck")) {
