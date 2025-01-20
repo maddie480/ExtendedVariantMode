@@ -105,7 +105,6 @@ namespace ExtendedVariants.Variants {
                         if (!self.Inventory.NoRefills && selfData.Get<float>("dashRefillCooldownTimer") < 0f) self.RefillDash();
                         self.RefillStamina();
                     }
-                    return;
                 }
             }
         }
