@@ -18,10 +18,6 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
-
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
         }
@@ -84,32 +80,19 @@ namespace ExtendedVariants.Variants {
                 if (self.OnGround() && self.Speed.Y >= 0 || (JumpCount.GetJumpBuffer() > 0 && JumpRefillTimer <= 0f)) {
                     if ((self.StateMachine.State is Player.StDash or Player.StRedDash) && self.CanUnDuck && self.DashDir != new Vector2(0,1)) {
                         if (self.DashDir.Y < 0) return;
-
-                        if(self.DashDir.Y != 0) self.Ducking = true;
+    
+                        if (self.DashDir.Y != 0) self.Ducking = true;
                         selfData.Invoke("SuperJump");
                         SetAutoJump(self);
-                    }
-                } else if (selfData.Invoke<bool>("WallJumpCheck", -1)) {
-                    if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck")) {
-                        selfData.Invoke("SuperWallJump", 1);
-                        SetAutoJump(self);
                     } else {
-                        selfData.Invoke("WallJump", 1);
-                        SetAutoJump(self);
-                    }
-                } else {
-                    if (self.AutoJumpTimer > 0f) return;
-
-                    if (self.CollideFirst<Water>(self.Position + Vector2.UnitY * 2f) is { } water && selfData.Invoke<bool>("SwimJumpCheck")) {
                         self.Jump();
-                        water.TopSurface.DoRipple(self.Position, 1f);
                         SetAutoJump(self);
                     }
                     if (JumpCount.GetJumpBuffer() > 0) {
                         JumpCount.SetJumpCount(JumpCount.GetJumpBuffer() - 1, false);
                         JumpRefillTimer = GetVariantValue<float>(ExtendedVariantsModule.Variant.JumpCooldown);
                     } else {
-                        if(!self.Inventory.NoRefills && selfData.Get<float>("dashRefillCooldownTimer") < 0f) self.RefillDash();
+                        if (!self.Inventory.NoRefills && selfData.Get<float>("dashRefillCooldownTimer") < 0f) self.RefillDash();
                         self.RefillStamina();
                     }
                     return;
