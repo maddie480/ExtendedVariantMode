@@ -90,7 +90,7 @@ namespace ExtendedVariants.Variants {
                 if (self.OnGround() && self.Speed.Y >= 0 || (JumpCount.GetJumpBuffer() > 0 && JumpRefillTimer <= 0f)) {
                     if ((self.StateMachine.State is Player.StDash or Player.StRedDash) && self.CanUnDuck && self.DashDir != new Vector2(0, 1)) {
                         if (self.DashDir.Y < 0) return;
-    
+
                         if (self.DashDir.Y != 0) self.Ducking = true;
                         selfData.Invoke("SuperJump");
                         SetAutoJump(self);
