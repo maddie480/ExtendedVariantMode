@@ -502,15 +502,11 @@ namespace ExtendedVariants.UI {
                     i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[(int) i]));
 
                 TextMenuOptionExt<int> dashRefillCooldown;
-                menu.Add(dashRefillCooldown = getScaleOption(Variant.DashRefillCooldown, "", multiplierScaleDashRefillCooldown, i =>
-                {
+                menu.Add(dashRefillCooldown = getScaleOption(Variant.DashRefillCooldown, "", multiplierScaleDashRefillCooldown, i => {
                     if (i == -1) return "0s";
                     if (float.IsPositiveInfinity(i)) return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHREFILLCOOLDOWN_INFINITE");
                     return i.ToString() + "s";
                 }));
-
-
-
                 dashRefillCooldown.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHREFILLCOOLDOWN_HINT"));
 
                 menu.Add(getScaleOption(Variant.DashRestriction, "", getEnumValues<DashRestriction.DashRestrictionType>(),
