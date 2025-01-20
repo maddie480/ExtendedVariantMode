@@ -49,7 +49,7 @@ namespace ExtendedVariants.Variants {
                 if (self.LastBooster != null && self.LastBooster.Ch9HubTransition && self.LastBooster.BoostingPlayer)
                     return;
 
-                if(self.CurrentBooster != null) {
+                if (self.CurrentBooster != null) {
                     if (selfData.Get<bool>("boostRed")) self.StateMachine.State = Player.StRedDash;
                     else self.StateMachine.State = Player.StDash;
                 } else {
