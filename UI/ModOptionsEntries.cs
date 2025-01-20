@@ -336,7 +336,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump, Variant.AutoDash
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -496,6 +496,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.HeldDash));
                 menu.Add(getScaleOption(Variant.DontRefillDashOnGround, "", getEnumValues<DontRefillDashOnGround.DashRefillOnGroundConfiguration>(),
                     i => new string[] { Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT"), Dialog.Clean("OPTIONS_ON"), Dialog.Clean("OPTIONS_OFF") }[(int) i]));
+
                 menu.Add(getScaleOption(Variant.DashRestriction, "", getEnumValues<DashRestriction.DashRestrictionType>(),
                     i => new string[] {
                         Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHRESTRICTION_NONE"),
@@ -719,6 +720,10 @@ namespace ExtendedVariants.UI {
                 TextMenuExt.OnOff autoJumpToggle;
                 menu.Add(autoJumpToggle = getToggleOption(Variant.AutoJump));
                 autoJumpToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTOJUMP_HINT"));
+
+                TextMenuExt.OnOff autoDashToggle;
+                menu.Add(autoDashToggle = getToggleOption(Variant.AutoDash));
+                autoDashToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_AUTODASH_HINT"));
 
                 TextMenuExt.OnOff binoStorageToggle;
                 menu.Add(binoStorageToggle = getToggleOption(Variant.PermanentBinoStorage));

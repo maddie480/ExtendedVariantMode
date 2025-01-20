@@ -3,9 +3,13 @@ using Celeste;
 using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using MonoMod.Utils;
+using Monocle;
 
 namespace ExtendedVariants.Variants {
     public class AutoJump : AbstractExtendedVariant {
+        private static float JumpRefillTimer = 0f;
+        private static bool JumpFrameDelay = true;
+
         public override Type GetVariantType() {
             return typeof(bool);
         }
@@ -32,6 +36,8 @@ namespace ExtendedVariants.Variants {
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.AutoJump))
                 return;
 
+            if (JumpRefillTimer > 0f) JumpRefillTimer -= Engine.DeltaTime;
+
             if (!IsValidJumpState(self.StateMachine.State))
                 return;
 
@@ -41,7 +47,12 @@ namespace ExtendedVariants.Variants {
         private static bool IsValidJumpState(int currentState)
             => currentState is Player.StNormal or Player.StDash or Player.StRedDash or Player.StStarFly or Player.StSwim;
 
-        private static void ForceJump(Player self) {
+        private void ForceJump(Player self) {
+            if (!JumpFrameDelay) {
+                JumpFrameDelay = true;
+                return;
+            }
+
             DynamicData selfData = DynamicData.For(self);
 
             bool canUnDuck = self.CanUnDuck;
@@ -51,11 +62,12 @@ namespace ExtendedVariants.Variants {
             if (selfData.Invoke<bool>("WallJumpCheck", 1)) {
                 if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck")) {
                     selfData.Invoke("SuperWallJump", -1);
-                    SetAutoJump(self, 0.25f);
+                    SetAutoJump(self);
                 } else {
                     selfData.Invoke("WallJump", -1);
                     SetAutoJump(self);
                 }
+                JumpFrameDelay = false;
             } else if (selfData.Invoke<bool>("WallJumpCheck", -1)) {
                 if (self.DashAttacking && selfData.Invoke<bool>("get_SuperWallJumpAngleCheck")) {
                     selfData.Invoke("SuperWallJump", 1);
@@ -64,33 +76,40 @@ namespace ExtendedVariants.Variants {
                     selfData.Invoke("WallJump", 1);
                     SetAutoJump(self);
                 }
+                JumpFrameDelay = false;
             } else {
-                if (self.AutoJumpTimer > 0f) return;
+                if (self.AutoJumpTimer > 0f && (JumpCount.GetJumpBuffer() == 0)) return;
 
                 if (self.CollideFirst<Water>(self.Position + Vector2.UnitY * 2f) is { } water && selfData.Invoke<bool>("SwimJumpCheck")) {
                     self.Jump();
                     water.TopSurface.DoRipple(self.Position, 1f);
                     SetAutoJump(self);
+                    JumpFrameDelay = false;
                 }
 
-                if (self.OnGround()) {
-                    if ((self.StateMachine.State is Player.StDash or Player.StRedDash) && self.CanUnDuck && self.DashDir.X != 0) {
-                        if (self.DashDir.Y == 1f && self.StateMachine.State is Player.StDash) self.Ducking = true;
+                if (self.OnGround() && self.Speed.Y >= 0 || (JumpCount.GetJumpBuffer() > 0 && JumpRefillTimer <= 0f)) {
+                    if ((self.StateMachine.State is Player.StDash or Player.StRedDash) && self.CanUnDuck && self.DashDir != new Vector2(0, 1)) {
+                        if (self.DashDir.Y < 0) return;
+
+                        if (self.DashDir.Y != 0) self.Ducking = true;
                         selfData.Invoke("SuperJump");
                         SetAutoJump(self);
                     } else {
                         self.Jump();
                         SetAutoJump(self);
                     }
-                    self.RefillDash();
-                    self.RefillStamina();
-
-                    return;
+                    if (JumpCount.GetJumpBuffer() > 0) {
+                        JumpCount.SetJumpCount(JumpCount.GetJumpBuffer() - 1, false);
+                        JumpRefillTimer = GetVariantValue<float>(ExtendedVariantsModule.Variant.JumpCooldown);
+                    } else {
+                        if (!self.Inventory.NoRefills && selfData.Get<float>("dashRefillCooldownTimer") < 0f) self.RefillDash();
+                        self.RefillStamina();
+                    }
                 }
             }
         }
 
-        private static void SetAutoJump(Player self, float duration = 0.5f, bool resetState = true) {
+        private static void SetAutoJump(Player self, float duration = 0.4f, bool resetState = true) {
             self.AutoJump = true;
             self.AutoJumpTimer = duration;
             if (resetState) self.StateMachine.State = Player.StNormal;

@@ -25,14 +25,12 @@ jobs:
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 2.2.108
 
     - name: Restore with .NET Core
       run: dotnet restore
 
-    - name: Build using Mono
-      run: msbuild *.sln "/p:Configuration=Release"
+    - name: Build using .NET Core
+      run: dotnet build ExtendedVariantMode.sln --configuration Release --no-restore
 
     - name: Publish release
       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions'
