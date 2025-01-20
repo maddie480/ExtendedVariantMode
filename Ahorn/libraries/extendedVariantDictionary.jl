@@ -28,7 +28,6 @@ const FloatVariants = [
     "BoostMultiplier",
     "CoyoteTime",
     "DashLength",
-    "DashRefillCooldown",
     "DashSpeed",
     "DashTimerMultiplier",
     "DelayBeforeRegrabbing",
