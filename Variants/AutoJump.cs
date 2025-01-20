@@ -108,6 +108,7 @@ namespace ExtendedVariants.Variants {
                     return;
                 }
             }
+        }
 
         private static void SetAutoJump(Player self, float duration = 0.4f, bool resetState = true) {
             self.AutoJump = true;
