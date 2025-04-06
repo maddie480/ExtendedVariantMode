@@ -57,9 +57,14 @@ namespace ExtendedVariants.Variants {
         public static void Initialize() {
             if (ExtendedVariantsModule.Instance.MaxHelpingHandInstalled) {
                 // flip HD stylegrounds upside-down
-                MethodInfo renderMethod = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly
-                    .GetType("Celeste.Mod.MaxHelpingHand.Effects.HdParallax")
-                    .GetMethod("renderForReal", BindingFlags.NonPublic | BindingFlags.Instance);
+                Type hdParallaxType = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly
+                    .GetType("Celeste.Mod.MaxHelpingHand.Effects.HdParallax");
+
+                MethodInfo renderMethod = hdParallaxType.GetMethod("renderForReal", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (renderMethod == null) {
+                    // Helping Hand 1.35.0 turned HdParallax.renderForReal into a static method
+                    renderMethod = hdParallaxType.GetMethod("renderForReal", BindingFlags.NonPublic | BindingFlags.Static);
+                }
 
                 hdParallaxHook = new ILHook(renderMethod, patchHDStylegroundsRendering);
             }
