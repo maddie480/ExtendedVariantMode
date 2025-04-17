@@ -7,13 +7,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class GlitchEffect : AbstractExtendedVariant {
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return -1f;
-        }
+        public GlitchEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {

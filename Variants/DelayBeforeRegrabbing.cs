@@ -6,13 +6,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DelayBeforeRegrabbing : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public DelayBeforeRegrabbing() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

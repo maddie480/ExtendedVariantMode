@@ -14,13 +14,7 @@ namespace ExtendedVariants.Variants {
         private Hook dashAttackingHook;
         private static MethodInfo playerCorrectDashPrecision = typeof(Player).GetMethod("CorrectDashPrecision", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public PermanentDashAttack() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (value != 0);

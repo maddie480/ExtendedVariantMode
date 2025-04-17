@@ -10,13 +10,7 @@ namespace ExtendedVariants.Variants {
     public class JumpDuration : AbstractExtendedVariant {
         private static ILHook hookPlayerOrigWallJump = null;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public JumpDuration() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

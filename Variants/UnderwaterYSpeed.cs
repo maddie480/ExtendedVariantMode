@@ -8,13 +8,7 @@ namespace ExtendedVariants.Variants {
             return (float)value;
         }
 
-        public override object GetDefaultVariantValue() {
-            return VanillaSpeed;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
+        public UnderwaterSpeedY() : base(variantType: typeof(float), defaultVariantValue: VanillaSpeed) { }
 
         // hooks handled in UnderwaterSpeedX
     }

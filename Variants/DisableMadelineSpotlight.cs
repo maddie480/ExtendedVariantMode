@@ -8,13 +8,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DisableMadelineSpotlight : AbstractExtendedVariant {
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public DisableMadelineSpotlight() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

@@ -13,13 +13,7 @@ namespace ExtendedVariants.Variants {
 
         private float climbJumpGrabCooldown = -1f;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public Gravity() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

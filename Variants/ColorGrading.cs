@@ -21,13 +21,7 @@ namespace ExtendedVariants.Variants {
             "max480/extendedvariants/rgbshift1", "max480/extendedvariants/rgbshift2", "max480/extendedvariants/hollys_randomnoise"
         };
 
-        public override Type GetVariantType() {
-            return typeof(string);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return "";
-        }
+        public ColorGrading() : base(variantType: typeof(string), defaultVariantValue: "") { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1 || ExistingColorGrades.Count <= value) {

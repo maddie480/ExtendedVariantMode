@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
     public class BackgroundBlurLevel : AbstractExtendedVariant {
         private VirtualRenderTarget tempBuffer;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0f;
-        }
+        public BackgroundBlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

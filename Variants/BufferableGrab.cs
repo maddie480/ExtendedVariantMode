@@ -9,9 +9,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => On.Celeste.Player.Added -= Player_Added;
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public BufferableGrab() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

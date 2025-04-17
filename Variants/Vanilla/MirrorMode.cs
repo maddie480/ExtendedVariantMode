@@ -4,13 +4,7 @@ using System;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public class MirrorMode : AbstractVanillaVariant {
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public MirrorMode() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override void Load() {
             On.Celeste.Level.BeforeRender += Level_BeforeRender;

@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
     public class CoyoteTime : AbstractExtendedVariant {
         private ILHook hookOrigUpdate;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public CoyoteTime() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

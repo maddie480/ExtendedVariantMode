@@ -77,12 +77,6 @@ namespace ExtendedVariants.Variants {
             return value != 0;
         }
 
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
+        public StretchUpDashes() : base(variantType: typeof(bool), defaultVariantValue: false) { }
     }
 }

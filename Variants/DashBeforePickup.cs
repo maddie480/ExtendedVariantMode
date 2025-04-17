@@ -12,9 +12,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => IL.Celeste.Player.NormalUpdate -= Player_NormalUpdate_il;
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public DashBeforePickup() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

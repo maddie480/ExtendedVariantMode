@@ -15,13 +15,7 @@ namespace ExtendedVariants.Variants {
             return (float)value;
         }
 
-        public override object GetDefaultVariantValue() {
-            return VanillaSpeed;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
+        public UnderwaterSpeedX() : base(variantType: typeof(float), defaultVariantValue: VanillaSpeed) { }
 
         public override void Load() {
             IL.Celeste.Player.SwimUpdate += Player_SwimUpdate;

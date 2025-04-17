@@ -13,16 +13,10 @@ namespace ExtendedVariants.Variants {
         private static bool IsFeatherForced, WasFeatherForced;
         private static bool WasAlreadyInFeather;
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
+        public AlwaysFeather() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
         }
 
         public override void Load() {

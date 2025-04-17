@@ -2,13 +2,7 @@
 
 namespace ExtendedVariants.Variants {
     public class AllowThrowingTheoOffscreen : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public AllowThrowingTheoOffscreen() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

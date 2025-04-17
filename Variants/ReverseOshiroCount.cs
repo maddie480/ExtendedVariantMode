@@ -2,13 +2,7 @@
 
 namespace ExtendedVariants.Variants {
     public class ReverseOshiroCount : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0;
-        }
+        public ReverseOshiroCount() : base(variantType: typeof(int), defaultVariantValue: 0) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;

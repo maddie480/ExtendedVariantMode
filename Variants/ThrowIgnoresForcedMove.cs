@@ -9,9 +9,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => IL.Celeste.Player.Throw -= Player_Throw_il;
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public ThrowIgnoresForcedMove() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

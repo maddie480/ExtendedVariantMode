@@ -19,13 +19,7 @@ namespace ExtendedVariants.Variants {
 
         private float lastChaserLag = 0f;
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

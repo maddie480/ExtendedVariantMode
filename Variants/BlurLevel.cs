@@ -10,13 +10,7 @@ namespace ExtendedVariants.Variants {
     public class BlurLevel : AbstractExtendedVariant {
         private VirtualRenderTarget tempBuffer;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0f;
-        }
+        public BlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

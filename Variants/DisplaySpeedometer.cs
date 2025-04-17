@@ -6,13 +6,7 @@ namespace ExtendedVariants.Variants {
     public class DisplaySpeedometer : AbstractExtendedVariant {
         public enum SpeedometerConfiguration { DISABLED, HORIZONTAL, VERTICAL, BOTH }
 
-        public override Type GetVariantType() {
-            return typeof(SpeedometerConfiguration);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return SpeedometerConfiguration.DISABLED;
-        }
+        public DisplaySpeedometer() : base(variantType: typeof(SpeedometerConfiguration), defaultVariantValue: SpeedometerConfiguration.DISABLED) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (SpeedometerConfiguration) value;

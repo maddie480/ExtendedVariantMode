@@ -62,9 +62,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Platform.MoveVCollideSolidsAndBounds_Level_float_bool_Action3_bool -= PatchLiftboostProtectionY;
         }
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public LiftboostProtection() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

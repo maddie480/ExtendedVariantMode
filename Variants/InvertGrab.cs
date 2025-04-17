@@ -13,13 +13,7 @@ namespace ExtendedVariants.Variants {
 
         private ILHook dashCoroutineHook;
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public InvertGrab() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

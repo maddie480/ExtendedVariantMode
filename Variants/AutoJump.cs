@@ -10,13 +10,7 @@ namespace ExtendedVariants.Variants {
         private static float JumpRefillTimer = 0f;
         private static bool JumpFrameDelay = true;
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public AutoJump() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

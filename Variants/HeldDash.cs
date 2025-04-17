@@ -13,13 +13,7 @@ namespace ExtendedVariants.Variants {
         // allows to check with reflection that Input.CrouchDash exists before using it.
         private static FieldInfo crouchDash = typeof(Input).GetField("CrouchDash");
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public HeldDash() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

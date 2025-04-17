@@ -8,13 +8,7 @@ namespace ExtendedVariants.Variants {
             return value != 0;
         }
 
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
+        public PermanentBinoStorage() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override void Load() {
             On.Celeste.Player.OnTransition += Player_OnTransition;

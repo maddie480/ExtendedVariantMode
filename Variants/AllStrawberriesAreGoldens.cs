@@ -23,13 +23,7 @@ namespace ExtendedVariants.Variants {
         private bool strawberriesWereMadeGolden;
 
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

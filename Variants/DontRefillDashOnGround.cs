@@ -12,13 +12,7 @@ namespace ExtendedVariants.Variants {
 
         private ILHook patchOrigUpdate;
 
-        public override Type GetVariantType() {
-            return typeof(DashRefillOnGroundConfiguration);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return DashRefillOnGroundConfiguration.DEFAULT;
-        }
+        public DontRefillDashOnGround() : base(variantType: typeof(DashRefillOnGroundConfiguration), defaultVariantValue: DashRefillOnGroundConfiguration.DEFAULT) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (DashRefillOnGroundConfiguration) value;

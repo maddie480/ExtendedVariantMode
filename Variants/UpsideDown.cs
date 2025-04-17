@@ -19,16 +19,8 @@ namespace ExtendedVariants.Variants {
 
         private static ILHook hdParallaxHook;
 
-        public UpsideDown(ZoomLevel zoomLevel) {
+        public UpsideDown(ZoomLevel zoomLevel) : base(variantType: typeof(bool), defaultVariantValue: false) {
             zoomLevelVariant = zoomLevel;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
         }
 
         public override object ConvertLegacyVariantValue(int value) {

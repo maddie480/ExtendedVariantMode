@@ -6,13 +6,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WallBounceDistance : AbstractExtendedVariant {
 
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 5;
-        }
+        public WallBounceDistance() : base(variantType: typeof(int), defaultVariantValue: 5) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;

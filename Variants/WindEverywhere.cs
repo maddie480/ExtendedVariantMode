@@ -20,13 +20,7 @@ namespace ExtendedVariants.Variants {
             LeftOnOffFast, RightOnOffFast, Down, Up, Random
         }
 
-        public override Type GetVariantType() {
-            return typeof(WindPattern);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return WindPattern.Default;
-        }
+        public WindEverywhere() : base(variantType: typeof(WindPattern), defaultVariantValue: WindPattern.Default) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             // you know, 5 obviously means RightCrazy :a:

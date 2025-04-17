@@ -23,9 +23,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.ClimbJump -= Player_ClimbJump;
         }
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public CornerboostProtection() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

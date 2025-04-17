@@ -19,13 +19,7 @@ namespace ExtendedVariants.Variants {
 
         private bool forceRefillStamina;
 
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 110;
-        }
+        public Stamina() : base(variantType: typeof(int), defaultVariantValue: 110) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             // "type 15 to get 150 stamina", of course. :p

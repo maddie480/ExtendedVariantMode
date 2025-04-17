@@ -23,13 +23,7 @@ namespace ExtendedVariants.Variants {
 
         private ILHook pathfinderFindHook = null;
 
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0;
-        }
+        public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;

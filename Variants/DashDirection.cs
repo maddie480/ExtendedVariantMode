@@ -18,13 +18,7 @@ namespace ExtendedVariants.Variants {
         private int dashCountBeforeDash;
         private Vector2 dashDirectionBeforeDash;
 
-        public override Type GetVariantType() {
-            return typeof(bool[][]);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } };
-        }
+        public DashDirection() : base(variantType: typeof(bool[][]), defaultVariantValue: new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } }) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             // how the H did people deal with bit math in extended variant triggers???

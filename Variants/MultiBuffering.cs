@@ -12,9 +12,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => IL.Monocle.VirtualButton.Update -= VirtualButton_Update_il;
 
-        public override Type GetVariantType() => typeof(int);
-
-        public override object GetDefaultVariantValue() => 1;
+        public MultiBuffering() : base(variantType: typeof(int), defaultVariantValue: 1) { }
 
         public override object ConvertLegacyVariantValue(int value) => value;
 

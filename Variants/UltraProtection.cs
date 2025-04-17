@@ -15,9 +15,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.DashBegin -= Player_DashBegin;
         }
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public UltraProtection() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

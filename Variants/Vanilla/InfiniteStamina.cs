@@ -3,13 +3,7 @@ using System;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public class InfiniteStamina : AbstractVanillaVariant {
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public InfiniteStamina() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

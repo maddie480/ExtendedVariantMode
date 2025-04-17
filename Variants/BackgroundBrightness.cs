@@ -12,13 +12,7 @@ namespace ExtendedVariants.Variants {
     public class BackgroundBrightness : AbstractExtendedVariant {
         private VirtualRenderTarget blackMask;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
