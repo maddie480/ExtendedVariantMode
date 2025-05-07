@@ -11,6 +11,8 @@ using Platform = Celeste.Platform;
 
 namespace ExtendedVariants.Variants {
     public class LiftboostProtection : AbstractExtendedVariant {
+        private const string PLATFORM_LIFT_SPEED_HISTORY = "ExtendedVariantMode.Platform.liftSpeedHistory";
+
         private static bool TryGetPlatform(Player player, Vector2 dir, out Platform platform) {
             if (dir.X == 0f && dir.Y > 0f)
                 platform = player.CollideFirst<Platform>(player.Position + dir);
@@ -20,8 +22,30 @@ namespace ExtendedVariants.Variants {
             return platform != null;
         }
 
-        private static float CorrectLiftSpeed(float minusTwo, float minusOne, float liftSpeed)
-            => Math.Sign(liftSpeed) * Math.Max(Math.Abs(liftSpeed), Math.Min(Math.Sign(liftSpeed) * minusOne, Math.Sign(liftSpeed) * (2f * minusOne - minusTwo)));
+        private static LiftSpeedHistory GetLiftSpeedHistory(Platform platform) {
+            var dynamicData = DynamicData.For(platform);
+
+            if (dynamicData.TryGet<LiftSpeedHistory>(PLATFORM_LIFT_SPEED_HISTORY, out var liftSpeedHistory))
+                return liftSpeedHistory;
+
+            liftSpeedHistory = new LiftSpeedHistory();
+            dynamicData.Set(PLATFORM_LIFT_SPEED_HISTORY, liftSpeedHistory);
+
+            return liftSpeedHistory;
+        }
+
+        private static Vector2 GetCorrectedLiftSpeed(Platform platform) {
+            var liftSpeedHistory = GetLiftSpeedHistory(platform);
+
+            var minusTwo = liftSpeedHistory.MinusTwo;
+            var minusOne = liftSpeedHistory.MinusOne;
+            var current = liftSpeedHistory.Current;
+
+            return new Vector2(CorrectLiftSpeed(minusTwo.X, minusOne.X, current.X), CorrectLiftSpeed(minusTwo.Y, minusOne.Y, current.Y));
+
+            float CorrectLiftSpeed(float minusTwo, float minusOne, float liftSpeed)
+                => Math.Sign(liftSpeed) * Math.Max(Math.Abs(liftSpeed), Math.Min(Math.Sign(liftSpeed) * minusOne, Math.Sign(liftSpeed) * (2f * minusOne - minusTwo)));
+        }
 
         private ILHook il_Celeste_Player_Orig_WallJump;
 
@@ -69,10 +93,10 @@ namespace ExtendedVariants.Variants {
         private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
-                var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                var liftSpeed = GetCorrectedLiftSpeed(platform);
 
-                if (platform is not JumpThru || safeLiftSpeed.Y != 0f)
-                    player.LiftSpeed = safeLiftSpeed;
+                if (platform is not JumpThru || liftSpeed.Y != 0f)
+                    player.LiftSpeed = liftSpeed;
             }
 
             jump(player, particles, playsfx);
@@ -81,10 +105,10 @@ namespace ExtendedVariants.Variants {
         private void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
-                var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                var liftSpeed = GetCorrectedLiftSpeed(platform);
 
-                if (platform is not JumpThru || safeLiftSpeed.Y != 0f)
-                    player.LiftSpeed = safeLiftSpeed;
+                if (platform is not JumpThru || liftSpeed.Y != 0f)
+                    player.LiftSpeed = liftSpeed;
             }
 
             superJump(player);
@@ -101,10 +125,10 @@ namespace ExtendedVariants.Variants {
                 if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
                     return value;
 
-                var safeLiftSpeed = DynamicData.For(solid).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                var liftSpeed = GetCorrectedLiftSpeed(solid);
 
-                if (Math.Sign(safeLiftSpeed.X) == dir)
-                    return safeLiftSpeed.X * Vector2.UnitX;
+                if (Math.Sign(liftSpeed.X) == dir)
+                    return liftSpeed.X * Vector2.UnitX;
 
                 return value;
             });
@@ -113,10 +137,10 @@ namespace ExtendedVariants.Variants {
         private void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump superWallJump, Player player, int dir) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, -5 * dir * Vector2.UnitX, out var platform)) {
-                var safeLiftSpeed = DynamicData.For(platform).Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
+                var liftSpeed = GetCorrectedLiftSpeed(platform);
 
-                if (Math.Sign(safeLiftSpeed.X) == dir)
-                    player.LiftSpeed = safeLiftSpeed.X * Vector2.UnitX;
+                if (Math.Sign(liftSpeed.X) == dir)
+                    player.LiftSpeed = liftSpeed.X * Vector2.UnitX;
             }
 
             superWallJump(player, dir);
@@ -124,11 +148,11 @@ namespace ExtendedVariants.Variants {
 
         private void Platform_Update(On.Celeste.Platform.orig_Update update, Platform platform) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)) {
-                var dynamicData = DynamicData.For(platform);
+                var liftSpeedHistory = GetLiftSpeedHistory(platform);
 
-                dynamicData.Set("safeLiftSpeedMinusTwo", dynamicData.Get<Vector2?>("safeLiftSpeedMinusOne") ?? Vector2.Zero);
-                dynamicData.Set("safeLiftSpeedMinusOne", dynamicData.Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero);
-                dynamicData.Set("safeLiftSpeed", Vector2.Zero);
+                liftSpeedHistory.MinusTwo = liftSpeedHistory.MinusOne;
+                liftSpeedHistory.MinusOne = liftSpeedHistory.Current;
+                liftSpeedHistory.Current = Vector2.Zero;
             }
 
             update(platform);
@@ -151,16 +175,8 @@ namespace ExtendedVariants.Variants {
                 if (liftSpeed == 0f)
                     return;
 
-                var dynamicData = DynamicData.For(platform);
-                float minusTwo = dynamicData.Get<Vector2?>("safeLiftSpeedMinusTwo")?.X ?? 0f;
-                float minusOne = dynamicData.Get<Vector2?>("safeLiftSpeedMinusOne")?.X ?? 0f;
-
-                platform.LiftSpeed.X = CorrectLiftSpeed(minusTwo, minusOne, liftSpeed);
-
-                var safeLiftSpeed = dynamicData.Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-
-                safeLiftSpeed.X = platform.LiftSpeed.X;
-                dynamicData.Set("safeLiftSpeed", safeLiftSpeed);
+                GetLiftSpeedHistory(platform).Current.X = liftSpeed;
+                platform.LiftSpeed = GetCorrectedLiftSpeed(platform);
             });
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
@@ -198,16 +214,8 @@ namespace ExtendedVariants.Variants {
                 if (liftSpeed == 0f)
                     return;
 
-                var dynamicData = DynamicData.For(platform);
-                float minusTwo = dynamicData.Get<Vector2?>("safeLiftSpeedMinusTwo")?.Y ?? 0f;
-                float minusOne = dynamicData.Get<Vector2?>("safeLiftSpeedMinusOne")?.Y ?? 0f;
-
-                platform.LiftSpeed.Y = CorrectLiftSpeed(minusTwo, minusOne, liftSpeed);
-
-                var safeLiftSpeed = dynamicData.Get<Vector2?>("safeLiftSpeed") ?? Vector2.Zero;
-
-                safeLiftSpeed.Y = platform.LiftSpeed.Y;
-                dynamicData.Set("safeLiftSpeed", safeLiftSpeed);
+                GetLiftSpeedHistory(platform).Current.Y = liftSpeed;
+                platform.LiftSpeed = GetCorrectedLiftSpeed(platform);
             });
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
@@ -236,6 +244,12 @@ namespace ExtendedVariants.Variants {
                     }
                 }
             });
+        }
+
+        private class LiftSpeedHistory {
+            public Vector2 MinusTwo;
+            public Vector2 MinusOne;
+            public Vector2 Current;
         }
     }
 }
