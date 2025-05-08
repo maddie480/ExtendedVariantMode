@@ -176,7 +176,7 @@ namespace ExtendedVariants.Variants {
                     return;
 
                 GetLiftSpeedHistory(platform).Current.X = liftSpeed;
-                platform.LiftSpeed = GetCorrectedLiftSpeed(platform);
+                platform.LiftSpeed.X = GetCorrectedLiftSpeed(platform).X;
             });
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
@@ -215,7 +215,7 @@ namespace ExtendedVariants.Variants {
                     return;
 
                 GetLiftSpeedHistory(platform).Current.Y = liftSpeed;
-                platform.LiftSpeed = GetCorrectedLiftSpeed(platform);
+                platform.LiftSpeed.Y = GetCorrectedLiftSpeed(platform).Y;
             });
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
