@@ -34,8 +34,12 @@ namespace ExtendedVariants.Variants {
             return liftSpeedHistory;
         }
 
+        private static bool TryGetLiftSpeedHistory(Platform platform, out LiftSpeedHistory liftSpeedHistory)
+            => DynamicData.For(platform).TryGet(PLATFORM_LIFT_SPEED_HISTORY, out liftSpeedHistory);
+
         private static Vector2 GetCorrectedLiftSpeed(Platform platform) {
-            var liftSpeedHistory = GetLiftSpeedHistory(platform);
+            if (!TryGetLiftSpeedHistory(platform, out var liftSpeedHistory))
+                return platform.LiftSpeed;
 
             var minusTwo = liftSpeedHistory.MinusTwo;
             var minusOne = liftSpeedHistory.MinusOne;
@@ -43,8 +47,8 @@ namespace ExtendedVariants.Variants {
 
             return new Vector2(CorrectLiftSpeed(minusTwo.X, minusOne.X, current.X), CorrectLiftSpeed(minusTwo.Y, minusOne.Y, current.Y));
 
-            float CorrectLiftSpeed(float minusTwo, float minusOne, float liftSpeed)
-                => Math.Sign(liftSpeed) * Math.Max(Math.Abs(liftSpeed), Math.Min(Math.Sign(liftSpeed) * minusOne, Math.Sign(liftSpeed) * (2f * minusOne - minusTwo)));
+            float CorrectLiftSpeed(float minusTwo, float minusOne, float current)
+                => Math.Sign(current) * Math.Max(Math.Abs(current), Math.Min(Math.Sign(current) * minusOne, Math.Sign(current) * (2f * minusOne - minusTwo)));
         }
 
         private ILHook il_Celeste_Player_Orig_WallJump;
@@ -147,9 +151,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private void Platform_Update(On.Celeste.Platform.orig_Update update, Platform platform) {
-            if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)) {
-                var liftSpeedHistory = GetLiftSpeedHistory(platform);
-
+            if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) && TryGetLiftSpeedHistory(platform, out var liftSpeedHistory)) {
                 liftSpeedHistory.MinusTwo = liftSpeedHistory.MinusOne;
                 liftSpeedHistory.MinusOne = liftSpeedHistory.Current;
                 liftSpeedHistory.Current = Vector2.Zero;
