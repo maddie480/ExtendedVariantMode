@@ -314,7 +314,7 @@ namespace ExtendedVariants.UI {
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
-                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering,
+                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
                     Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedTreshold
                 });
 
@@ -407,6 +407,11 @@ namespace ExtendedVariants.UI {
                 TextMenuExt.OnOff disableJumpGravityLoweringOption;
                 menu.Add(disableJumpGravityLoweringOption = getToggleOption(Variant.DisableJumpGravityLowering));
                 disableJumpGravityLoweringOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEJUMPGRAVITYLOWERING_HINT"));
+
+                TextMenuExt.OnOff disableAutoJumpGravityLoweringOption;
+                menu.Add(disableAutoJumpGravityLoweringOption = getToggleOption(Variant.DisableAutoJumpGravityLowering));
+                disableAutoJumpGravityLoweringOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEAUTOJUMPGRAVITYLOWERING_HINT_2"));
+                disableAutoJumpGravityLoweringOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLEAUTOJUMPGRAVITYLOWERING_HINT_1"));
 
                 TextMenuOptionExt<int> slowfallGravityMult;
                 menu.Add(slowfallGravityMult = getScaleOption(Variant.SlowfallGravityMultiplier, "x", multiplierScale));

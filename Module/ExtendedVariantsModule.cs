@@ -64,7 +64,7 @@ namespace ExtendedVariants.Module {
             ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
-            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
+            NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedTreshold, AutoDash,
 
             // vanilla variants
@@ -223,6 +223,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.PreserveWallbounceSpeed] = new PreserveWallbounceSpeed();
             VariantHandlers[Variant.StretchUpDashes] = new StretchUpDashes();
             VariantHandlers[Variant.DisableJumpGravityLowering] = new DisableJumpGravityLowering();
+            VariantHandlers[Variant.DisableAutoJumpGravityLowering] = new DisableAutoJumpGravityLowering();
             VariantHandlers[Variant.LiftboostCapX] = new LiftboostCapX();
             VariantHandlers[Variant.LiftboostCapUp] = new LiftboostCapUp();
             VariantHandlers[Variant.LiftboostCapDown] = new LiftboostCapDown();

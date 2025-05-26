@@ -1,3 +1,4 @@
+using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
 using Monocle;
@@ -6,9 +7,9 @@ using System;
 
 namespace ExtendedVariants.Variants
 {
-    public class DisableJumpGravityLowering : AbstractExtendedVariant
+    public class DisableAutoJumpGravityLowering : AbstractExtendedVariant
     {
-        public DisableJumpGravityLowering() : base(variantType: typeof(bool), defaultVariantValue: false) { }
+        public DisableAutoJumpGravityLowering() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value)
         {
@@ -25,16 +26,15 @@ namespace ExtendedVariants.Variants
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchCall(typeof(Math), "Abs"),
-                instr => instr.MatchLdcR4(40f)
-            ) && cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchCallvirt<VirtualButton>("get_Check"))
-            )
+                instr => instr.MatchBrtrue(out ILLabel _),
+                instr => instr.MatchLdarg(0),
+                instr => instr.MatchLdfld<Player>("AutoJump")
+            ))
             {
-                Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling jump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
+                Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling AutoJump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
 
                 cursor.EmitDelegate<Func<bool, bool>>(
-                    orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering));
+                    orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableAutoJumpGravityLowering));
             }
         }
     }
