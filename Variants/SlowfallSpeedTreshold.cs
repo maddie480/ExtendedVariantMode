@@ -33,7 +33,7 @@ public class SlowfallSpeedTreshold : AbstractExtendedVariant
             cursor.EmitDelegate((float orig) =>
             {
                 float value = GetVariantValue<float>(Variant.SlowfallSpeedTreshold);
-                if (value != 40 && !GetVariantValue<bool>(Variant.DisableJumpGravityLowering)) return value;
+                if (value != 40) return value;
                 return orig;
             });
         }

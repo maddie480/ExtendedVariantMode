@@ -31,7 +31,7 @@ public class SlowfallGravityMultiplier : AbstractExtendedVariant
             cursor.EmitDelegate((float orig) =>
             {
                 float gravity = GetVariantValue<float>(Variant.SlowfallGravityMultiplier);
-                if (gravity != 0.5f && !GetVariantValue<bool>(Variant.DisableJumpGravityLowering)) return gravity;
+                if (gravity != 0.5f) return gravity;
                 return orig;
             });
         }
