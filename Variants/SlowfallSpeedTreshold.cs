@@ -10,15 +10,8 @@ namespace ExtendedVariants.Variants;
 
 public class SlowfallSpeedTreshold : AbstractExtendedVariant
 {
-    public override Type GetVariantType()
-    {
-        return typeof(float);
-    }
 
-    public override object GetDefaultVariantValue()
-    {
-        return 40f;
-    }
+    public SlowfallSpeedTreshold() : base(variantType: typeof(float), defaultVariantValue: 40f) { }
 
     public override object ConvertLegacyVariantValue(int value)
     {

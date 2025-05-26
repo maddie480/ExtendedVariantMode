@@ -6,15 +6,8 @@ namespace ExtendedVariants.Variants;
 
 public class SlowfallGravityMultiplier : AbstractExtendedVariant
 {
-    public override Type GetVariantType()
-    {
-        return typeof(float);
-    }
+    public SlowfallGravityMultiplier() : base(variantType: typeof(float), defaultVariantValue: 0.5f) { }
 
-    public override object GetDefaultVariantValue()
-    {
-        return 0.5f;
-    }
     public override object ConvertLegacyVariantValue(int value)
     {
         return value / 10f;
