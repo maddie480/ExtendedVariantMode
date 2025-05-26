@@ -5,13 +5,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class CornerCorrection : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 4;
-        }
+        public CornerCorrection() : base(variantType: typeof(int), defaultVariantValue: 4) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;

@@ -21,17 +21,9 @@ namespace ExtendedVariants.Variants {
 
         private JumpCooldown jumpCooldown;
 
-        public JumpCount(DashCount dashCount, JumpCooldown jumpCooldown) {
+        public JumpCount(DashCount dashCount, JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
             dashCount.OnDashRefill += dashRefilled;
             this.jumpCooldown = jumpCooldown;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1;
         }
 
         public override object ConvertLegacyVariantValue(int value) {

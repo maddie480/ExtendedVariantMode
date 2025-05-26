@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
         private Vector2 previousDiff;
         private float transitionPercent = 1f;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public ZoomLevel() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

@@ -7,13 +7,7 @@ namespace ExtendedVariants.Variants.Vanilla {
     public class GameSpeed : AbstractVanillaVariant {
         public static readonly int[] ValidValues = { 5, 6, 7, 8, 9, 10, 12, 14, 16 };
 
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 10;
-        }
+        public GameSpeed() : base(variantType: typeof(int), defaultVariantValue: 10) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (!ValidValues.Contains(value)) {

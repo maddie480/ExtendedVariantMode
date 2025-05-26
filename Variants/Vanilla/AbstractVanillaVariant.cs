@@ -16,6 +16,8 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         private static Assists vanillaAssists = Assists.Default;
 
+        protected AbstractVanillaVariant(Type variantType, object defaultVariantValue) : base(variantType, defaultVariantValue) { }
+
         public override void Load() {
             if (!vanillaVariantsHooked) {
                 On.Celeste.Level.Update += onLevelUpdate;

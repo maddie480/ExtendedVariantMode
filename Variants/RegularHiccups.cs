@@ -12,13 +12,7 @@ namespace ExtendedVariants.Variants {
 
         private float regularHiccupTimer = 0f;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0f;
-        }
+        public RegularHiccups() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

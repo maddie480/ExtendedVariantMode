@@ -20,13 +20,7 @@ namespace ExtendedVariants.Variants {
         private static MethodInfo refreshPlayerSpriteMode = null;
         private static bool previouslyEnabled = false;
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public MadelineIsSilhouette() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

@@ -14,13 +14,7 @@ namespace ExtendedVariants.Variants {
             return value != 0;
         }
 
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
+        public CorrectedMirrorMode() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override void Load() {
             patchVirtualIntegerAxisUpdateHook = new ILHook(typeof(VirtualIntegerAxis).GetMethod("orig_Update"), PatchVirtualIntegerAxisUpdate);

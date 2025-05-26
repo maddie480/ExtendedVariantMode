@@ -9,13 +9,7 @@ namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
         private bool anxietyCustomized = false;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return -1f;
-        }
+        public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {

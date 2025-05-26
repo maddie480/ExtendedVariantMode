@@ -3,13 +3,7 @@ using System;
 
 namespace ExtendedVariants.Variants {
     public class JumpCooldown : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 0f;
-        }
+        public JumpCooldown() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

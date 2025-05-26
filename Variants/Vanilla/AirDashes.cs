@@ -4,13 +4,7 @@ using System;
 
 namespace ExtendedVariants.Variants.Vanilla {
     public class AirDashes : AbstractVanillaVariant {
-        public override Type GetVariantType() {
-            return typeof(Assists.DashModes);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return Assists.DashModes.Normal;
-        }
+        public AirDashes() : base(variantType: typeof(Assists.DashModes), defaultVariantValue: Assists.DashModes.Normal) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (Assists.DashModes) value;

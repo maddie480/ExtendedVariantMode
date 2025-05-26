@@ -22,13 +22,7 @@ namespace ExtendedVariants.Variants {
             Rainbow = CrystalColor.Rainbow
         }
 
-        public override Type GetVariantType() {
-            return typeof(Color);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return Color.Default;
-        }
+        public SpinnerColor() : base(variantType: typeof(Color), defaultVariantValue: Color.Default) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (Color) value;

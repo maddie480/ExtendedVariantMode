@@ -305,7 +305,7 @@ triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.cover
 triggers.ExtendedVariantMode/DashRestrictionTrigger.attributes.description.onlyOnce=If checked, the trigger will only change the variant once, until the player dies or changes rooms.
 
 # Variant Toggle Controller
-triggers.ExtendedVariantMode/VariantToggleController.placements.name.controller=Variant Flag Toggle Controller
+entities.ExtendedVariantMode/VariantToggleController.placements.name.controller=Variant Flag Toggle Controller
 entities.ExtendedVariantMode/VariantToggleController.attributes.description.flag=The flag that controls the variants (variants set on true).
 entities.ExtendedVariantMode/VariantToggleController.attributes.description.variantList=A comma separated of list of variantName value pairs representing the variant changes. In the form "variantName:value,variant2Name:value2,...".\nFor example: "DashRestriction:AirborneOnly,InvertDashes:true,Gravity:0.1"
 entities.ExtendedVariantMode/VariantToggleController.attributes.description.defaultValue=The value to set the flag to when the room is loaded (true sets variants on entry).

@@ -13,13 +13,7 @@ namespace ExtendedVariants.Variants {
             return GetDefaultVariantValue();
         }
 
-        public override object GetDefaultVariantValue() {
-            return DashRestrictionType.None;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(DashRestrictionType);
-        }
+        public DashRestriction() : base(variantType: typeof(DashRestrictionType), defaultVariantValue: DashRestrictionType.None) { }
 
         public override void Load() {
             canDashHook = new Hook(

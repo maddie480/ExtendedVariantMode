@@ -2,13 +2,7 @@
 
 namespace ExtendedVariants.Variants {
     public class BadelineBossCount : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(int);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1;
-        }
+        public BadelineBossCount() : base(variantType: typeof(int), defaultVariantValue: 1) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;

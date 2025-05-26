@@ -6,13 +6,7 @@ using System;
 namespace ExtendedVariants.Variants.Vanilla {
     public class PlayAsBadeline : AbstractVanillaVariant {
         private static Player latestPlayer = null;
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public PlayAsBadeline() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

@@ -11,9 +11,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => IL.Celeste.Player.DashBegin -= Player_DashBegin_il;
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public CrouchDashFix() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

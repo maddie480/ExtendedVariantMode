@@ -13,9 +13,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => On.Celeste.Player.PickupCoroutine -= Player_PickupCoroutine;
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public SaferDiagonalSmuggle() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

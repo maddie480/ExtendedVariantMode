@@ -5,13 +5,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BounceEverywhere : AbstractExtendedVariant {
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
-
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
+        public BounceEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;

@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
     public class UltraSpeedMultiplier : AbstractExtendedVariant {
         private ILHook dashCoroutineHookForTimer;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1.2f;
-        }
+        public UltraSpeedMultiplier() : base(variantType: typeof(float), defaultVariantValue: 1.2f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

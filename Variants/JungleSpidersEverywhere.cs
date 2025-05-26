@@ -19,13 +19,7 @@ namespace ExtendedVariants.Variants {
         private static Hook hookShouldPause;
         private static bool spawnedSpider;
 
-        public override Type GetVariantType() {
-            return typeof(SpiderType);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return SpiderType.Disabled;
-        }
+        public JungleSpidersEverywhere() : base(variantType: typeof(SpiderType), defaultVariantValue: SpiderType.Disabled) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return (SpiderType) value;

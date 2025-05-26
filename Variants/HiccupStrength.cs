@@ -2,13 +2,7 @@
 
 namespace ExtendedVariants.Variants {
     public class HiccupStrength : AbstractExtendedVariant {
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public HiccupStrength() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

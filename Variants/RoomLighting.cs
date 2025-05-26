@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
 
         private float initialBaseLightingAlpha = -1f;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return -1f;
-        }
+        public RoomLighting() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1f) {

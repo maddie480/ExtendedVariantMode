@@ -14,9 +14,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Unload() => Celeste_Input_get_GrabCheck.Dispose();
 
-        public override Type GetVariantType() => typeof(bool);
-
-        public override object GetDefaultVariantValue() => false;
+        public TrueNoGrabbing() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 

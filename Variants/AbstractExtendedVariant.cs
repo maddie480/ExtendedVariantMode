@@ -10,6 +10,14 @@ namespace ExtendedVariants.Variants {
             return (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
         }
 
+        private readonly Type variantType;
+        private readonly object defaultVariantValue;
+
+        protected AbstractExtendedVariant(Type variantType, object defaultVariantValue) {
+            this.variantType = variantType;
+            this.defaultVariantValue = defaultVariantValue;
+        }
+
         /// <summary>
         /// Loads the extended variant (as in, hooks all the necessary methods to make it work).
         /// </summary>
@@ -23,12 +31,12 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// Returns the parameter type of the variant.
         /// </summary>
-        public abstract Type GetVariantType();
+        public Type GetVariantType() => variantType;
 
         /// <summary>
         /// Returns the default value for the variant.
         /// </summary>
-        public abstract object GetDefaultVariantValue();
+        public object GetDefaultVariantValue() => defaultVariantValue;
 
         /// <summary>
         /// Called when a variant value is changed.

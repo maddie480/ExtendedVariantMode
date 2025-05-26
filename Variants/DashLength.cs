@@ -15,13 +15,7 @@ namespace ExtendedVariants.Variants {
         private ILHook dashCoroutineHookForTimer;
         private ILHook dashCoroutineHookForCounter;
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public DashLength() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

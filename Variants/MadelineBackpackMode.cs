@@ -9,13 +9,7 @@ namespace ExtendedVariants.Variants {
     public class MadelineBackpackMode : AbstractExtendedVariant {
         public enum MadelineBackpackModes { Default, NoBackpack, Backpack }
 
-        public override Type GetVariantType() {
-            return typeof(MadelineBackpackModes);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return MadelineBackpackModes.Default;
-        }
+        public MadelineBackpackMode() : base(variantType: typeof(MadelineBackpackModes), defaultVariantValue: MadelineBackpackModes.Default) { }
 
         public override void VariantValueChanged() {
             Player p = Engine.Scene?.Tracker.GetEntity<Player>();

@@ -9,13 +9,7 @@ namespace ExtendedVariants.Variants {
     public class DisableClimbingUpOrDown : AbstractExtendedVariant {
         public enum ClimbUpOrDownOptions { Disabled, Up, Down, Both }
 
-        public override Type GetVariantType() {
-            return typeof(ClimbUpOrDownOptions);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return ClimbUpOrDownOptions.Disabled;
-        }
+        public DisableClimbingUpOrDown() : base(variantType: typeof(ClimbUpOrDownOptions), defaultVariantValue: ClimbUpOrDownOptions.Disabled) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value == 0 ? ClimbUpOrDownOptions.Disabled : ClimbUpOrDownOptions.Both;

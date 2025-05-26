@@ -31,13 +31,7 @@ namespace ExtendedVariants.Variants {
         private bool initialized = false;
         private List<ILHook> appliedILHooks = new List<ILHook>();
 
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public ExplodeLaunchSpeed() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

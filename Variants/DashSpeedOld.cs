@@ -11,13 +11,7 @@ namespace ExtendedVariants.Variants {
     /// Restored because the "teleport mode" TASes heavily rely on its behavior.
     /// </summary>
     public class DashSpeedOld : AbstractExtendedVariant {
-
-        public override Type GetVariantType() {
-            return typeof(float);
-        }
-        public override object GetDefaultVariantValue() {
-            return 1f;
-        }
+        public DashSpeedOld() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

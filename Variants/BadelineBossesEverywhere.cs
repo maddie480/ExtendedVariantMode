@@ -17,13 +17,7 @@ namespace ExtendedVariants.Variants {
         private Random patternRandomizer = new Random();
 
 
-        public override Type GetVariantType() {
-            return typeof(bool);
-        }
-
-        public override object GetDefaultVariantValue() {
-            return false;
-        }
+        public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
