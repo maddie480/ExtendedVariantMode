@@ -35,6 +35,7 @@ namespace ExtendedVariants.UI {
             isaGrabBagHookSetVariant = null;
             isaGrabBagHookSetVariantInGame?.Dispose();
             isaGrabBagHookSetVariantInGame = null;
+            updateIsaDefault = null;
         }
 
         public static void Initialize() {
@@ -42,6 +43,8 @@ namespace ExtendedVariants.UI {
                 IsaContainmentChamber.hookIsaGrabBag();
             }
         }
+
+        private static Action<Variant, bool> updateIsaDefault = null;
 
         // we need the inner class because the actions and such are getting stored together in a '<>c' inner class, and
         // Mono freaks out on Mac/Linux if there is a field with an unknown type *next* to one that is getting used.
@@ -72,6 +75,40 @@ namespace ExtendedVariants.UI {
                 isaGrabBagHookSetVariantInGame = new Hook(
                     typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
                     setVariantInGameHook);
+
+                PropertyInfo isaVariantsDefault = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetProperty("Variants_Default", BindingFlags.NonPublic | BindingFlags.Static);
+                if (isaVariantsDefault == null) {
+                    Logger.Log(LogLevel.Error, "ExtendedVariantMode/VanillaVariantOptions", "Couldn't find ForceVariants.Variants_Default in IsaGrabBag! Expect your changes to vanilla variants to be reverted!");
+                } else {
+                    updateIsaDefault = (variant, value) => {
+                        bool[] variantsDefault = (bool[]) isaVariantsDefault.GetValue(null);
+
+                        IsaVariant? isaVariant = variant switch {
+                            Variant.MirrorMode => IsaVariant.MirrorMode,
+                            Variant.ThreeSixtyDashing => IsaVariant.ThreeSixtyDashing,
+                            Variant.InvisibleMotion => IsaVariant.InvisibleMotion,
+                            Variant.NoGrabbing => IsaVariant.NoGrabbing,
+                            Variant.LowFriction => IsaVariant.LowFriction,
+                            Variant.SuperDashing => IsaVariant.SuperDashing,
+                            Variant.Hiccups => IsaVariant.Hiccups,
+                            Variant.PlayAsBadeline => IsaVariant.PlayAsBadeline,
+                            Variant.InfiniteStamina => IsaVariant.InfiniteStamina,
+                            Variant.DashAssist => IsaVariant.DashAssist,
+                            Variant.Invincible => IsaVariant.Invincible,
+                            _ => null
+                        };
+
+                        if (!isaVariant.HasValue) {
+                            Logger.Log(LogLevel.Warn, "ExtendedVariantMode/VanillaVariantOptions", $"{variant} isn't supported by Isa's Grab Bag, cannot change its default!");
+                            return;
+                        }
+
+                        Logger.Log(LogLevel.Debug, "ExtendedVariantMode/VanillaVariantOptions", $"Changing default value of Isa's Grab Bag variant {isaVariant} to {value} following change by the player");
+                        variantsDefault[(int) isaVariant] = value;
+
+                        isaVariantsDefault.SetValue(null, variantsDefault);
+                    };
+                }
             }
         }
 
@@ -190,6 +227,7 @@ namespace ExtendedVariants.UI {
             (ExtendedVariantsModule.Instance.VariantHandlers[variantChange] as AbstractVanillaVariant).VariantValueChangedByPlayer(newValue);
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
             ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            if (newValue is bool value) updateIsaDefault?.Invoke(variantChange, value);
         }
     }
 }
