@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
                 && DynamicData.For(player).Get<bool>("onGround")) {
                 player.DashDir.X = Math.Sign(player.DashDir.X);
                 player.DashDir.Y = 0f;
-                player.Speed.X *= 1.2f;
+                player.Speed.X *= 1.2f * GetVariantValue<float>(ExtendedVariantsModule.Variant.UltraSpeedMultiplier);
             }
 
             jump(player, particles, playsfx);
