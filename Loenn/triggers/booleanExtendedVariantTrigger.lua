@@ -42,6 +42,7 @@ trigger.fieldInformation = {
             "DashTrailAllTheTime",
             "DisableClimbJumping",
             "DisableDashCooldown",
+            "DisableAutoJumpGravityLowering",
             "DisableJumpGravityLowering",
             "DisableJumpingOutOfWater",
             "DisableKeysSpotlight",
