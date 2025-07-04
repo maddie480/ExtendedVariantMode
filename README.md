@@ -113,13 +113,17 @@ Adds some options to the Mod Options menu:
     * **Delay Before Regrabbing**: the minimum delay after throwing a holdable before you can grab it again.
 
 *   **True No Grabbing**: Completely disables the grab input check. Useful for maps that repurpose the Grab input. (brought to you by @DominicAglialoro)
-*   **Bufferable Grab**: Makes the grab input bufferable, for maps that introduce a new action when pressing Grab. (brought to you by @DominicAglialoro)
+*   **Bufferable Grab**: _(only via trigger)_ Makes the grab input bufferable, for maps that introduce a new action when pressing Grab. (brought to you by @DominicAglialoro)
 *   **Wall-less Wallbounces**: Allows wallbounces to be done... even if no wall is present! (brought to you by @SnipUndercover)
 *   **Mid-Air Tech**: This variant allows for inputting supers, hypers, etc. in midair. Goes well with wall-less wallbounces. (brought to you by @balt-dev)
 
 *   **Preserve Wallbounce Speed**: Allows Madeline to keep her vertical speed when wallbouncing. (brought to you by @SnipUndercover)
 *   **Speed-Based Upwards Dash Stretching**<!-- SBUDS :tm: -->: Having a lot of horizontal speed causes Madeline's dash to stretch horizontally. This variant allows Madeline's upwards dashes to also stretch, if she has enough speed. (brought to you by @SnipUndercover)
 *   **Disable Jump Gravity Lowering**: You won't be able to divide the gravity by 2 during a jump by holding the button anymore!
+*   **Disable Auto-Jump Gravity Lowering**: Same as above, but for jumps forced by the game, for example, after a dash. (brought to you by @SunsetQuasar)
+
+*   **Slowfall Gravity Multiplier**: allows you to set the intensity of the gravity lowering when you hold Jump, while being below the vertical speed threshold. (brought to you by @SunsetQuasar)
+*   **Slowfall Speed Threshold**: allows you to change the vertical speed threshold mentioned above. (brought to you by @SunsetQuasar)
 
 *   A few **consistency and leniency improvements**, brought to you by @DominicAglialoro:
     *   **Ultra Protection**: Ensures that you gain ultra speed, even when buffering a jump or dash upon reaching the ground.
