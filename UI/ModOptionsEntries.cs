@@ -314,7 +314,7 @@ namespace ExtendedVariants.UI {
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
-                    Variant.BufferableGrab, Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
+                    Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
                     Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold
                 });
 
