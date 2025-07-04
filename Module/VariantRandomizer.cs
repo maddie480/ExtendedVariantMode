@@ -467,7 +467,7 @@ namespace ExtendedVariants {
                     // time variants
                     enabledVariantsToDisplay.Add($"{variantName}: {variantValue}s");
 
-                } else if (variant == ExtendedVariantsModule.Variant.SlowfallSpeedTreshold) {
+                } else if (variant == ExtendedVariantsModule.Variant.SlowfallSpeedThreshold) {
                     enabledVariantsToDisplay.Add($"{variantName}: {variantValue}px/s");
 
                 } else if (variant == ExtendedVariantsModule.Variant.CornerCorrection) {

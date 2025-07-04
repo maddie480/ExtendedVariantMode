@@ -60,7 +60,7 @@ trigger.fieldInformation = {
             "RoomBloom",
             "ScreenShakeIntensity",
             "SlowfallGravityMultiplier",
-            "SlowfallSpeedTreshold",
+            "SlowfallSpeedThreshold",
             "SnowballDelay",
             "SpeedX",
             "SuperdashSteeringSpeed",

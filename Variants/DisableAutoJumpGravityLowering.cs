@@ -1,40 +1,32 @@
+using Celeste;
 using Celeste.Mod;
 using ExtendedVariants.Module;
-using Monocle;
 using MonoMod.Cil;
 using System;
 
-namespace ExtendedVariants.Variants
-{
-    public class DisableJumpGravityLowering : AbstractExtendedVariant
-    {
-        public DisableJumpGravityLowering() : base(variantType: typeof(bool), defaultVariantValue: false) { }
+namespace ExtendedVariants.Variants {
+    public class DisableAutoJumpGravityLowering : AbstractExtendedVariant {
+        public DisableAutoJumpGravityLowering() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
-        public override object ConvertLegacyVariantValue(int value)
-        {
+        public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
         }
 
-        public override void Load()
-        {
+        public override void Load() {
             IL.Celeste.Player.NormalUpdate += modPlayerNormalUpdate;
         }
 
-        private void modPlayerNormalUpdate(ILContext il)
-        {
+        private void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchCall(typeof(Math), "Abs"),
-                instr => instr.MatchLdcR4(40f)
-            ) && cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchCallvirt<VirtualButton>("get_Check"))
-            )
-            {
-                Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling jump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
+                instr => instr.MatchBrtrue(out ILLabel _),
+                instr => instr.MatchLdarg(0),
+                instr => instr.MatchLdfld<Player>("AutoJump")
+            )) {
+                Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling AutoJump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
 
-                cursor.EmitDelegate<Func<bool, bool>>(
-                    orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering));
+                cursor.EmitDelegate<Func<bool, bool>>(orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableAutoJumpGravityLowering));
             }
         }
     }
