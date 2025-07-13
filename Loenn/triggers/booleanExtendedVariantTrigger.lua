@@ -35,6 +35,7 @@ trigger.fieldInformation = {
             "BounceEverywhere",
             "BufferableGrab",
             "ChangePatternsOfExistingBosses",
+            "ConsistentThrowing",
             "CornerboostProtection",
             "CorrectedMirrorMode",
             "CrouchDashFix",

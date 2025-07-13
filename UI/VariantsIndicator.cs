@@ -28,7 +28,8 @@ namespace ExtendedVariants.UI {
             Variant.DashBeforePickup,
             Variant.ThrowIgnoresForcedMove,
             Variant.MultiBuffering,
-            Variant.MidairTech // Could be used to fudge a super
+            Variant.MidairTech, // Could be used to fudge a super
+            Variant.ConsistentThrowing
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {

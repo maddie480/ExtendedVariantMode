@@ -66,6 +66,7 @@ namespace ExtendedVariants.Module {
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
+            ConsistentThrowing,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -231,6 +232,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SlowfallGravityMultiplier] = new SlowfallGravityMultiplier();
             VariantHandlers[Variant.SlowfallSpeedThreshold] = new SlowfallSpeedThreshold();
             VariantHandlers[Variant.AutoDash] = new AutoDash();
+            VariantHandlers[Variant.ConsistentThrowing] = new ConsistentThrowing();
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();
             VariantHandlers[Variant.DashAssist] = new DashAssist();
