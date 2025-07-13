@@ -22,8 +22,7 @@ public class ConsistentThrowing : AbstractExtendedVariant {
     }
 
     private void MakeHoldableOffsetConsistent(On.Celeste.Holdable.orig_Release orig, Holdable self, Vector2 force) {
-        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.ConsistentThrowing))
-        {
+        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.ConsistentThrowing)) {
             Player holder = self.Holder;
 
             Vector2 holdablePosition = holder.Position
@@ -31,8 +30,7 @@ public class ConsistentThrowing : AbstractExtendedVariant {
                 + Vector2.UnitY * (holder.Sprite.CarryYOffset / holder.Sprite.Scale.Y);
             self.Carry(holdablePosition.Floor());
 
-            if (self.Entity is Actor actor)
-            {
+            if (self.Entity is Actor actor) {
                 actor.ZeroRemainderX();
                 actor.ZeroRemainderY();
             }
