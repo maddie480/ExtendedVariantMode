@@ -132,7 +132,7 @@ Adds some options to the Mod Options menu:
     *   **Crouch Dash Fix**: Ensures that you have the expected crouch state when performing a normal or crouched dash. (brought to you by @DominicAglialoro)
     *   **Multi Buffering**: Allows you to buffer multiple of the same input before it is consumed. (brought to you by @DominicAglialoro)
     *   **Alternative Buffering**: Prevents buffered inputs from being canceled when releasing the input early. (brought to you by @DominicAglialoro)
-    *   **Consistent Throwing**: Ignores the sprite scale factor and removes subpixels from the holdable throw position, making throws less inconsistent. (brought to you by @SnipUndercover) 
+    *   **Consistent Throwing**: Ignores the sprite scale factor and removes subpixels from the holdable throw position, making throws less inconsistent. (brought to you by @SnipUndercover)
     *   **Safer Diagonal Smuggle**: Makes the position window for diagonal dream smuggles the same as for horizontal smuggles. (brought to you by @DominicAglialoro)
     *   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform. (brought to you by @DominicAglialoro)
     *   **Throw Ignores Forced Move**: Allows you to throw in either direction, even when an interaction forces you to move in one direction. (brought to you by @DominicAglialoro)

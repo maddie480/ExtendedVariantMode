@@ -402,3 +402,6 @@ MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTHRESHOLD=Seuil de vitesse "Chute lente
 MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTHRESHOLD_HINT=Le seuil sous lequel la chute de Madeline peut être ralentie par la touche Saut
 MODOPTIONS_EXTENDEDVARIANTS_AUTODASH=Dash automatique
 MODOPTIONS_EXTENDEDVARIANTS_AUTODASH_HINT=Force Madeline à dash quand c'est possible.
+MODOPTIONS_EXTENDEDVARIANTS_CONSISTENTTHROWING=Lancer cohérent
+MODOPTIONS_EXTENDEDVARIANTS_CONSISTENTTHROWING_HINT_1=Rend le lancer d'objets plus prédictible en ignorant les "sous-pixels"
+MODOPTIONS_EXTENDEDVARIANTS_CONSISTENTTHROWING_HINT_2=de l'objet et les dimensions du sprite du joueur
