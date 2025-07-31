@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Collections;
 using MonoMod.RuntimeDetour;
 using System;
+using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -105,6 +106,7 @@ namespace ExtendedVariants.Variants {
 
         private IEnumerator modDashCoroutine(IEnumerator vanillaCoroutine, Player self) {
             // make a step forward
+            vanillaCoroutine = vanillaCoroutine.SafeEnumerate();
             if (vanillaCoroutine.MoveNext()) {
                 yield return vanillaCoroutine.Current;
             }

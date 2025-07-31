@@ -4,6 +4,7 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
+using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -88,7 +89,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
-            IEnumerator original = orig(self);
+            IEnumerator original = orig(self).SafeEnumerate();
 
             Session session = self.SceneAs<Level>().Session;
             bool origNoRefills = session.Inventory.NoRefills;

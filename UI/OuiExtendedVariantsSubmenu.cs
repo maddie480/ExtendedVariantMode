@@ -1,6 +1,6 @@
 ﻿using Celeste;
+using Celeste.Mod.EV;
 using Celeste.Mod.UI;
-using ExtendedVariants.Module;
 using System.Collections;
 
 namespace ExtendedVariants.UI {
@@ -25,7 +25,7 @@ namespace ExtendedVariants.UI {
 
         public override IEnumerator Enter(Oui from) {
             // start running Enter, so that the menu is initialized
-            IEnumerator enterEnum = base.Enter(from);
+            IEnumerator enterEnum = base.Enter(from).SafeEnumerate();
             if (enterEnum.MoveNext()) yield return enterEnum.Current;
 
             if (savedMenuIndex != -1 && currentMenu != null &&

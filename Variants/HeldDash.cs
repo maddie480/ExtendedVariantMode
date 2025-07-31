@@ -6,6 +6,7 @@ using MonoMod.Utils;
 using System;
 using System.Collections;
 using System.Reflection;
+using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -32,7 +33,7 @@ namespace ExtendedVariants.Variants {
         private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             // intercept the moment when the dash coroutine sends out the dash time
             // so that we can extend it as long as Dash is pressed.
-            IEnumerator coroutine = orig.Invoke(self);
+            IEnumerator coroutine = orig(self).SafeEnumerate();
             while (coroutine.MoveNext()) {
                 object o = coroutine.Current;
                 if (o != null && o.GetType() == typeof(float)) {
