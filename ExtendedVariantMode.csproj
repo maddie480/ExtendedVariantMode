@@ -1,46 +1,113 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
-    <AssemblyName>ExtendedVariantMode</AssemblyName>
-    <RootNamespace>ExtendedVariants</RootNamespace>
-    <LangVersion>preview</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="MonoMod.RuntimeDetour" Version="22.1.4.3" PrivateAssets="all" ExcludeAssets="runtime" />
-    <PackageReference Include="NLua" Version="1.4.25" PrivateAssets="all" ExcludeAssets="runtime" />
-    <PackageReference Include="YamlDotNet" Version="8.1.2" PrivateAssets="all" ExcludeAssets="runtime" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="BetterRefillGems">
-      <HintPath>lib-stripped\BetterRefillGems.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Celeste">
-      <HintPath>lib-stripped\Celeste.exe</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DJMapHelper">
-      <HintPath>lib-stripped\DJMapHelper.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FNA">
-      <HintPath>lib-stripped\FNA.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IsaMods">
-      <HintPath>lib-stripped\IsaGrabBag.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="JungleHelper">
-      <HintPath>lib-stripped\JungleHelper.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MMHOOK_Celeste">
-      <HintPath>lib-stripped/MMHOOK_Celeste.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <AssemblyName>ExtendedVariantMode</AssemblyName>
+        <RootNamespace>ExtendedVariants</RootNamespace>
+        <LangVersion>preview</LangVersion>
+        <CelestePrefix Condition="'$(CelestePrefix)' == '' And Exists('..\..\Celeste.dll')">..\..</CelestePrefix>
+        <CelestePrefix Condition="'$(CelestePrefix)' == ''">lib-stripped</CelestePrefix>
+        <ZippedFiles>everest.yaml;bin\ExtendedVariantMode.*;Audio\**\*.*;Dialog\**\*.*;Graphics\**\*.*;Ahorn\**\*.*;Loenn\**\*.*</ZippedFiles>
+    </PropertyGroup>
+
+    <!--Disable "Copy Local" for all references-->
+    <ItemDefinitionGroup>
+        <PackageReference PrivateAssets="all" ExcludeAssets="runtime" />
+        <Reference Private="false" />
+    </ItemDefinitionGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MonoMod.RuntimeDetour" Version="25.2.3" PrivateAssets="all" ExcludeAssets="runtime" />
+        <PackageReference Include="MonoMod.Patcher" Version="25.0.0-prerelease.2" />
+        <PackageReference Include="CelesteAnalyzer" Version="*" />
+    </ItemGroup>
+
+    <ItemGroup>
+<!--/-:replacements:noEmit -->
+        <PackageReference Include="CelesteMod.Publicizer" Version="*" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
+<!--/+:replacements:noEmit -->
+        <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll" Private="false" />
+        <Reference Include="$(CelestePrefix)\FNA.dll" Private="false" />
+
+        <Reference Include="lib-stripped\BetterRefillGems.dll" Private="false" />
+        <Reference Include="lib-stripped\DJMapHelper.dll" Private="false" />
+        <Reference Include="lib-stripped\IsaGrabBag.dll" Private="false" />
+        <Reference Include="lib-stripped\JungleHelper.dll" Private="false" />
+        <Reference Include="lib-stripped\NLua.dll" Private="false" />
+
+        <PackageReference Include="YamlDotNet" Version="16.1.3" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+    </ItemGroup>
+
+    <Target Name="CopyFiles" AfterTargets="Build" Inputs="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\$(AssemblyName).pdb" Outputs="bin\$(AssemblyName).dll;bin\$(AssemblyName).pdb">
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="bin" />
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).pdb" DestinationFolder="bin" />
+    </Target>
+
+    <Target Name="PackageMod" AfterTargets="CopyFiles" Inputs="$(ZippedFiles)" Outputs="ExtendedVariantMode.zip" Condition="'$(Configuration)' == 'Release'">
+        <ItemGroup>
+            <FilesToPackage Include="$(ZippedFiles)" />
+        </ItemGroup>
+        <PackageMod Files="@(FilesToPackage)" OutputPath="ExtendedVariantMode.zip" />
+    </Target>
+
+    <PropertyGroup>
+        <PathMap>$(MSBuildProjectDirectory)=ExtendedVarientMode/</PathMap>
+    </PropertyGroup>
+
+    <!-- Inline task used to create a .zip for the mod -->
+    <UsingTask TaskName="PackageMod"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+        <ParameterGroup>
+            <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+            <OutputPath ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.IO.Compression" />
+            <Code Type="Fragment" Language="cs">
+            <![CDATA[
+                var projectDir = @"$(ProjectDir)";
+                projectDir = Uri.UnescapeDataString(projectDir);
+
+                if (File.Exists(OutputPath))
+                    File.Delete(OutputPath);
+
+                using (ZipArchive zip = ZipFile.Open(OutputPath, ZipArchiveMode.Create))
+                {
+                    foreach (var file in Files)
+                    {
+                        string filePath = file.GetMetadata("FullPath");
+                        string entryName = GetRelativePath(projectDir, filePath);
+
+                        zip.CreateEntryFromFile(filePath, entryName);
+                    }
+                }
+
+                string GetRelativePath(string fromPath, string toPath)
+                {
+                    if (string.IsNullOrEmpty(fromPath)) throw new ArgumentNullException(nameof(fromPath));
+                    if (string.IsNullOrEmpty(toPath))   throw new ArgumentNullException(nameof(toPath));
+
+                    Uri fromUri = new Uri(fromPath);
+                    Uri toUri = new Uri(toPath);
+
+                    if (fromUri.Scheme != toUri.Scheme) { return toPath; } // path can't be made relative.
+
+                    Uri relativeUri = fromUri.MakeRelativeUri(toUri);
+                    string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+                    if (toUri.Scheme.Equals("file", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        relativePath = relativePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    }
+
+                    return relativePath;
+                }
+            ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+
 </Project>

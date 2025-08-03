@@ -33,6 +33,12 @@ triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.descript
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
 triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 
+# Extended Variants Slider Trigger
+triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.placements.name.trigger=Extended Variant from Slider
+triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.attributes.description.variantChange=The variant to change.
+triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.attributes.description.slider=The name of the session slider to set the variant to.
+triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.attributes.description.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+
 # Extended Variant On-Screen Display Trigger
 triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.placements.name.trigger=Extended Variant On-Screen Display
 triggers.ExtendedVariantMode/ExtendedVariantOnScreenDisplayTrigger.attributes.description.enable=Whether this trigger should enable or disable the on-screen display of extended variants.
