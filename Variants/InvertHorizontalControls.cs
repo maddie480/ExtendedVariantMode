@@ -1,5 +1,7 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
+using MonoMod.Utils;
+using System;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -12,8 +14,9 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            // we want to be extra sure we're applied after Crow Control here.
-            using (new DetourConfigContext(new DetourConfig("AfterAll").WithAfter("*")).Use()) {
+            using (new DetourContext {
+                After = { "*" } // we want to be extra sure we're applied after Crow Control here.
+            }) {
                 On.Celeste.Level.Update += onLevelUpdate;
             }
         }

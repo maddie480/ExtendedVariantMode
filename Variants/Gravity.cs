@@ -20,8 +20,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            // make sure to be applied after Xaphan Helper
-            using (new DetourConfigContext(new DetourConfig("AfterAll").AddAfter("*")).Use()) {
+            using (new DetourContext { After = { "*" } }) { // make sure to be applied after Xaphan Helper
                 IL.Celeste.Player.NormalUpdate += modNormalUpdate;
             }
 

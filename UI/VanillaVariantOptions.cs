@@ -19,8 +19,9 @@ namespace ExtendedVariants.UI {
         private static bool?[] activeIsaVariants = new bool?[11];
 
         public static void Load() {
-            // we're replacing the menu, so we want to go first.
-            using (new DetourConfigContext(new DetourConfig("BeforeAll").AddBefore("*")).Use()) {
+            using (new DetourContext {
+                Before = { "*" } // we're replacing the menu, so we want to go first.
+            }) {
                 On.Celeste.Level.VariantMode += buildVariantModeMenu;
                 On.Celeste.Level.AssistMode += buildAssistModeMenu;
             }

@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
+using System;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -12,8 +13,9 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            // we want to be extra sure we're applied after other mods here.
-            using (new DetourConfigContext(new DetourConfig("AfterAll").AddAfter("*")).Use()) {
+            using (new DetourContext {
+                After = { "*" } // we want to be extra sure we're applied after other mods here.
+            }) {
                 On.Celeste.Level.Update += onLevelUpdate;
             }
         }

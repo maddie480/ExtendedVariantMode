@@ -1,4 +1,7 @@
 ﻿using Celeste;
+using Celeste.Mod;
+using MonoMod.Cil;
+using System;
 using Monocle;
 using Microsoft.Xna.Framework;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
@@ -17,7 +20,7 @@ namespace ExtendedVariants.Variants {
             On.Monocle.Engine.Update += onEngineUpdate;
 
             // this one cuts off calls to orig, so we want to make sure it as close to vanilla as possible.
-            using (new DetourConfigContext(new DetourConfig("BeforeAll").AddBefore("*")).Use()) {
+            using (new DetourContext { Before = { "*" } }) {
                 On.Celeste.Celeste.Freeze += onCelesteFreeze;
             }
         }
