@@ -17,7 +17,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Celeste">
-      <HintPath>lib-stripped\Celeste.exe</HintPath>
+      <HintPath>lib-stripped\Celeste.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DJMapHelper">
