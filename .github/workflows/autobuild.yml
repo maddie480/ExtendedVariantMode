@@ -39,6 +39,6 @@ jobs:
         GITHUB_SHA: ${{ github.sha }}
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       run: |
-        ZIPNAME=$ZIPNAME-${GITHUB_SHA:0:8}.zip
-        zip -qq -r $ZIPNAME everest.yaml bin/Release/net452/ExtendedVariantMode.* Ahorn Dialog Graphics Loenn
-        curl -H 'Content-Type: multipart/form-data' -X POST -F "file=@$ZIPNAME" "$DISCORD_WEBHOOK"
+        NEWZIPNAME=$ZIPNAME-${GITHUB_SHA:0:8}
+        mv $ZIPNAME.zip $NEWZIPNAME.zip
+        curl -H 'Content-Type: multipart/form-data' -X POST -F "file=@$NEWZIPNAME.zip" "$DISCORD_WEBHOOK"
