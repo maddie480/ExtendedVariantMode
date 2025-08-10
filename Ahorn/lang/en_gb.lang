@@ -164,6 +164,11 @@ placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.positionMode=The direction in which the fade from A to B will occur. For example, if set to RightToLeft, the variant will take value A on the right side of the trigger, and B on the left.
 placements.triggers.ExtendedVariantMode/FloatExtendedVariantFadeTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
 
+# Extended Variants Slider Trigger
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.tooltips.variantChange=The variant to change.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.tooltips.slider=The name of the session slider to set the variant to.
+placements.triggers.ExtendedVariantMode/FloatExtendedVariantSliderTrigger.tooltips.revertOnDeath=If checked, the previous value for the variant will be restored if the player dies before changing rooms or changing respawn points.
+
 # Recover Jump Refill
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.oneUse=Whether the refill should respawn after being used.
 placements.entities.ExtendedVariantMode/RecoverJumpRefill.tooltips.texture=The directory, relative to Graphics/Atlases/Gameplay/objects, the refill textures are read from.
