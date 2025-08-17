@@ -315,7 +315,7 @@ namespace ExtendedVariants.UI {
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
                     Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
-                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold
+                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold, Variant.JumpBoost
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -364,6 +364,12 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(buildHeading(menu, "JUMPING"));
                 menu.Add(getScaleOption(Variant.JumpHeight, "x", multiplierScale));
+
+                TextMenuOptionExt<int> jumpBoostOption;
+                menu.Add(jumpBoostOption = getScaleOption(Variant.JumpBoost, "x", multiplierScaleWithNegatives));
+                jumpBoostOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPBOOST_HINT_2"));
+                jumpBoostOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPBOOST_HINT_1"));
+
                 menu.Add(getScaleOption(Variant.JumpDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.WallBouncingSpeed, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.DisableWallJumping));
