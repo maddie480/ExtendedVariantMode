@@ -27,11 +27,12 @@ trigger.fieldInformation = {
             "ChaserCount",
             "CornerCorrection",
             "DashCount",
-            "SpawnDashCount",
             "JellyfishEverywhere",
             "MultiBuffering",
             "OshiroCount",
             "ReverseOshiroCount",
+            "ScreenTransitionDashCount",
+            "SpawnDashCount",
             "Stamina",
             "WallBounceDistance",
             "WallJumpDistance"

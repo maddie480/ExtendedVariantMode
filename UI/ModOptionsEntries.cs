@@ -308,7 +308,7 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                     Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
                     Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
-                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.SpawnDashCount,
+                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.SpawnDashCount, Variant.ScreenTransitionDashCount,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
                     Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround, Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown,
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
@@ -526,6 +526,13 @@ namespace ExtendedVariants.UI {
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
 
                 menu.Add(getScaleOption(Variant.SpawnDashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
+                    if (i == -1) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                    }
+                    return i.ToString();
+                }));
+
+                menu.Add(getScaleOption(Variant.ScreenTransitionDashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
                     if (i == -1) {
                         return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
                     }
