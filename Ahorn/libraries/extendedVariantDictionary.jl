@@ -13,6 +13,7 @@ const IntegerVariants = [
     "MultiBuffering",
     "OshiroCount",
     "ReverseOshiroCount",
+    "SpawnDashCount",
     "Stamina",
     "WallBounceDistance",
     "WallJumpDistance"

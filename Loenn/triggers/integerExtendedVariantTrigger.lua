@@ -27,6 +27,7 @@ trigger.fieldInformation = {
             "ChaserCount",
             "CornerCorrection",
             "DashCount",
+            "SpawnDashCount",
             "JellyfishEverywhere",
             "MultiBuffering",
             "OshiroCount",

@@ -90,6 +90,7 @@ Adds some options to the Mod Options menu:
 *   **Don't Refill Stamina on Ground**: Your stamina won't refill by touching the ground anymore, much like what Core does with the dash. The only ways to get your stamina back are changing screens or grabbing refills!
 
 *   **Disable Refills on Screen Transition**: prevents you from getting your dash and stamina back with screen transitions.
+*   **Spawn dash count** grants Madeline additional dashes on spawn. You can also start with 0 dashes, which can be useful in combination with disabling dash refills on ground & screen transitions.
 *   **Restore Dashes on Respawn**: saves your dash count when you hit a respawn point, and restores it when you respawn. Makes sense when used with no ground refills.
 
 *   **Game Speed**: Like the vanilla assist/variant, but it goes down to 0x and up to 100x! This stacks up with the vanilla variant if you enable both.

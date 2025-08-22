@@ -57,7 +57,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, SpawnDashCount, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
@@ -189,6 +189,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.FriendlyBadelineFollower] = new FriendlyBadelineFollower();
             VariantHandlers[Variant.DisableRefillsOnScreenTransition] = new DisableRefillsOnScreenTransition();
             VariantHandlers[Variant.RestoreDashesOnRespawn] = new RestoreDashesOnRespawn();
+            VariantHandlers[Variant.SpawnDashCount] = new SpawnDashCount();
             VariantHandlers[Variant.DisplayDashCount] = new DisplayDashCount();
             VariantHandlers[Variant.MadelineBackpackMode] = new MadelineBackpackMode();
             VariantHandlers[Variant.EveryJumpIsUltra] = new EveryJumpIsUltra();
