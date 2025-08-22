@@ -109,9 +109,11 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original Added method</param>
         /// <param name="self">The Player instance</param>
         /// <param name="scene">Argument of the original method (passed as is)</param>
-        private void modAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
+        private void modAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene)
+        {
             orig.Invoke(self, scene);
-            self.Dashes = determineDashCount(self.Dashes);
+            var spawnDashCount = GetVariantValue<int>(Variant.SpawnDashCount);
+            self.Dashes = spawnDashCount != -1 ? spawnDashCount : determineDashCount(self.Dashes);
         }
 
         private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
