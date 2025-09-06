@@ -24,13 +24,10 @@ namespace ExtendedVariants.Variants {
             orig(self);
 
             var dashCount = GetVariantValue<int>(Variant.ScreenTransitionDashCount);
-            if (GetVariantValue<bool>(Variant.DisableRefillsOnScreenTransition))
-            {
+            if (GetVariantValue<bool>(Variant.DisableRefillsOnScreenTransition)) {
                 self.Dashes = bakDashes;
                 self.Stamina = bakStamina;
-            }
-            else if (dashCount != -1)
-            {
+            } else if (dashCount != -1) {
                 self.Dashes = dashCount;
             }
         }

@@ -24,6 +24,7 @@ Adds some options to the Mod Options menu:
     *    **Refill Jumps on Dash Refill** will give you back your extra jumps whenever you get your dash back.
     *    **Reset Jump Count on Ground** allows you to choose whether you want to refill jumps on ground (if you have a base Jump Count higher than 1) or whether you get to keep extra jumps when landing on the ground in maps using jump refills!
     *    **Delay Between Midair Jumps** adds a cooldown between two midair jumps, to prevent the player from using them too fast.
+*   **Jump Boost**: Modifies the horizontal jump boost you get from jumping, climbjumping, wallboosting and wallbouncing. (brought to you by @SnipUndercover)
 *   **Upside Down**: this flips the game upside down. Much like the Mirror Mode variant, but vertically.
 *   **Hyperdash Speed** and **Wallbouncing Speed**: controls the speed of hyperdashes (stacks up with X speed) or wallboucing (stacks up with jump height)
 *   **Explode Launch Speed**: Modifies the speed given by bumpers, puffer fish and respawning seekers. You can also choose to **disable super boosts** that you get by holding away from the explosion.
@@ -90,8 +91,8 @@ Adds some options to the Mod Options menu:
 *   **Don't Refill Stamina on Ground**: Your stamina won't refill by touching the ground anymore, much like what Core does with the dash. The only ways to get your stamina back are changing screens or grabbing refills!
 
 *   **Disable Refills on Screen Transition**: prevents you from getting your dash and stamina back with screen transitions.
-*   **Spawn dash count** grants Madeline additional dashes on spawn. You can also start with 0 dashes, which can be useful in combination with disabling dash refills on ground & screen transitions.
-*   **Screen transition dash count** grants Madeline additional dashes on screen transition.
+*   **Spawn dash count** grants Madeline additional dashes on spawn. You can also start with 0 dashes, which can be useful in combination with disabling dash refills on ground & screen transitions. (brought to you by @casju0)
+*   **Screen transition dash count** grants Madeline additional dashes on screen transition. (brought to you by @casju0)
 *   **Restore Dashes on Respawn**: saves your dash count when you hit a respawn point, and restores it when you respawn. Makes sense when used with no ground refills.
 
 *   **Game Speed**: Like the vanilla assist/variant, but it goes down to 0x and up to 100x! This stacks up with the vanilla variant if you enable both.
