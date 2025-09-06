@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using Celeste;
+using Celeste.Mod.Helpers;
 using ExtendedVariants.Module;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 

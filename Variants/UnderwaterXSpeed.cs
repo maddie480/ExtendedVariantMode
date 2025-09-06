@@ -1,8 +1,8 @@
 ﻿using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using ExtendedVariants.Module;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
