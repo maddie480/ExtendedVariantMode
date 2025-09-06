@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
+using ExtendedVariants.Module;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -41,7 +42,7 @@ namespace ExtendedVariants.Variants {
             }
 
             ILCursor xIfCheck = ySpeedVariable.Clone();
-            if (!TryGotoNextBestFit(xIfCheck, MoveType.Before,
+            if (!xIfCheck.TryGotoNextBestFit(MoveType.Before,
                 static instr => instr.MatchLdcR4(SlowerDecelerationSpeedThreshold),
                 static instr => instr.MatchBleUn(out _)))
             {
@@ -52,7 +53,7 @@ namespace ExtendedVariants.Variants {
             xIfCheck.Index++;
 
             ILCursor yIfCheck = xIfCheck.Clone();
-            if (!TryGotoNextBestFit(yIfCheck, MoveType.Before,
+            if (!yIfCheck.TryGotoNextBestFit(MoveType.Before,
                 static instr => instr.MatchLdcR4(SlowerDecelerationSpeedThreshold),
                 static instr => instr.MatchBleUn(out _)))
             {

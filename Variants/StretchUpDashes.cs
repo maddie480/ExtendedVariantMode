@@ -7,6 +7,7 @@ using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
 using System;
 using System.Reflection;
+using ExtendedVariants.Module;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -35,7 +36,7 @@ namespace ExtendedVariants.Variants {
                 static instr => instr.MatchStfld<Vector2>("X")
             };
 
-            if (!TryGotoNextBestFit(cursor, MoveType.After, ilSequence)) {
+            if (!cursor.TryGotoNextBestFit(MoveType.After, ilSequence)) {
                 Logger.Log(LogLevel.Error, "ExtendedVariantMode/StretchUpDashes",
                     $"Could not find IL sequence to hook in {il.Method.FullName}!");
                 return;
