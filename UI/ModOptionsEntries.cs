@@ -315,7 +315,8 @@ namespace ExtendedVariants.UI {
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
                     Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
-                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold, Variant.JumpBoost
+                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold, Variant.JumpBoost,
+                    Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -426,6 +427,22 @@ namespace ExtendedVariants.UI {
                 TextMenuOptionExt<int> slowfallSpeedThreshold;
                 menu.Add(slowfallSpeedThreshold = getScaleOption(Variant.SlowfallSpeedThreshold, "px/s", new float[] { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 }));
                 slowfallSpeedThreshold.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTHRESHOLD_HINT"));
+
+                // menu.Add(buildHeading(menu, "CLIMBING"));
+                TextMenuOptionExt<int> climbUpSpeedMult;
+                menu.Add(climbUpSpeedMult = getScaleOption(Variant.ClimbUpSpeed, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbDownSpeedMult;
+                menu.Add(climbDownSpeedMult = getScaleOption(Variant.ClimbDownSpeed, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbJumpStaminaCostMult;
+                menu.Add(climbJumpStaminaCostMult = getScaleOption(Variant.ClimbJumpStaminaCost, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbUpStaminaDrainRate;
+                menu.Add(climbUpStaminaDrainRate = getScaleOption(Variant.ClimbUpStaminaDrainRate, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbHoldStaminaDrainRate;
+                menu.Add(climbHoldStaminaDrainRate = getScaleOption(Variant.ClimbHoldStaminaDrainRate, "x", multiplierScaleWithNegatives));
 
                 menu.Add(buildHeading(menu, "DASHING"));
                 menu.Add(getScaleOption(Variant.DashSpeed, "x", multiplierScale));
