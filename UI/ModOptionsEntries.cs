@@ -374,7 +374,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(getScaleOption(Variant.JumpDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.WallBouncingSpeed, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.DisableWallJumping));
-                menu.Add(getToggleOption(Variant.DisableClimbJumping));
                 menu.Add(getToggleOption(Variant.DisableJumpingOutOfWater));
                 menu.Add(getToggleOption(Variant.DisableNeutralJumping));
                 menu.Add(getScaleOption(Variant.WallJumpDistance, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
@@ -428,12 +427,29 @@ namespace ExtendedVariants.UI {
                 menu.Add(slowfallSpeedThreshold = getScaleOption(Variant.SlowfallSpeedThreshold, "px/s", new float[] { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 }));
                 slowfallSpeedThreshold.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTHRESHOLD_HINT"));
 
-                // menu.Add(buildHeading(menu, "CLIMBING"));
+                menu.Add(buildHeading(menu, "CLIMBING"));
                 TextMenuOptionExt<int> climbUpSpeedMult;
                 menu.Add(climbUpSpeedMult = getScaleOption(Variant.ClimbUpSpeed, "x", multiplierScaleWithNegatives));
 
                 TextMenuOptionExt<int> climbDownSpeedMult;
                 menu.Add(climbDownSpeedMult = getScaleOption(Variant.ClimbDownSpeed, "x", multiplierScaleWithNegatives));
+
+                menu.Add(getToggleOption(Variant.DisableClimbJumping));
+
+                menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
+                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
+
+                TextMenuExt.OnOff trueNoGrabbingOption;
+                menu.Add(trueNoGrabbingOption = getToggleOption(Variant.TrueNoGrabbing));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2"));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1"));
+
+                menu.Add(getScaleOption(Variant.Stamina, "", new int[] {
+                    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
+                    310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
+                }));
+
+                menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
 
                 TextMenuOptionExt<int> climbJumpStaminaCostMult;
                 menu.Add(climbJumpStaminaCostMult = getScaleOption(Variant.ClimbJumpStaminaCost, "x", multiplierScaleWithNegatives));
@@ -542,7 +558,6 @@ namespace ExtendedVariants.UI {
                     }[(int) i]
                 ));
                 menu.Add(getToggleOption(Variant.DisableRefillsOnScreenTransition));
-                menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
 
                 TextMenuExt.OnOff restoreDashesOnRespawnOption;
                 menu.Add(restoreDashesOnRespawnOption = getToggleOption(Variant.RestoreDashesOnRespawn));
@@ -611,15 +626,8 @@ namespace ExtendedVariants.UI {
                     return $"{i:F1}px/s";
                 }));
 
-                menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
-
-                TextMenuExt.OnOff trueNoGrabbingOption;
-                menu.Add(trueNoGrabbingOption = getToggleOption(Variant.TrueNoGrabbing));
-                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2"));
-                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1"));
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
@@ -780,10 +788,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(binoStorageToggle = getToggleOption(Variant.PermanentBinoStorage));
                 binoStorageToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PERMANENTBINOSTORAGE_HINT"));
 
-                menu.Add(getScaleOption(Variant.Stamina, "", new int[] {
-                    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
-                    310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
-                }));
                 menu.Add(getScaleOption(Variant.RegularHiccups, "", multiplierScale, f => f == 0f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : $"{f}s"));
                 menu.Add(getScaleOption(Variant.HiccupStrength, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.AllStrawberriesAreGoldens));

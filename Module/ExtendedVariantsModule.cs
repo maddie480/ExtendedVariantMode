@@ -47,8 +47,7 @@ namespace ExtendedVariants.Module {
 
         public VariantRandomizer Randomizer;
 
-        public enum Variant
-        {
+        public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom, LegacyDashSpeedBehavior,
@@ -72,7 +71,7 @@ namespace ExtendedVariants.Module {
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
-            SuperDashing, ThreeSixtyDashing,
+            SuperDashing, ThreeSixtyDashing
         }
 
         public Dictionary<Variant, AbstractExtendedVariant> VariantHandlers = new Dictionary<Variant, AbstractExtendedVariant>();
@@ -81,8 +80,7 @@ namespace ExtendedVariants.Module {
 
         // ================ Module loading ================
 
-        public ExtendedVariantsModule()
-        {
+        public ExtendedVariantsModule() {
             Instance = this;
             Randomizer = new VariantRandomizer();
             TriggerManager = new ExtendedVariantTriggerManager();
