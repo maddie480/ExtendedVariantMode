@@ -20,15 +20,12 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ClimbUpdate -= onPlayerClimbUpdate;
         }
 
-        private void onPlayerClimbUpdate(ILContext il)
-        {
+        private void onPlayerClimbUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(45.454544f))) {
                 Logger.Log("ExtendedVariantMode/ClimbUpStaminaDrainRate", $"Applying multiplier to Stamina @ {cursor.Index} in IL for Player.ClimbUpdate");
-                cursor.EmitDelegate<Func<float>>(() => {
-                    return GetVariantValue<float>(Variant.ClimbUpStaminaDrainRate);
-                });
+                cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbUpStaminaDrainRate));
                 cursor.Emit(OpCodes.Mul);
             }
         }

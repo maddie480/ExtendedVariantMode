@@ -95,11 +95,12 @@ Adds some options to the Mod Options menu:
 *   **Screen transition dash count** grants Madeline additional dashes on screen transition. (brought to you by @casju0)
 *   **Restore Dashes on Respawn**: saves your dash count when you hit a respawn point, and restores it when you respawn. Makes sense when used with no ground refills.
 
-*   **Climb Up Speed** modifies the speed of Madeline's climbing going upwards.
-*   **Climb Down Speed** modifies the speed of Madeline's climbing going downwards.
-*   **Climb Jump Stamina Cost** modifies the amount of stamina consumed when climbjumping.
-*   **Climb Up Stamina Drain Rate** modifies the rate of stamina drained when climbing up.
-*   **Climb Hold Stamina Drain Rate** modifies the rate of stamina drained when holding onto a wall without moving.
+*   Some **climbing fine-tuning settings** (brought to you by @casju0):
+    *   **Climb Up Speed** modifies the speed of Madeline's climbing going upwards.
+    *   **Climb Down Speed** modifies the speed of Madeline's climbing going downwards.
+    *   **Climb Jump Stamina Cost** modifies the amount of stamina consumed when climbjumping.
+    *   **Climb Up Stamina Drain Rate** modifies the rate of stamina drained when climbing up.
+    *   **Climb Hold Stamina Drain Rate** modifies the rate of stamina drained when holding onto a wall without moving.
 
 *   **Game Speed**: Like the vanilla assist/variant, but it goes down to 0x and up to 100x! This stacks up with the vanilla variant if you enable both.
 *   **No Freeze Frames**: disables the freeze frames that happen when you dash, collect crystals, etc. (brought to you by @WEGFan)

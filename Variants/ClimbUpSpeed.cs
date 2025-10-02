@@ -25,9 +25,7 @@ namespace ExtendedVariants.Variants {
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-45f))) {
                 Logger.Log("ExtendedVariantMode/ClimbUpSpeed", $"Modifying num to set the upwards climbing speed @ {cursor.Index} in IL for Player.ClimbUpdate");
-                cursor.EmitDelegate<Func<float>>(() => {
-                    return GetVariantValue<float>(Variant.ClimbUpSpeed);
-                });
+                cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbUpSpeed));
                 cursor.Emit(OpCodes.Mul);
             }
         }
