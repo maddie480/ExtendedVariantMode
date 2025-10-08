@@ -34,6 +34,7 @@ trigger.fieldInformation = {
             "BadelineChasersEverywhere",
             "BounceEverywhere",
             "BufferableGrab",
+            "CancelStLaunchOnGround",
             "ChangePatternsOfExistingBosses",
             "ConsistentThrowing",
             "CornerboostProtection",
