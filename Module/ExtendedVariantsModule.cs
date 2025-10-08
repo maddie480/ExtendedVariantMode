@@ -68,6 +68,7 @@ namespace ExtendedVariants.Module {
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
             ConsistentThrowing, JumpBoost,
             ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate,
+            CancelStLaunchOnGround,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -242,6 +243,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.ClimbJumpStaminaCost] = new ClimbJumpStaminaCost();
             VariantHandlers[Variant.ClimbUpStaminaDrainRate] = new ClimbUpStaminaDrainRate();
             VariantHandlers[Variant.ClimbHoldStaminaDrainRate] = new ClimbHoldStaminaDrainRate();
+            VariantHandlers[Variant.CancelStLaunchOnGround] = new CancelStLaunchOnGround();
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();
             VariantHandlers[Variant.DashAssist] = new DashAssist();
