@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(27.5f))) {
-                Logger.Log(LogLevel.Info, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying cost multiplier to Stamina @ {cursor.Index} in IL for Player.ClimbJump");
+                Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying cost multiplier to Stamina @ {cursor.Index} in IL for Player.ClimbJump");
                 cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbJumpStaminaCost));
                 cursor.Emit(OpCodes.Mul);
             }
@@ -52,7 +52,7 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(27.5f))) {
-                Logger.Log(LogLevel.Info, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying refund multiplier to Stamina @ {cursor.Index} in IL for Player.Update");
+                Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying refund multiplier to Stamina @ {cursor.Index} in IL for Player.Update");
                 cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbJumpStaminaCost));
                 cursor.Emit(OpCodes.Mul);
             }
