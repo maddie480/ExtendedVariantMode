@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Reflection;
 using Celeste;
 using Celeste.Mod;
@@ -35,9 +34,9 @@ namespace ExtendedVariants.Variants {
                 if (nestedTransitionRoutineType != null) break;
             }
 
-            hookAntiSoftlock = new ILHook(
-                nestedTransitionRoutineType.GetMethod("MoveNext", BindingFlags.NonPublic | BindingFlags.Instance),
-                fixupAntiSoftlockDelay);
+            MethodInfo moveNext = nestedTransitionRoutineType.GetMethod("MoveNext", BindingFlags.NonPublic | BindingFlags.Instance);
+            TryDisableInlining(moveNext);
+            hookAntiSoftlock = new ILHook(moveNext, fixupAntiSoftlockDelay);
         }
 
         public override void Unload() {

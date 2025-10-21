@@ -61,9 +61,9 @@ namespace ExtendedVariants.UI {
                     }
                 };
 
-                isaGrabBagHookSetVariant = new Hook(
-                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) }),
-                    setVariantHook);
+                MethodInfo setVariantMethod = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) });
+                TryDisableInlining(setVariantMethod);
+                isaGrabBagHookSetVariant = new Hook(setVariantMethod, setVariantHook);
 
                 Action<Action<IsaVariant, bool>, IsaVariant, bool> setVariantInGameHook = (orig, variant, value) => {
                     orig(variant, value);
@@ -72,9 +72,9 @@ namespace ExtendedVariants.UI {
                     activeIsaVariants[(int) variant] = value;
                 };
 
-                isaGrabBagHookSetVariantInGame = new Hook(
-                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
-                    setVariantInGameHook);
+                MethodInfo setVariantInGameMethod = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static);
+                TryDisableInlining(setVariantInGameMethod);
+                isaGrabBagHookSetVariantInGame = new Hook(setVariantInGameMethod, setVariantInGameHook);
 
                 PropertyInfo isaVariantsDefault = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetProperty("Variants_Default", BindingFlags.NonPublic | BindingFlags.Static);
                 if (isaVariantsDefault == null) {

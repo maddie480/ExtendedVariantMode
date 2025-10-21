@@ -34,6 +34,7 @@ namespace ExtendedVariants.Variants.Vanilla {
                     .GetType("Celeste.Mod.IsaGrabBag.ForceVariants")
                     .GetMethod("OnVariantMenu", BindingFlags.NonPublic | BindingFlags.Static);
 
+                ExtendedVariantsModule.TryDisableInlining(variantMenuMethod);
                 isaGrabBagHook = new ILHook(variantMenuMethod, modIsaGrabBag);
             }
         }

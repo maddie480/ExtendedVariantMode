@@ -306,6 +306,20 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
+            foreach (Tuple<string, string[]> toople in new[] {
+                new Tuple<string, string[]>("Celeste.BadelineOldsite", ["CanChangeMusic", "IsChaseEnd"]),
+                new Tuple<string, string[]>("Celeste.FinalBoss", ["CanChangeMusic"]),
+                new Tuple<string, string[]>("Celeste.Player", ["NormalBegin", "RefillStamina", "DashCoroutine", "RedDashCoroutine", "CreateTrail", "PickupCoroutine"]),
+                new Tuple<string, string[]>("Celeste.Seeker", ["RegenerateCoroutine"]),
+                new Tuple<string, string[]>("Monocle.VirtualButton", ["Update"]),
+            }) {
+                Type type = typeof(Player).Assembly.GetType(toople.Item1);
+                foreach (string methodName in toople.Item2) {
+                    MethodInfo method = type.GetMethod(methodName) ?? type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+                    TryDisableInlining(method);
+                }
+            }
+
             On.Celeste.LevelLoader.ctor += checkForceEnableVariants;
 
             typeof(LuaCutscenesUtils).ModInterop();
@@ -313,6 +327,12 @@ namespace ExtendedVariants.Module {
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
                 HookStuff();
+            }
+        }
+
+        public static void TryDisableInlining(MethodInfo method) {
+            if (!HookUtils.TryDisableInlining(method)) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not inline method {method.DeclaringType.FullName}.{method.Name}");
             }
         }
 
@@ -333,7 +353,6 @@ namespace ExtendedVariants.Module {
 
             DashCountIndicator.Initialize();
             JumpIndicator.Initialize();
-            (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
             (VariantHandlers[Variant.SpinnerColor] as SpinnerColor).Initialize();
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 8, 35) });
