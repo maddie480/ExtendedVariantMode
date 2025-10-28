@@ -41,4 +41,15 @@ jobs:
       run: |
         ZIPNAME=$ZIPNAME-${GITHUB_SHA:0:8}.zip
         zip -qq -r $ZIPNAME everest.yaml bin/Release/net452/ExtendedVariantMode.* Ahorn Dialog Graphics Loenn
-        curl -H 'Content-Type: multipart/form-data' -X POST -F "file=@$ZIPNAME" "$DISCORD_WEBHOOK"
+        curl --fail -H 'Content-Type: multipart/form-data' -X POST -F "file=@$ZIPNAME" "$DISCORD_WEBHOOK" | jq -r '.attachments[0].url' > zip.url
+
+    - name: TAS Check
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions'
+      env:
+        GITHUB_SHA: ${{ github.sha }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        COMMIT_REF="[\`ExtendedVariantMode@${GITHUB_SHA:0:8}\`](<https://github.com/maddie480/ExtendedVariantMode/commit/${GITHUB_SHA}>)"
+        docker run --rm max480/everest:tas-check ExtendedVariantMode "`cat zip.url`" \
+            && curl -H 'Content-Type: application/json' -d "{\"content\": \":white_check_mark: TAS Check for ${COMMIT_REF} successful.\"}" "$DISCORD_WEBHOOK" \
+            || (curl -H 'Content-Type: application/json' -d "{\"content\": \":x: TAS Check for ${COMMIT_REF} failed!\"}" "$DISCORD_WEBHOOK" && exit 1)
