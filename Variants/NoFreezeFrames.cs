@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants {
             On.Monocle.Engine.Update += onEngineUpdate;
 
             // this one cuts off calls to orig, so we want to make sure it as close to vanilla as possible.
-            using (new DetourConfigContext(new DetourConfig("BeforeAll").AddBefore("*")).Use()) {
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_BeforeAll").WithPriority(int.MinValue)).Use()) {
                 On.Celeste.Celeste.Freeze += onCelesteFreeze;
             }
         }

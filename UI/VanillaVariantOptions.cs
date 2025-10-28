@@ -20,7 +20,7 @@ namespace ExtendedVariants.UI {
 
         public static void Load() {
             // we're replacing the menu, so we want to go first.
-            using (new DetourConfigContext(new DetourConfig("BeforeAll").AddBefore("*")).Use()) {
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_BeforeAll").WithPriority(int.MinValue)).Use()) {
                 On.Celeste.Level.VariantMode += buildVariantModeMenu;
                 On.Celeste.Level.AssistMode += buildAssistModeMenu;
             }

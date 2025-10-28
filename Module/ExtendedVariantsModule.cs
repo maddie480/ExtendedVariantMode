@@ -461,7 +461,9 @@ namespace ExtendedVariants.Module {
 
         private void hookStuffRightNow() {
             if (stuffIsHooked) return;
-
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_Default")).Use()) hookStuffRightNowInner();
+        }
+        private void hookStuffRightNowInner() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
             Everest.Events.Level.OnExit += onLevelExit;
@@ -503,6 +505,9 @@ namespace ExtendedVariants.Module {
 
         private void initializeStuff() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Loading mod hooks...");
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_Default")).Use()) initializeStuffInner();
+        }
+        private void initializeStuffInner() {
             UpsideDown.Initialize();
             AbstractVanillaVariant.Initialize();
             VanillaVariantOptions.Initialize();

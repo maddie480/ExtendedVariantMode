@@ -13,7 +13,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             // we want to be extra sure we're applied after Crow Control here.
-            using (new DetourConfigContext(new DetourConfig("AfterAll").WithAfter("*")).Use()) {
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_AfterAll").WithPriority(int.MaxValue)).Use()) {
                 On.Celeste.Level.Update += onLevelUpdate;
             }
         }

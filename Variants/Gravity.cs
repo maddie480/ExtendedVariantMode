@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
 
         public override void Load() {
             // make sure to be applied after Xaphan Helper
-            using (new DetourConfigContext(new DetourConfig("AfterAll").AddAfter("*")).Use()) {
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_AfterAll").WithPriority(int.MaxValue)).Use()) {
                 IL.Celeste.Player.NormalUpdate += modNormalUpdate;
             }
 
