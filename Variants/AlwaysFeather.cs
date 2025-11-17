@@ -84,7 +84,7 @@ namespace ExtendedVariants.Variants {
         }
 
 
-        private void modPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void modPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             WasFeatherForced = IsFeatherForced;
             IsFeatherForced = GetVariantValue<bool>(Variant.AlwaysFeather);
 

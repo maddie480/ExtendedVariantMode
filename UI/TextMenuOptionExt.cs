@@ -6,33 +6,12 @@ using System;
 namespace ExtendedVariants.UI {
     public class TextMenuOptionExt<T> : TextMenu.Option<T> {
 
-        private int lastDir;
-        private float sine;
-
         private int defaultIndex;
         private int mapDefinedIndex;
 
         public TextMenuOptionExt(string label, int defaultIndex, int mapDefinedIndex) : base(label) {
             this.defaultIndex = defaultIndex;
             this.mapDefinedIndex = mapDefinedIndex;
-        }
-
-        // these overrides just allow to maintain lastDir and sine, since I can't access them
-        public override void LeftPressed() {
-            base.LeftPressed();
-            if (Index > 0) lastDir = -1;
-        }
-        public override void RightPressed() {
-            base.RightPressed();
-            if (Index < Values.Count - 1) lastDir = 1;
-        }
-        public override void ConfirmPressed() {
-            base.ConfirmPressed();
-            if (Values.Count == 2) lastDir = (Index == 1) ? 1 : -1;
-        }
-        public override void Update() {
-            base.Update();
-            sine += Engine.RawDeltaTime;
         }
 
         /// <summary>

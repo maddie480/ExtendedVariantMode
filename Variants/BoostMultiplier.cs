@@ -58,14 +58,20 @@ namespace ExtendedVariants.Variants {
             return result * GetVariantValue<float>(Variant.BoostMultiplier);
         }
 
-        private void modPlayerNormalUpdate(ILContext il) {
+        private static void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // disable the boost multiplier for the first part of the method: it is intended to be able to walk off from a block seamlessly...
             // and multiplying the boost makes it *a bit* less seamless.
-            cursor.EmitDelegate<Action>(() => isBoostMultiplierApplied = false);
+            cursor.EmitDelegate<Action>(disableBoostMultiplier);
             cursor.GotoNext(instr => instr.MatchCallvirt<Player>("get_Holding"));
-            cursor.EmitDelegate<Action>(() => isBoostMultiplierApplied = true);
+            cursor.EmitDelegate<Action>(enableBoostMultiplier);
+        }
+        private static void enableBoostMultiplier() {
+            isBoostMultiplierApplied = true;
+        }
+        private static void disableBoostMultiplier() {
+            isBoostMultiplierApplied = false;
         }
     }
 }

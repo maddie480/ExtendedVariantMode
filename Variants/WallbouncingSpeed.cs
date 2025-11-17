@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperWallJump method in Player (called when super/hyperdashing on a wall.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperWallJump(ILContext il) {
+        private static void modSuperWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply -160f (height given by a superdash) with the jump height factor
@@ -40,7 +40,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the current wallbounce speed factor.
         /// </summary>
         /// <returns>The wallbounce speed factor (1 = default wallbounce speed)</returns>
-        private float determineWallBouncingSpeedFactor() {
+        private static float determineWallBouncingSpeedFactor() {
             return GetVariantValue<float>(Variant.WallBouncingSpeed);
         }
     }

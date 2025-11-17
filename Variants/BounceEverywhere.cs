@@ -19,7 +19,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.NormalUpdate -= modPlayerNormalUpdate;
         }
 
-        private int modPlayerNormalUpdate(On.Celeste.Player.orig_NormalUpdate orig, Player self) {
+        private static int modPlayerNormalUpdate(On.Celeste.Player.orig_NormalUpdate orig, Player self) {
             int newState = orig(self);
 
             if (GetVariantValue<bool>(Variant.BounceEverywhere) && newState == 0) {

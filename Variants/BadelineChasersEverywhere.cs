@@ -19,7 +19,10 @@ namespace ExtendedVariants.Variants {
 
         private float lastChaserLag = 0f;
 
-        public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
+        private static BadelineChasersEverywhere instance;
+        public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -61,7 +64,7 @@ namespace ExtendedVariants.Variants {
             UsingWatchtower = false;
         }
 
-        private void modBadelineOldsiteConstructor(ILContext il) {
+        private static void modBadelineOldsiteConstructor(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go everywhere where the 1.55 second delay is defined
@@ -70,7 +73,7 @@ namespace ExtendedVariants.Variants {
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);
-                cursor.EmitDelegate<Func<float>>(determineBadelineLag);
+                cursor.EmitDelegate<Func<float>>(instance.determineBadelineLag);
             }
 
             cursor.Index = 0;
@@ -81,7 +84,7 @@ namespace ExtendedVariants.Variants {
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);
-                cursor.EmitDelegate<Func<float>>(determineDelayBetweenBadelines);
+                cursor.EmitDelegate<Func<float>>(instance.determineDelayBetweenBadelines);
             }
         }
 
@@ -100,7 +103,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="self">The level entity</param>
         /// <param name="playerIntro">The type of player intro</param>
         /// <param name="isFromLoader">unused</param>
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             // this method takes care of every situation except transitions, we let this one to TransitionRoutine
@@ -112,9 +115,9 @@ namespace ExtendedVariants.Variants {
 
             if (playerIntro != Player.IntroTypes.Transition) {
                 if ((GetVariantValue<bool>(Variant.BadelineChasersEverywhere) || GetVariantValue<bool>(Variant.AffectExistingChasers))) {
-                    injectBadelineChasers(self);
+                    instance.injectBadelineChasers(self);
                 }
-                updateLastChaserLag(self);
+                instance.updateLastChaserLag(self);
             }
         }
 
@@ -127,19 +130,19 @@ namespace ExtendedVariants.Variants {
         /// <param name="next">unused</param>
         /// <param name="direction">unused</param>
         /// <returns></returns>
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
 
             // decide whether to add Badeline or not
-            injectBadelineChasers(self);
-            updateLastChaserLag(self);
+            instance.injectBadelineChasers(self);
+            instance.updateLastChaserLag(self);
         }
 
         /// <summary>
         /// Mods the Added method in BadelineOldsite, to make it not kill chasers on screens they are not supposed to be.
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
-        private void modBadelineOldsiteAdded(ILContext il) {
+        private static void modBadelineOldsiteAdded(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go right after the equality check that compares the level set name with "Celeste"
@@ -156,7 +159,7 @@ namespace ExtendedVariants.Variants {
         /// Mods the CanChangeMusic method in BadelineOldsite, so that forcibly added chasers do not change the level music.
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
-        private void modBadelineOldsiteCanChangeMusic(ILContext il) {
+        private static void modBadelineOldsiteCanChangeMusic(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go right after the equality check that compares the level set name with "Celeste"
@@ -216,7 +219,7 @@ namespace ExtendedVariants.Variants {
             return entityData;
         }
 
-        private bool modVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
+        private static bool modVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
             // we can use the "flag-based behavior" on all A-sides
             if (Engine.Scene.GetType() == typeof(Level) && (Engine.Scene as Level).Session.Area.Mode == AreaMode.Normal) {
                 return false;
@@ -225,7 +228,7 @@ namespace ExtendedVariants.Variants {
             return shouldUseVanilla;
         }
 
-        private bool modVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
+        private static bool modVanillaBehaviorCheckForChasers(bool shouldUseVanilla, Scene scene) {
             Session session = (scene as Level).Session;
 
             if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere) &&
@@ -238,7 +241,7 @@ namespace ExtendedVariants.Variants {
             return shouldUseVanilla;
         }
 
-        private bool modBadelineOldsiteIsChaseEnd(On.Celeste.BadelineOldsite.orig_IsChaseEnd orig, BadelineOldsite self, bool value) {
+        private static bool modBadelineOldsiteIsChaseEnd(On.Celeste.BadelineOldsite.orig_IsChaseEnd orig, BadelineOldsite self, bool value) {
             Session session = self.SceneAs<Level>().Session;
             if (session.Area.GetLevelSet() == "Celeste" && session.Area.GetSID() != "Celeste/2-OldSite") {
                 // there is no chase end outside Old Site in the vanilla game.
@@ -251,7 +254,7 @@ namespace ExtendedVariants.Variants {
         /// Mods the UpdateChaserStates to tell it to save a bit more history of chaser states, so that we can spawn more chasers.
         /// </summary>
         /// <param name="il">Object allowing IL modding</param>
-        private void modUpdateChaserStates(ILContext il) {
+        private static void modUpdateChaserStates(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go where the "4" is (this is the amount of player history vanilla is keeping)
@@ -264,9 +267,9 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float determineHistoryAmountToKeep() {
+        private static float determineHistoryAmountToKeep() {
             // return the amount of lag the farthest Badeline has (with a 0.1s margin), but make it 4 seconds minimum (= vanilla value).
-            return Math.Max(lastChaserLag + 0.1f, 4f);
+            return Math.Max(instance.lastChaserLag + 0.1f, 4f);
         }
 
         private void updateLastChaserLag(Level self) {
@@ -278,19 +281,19 @@ namespace ExtendedVariants.Variants {
 
         // ========== Watchtower handling ==========
 
-        private void onLevelStart(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+        private static void onLevelStart(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
             orig(self, session, startPosition);
             UsingWatchtower = false;
         }
 
-        private void onWatchtowerInteract(On.Celeste.Lookout.orig_Interact orig, Lookout self, Player player) {
+        private static void onWatchtowerInteract(On.Celeste.Lookout.orig_Interact orig, Lookout self, Player player) {
             orig(self, player);
 
             // Pandora's Box seems to throw the player in the Dummy state 1 frame too early, so we got to flip the flag earlier as well. :a:
             UsingWatchtower = true;
         }
 
-        private IEnumerator onWatchtowerUse(On.Celeste.Lookout.orig_LookRoutine orig, Lookout self, Player player) {
+        private static IEnumerator onWatchtowerUse(On.Celeste.Lookout.orig_LookRoutine orig, Lookout self, Player player) {
             UsingWatchtower = true;
             float timeStartedUsing = Engine.Scene.TimeActive;
 
@@ -310,7 +313,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onUpdateChaserStates(On.Celeste.Player.orig_UpdateChaserStates orig, Player self) {
+        private static void onUpdateChaserStates(On.Celeste.Player.orig_UpdateChaserStates orig, Player self) {
             // we want to stop saving chaser states when Madeline is using a watchtower, because Extended Variants-brand Badeline chasers are going to pause.
             if (!GetVariantValue<bool>(Variant.BadelineChasersEverywhere) || !UsingWatchtower) {
                 orig(self);

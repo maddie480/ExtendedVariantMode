@@ -20,14 +20,17 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ClimbUpdate -= onPlayerClimbUpdate;
         }
 
-        private void onPlayerClimbUpdate(ILContext il) {
+        private static void onPlayerClimbUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(80f))) {
                 Logger.Log("ExtendedVariantMode/ClimbDownSpeed", $"Modifying num to set the downwards climbing speed @ {cursor.Index} in IL for Player.ClimbUpdate");
-                cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbDownSpeed));
+                cursor.EmitDelegate<Func<float>>(getVariantValue);
                 cursor.Emit(OpCodes.Mul);
             }
+        }
+        private static float getVariantValue() {
+            return GetVariantValue<float>(Variant.ClimbDownSpeed);
         }
     }
 }

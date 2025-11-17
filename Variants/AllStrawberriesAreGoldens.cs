@@ -22,8 +22,10 @@ namespace ExtendedVariants.Variants {
 
         private bool strawberriesWereMadeGolden;
 
-
-        public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) { }
+        private static AllStrawberriesAreGoldens instance;
+        public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -56,14 +58,14 @@ namespace ExtendedVariants.Variants {
             if (strawberryUpdateHook != null) strawberryUpdateHook.Dispose();
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             // strawberries weren't made golden yet, they were just spawned.
-            strawberriesWereMadeGolden = false;
+            instance.strawberriesWereMadeGolden = false;
 
             orig(self, playerIntro, isFromLoader);
         }
 
-        private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
+        private static PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
             if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 return orig(self, direction, evenIfInvincible, registerDeathInStats);
             }
@@ -106,7 +108,7 @@ namespace ExtendedVariants.Variants {
             return deadBody;
         }
 
-        private void onStrawberryUpdate(ILContext il) {
+        private static void onStrawberryUpdate(ILContext il) {
             patchAllGoldenFlags(il);
 
             ILCursor cursor = new ILCursor(il);
@@ -131,25 +133,24 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void patchAllGoldenFlags(ILContext il) {
+        private static void patchAllGoldenFlags(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
                 // replace the Golden flag with a method call (that returns Golden || AllStrawberriesAreGoldens)
                 Logger.Log("ExtendedVariantMode/AllStrawberriesAreGoldens", $"Patching golden strawberry check at {cursor.Index} in IL code for Strawberry.{cursor.Method.Name}");
 
-                cursor.Remove();
-                cursor.EmitDelegate<Func<Strawberry, bool>>(strawberryHasGoldenCollectBehavior);
+                cursor.EmitDelegate<Func<bool, bool>>(strawberryHasGoldenCollectBehavior);
             }
         }
 
-        private Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
-            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !strawberriesWereMadeGolden) {
+        private static Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
+            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !instance.strawberriesWereMadeGolden) {
                 // nothing to do actually.
                 return currentSprite;
             }
 
-            strawberriesWereMadeGolden = true;
+            instance.strawberriesWereMadeGolden = true;
 
             bool isGolden = currentSprite.Texture?.AtlasPath?.Contains("gold") ?? false;
             // in vanilla, if a berry happens to be a moon golden strawberry, it will appear as a moon berry.
@@ -206,11 +207,11 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool strawberryHasGoldenCollectBehavior(Strawberry berry) {
-            return berry.Golden || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens);
+        private static bool strawberryHasGoldenCollectBehavior(bool orig) {
+            return orig || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens);
         }
 
-        private void onStrawberryCollected(On.Celeste.Strawberry.orig_OnPlayer orig, Strawberry self, Player player) {
+        private static void onStrawberryCollected(On.Celeste.Strawberry.orig_OnPlayer orig, Strawberry self, Player player) {
             if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 orig(self, player);
                 return;
@@ -232,7 +233,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private Session onSessionRestart(On.Celeste.Session.orig_Restart orig, Session self, string intoLevel) {
+        private static Session onSessionRestart(On.Celeste.Session.orig_Restart orig, Session self, string intoLevel) {
             Session session = orig(self, intoLevel);
 
             if (GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && Engine.Scene is LevelExit levelExit) {

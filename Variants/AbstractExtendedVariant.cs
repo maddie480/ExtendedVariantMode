@@ -6,7 +6,7 @@ namespace ExtendedVariants.Variants {
     /// The base class for all extended variants.
     /// </summary>
     public abstract class AbstractExtendedVariant {
-        protected T GetVariantValue<T>(ExtendedVariantsModule.Variant variant) {
+        protected static T GetVariantValue<T>(ExtendedVariantsModule.Variant variant) {
             return (T) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(variant);
         }
 

@@ -107,14 +107,14 @@ namespace ExtendedVariants.Entities.ForMappers {
             f_wiggler.SetValue(this, wiggler);
 
             // wire the collider to our implementation instead.
-            Add(new PlayerCollider(OnPlayer));
+            Add(new PlayerCollider(OnPlayerNew));
         }
 
         private bool betterRefillGemsEnabled() {
             return BetterRefillGemsModule.Settings.Enabled;
         }
 
-        private void OnPlayer(Player player) {
+        private void OnPlayerNew(Player player) {
             if (refillJumps() || breakEvenWhenFull) {
                 Audio.Play("event:/game/general/diamond_touch", Position);
                 Input.Rumble(RumbleStrength.Medium, RumbleLength.Medium);

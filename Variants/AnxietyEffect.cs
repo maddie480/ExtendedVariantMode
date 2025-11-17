@@ -9,7 +9,10 @@ namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
         private bool anxietyCustomized = false;
 
-        public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
+        private static AnxietyEffect instance;
+        public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {
@@ -34,11 +37,11 @@ namespace ExtendedVariants.Variants {
             Distort.AnxietyOrigin = Distort.AnxietyOrigin;
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             orig(self);
 
             if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
-                anxietyCustomized = true;
+                instance.anxietyCustomized = true;
 
                 // set the anxiety intensity
                 GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : GetVariantValue<float>(Variant.AnxietyEffect));
@@ -52,15 +55,15 @@ namespace ExtendedVariants.Variants {
                     // there is no player; the anxiety come from the screen center
                     GFX.FxDistort.Parameters["anxietyOrigin"].SetValue(new Vector2(0.5f, 0.5f));
                 }
-            } else if (anxietyCustomized) {
+            } else if (instance.anxietyCustomized) {
                 // restore the anxiety to its default value
-                anxietyCustomized = false;
+                instance.anxietyCustomized = false;
                 Distort.Anxiety = Distort.Anxiety;
                 Distort.AnxietyOrigin = Distort.AnxietyOrigin;
             }
         }
 
-        private void modDistortRender(ILContext il) {
+        private static void modDistortRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // make the vanilla Distort.Render method aware of manually modded anxiety
@@ -70,7 +73,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float transformAnxietyValue(float originalValue) {
+        private static float transformAnxietyValue(float originalValue) {
             if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
                 // anxiety is modded
                 return GetVariantValue<float>(Variant.AnxietyEffect);

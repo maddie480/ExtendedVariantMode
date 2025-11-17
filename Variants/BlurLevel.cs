@@ -10,7 +10,10 @@ namespace ExtendedVariants.Variants {
     public class BlurLevel : AbstractExtendedVariant {
         private VirtualRenderTarget tempBuffer;
 
-        public BlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
+        private static BlurLevel instance;
+        public BlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
@@ -44,7 +47,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(
@@ -53,7 +56,7 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/BlurLevel", $"Injecting call for blur at {cursor.Index} in IL for Level.Render");
 
-                cursor.EmitDelegate<Action>(blurLevelBuffer);
+                cursor.EmitDelegate<Action>(instance.blurLevelBuffer);
             }
         }
 
@@ -65,19 +68,19 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
+        private static void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
             orig();
 
             // create the blur temp buffer as well.
-            ensureBufferIsCorrect();
+            instance.ensureBufferIsCorrect();
         }
 
-        private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
+        private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the blur temp buffer as well.
-            tempBuffer?.Dispose();
-            tempBuffer = null;
+            instance.tempBuffer?.Dispose();
+            instance.tempBuffer = null;
         }
     }
 }

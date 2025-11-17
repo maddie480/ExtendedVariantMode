@@ -20,7 +20,10 @@ namespace ExtendedVariants.Variants {
             LeftOnOffFast, RightOnOffFast, Down, Up, Random
         }
 
-        public WindEverywhere() : base(variantType: typeof(WindPattern), defaultVariantValue: WindPattern.Default) { }
+        private static WindEverywhere instance;
+        public WindEverywhere() : base(variantType: typeof(WindPattern), defaultVariantValue: WindPattern.Default) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             // you know, 5 obviously means RightCrazy :a:
@@ -70,17 +73,17 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
-                applyWind(self);
+                instance.applyWind(self);
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
-            applyWind(self);
+            instance.applyWind(self);
         }
 
         private void applyWind(Level level) {
@@ -135,7 +138,7 @@ namespace ExtendedVariants.Variants {
             snowBackdropAddedByEVM = false;
         }
 
-        private void onWireRender(ILContext il) {
+        private static void onWireRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we'll replace "level.VisualWind" with "transformVisualWind(level.VisualWind)"
@@ -146,7 +149,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float transformVisualWind(float vanilla) {
+        private static float transformVisualWind(float vanilla) {
             if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Default) {
                 // variant disabled: don't affect vanilla.
                 return vanilla;

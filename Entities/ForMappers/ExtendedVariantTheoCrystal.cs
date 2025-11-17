@@ -34,8 +34,11 @@ namespace ExtendedVariants.Entities.ForMappers {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("theo_crystal"))) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantTheoCrystal", $"Modding sprite path at {cursor.Index} in IL for TheoCrystal constructor");
-                cursor.EmitDelegate<Func<string, string>>(orig => spritePath ?? orig);
+                cursor.EmitDelegate<Func<string, string>>(overwriteSpritePath);
             }
+        }
+        private static string overwriteSpritePath(string orig) {
+            return spritePath ?? orig;
         }
 
         private static void modTheoCrystalDie(ILContext il) {

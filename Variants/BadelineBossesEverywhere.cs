@@ -16,8 +16,10 @@ namespace ExtendedVariants.Variants {
         private Random positionRandomizer = new Random();
         private Random patternRandomizer = new Random();
 
-
-        public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
+        private static BadelineBossesEverywhere instance;
+        public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -42,22 +44,22 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.FinalBoss.ctor_Vector2_Vector2Array_int_float_bool_bool_bool -= modBadelineBossConstructor;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             // failsafe: kill the glitch effect.
             Glitch.Value = 0;
 
             if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere) && playerIntro != Player.IntroTypes.Transition) {
-                injectBadelineBosses(self);
+                instance.injectBadelineBosses(self);
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
 
             if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere)) {
-                injectBadelineBosses(self);
+                instance.injectBadelineBosses(self);
             }
         }
 
@@ -181,7 +183,7 @@ namespace ExtendedVariants.Variants {
             return Vector2.Zero;
         }
 
-        private void modCanChangeMusic(ILContext il) {
+        private static void modCanChangeMusic(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go right after the equality check that compares the level set name with "Celeste"
@@ -193,7 +195,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool modVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
+        private static bool modVanillaBehaviorCheckForMusic(bool shouldUseVanilla) {
             // we can use the "flag-based behavior" on all A-sides
             if (Engine.Scene.GetType() == typeof(Level) && (Engine.Scene as Level).Session.Area.Mode == AreaMode.Normal) {
                 return false;
@@ -202,7 +204,7 @@ namespace ExtendedVariants.Variants {
             return shouldUseVanilla;
         }
 
-        private void modBadelineBossConstructor(ILContext il) {
+        private static void modBadelineBossConstructor(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(instr => instr.MatchStfld<FinalBoss>("patternIndex"))) {
@@ -212,9 +214,9 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private int modAttackPattern(int vanillaPattern) {
+        private static int modAttackPattern(int vanillaPattern) {
             if (GetVariantValue<bool>(Variant.ChangePatternsOfExistingBosses)) {
-                return GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
+                return GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? instance.patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
             }
             return vanillaPattern;
         }

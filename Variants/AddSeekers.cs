@@ -23,7 +23,10 @@ namespace ExtendedVariants.Variants {
 
         private ILHook pathfinderFindHook = null;
 
-        public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) { }
+        private static AddSeekers instance;
+        public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;
@@ -54,11 +57,11 @@ namespace ExtendedVariants.Variants {
             killSeekerSlowdownToFixHeart = false;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             // if we killed the slowdown earlier, stop now!
-            killSeekerSlowdownToFixHeart = false;
+            instance.killSeekerSlowdownToFixHeart = false;
 
             Level level = self;
             Player player = level.Tracker.GetEntity<Player>();
@@ -91,8 +94,8 @@ namespace ExtendedVariants.Variants {
 
                     for (int i = 0; i < 100; i++) {
                         // roll a seeker position in the room
-                        int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
-                        int y = randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
+                        int x = instance.randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
+                        int y = instance.randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
 
                         // should be at least 100 pixels from the player
                         double playerDistance = Math.Sqrt(Math.Pow(MathHelper.Distance(x, player.X), 2) + Math.Pow(MathHelper.Distance(y, player.Y), 2));
@@ -109,9 +112,9 @@ namespace ExtendedVariants.Variants {
                         }
 
                         // make sure we spawn the seeker in a zone accessible to the player (not "out of bounds")
-                        calcLogPrefix = $"Rerolling seeker: pathfinding to position ({x}, {y}) ";
+                        instance.calcLogPrefix = $"Rerolling seeker: pathfinding to position ({x}, {y}) ";
                         bool pathFound = level.Pathfinder.Find(ref nullref, from: clampedPlayerPosition, to: new Vector2(x, y), fewerTurns: false, logging: true);
-                        calcLogPrefix = null;
+                        instance.calcLogPrefix = null;
                         if (!pathFound) continue;
 
                         Logger.Log(LogLevel.Debug, "ExtendedVariantMode/AddSeekers", $"Spawning seeker: position ({x}, {y})");
@@ -136,7 +139,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onSeekerEffectsControllerUpdate(ILContext il) {
+        private static void onSeekerEffectsControllerUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // let's jump to Engine.TimeRate = Calc.Approach(Engine.TimeRate, target, 4f * Engine.DeltaTime);
@@ -146,7 +149,7 @@ namespace ExtendedVariants.Variants {
                 // by placing ourselves just in front of the 4f, we can turn this into
                 // Engine.TimeRate = Calc.Approach(Engine.TimeRate, transformTimeRate(target), 4f * Engine.DeltaTime);
                 // by injecting a single delegate call
-                cursor.EmitDelegate<Func<float, float>>(transformTimeRate);
+                cursor.EmitDelegate<Func<float, float>>(instance.transformTimeRate);
             }
         }
 
@@ -154,22 +157,22 @@ namespace ExtendedVariants.Variants {
             return GetVariantValue<bool>(Variant.DisableSeekerSlowdown) || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
         }
 
-        private void onHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
+        private static void onHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
             orig(self, player);
 
             // prevent seekers from slowing down time!
             if (self.Scene.Entities.OfType<AutoDestroyingSeeker>().Count() != 0) {
-                killSeekerSlowdownToFixHeart = true;
+                instance.killSeekerSlowdownToFixHeart = true;
             }
         }
 
-        private void onCalcLog(On.Monocle.Calc.orig_Log_ObjectArray orig, object[] obj) {
+        private static void onCalcLog(On.Monocle.Calc.orig_Log_ObjectArray orig, object[] obj) {
             orig(obj);
 
-            if (calcLogPrefix != null) {
+            if (instance.calcLogPrefix != null) {
                 foreach (object o in obj) {
                     // all logs are prefixed with "PF: " which we can replace with our own prefix
-                    Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", calcLogPrefix + o.ToString().Substring(4));
+                    Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", instance.calcLogPrefix + o.ToString().Substring(4));
                 }
             }
         }
@@ -181,22 +184,7 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/AddSeekers", $"Marking dream blocks as traversable at {cursor.Index} in CIL code for Pathfinder.orig_Find");
                 cursor.Emit(OpCodes.Dup);
                 cursor.Index++;
-                cursor.EmitDelegate<Func<Entity, bool, bool>>((entity, orig) => {
-                    if (!pathfindingForVariant || (!(entity is DreamBlock) && !(entity is SeekerBarrier))) {
-                        return orig;
-                    }
-                    Level level = (Engine.Scene as Level) ?? (Engine.Scene as LevelLoader)?.Level;
-                    if (level == null) {
-                        Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Not ignoring {entity.GetType().FullName} because there is no level to be found...?");
-                        return orig;
-                    }
-                    if (entity is DreamBlock && !level.Session.Inventory.DreamDash) {
-                        Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Not ignoring {entity.GetType().FullName} because the player doesn't have the dream dash");
-                        return orig;
-                    }
-                    Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Ignoring {entity.GetType().FullName} for pathfinding!");
-                    return false;
-                });
+                cursor.EmitDelegate<Func<Entity, bool, bool>>(modIsCollidable);
             }
 
             if (cursor.TryGotoNext(MoveType.AfterLabel, instr => instr.MatchLdarg(1))) {
@@ -204,14 +192,33 @@ namespace ExtendedVariants.Variants {
 
                 // if we are currently pathfinding for the variant, skip the "rebuild the found path" part of the pathfinder,
                 // since we only care about the path existing in the first place.
-                cursor.EmitDelegate<Func<bool>>(() => {
-                    if (pathfindingForVariant) Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", "Pathfinding is a SUCCESS");
-                    return pathfindingForVariant;
-                });
+                cursor.EmitDelegate<Func<bool>>(cutPathfindingShort);
                 cursor.Emit(OpCodes.Brfalse, cursor.Next);
                 cursor.Emit(OpCodes.Ldc_I4_1);
                 cursor.Emit(OpCodes.Ret);
             }
+        }
+
+        private static bool cutPathfindingShort() {
+            if (instance.pathfindingForVariant) Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", "Pathfinding is a SUCCESS");
+            return instance.pathfindingForVariant;
+        }
+
+        private static bool modIsCollidable(Entity entity, bool orig) {
+            if (!instance.pathfindingForVariant || (!(entity is DreamBlock) && !(entity is SeekerBarrier))) {
+                return orig;
+            }
+            Level level = (Engine.Scene as Level) ?? (Engine.Scene as LevelLoader)?.Level;
+            if (level == null) {
+                Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Not ignoring {entity.GetType().FullName} because there is no level to be found...?");
+                return orig;
+            }
+            if (entity is DreamBlock && !level.Session.Inventory.DreamDash) {
+                Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Not ignoring {entity.GetType().FullName} because the player doesn't have the dream dash");
+                return orig;
+            }
+            Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", $"Ignoring {entity.GetType().FullName} for pathfinding!");
+            return false;
         }
     }
 }

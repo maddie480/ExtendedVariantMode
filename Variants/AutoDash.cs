@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= Player_Update;
         }
 
-        private void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.AutoDash))

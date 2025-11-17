@@ -13,6 +13,11 @@ using ExtendedVariants.Variants.Vanilla;
 
 namespace ExtendedVariants {
     public class ExtendedVariantTriggerManager {
+        private static ExtendedVariantTriggerManager instance;
+        public ExtendedVariantTriggerManager() {
+            instance = this;
+        }
+
         public void Load() {
             On.Celeste.Player.ctor += onPlayerCreate;
             Everest.Events.Player.OnSpawn += onPlayerSpawn;
@@ -29,9 +34,9 @@ namespace ExtendedVariants {
             IL.Celeste.ChangeRespawnTrigger.OnEnter -= modRespawnTriggerOnEnter;
         }
 
-        private void onPlayerCreate(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
+        private static void onPlayerCreate(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
             orig(self, position, spriteMode);
-            roomStateReset();
+            instance.roomStateReset();
         }
 
         private void onPlayerSpawn(Player player) {
@@ -47,7 +52,7 @@ namespace ExtendedVariants {
             commitVariantChanges();
         }
 
-        private void modRespawnTriggerOnEnter(ILContext il) {
+        private static void modRespawnTriggerOnEnter(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // simply jump into the "if" controlling whether the respawn should be changed or not
@@ -59,16 +64,16 @@ namespace ExtendedVariants {
             }
         }
 
-        private void commitVariantChanges() {
+        private static void commitVariantChanges() {
             if (ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Count != 0) {
                 // "commit" variants set in the room to save slot
                 foreach (ExtendedVariantsModule.Variant v in ExtendedVariantsModule.Session.OverriddenVariantsInRoom.Keys) {
                     Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Committing variant change {v} to {ExtendedVariantsModule.Session.OverriddenVariantsInRoom[v]}");
-                    setVariantValueInSession(v, ExtendedVariantsModule.Session.OverriddenVariantsInRoom[v]);
+                    instance.setVariantValueInSession(v, ExtendedVariantsModule.Session.OverriddenVariantsInRoom[v]);
                 }
 
                 // clear values
-                roomStateReset();
+                instance.roomStateReset();
             }
         }
 

@@ -22,6 +22,10 @@ namespace ExtendedVariants {
         private VariantsIndicator variantsIndicator = new VariantsIndicator();
         private bool mustUpdateDisplayedVariantList = false;
 
+        private static VariantRandomizer instance;
+        public VariantRandomizer() {
+            instance = this;
+        }
 
         public void Load() {
             On.Celeste.Level.Begin += onLevelBegin;
@@ -47,10 +51,10 @@ namespace ExtendedVariants {
             onLevelEnd();
         }
 
-        private void onLevelBegin(On.Celeste.Level.orig_Begin orig, Level self) {
+        private static void onLevelBegin(On.Celeste.Level.orig_Begin orig, Level self) {
             orig(self);
 
-            onLevelBegin();
+            instance.onLevelBegin();
 
             // check if we are starting a set seed randomizer session.
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly && ExtendedVariantsModule.Settings.RandoSetSeed != null) {
@@ -61,7 +65,7 @@ namespace ExtendedVariants {
 
                 Logger.Log(LogLevel.Info, "ExtendedVariantMode/VariantRandomizer", $"Variant randomizer seed is: [{setSeedString}] => {setSeed}");
 
-                randomGenerator = new Random(setSeed);
+                instance.randomGenerator = new Random(setSeed);
                 foreach (AbstractExtendedVariant variant in ExtendedVariantsModule.Instance.VariantHandlers.Values) {
                     variant.SetRandomSeed(setSeed);
                 }
@@ -77,10 +81,10 @@ namespace ExtendedVariants {
             On.Celeste.HudRenderer.RenderContent += modRenderContent;
         }
 
-        private void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+        private static void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
             orig(self);
 
-            onLevelEnd();
+            instance.onLevelEnd();
         }
 
         private void onLevelEnd() {
@@ -89,14 +93,14 @@ namespace ExtendedVariants {
             On.Celeste.HudRenderer.RenderContent -= modRenderContent;
         }
 
-        private void modEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
+        private static void modEndPauseEffects(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
             // refresh the display in case the player changed anything in the pause menu
-            RefreshEnabledVariantsDisplayList();
+            instance.RefreshEnabledVariantsDisplayList();
         }
 
-        private void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
+        private static void modRenderContent(On.Celeste.HudRenderer.orig_RenderContent orig, HudRenderer self, Scene scene) {
             orig(self, scene);
             if (!((scene as Level)?.Paused ?? false)) {
                 Draw.SpriteBatch.Begin();
@@ -105,16 +109,16 @@ namespace ExtendedVariants {
                     ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
                 }
 
-                if (shouldDisplayEnabledVariantsOnScreen()) {
-                    if (mustUpdateDisplayedVariantList) {
+                if (instance.shouldDisplayEnabledVariantsOnScreen()) {
+                    if (instance.mustUpdateDisplayedVariantList) {
                         Logger.Log("ExtendedVariantMode/VariantRandomizer", "Late update of displayed enabled variants on-screen");
-                        RefreshEnabledVariantsDisplayList();
-                        mustUpdateDisplayedVariantList = false;
+                        instance.RefreshEnabledVariantsDisplayList();
+                        instance.mustUpdateDisplayedVariantList = false;
                     }
 
-                    infoPanel.Render();
+                    instance.infoPanel.Render();
                 } else {
-                    variantsIndicator.Render();
+                    instance.variantsIndicator.Render();
                 }
 
                 Draw.SpriteBatch.End();
@@ -133,45 +137,45 @@ namespace ExtendedVariants {
             Logger.Log("ExtendedVariantMode/VariantRandomizer", $"Updated variables from settings: variantChangeTimer = {variantChangeTimer}, vanillafyTimer = {vanillafyTimer}");
         }
 
-        private IEnumerator onRoomChange(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator onRoomChange(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval == 0) {
                     // variants should be changed on room transition => go go
-                    changeVariantNow();
+                    instance.changeVariantNow();
                 }
 
                 if (ExtendedVariantsModule.Settings.Vanillafy != 0) {
                     // we should also reset the vanillafy timer
-                    vanillafyTimer = ExtendedVariantsModule.Settings.Vanillafy;
-                    Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {vanillafyTimer}");
+                    instance.vanillafyTimer = ExtendedVariantsModule.Settings.Vanillafy;
+                    Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {instance.vanillafyTimer}");
                 }
             }
 
             yield return new SwapImmediately(orig(self, next, direction));
         }
 
-        private void onUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void onUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             if (ExtendedVariantsModule.Settings.ChangeVariantsRandomly) {
                 if (ExtendedVariantsModule.Settings.ChangeVariantsInterval != 0) {
-                    variantChangeTimer -= Engine.RawDeltaTime;
-                    if (variantChangeTimer <= 0f) {
+                    instance.variantChangeTimer -= Engine.RawDeltaTime;
+                    if (instance.variantChangeTimer <= 0f) {
                         // variant timer is over => change variant now!
-                        changeVariantNow();
+                        instance.changeVariantNow();
 
-                        variantChangeTimer = ExtendedVariantsModule.Settings.ChangeVariantsInterval;
-                        Logger.Log("ExtendedVariantMode/VariantRandomizer", $"variantChangeTimer reset to {variantChangeTimer}");
+                        instance.variantChangeTimer = ExtendedVariantsModule.Settings.ChangeVariantsInterval;
+                        Logger.Log("ExtendedVariantMode/VariantRandomizer", $"variantChangeTimer reset to {instance.variantChangeTimer}");
                     }
                 }
 
 
                 if (ExtendedVariantsModule.Settings.Vanillafy != 0) {
-                    vanillafyTimer -= Engine.RawDeltaTime;
-                    if (vanillafyTimer <= 0f) {
+                    instance.vanillafyTimer -= Engine.RawDeltaTime;
+                    if (instance.vanillafyTimer <= 0f) {
                         // disable a variant
-                        changeVariantNow(true);
+                        instance.changeVariantNow(true);
 
-                        vanillafyTimer = ExtendedVariantsModule.Settings.Vanillafy;
-                        Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {vanillafyTimer}");
+                        instance.vanillafyTimer = ExtendedVariantsModule.Settings.Vanillafy;
+                        Logger.Log("ExtendedVariantMode/VariantRandomizer", $"vanillafyTimer reset to {instance.vanillafyTimer}");
                     }
                 }
             }

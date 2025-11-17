@@ -50,12 +50,13 @@ namespace ExtendedVariants.Variants.Vanilla {
 
                 // if (item is TextMenu.OnOff) => if (item is TextMenu.OnOff || item is TextMenuExt.OnOff)
                 // TextMenuExt.OnOff doesn't extend TextMenu.OnOff but does extend TextMenu.Option, so Isa's Grab Bag should just work (tm) with them.
-                cursor.EmitDelegate<Func<TextMenu.Item, TextMenu.OnOff, TextMenu.Item>>((item, itemCast) => {
-                    if (itemCast != null) return itemCast;
-                    if (item is ExtendedVariants.UI.TextMenuExt.OnOff onOff) return onOff;
-                    return null;
-                });
+                cursor.EmitDelegate<Func<TextMenu.Item, TextMenu.OnOff, TextMenu.Item>>(isTextMenuOnOff);
             }
+        }
+        private static TextMenu.Item isTextMenuOnOff(TextMenu.Item item, TextMenu.OnOff itemCast) {
+            if (itemCast != null) return itemCast;
+            if (item is ExtendedVariants.UI.TextMenuExt.OnOff onOff) return onOff;
+            return null;
         }
 
         public override void Unload() {

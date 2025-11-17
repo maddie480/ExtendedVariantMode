@@ -38,12 +38,12 @@ namespace ExtendedVariants.Variants {
             checkStaminaHook = null;
         }
 
-        private void onPlayerClimbJump(ILContext il) {
+        private static void onPlayerClimbJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(27.5f))) {
                 Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying cost multiplier to Stamina @ {cursor.Index} in IL for Player.ClimbJump");
-                cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbJumpStaminaCost));
+                cursor.EmitDelegate<Func<float>>(getVariantValue);
                 cursor.Emit(OpCodes.Mul);
             }
         }
@@ -53,9 +53,13 @@ namespace ExtendedVariants.Variants {
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(27.5f))) {
                 Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/ClimbJumpStaminaCost", $"Applying refund multiplier to Stamina @ {cursor.Index} in IL for Player.Update");
-                cursor.EmitDelegate<Func<float>>(() => GetVariantValue<float>(Variant.ClimbJumpStaminaCost));
+                cursor.EmitDelegate<Func<float>>(getVariantValue);
                 cursor.Emit(OpCodes.Mul);
             }
+        }
+
+        private static float getVariantValue() {
+            return GetVariantValue<float>(Variant.ClimbJumpStaminaCost);
         }
 
         private static float modCheckStamina(Func<Player, float> orig, Player self) {

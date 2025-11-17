@@ -12,7 +12,10 @@ namespace ExtendedVariants.Variants {
     public class BackgroundBrightness : AbstractExtendedVariant {
         private VirtualRenderTarget blackMask;
 
-        public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
+        private static BackgroundBrightness instance;
+        public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
@@ -48,7 +51,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
@@ -64,39 +67,39 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
+        private static void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
             orig(self);
 
-            if (blackMask != null) {
+            if (instance.blackMask != null) {
                 // ensure the black mask is... well, black.
-                ensureBufferIsCorrect();
-                Engine.Graphics.GraphicsDevice.SetRenderTarget(blackMask);
+                instance.ensureBufferIsCorrect();
+                Engine.Graphics.GraphicsDevice.SetRenderTarget(instance.blackMask);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Black);
             }
         }
 
-        private void renderBackgroundLighting(Level self) {
+        private static void renderBackgroundLighting(Level self) {
             if (GetVariantValue<float>(Variant.BackgroundBrightness) < 1f) {
                 // Apply a mask over the background layer, but behind the gameplay layer.
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, GFX.DestinationTransparencySubtract, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GFX.FxDither, Matrix.Identity);
-                Draw.SpriteBatch.Draw(blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - GetVariantValue<float>(Variant.BackgroundBrightness), 0f, 1f));
+                Draw.SpriteBatch.Draw(instance.blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - GetVariantValue<float>(Variant.BackgroundBrightness), 0f, 1f));
                 Draw.SpriteBatch.End();
             }
         }
 
-        private void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
+        private static void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
             orig();
 
             // create the black mask as well.
-            ensureBufferIsCorrect();
+            instance.ensureBufferIsCorrect();
         }
 
-        private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
+        private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the black mask as well.
-            blackMask?.Dispose();
-            blackMask = null;
+            instance.blackMask?.Dispose();
+            instance.blackMask = null;
         }
     }
 }

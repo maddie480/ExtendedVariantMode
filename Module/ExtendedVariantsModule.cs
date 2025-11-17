@@ -559,23 +559,23 @@ namespace ExtendedVariants.Module {
             return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
         }
 
-        private void checkForceEnableVariants(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
-            forceEnabled = false;
+        private static void checkForceEnableVariants(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            Instance.forceEnabled = false;
 
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
-                    levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
-                    levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
+                    levelData.Triggers.Exists(entityData => Instance.isExtendedVariantEntity(entityData.Name)) ||
+                    levelData.Entities.Exists(entityData => Instance.isExtendedVariantEntity(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: force-enable extended variants.
-                forceEnabled = true;
+                Instance.forceEnabled = true;
 
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
-                if (!stuffIsHooked) {
+                if (!Instance.stuffIsHooked) {
                     Settings.MasterSwitch = true;
-                    HookStuff();
+                    Instance.HookStuff();
                 }
             }
 
@@ -648,23 +648,23 @@ namespace ExtendedVariants.Module {
 
         // ================ Stamp on Chapter Complete screen ================
 
-        private void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
-            isLevelEnding = true;
+        private static void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+            Instance.isLevelEnding = true;
             orig(self);
-            isLevelEnding = false;
+            Instance.isLevelEnding = false;
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
-            checkForUsedVariants();
+            Instance.checkForUsedVariants();
         }
 
-        private void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
+        private static void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
-            if (!isLevelEnding) {
-                checkForUsedVariants();
+            if (!Instance.isLevelEnding) {
+                Instance.checkForUsedVariants();
             }
         }
 
@@ -678,19 +678,19 @@ namespace ExtendedVariants.Module {
         /// <summary>
         /// Wraps the VersionNumberAndVariants in the base game in order to add the Variant Mode logo if Extended Variants are enabled.
         /// </summary>
-        private void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
+        private static void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
             if (Session.ExtendedVariantsWereUsed) {
                 // The "if" conditioning the display of the Variant Mode logo is in an "orig_" method, we can't access it with IL.Celeste.
                 // The best we can do is turn on Variant Mode, run the method then restore its original value.
                 bool oldVariantModeValue = SaveData.Instance.VariantMode;
                 SaveData.Instance.VariantMode = true;
 
-                orig.Invoke(version, ease, alpha);
+                orig(version, ease, alpha);
 
                 SaveData.Instance.VariantMode = oldVariantModeValue;
             } else {
                 // Extended Variants are disabled so just keep the original behaviour
-                orig.Invoke(version, ease, alpha);
+                orig(version, ease, alpha);
             }
         }
 
@@ -703,7 +703,7 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        private string modVariantModeLogo(string orig) {
+        private static string modVariantModeLogo(string orig) {
             if (Session.ExtendedVariantsWereUsed) {
                 return "ExtendedVariantMode/complete_screen_stamp";
             }
@@ -827,7 +827,7 @@ namespace ExtendedVariants.Module {
                 || !Instance.stuffIsHooked; // this makes all the mess instant vanish when Extended Variants are disabled entirely.
         }
 
-        private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
+        private static IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
             badelineBoosting = true;
             yield return new SwapImmediately(orig(self, player));
             badelineBoosting = false;
@@ -842,7 +842,7 @@ namespace ExtendedVariants.Module {
             prologueEndingCutscene = false;
         }
 
-        private void onPrologueEndingCutsceneBegin(On.Celeste.CS00_Ending.orig_OnBegin orig, CS00_Ending self, Level level) {
+        private static void onPrologueEndingCutsceneBegin(On.Celeste.CS00_Ending.orig_OnBegin orig, CS00_Ending self, Level level) {
             orig(self, level);
 
             prologueEndingCutscene = true;

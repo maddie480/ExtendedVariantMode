@@ -24,7 +24,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= Player_Update;
         }
 
-        private void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void Player_Update(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.AutoJump))
@@ -41,7 +41,7 @@ namespace ExtendedVariants.Variants {
         private static bool IsValidJumpState(int currentState)
             => currentState is Player.StNormal or Player.StDash or Player.StRedDash or Player.StStarFly or Player.StSwim;
 
-        private void ForceJump(Player self) {
+        private static void ForceJump(Player self) {
             if (!JumpFrameDelay) {
                 JumpFrameDelay = true;
                 return;

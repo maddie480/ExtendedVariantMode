@@ -33,28 +33,33 @@ namespace ExtendedVariants.Variants {
             cursor.GotoNext(MoveType.After, instr => instr.MatchCall<Actor>("Update"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Action<Player>>(player => DynamicData.For(player).Set("safeCornerboostReady", false));
+            cursor.EmitDelegate<Action<Player>>(disableSafeCornerboostReady);
+        }
+        private static void disableSafeCornerboostReady(Player player) {
+            DynamicData.For(player).Set("safeCornerboostReady", false);
         }
 
-        private void Player_OnCollideH_il(ILContext il) {
+        private static void Player_OnCollideH_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<Player>("wallSpeedRetained"));
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.Emit(OpCodes.Ldarg_1);
-            cursor.EmitDelegate<Action<Player, CollisionData>>((player, data) => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection) || Math.Abs(data.Moved.X) <= 2)
-                    return;
+            cursor.EmitDelegate<Action<Player, CollisionData>>(enableSafeCornerboostReady);
+        }
+        private static void enableSafeCornerboostReady(Player player, CollisionData data) {
 
-                int state = player.StateMachine.State;
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection) || Math.Abs(data.Moved.X) <= 2)
+                return;
 
-                if (state == 0 || state == 2 || state == 5)
-                    DynamicData.For(player).Set("safeCornerboostReady", true);
-            });
+            int state = player.StateMachine.State;
+
+            if (state == 0 || state == 2 || state == 5)
+                DynamicData.For(player).Set("safeCornerboostReady", true);
         }
 
-        private void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump climbJump, Player player) {
+        private static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump climbJump, Player player) {
             climbJump(player);
 
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection))

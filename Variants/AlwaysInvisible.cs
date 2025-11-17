@@ -22,13 +22,13 @@ namespace ExtendedVariants.Variants {
 
         // vanilla implements Invisible Motion by skipping the Render method entirely when the player is moving... so we're just going to do the same. :p
 
-        private void modPlayerSeekerRender(On.Celeste.PlayerSeeker.orig_Render orig, Celeste.PlayerSeeker self) {
+        private static void modPlayerSeekerRender(On.Celeste.PlayerSeeker.orig_Render orig, Celeste.PlayerSeeker self) {
             if (!GetVariantValue<bool>(Variant.AlwaysInvisible)) {
                 orig(self);
             }
         }
 
-        private void modPlayerRender(On.Celeste.Player.orig_Render orig, Celeste.Player self) {
+        private static void modPlayerRender(On.Celeste.Player.orig_Render orig, Celeste.Player self) {
             if (!GetVariantValue<bool>(Variant.AlwaysInvisible)) {
                 orig(self);
             }

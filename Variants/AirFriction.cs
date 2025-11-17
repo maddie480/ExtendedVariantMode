@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply air friction.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to "float num = this.onGround ? 1f : 0.65f;"
@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float determineFrictionFactor() {
+        private static float determineFrictionFactor() {
             return GetVariantValue<float>(Variant.AirFriction);
         }
     }
