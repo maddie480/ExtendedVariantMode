@@ -52,7 +52,7 @@
     </Target>
 
     <PropertyGroup>
-        <PathMap>$(MSBuildProjectDirectory)=ExtendedVarientMode/</PathMap>
+        <PathMap>$(MSBuildProjectDirectory)=ExtendedVariantMode/</PathMap>
     </PropertyGroup>
 
     <!-- Inline task used to create a .zip for the mod -->
