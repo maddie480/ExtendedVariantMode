@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Monocle;
 using System;
+using System.Runtime.CompilerServices;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -44,6 +45,7 @@ namespace ExtendedVariants.Variants {
         }
 
         // near vanilla copypaste to escape having to make reflection calls
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void createTrail(Player player) {
             Vector2 scale = new Vector2(Math.Abs(player.Sprite.Scale.X) * (float) player.Facing, player.Sprite.Scale.Y);
             if (player.StateMachine.State != 14) {
