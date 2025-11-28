@@ -26,18 +26,18 @@ namespace ExtendedVariants.Variants {
             // hook Max Helping Hand with sick reflection
             Assembly assembly = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly;
             Type madelinePonytailTrigger = assembly.GetType("Celeste.Mod.MaxHelpingHand.Triggers.MadelinePonytailTrigger");
-            doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetMethod("hookHairColor", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineHasPonytail));
-            doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetMethod("hookParticleColor", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineHasPonytail));
-            doneILHooks.Add(new ILHook(madelinePonytailTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
-                .GetMethod("<hookHairCount>b__8_0", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineHasPonytail));
-
-            // this one depends on helping hand's compilation mode :maddyS:
-            MethodInfo toHook = madelinePonytailTrigger.GetNestedType("<>c__DisplayClass6_0", BindingFlags.NonPublic).GetMethod("<hookHairScaleAndHairCount>b__1", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (toHook == null) {
-                toHook = madelinePonytailTrigger.GetNestedType("<>c__DisplayClass6_0", BindingFlags.NonPublic).GetMethod("<hookHairScaleAndHairCount>b__2", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-            doneILHooks.Add(new ILHook(toHook, hookMadelineHasPonytail));
+            hooklining(madelinePonytailTrigger.GetMethod("modHairScaleAndCount", BindingFlags.NonPublic | BindingFlags.Static));
+            hooklining(madelinePonytailTrigger.GetMethod("makeHairLonger", BindingFlags.NonPublic | BindingFlags.Static));
+            hooklining(madelinePonytailTrigger.GetMethod("hookHairColor", BindingFlags.NonPublic | BindingFlags.Static));
+            hooklining(madelinePonytailTrigger.GetMethod("hookParticleColor", BindingFlags.NonPublic | BindingFlags.Static));
+            hooklining(madelinePonytailTrigger.GetMethod("skipMadelineInWonderlandHook", BindingFlags.NonPublic | BindingFlags.Static));
         }
+
+        private static void hooklining(MethodInfo method) {
+            TryDisableInlining(method);
+            doneILHooks.Add(new ILHook(method, hookMadelineHasPonytail));
+        }
+
 
         public override void Unload() {
             foreach (ILHook h in doneILHooks) {

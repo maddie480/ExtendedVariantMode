@@ -58,6 +58,7 @@ namespace ExtendedVariants.Variants {
                     renderMethod = hdParallaxType.GetMethod("renderForReal", BindingFlags.NonPublic | BindingFlags.Static);
                 }
 
+                TryDisableInlining(renderMethod);
                 hdParallaxHook = new ILHook(renderMethod, patchHDStylegroundsRendering);
             }
         }

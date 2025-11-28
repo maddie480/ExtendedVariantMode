@@ -31,22 +31,26 @@ namespace ExtendedVariants.Variants {
                 // hook Max Helping Hand with sick reflection
                 Assembly assembly = Everest.Modules.Where(m => m.Metadata?.Name == "MaxHelpingHand").First().GetType().Assembly;
                 Type madelineSilhouetteTrigger = assembly.GetType("Celeste.Mod.MaxHelpingHand.Triggers.MadelineSilhouetteTrigger");
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetMethod("onPlayerSpriteConstructor", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineIsSilhouette));
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
-                    .GetMethod("<patchPlayerRender>b__4_1", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineIsSilhouette));
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
-                    .GetMethod("<patchPlayerRender>b__4_3", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineIsSilhouette));
+                hooklining(madelineSilhouetteTrigger.GetMethod("onPlayerSpriteConstructor", BindingFlags.NonPublic | BindingFlags.Static));
+                hooklining(madelineSilhouetteTrigger.GetMethod("overrideBlinking", BindingFlags.NonPublic | BindingFlags.Static));
+                hooklining(madelineSilhouetteTrigger.GetMethod("overrideBodyColorWithHairColor", BindingFlags.NonPublic | BindingFlags.Static));
+                hooklining(madelineSilhouetteTrigger.GetMethod("onPlayerResetSprite", BindingFlags.NonPublic | BindingFlags.Static));
                 refreshPlayerSpriteMode = madelineSilhouetteTrigger.GetMethod("refreshPlayerSpriteMode", BindingFlags.NonPublic | BindingFlags.Static);
             } else if (ExtendedVariantsModule.Instance.SpringCollab2020Installed) {
                 // hook Spring Collab 2020 with equally sick reflection but a bit less <>c
                 Assembly assembly = Everest.Modules.Where(m => m.Metadata?.Name == "SpringCollab2020").First().GetType().Assembly;
                 Type madelineSilhouetteTrigger = assembly.GetType("Celeste.Mod.SpringCollab2020.Triggers.MadelineSilhouetteTrigger");
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetMethod("onPlayerAdded", BindingFlags.NonPublic | BindingFlags.Static), hookMadelineIsSilhouette));
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
-                    .GetMethod("<patchPlayerRender>b__4_0", BindingFlags.NonPublic | BindingFlags.Instance), hookMadelineIsSilhouette));
-                doneILHooks.Add(new ILHook(madelineSilhouetteTrigger.GetMethod("GetMadelineColor", BindingFlags.Public | BindingFlags.Static), hookMadelineIsSilhouette));
-                refreshPlayerSpriteMode = madelineSilhouetteTrigger.GetMethod("refreshPlayerSpriteMode", BindingFlags.NonPublic | BindingFlags.Static);
+                hooklining(madelineSilhouetteTrigger.GetMethod("onPlayerAdded", BindingFlags.NonPublic | BindingFlags.Static));
+                hooklining(madelineSilhouetteTrigger.GetNestedType("<>c", BindingFlags.NonPublic)
+                    .GetMethod("<patchPlayerRender>b__4_0", BindingFlags.NonPublic | BindingFlags.Instance));
+                hooklining(madelineSilhouetteTrigger.GetMethod("GetMadelineColor", BindingFlags.Public | BindingFlags.Static));
+                hooklining(madelineSilhouetteTrigger.GetMethod("refreshPlayerSpriteMode", BindingFlags.NonPublic | BindingFlags.Static));
             }
+        }
+
+        private static void hooklining(MethodInfo method) {
+            TryDisableInlining(method);
+            doneILHooks.Add(new ILHook(method, hookMadelineIsSilhouette));
         }
 
         public override void Unload() {
