@@ -8,8 +8,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ZoomLevel : AbstractExtendedVariant {
-        private Vector2 previousDiff;
-        private float transitionPercent = 1f;
+        private static Vector2 previousDiff;
+        private static float transitionPercent = 1f;
 
         private static ZoomLevel instance;
         public ZoomLevel() : base(variantType: typeof(float), defaultVariantValue: 1f) {
@@ -35,8 +35,8 @@ namespace ExtendedVariants.Variants {
 
             // make the player spy on transitions
             self.Add(new TransitionListener {
-                OnOutBegin = () => instance.transitionPercent = 0f,
-                OnOut = percent => instance.transitionPercent = percent
+                OnOutBegin = () => transitionPercent = 0f,
+                OnOut = percent => transitionPercent = percent
             });
         }
 

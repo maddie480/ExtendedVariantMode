@@ -198,7 +198,7 @@ namespace ExtendedVariants.UI {
             }
 
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
-            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            VariantRandomizer.RefreshEnabledVariantsDisplayList();
         }
 
         private void setVariantValue(Variant variantChange, object newValue) {

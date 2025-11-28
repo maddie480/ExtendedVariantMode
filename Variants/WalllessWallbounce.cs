@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -37,12 +38,13 @@ namespace ExtendedVariants.Variants {
 
             // we want to favor vanilla wallbounce behavior, so we append our own to the end
 
-            if (!cursor.TryGotoNext(
-                    static instr => instr.MatchLdarg(0),
-                    static instr => instr.MatchLdcI4(1),
-                    static instr => instr.MatchCallvirt(m_SuperWallJump),
-                    static instr => instr.MatchLdcI4(0),
-                    static instr => instr.MatchRet())) {
+            if (!cursor.TryGotoNextBestFit(
+                MoveType.Before,
+                static instr => instr.MatchLdarg(0),
+                static instr => instr.MatchLdcI4(1),
+                static instr => instr.MatchCallvirt(m_SuperWallJump),
+                static instr => instr.MatchLdcI4(0),
+                static instr => instr.MatchRet())) {
                 Logger.Log(
                     LogLevel.Error, $"{nameof(ExtendedVariantsModule)}/{nameof(WalllessWallbounce)}",
                     $"Couldn't find this.SuperWallJump(1) IL sequence to hook in {il.Method.FullName}!"
@@ -84,9 +86,9 @@ namespace ExtendedVariants.Variants {
 
             // we want to favor vanilla wallbounce behavior, so we append our own to the end
             if (!cursor.TryGotoNext(MoveType.After,
-                    static instr => instr.MatchLdarg(0),
-                    static instr => instr.MatchLdcI4(1),
-                    static instr => instr.MatchCallvirt(m_WallJump))) {
+                static instr => instr.MatchLdarg(0),
+                static instr => instr.MatchLdcI4(1),
+                static instr => instr.MatchCallvirt(m_WallJump))) {
                 Logger.Log(
                     LogLevel.Error, $"{nameof(ExtendedVariantsModule)}/{nameof(WalllessWallbounce)}",
                     $"Couldn't find this.WallJump(1) IL sequence to hook in {il.Method.FullName}!"

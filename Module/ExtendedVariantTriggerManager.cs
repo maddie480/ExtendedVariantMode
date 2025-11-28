@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ExtendedVariants.Variants.Vanilla;
 
-namespace ExtendedVariants {
+namespace ExtendedVariants { // other mods rely on this, we can't just move it
     public class ExtendedVariantTriggerManager {
         private static ExtendedVariantTriggerManager instance;
         public ExtendedVariantTriggerManager() {
@@ -259,7 +259,7 @@ namespace ExtendedVariants {
 
         private void onVariantValueChanged(ExtendedVariantsModule.Variant variantChange) {
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
-            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            VariantRandomizer.RefreshEnabledVariantsDisplayList();
         }
     }
 }

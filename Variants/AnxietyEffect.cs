@@ -7,12 +7,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
-        private bool anxietyCustomized = false;
+        private static bool anxietyCustomized = false;
 
-        private static AnxietyEffect instance;
-        public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) {
-            instance = this;
-        }
+        public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             if (value == -1) {
@@ -41,7 +38,7 @@ namespace ExtendedVariants.Variants {
             orig(self);
 
             if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
-                instance.anxietyCustomized = true;
+                anxietyCustomized = true;
 
                 // set the anxiety intensity
                 GFX.FxDistort.Parameters["anxiety"].SetValue(Celeste.Settings.Instance.DisableFlashes ? 0f : GetVariantValue<float>(Variant.AnxietyEffect));
@@ -55,9 +52,9 @@ namespace ExtendedVariants.Variants {
                     // there is no player; the anxiety come from the screen center
                     GFX.FxDistort.Parameters["anxietyOrigin"].SetValue(new Vector2(0.5f, 0.5f));
                 }
-            } else if (instance.anxietyCustomized) {
+            } else if (anxietyCustomized) {
                 // restore the anxiety to its default value
-                instance.anxietyCustomized = false;
+                anxietyCustomized = false;
                 Distort.Anxiety = Distort.Anxiety;
                 Distort.AnxietyOrigin = Distort.AnxietyOrigin;
             }

@@ -21,8 +21,8 @@ namespace ExtendedVariants.Variants {
 
         private JumpCooldown jumpCooldown;
 
-        public JumpCount(DashCount dashCount, JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
-            dashCount.OnDashRefill += dashRefilled;
+        public JumpCount(JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
+            DashCount.OnDashRefill += dashRefilled;
             this.jumpCooldown = jumpCooldown;
         }
 

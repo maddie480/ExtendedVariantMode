@@ -16,8 +16,8 @@ namespace ExtendedVariants.Variants {
         private static FieldInfo playerLastDashes = typeof(Player).GetField("lastDashes", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private Hook canDashHook;
-        private int dashCountBeforeDash;
-        private Vector2 dashDirectionBeforeDash;
+        private static int dashCountBeforeDash;
+        private static Vector2 dashDirectionBeforeDash;
 
         public DashDirection() : base(variantType: typeof(bool[][]), defaultVariantValue: new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } }) { }
 
@@ -75,13 +75,13 @@ namespace ExtendedVariants.Variants {
             return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim));
         }
 
-        private int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
+        private static int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
             dashCountBeforeDash = self.Dashes;
             dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
             return orig(self);
         }
 
-        private void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
+        private static void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
             if (self.StateMachine.State == Player.StDash || self.StateMachine.State == Player.StRedDash) {
                 dashCountBeforeDash = self.Dashes;
                 dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
@@ -90,21 +90,21 @@ namespace ExtendedVariants.Variants {
             orig(self);
         }
 
-        private IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
+        private static IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
         }
 
-        private IEnumerator onRedDashCoroutine(On.Celeste.Player.orig_RedDashCoroutine orig, Player self) {
+        private static IEnumerator onRedDashCoroutine(On.Celeste.Player.orig_RedDashCoroutine orig, Player self) {
             if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
         }
 
-        private IEnumerator modDashCoroutine(IEnumerator vanillaCoroutine, Player self) {
+        private static IEnumerator modDashCoroutine(IEnumerator vanillaCoroutine, Player self) {
             // make a step forward
             vanillaCoroutine = vanillaCoroutine.SafeEnumerate();
             if (vanillaCoroutine.MoveNext()) {
@@ -160,7 +160,7 @@ namespace ExtendedVariants.Variants {
             self.StateMachine.State = 0;
         }
 
-        private bool areAllDirectionsAllowed() {
+        private static bool areAllDirectionsAllowed() {
             foreach (bool[] ba in GetVariantValue<bool[][]>(Variant.DashDirection)) {
                 foreach (bool b in ba) {
                     if (!b) return false;
@@ -169,7 +169,7 @@ namespace ExtendedVariants.Variants {
             return true;
         }
 
-        private bool isDashDirectionAllowed(Vector2 direction) {
+        private static bool isDashDirectionAllowed(Vector2 direction) {
             // if directions are not integers, make them integers.
             direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 

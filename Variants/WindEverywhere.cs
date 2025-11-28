@@ -11,19 +11,16 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WindEverywhere : AbstractExtendedVariant {
 
-        private Random randomGenerator = new Random();
+        private static Random randomGenerator = new Random();
 
-        private bool snowBackdropAddedByEVM = false;
+        private static bool snowBackdropAddedByEVM = false;
 
         public enum WindPattern {
             Default, None, Left, Right, LeftStrong, RightStrong, RightCrazy, LeftOnOff, RightOnOff, Alternating,
             LeftOnOffFast, RightOnOffFast, Down, Up, Random
         }
 
-        private static WindEverywhere instance;
-        public WindEverywhere() : base(variantType: typeof(WindPattern), defaultVariantValue: WindPattern.Default) {
-            instance = this;
-        }
+        public WindEverywhere() : base(variantType: typeof(WindPattern), defaultVariantValue: WindPattern.Default) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             // you know, 5 obviously means RightCrazy :a:
@@ -77,16 +74,16 @@ namespace ExtendedVariants.Variants {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
-                instance.applyWind(self);
+                applyWind(self);
             }
         }
 
         private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
-            instance.applyWind(self);
+            applyWind(self);
         }
 
-        private void applyWind(Level level) {
+        private static void applyWind(Level level) {
             if (GetVariantValue<WindPattern>(Variant.WindEverywhere) != WindPattern.Default) {
                 WindController.Patterns selectedPattern;
                 if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Random) {

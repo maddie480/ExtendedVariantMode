@@ -19,7 +19,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= onLoadLevel;
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Celeste.Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Celeste.Level self, Celeste.Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (!self.Entities.Any(entity => entity is DashCountIndicator && !(entity is Speedometer))) {

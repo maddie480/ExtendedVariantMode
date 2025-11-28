@@ -10,12 +10,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BackgroundBrightness : AbstractExtendedVariant {
-        private VirtualRenderTarget blackMask;
+        private static VirtualRenderTarget blackMask;
 
-        private static BackgroundBrightness instance;
-        public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) {
-            instance = this;
-        }
+        public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
@@ -44,7 +41,7 @@ namespace ExtendedVariants.Variants {
             blackMask = null;
         }
 
-        private void ensureBufferIsCorrect() {
+        private static void ensureBufferIsCorrect() {
             if (blackMask == null || blackMask.Width != GameplayWidth || blackMask.Height != GameplayHeight) {
                 blackMask?.Dispose();
                 blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", GameplayWidth, GameplayHeight);
@@ -70,10 +67,10 @@ namespace ExtendedVariants.Variants {
         private static void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
             orig(self);
 
-            if (instance.blackMask != null) {
+            if (blackMask != null) {
                 // ensure the black mask is... well, black.
-                instance.ensureBufferIsCorrect();
-                Engine.Graphics.GraphicsDevice.SetRenderTarget(instance.blackMask);
+                ensureBufferIsCorrect();
+                Engine.Graphics.GraphicsDevice.SetRenderTarget(blackMask);
                 Engine.Graphics.GraphicsDevice.Clear(Color.Black);
             }
         }
@@ -82,7 +79,7 @@ namespace ExtendedVariants.Variants {
             if (GetVariantValue<float>(Variant.BackgroundBrightness) < 1f) {
                 // Apply a mask over the background layer, but behind the gameplay layer.
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, GFX.DestinationTransparencySubtract, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GFX.FxDither, Matrix.Identity);
-                Draw.SpriteBatch.Draw(instance.blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - GetVariantValue<float>(Variant.BackgroundBrightness), 0f, 1f));
+                Draw.SpriteBatch.Draw(blackMask, Vector2.Zero, Color.White * MathHelper.Clamp(1 - GetVariantValue<float>(Variant.BackgroundBrightness), 0f, 1f));
                 Draw.SpriteBatch.End();
             }
         }
@@ -91,15 +88,15 @@ namespace ExtendedVariants.Variants {
             orig();
 
             // create the black mask as well.
-            instance.ensureBufferIsCorrect();
+            ensureBufferIsCorrect();
         }
 
         private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the black mask as well.
-            instance.blackMask?.Dispose();
-            instance.blackMask = null;
+            blackMask?.Dispose();
+            blackMask = null;
         }
     }
 }

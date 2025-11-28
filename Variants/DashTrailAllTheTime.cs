@@ -6,7 +6,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashTrailAllTheTime : AbstractExtendedVariant {
-        private float dashTrailTimer = 0f;
+        private static float dashTrailTimer = 0f;
 
         public DashTrailAllTheTime() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -24,14 +24,14 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= onPlayerUpdate;
         }
 
-        private void onCreateTrail(On.Celeste.Player.orig_CreateTrail orig, Player self) {
+        private static void onCreateTrail(On.Celeste.Player.orig_CreateTrail orig, Player self) {
             orig(self);
 
             // we don't want to add trails on top of the trails the game already makes.
             dashTrailTimer = 0.1f;
         }
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             if (GetVariantValue<bool>(Variant.DashTrailAllTheTime)) {

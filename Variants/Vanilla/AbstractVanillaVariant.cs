@@ -72,11 +72,11 @@ namespace ExtendedVariants.Variants.Vanilla {
             isaGrabBagHook = null;
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             swapOutForDurationOfOrigCall(() => orig(self));
         }
 
-        private void onLevelRender(On.Celeste.Level.orig_Render orig, Level self) {
+        private static void onLevelRender(On.Celeste.Level.orig_Render orig, Level self) {
             swapOutForDurationOfOrigCall(() => orig(self));
         }
 
@@ -89,7 +89,7 @@ namespace ExtendedVariants.Variants.Vanilla {
             }
         }
 
-        private void swapOutForDurationOfOrigCall(Action orig) {
+        private static void swapOutForDurationOfOrigCall(Action orig) {
             vanillaAssists = SaveData.Instance.Assists;
             Assists newAssists = applyAssists(vanillaAssists, out bool hasMapDefinedVariants);
 
@@ -117,7 +117,7 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         protected abstract Assists applyVariantValue(Assists target, object value);
 
-        private Assists applyAssists(Assists target, out bool updated) {
+        private static Assists applyAssists(Assists target, out bool updated) {
             updated = false;
 
             foreach (KeyValuePair<ExtendedVariantsModule.Variant, AbstractExtendedVariant> variant in ExtendedVariantsModule.Instance.VariantHandlers) {

@@ -13,13 +13,10 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class BadelineBossesEverywhere : AbstractExtendedVariant {
 
-        private Random positionRandomizer = new Random();
-        private Random patternRandomizer = new Random();
+        private static Random positionRandomizer = new Random();
+        private static Random patternRandomizer = new Random();
 
-        private static BadelineBossesEverywhere instance;
-        public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) {
-            instance = this;
-        }
+        public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -51,7 +48,7 @@ namespace ExtendedVariants.Variants {
             Glitch.Value = 0;
 
             if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere) && playerIntro != Player.IntroTypes.Transition) {
-                instance.injectBadelineBosses(self);
+                injectBadelineBosses(self);
             }
         }
 
@@ -59,11 +56,11 @@ namespace ExtendedVariants.Variants {
             yield return new SwapImmediately(orig(self, next, direction));
 
             if (GetVariantValue<bool>(Variant.BadelineBossesEverywhere)) {
-                instance.injectBadelineBosses(self);
+                injectBadelineBosses(self);
             }
         }
 
-        private void injectBadelineBosses(Level level) {
+        private static void injectBadelineBosses(Level level) {
             Player player = level.Tracker.GetEntity<Player>();
 
             if (player != null) {
@@ -136,7 +133,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private Vector2 computeBossPositionAtOppositeOfPlayer(Level level, Player player) {
+        private static Vector2 computeBossPositionAtOppositeOfPlayer(Level level, Player player) {
             // we want the position to be on the opposite side of the room compared to the player (...?)
             Vector2 playerToCenter = new Vector2(level.Bounds.Center.X - player.Position.X, level.Bounds.Center.Y - player.Position.Y);
             Vector2 bossPosition = player.Position + playerToCenter * 2; // this is the opposite of the room relative to the center.
@@ -162,7 +159,7 @@ namespace ExtendedVariants.Variants {
             return Vector2.Zero;
         }
 
-        private Vector2 computeBossPositionAtRandom(Level level, Player player) {
+        private static Vector2 computeBossPositionAtRandom(Level level, Player player) {
             for (int i = 0; i < 100; i++) {
                 // roll a boss position in the room
                 int x = positionRandomizer.Next(level.Bounds.Width) + level.Bounds.X;
@@ -216,7 +213,7 @@ namespace ExtendedVariants.Variants {
 
         private static int modAttackPattern(int vanillaPattern) {
             if (GetVariantValue<bool>(Variant.ChangePatternsOfExistingBosses)) {
-                return GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? instance.patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
+                return GetVariantValue<int>(Variant.BadelineAttackPattern) == 0 ? patternRandomizer.Next(1, 16) : GetVariantValue<int>(Variant.BadelineAttackPattern);
             }
             return vanillaPattern;
         }

@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the Render method in Level (handling the whole level rendering).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump right where Mirror Mode is handled
@@ -102,12 +102,12 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/UpsideDown", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender for sprite effects");
 
-                // erase "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
+                // jump over "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
                 // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
-                cursor.RemoveRange(7);
+                cursor.Index += 7;
 
                 // and replace it with a delegate call
-                cursor.EmitDelegate<Func<SpriteEffects>>(applyUpsideDownEffectToSprites);
+                cursor.EmitDelegate<Func<SpriteEffects, SpriteEffects>>(applyUpsideDownEffectToSprites);
             }
         }
 
@@ -117,7 +117,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="il">Object allowing CIL patching</param>
         /// <param name="variableIndex">Index of the variable</param>
         /// <returns>A reference to the variable</returns>
-        private VariableDefinition seekReferenceTo(ILContext il, int startingPoint, int variableIndex) {
+        private static VariableDefinition seekReferenceTo(ILContext il, int startingPoint, int variableIndex) {
             ILCursor cursor = new ILCursor(il);
             cursor.Index = startingPoint;
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldloc_S && ((VariableDefinition) instr.Operand).Index == variableIndex)) {
@@ -137,7 +137,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             Input.Aim.InvertedY = isUpsideDown();
             Input.GliderMoveY.Inverted = isUpsideDown();
             Input.MoveY.Inverted = isUpsideDown();
@@ -146,9 +146,10 @@ namespace ExtendedVariants.Variants {
             orig(self);
         }
 
-        private SpriteEffects applyUpsideDownEffectToSprites() {
-            SpriteEffects effects = SpriteEffects.None;
-            if (GetVariantValue<bool>(Variant.UpsideDown)) effects |= SpriteEffects.FlipVertically;
+        private static SpriteEffects applyUpsideDownEffectToSprites(SpriteEffects orig) {
+            if (!GetVariantValue<bool>(Variant.UpsideDown)) return orig;
+
+            SpriteEffects effects = SpriteEffects.FlipVertically;
             if (SaveData.Instance.Assists.MirrorMode) effects |= SpriteEffects.FlipHorizontally;
             return effects;
         }
@@ -159,16 +160,19 @@ namespace ExtendedVariants.Variants {
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld<Engine>("ScreenMatrix"))) {
                 Logger.Log("ExtendedVariantMode/UpsideDown", $"Flipping HD stylegrounds upside down at {cursor.Index} in IL for HdParallax.renderForReal");
 
-                cursor.EmitDelegate<Func<Matrix, Matrix>>(orig => {
-                    if (isUpsideDown()) {
-                        orig *= Matrix.CreateTranslation(0f, -Engine.Viewport.Height, 0f);
-                        orig *= Matrix.CreateScale(1f, -1f, 1f);
-                    }
-
-                    return orig;
-                });
+                cursor.EmitDelegate<Func<Matrix, Matrix>>(changeHdStylegroundMatrix);
             }
         }
+
+        private static Matrix changeHdStylegroundMatrix(Matrix orig) {
+            if (isUpsideDown()) {
+                orig *= Matrix.CreateTranslation(0f, -Engine.Viewport.Height, 0f);
+                orig *= Matrix.CreateScale(1f, -1f, 1f);
+            }
+
+            return orig;
+        }
+
         private static bool isUpsideDown() {
             return (bool) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(Variant.UpsideDown);
         }

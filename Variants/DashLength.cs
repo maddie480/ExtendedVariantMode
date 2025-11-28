@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
             if (dashCoroutineHookForCounter != null) dashCoroutineHookForCounter.Dispose();
         }
 
-        private void modDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
+        private static void modDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
             orig(self);
 
             if (GetVariantValue<float>(Variant.DashLength) != 1f) {
@@ -74,7 +74,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the current dash length factor.
         /// </summary>
         /// <returns>The dash length factor (1 = default dash length)</returns>
-        private float determineDashLengthFactor() {
+        private static float determineDashLengthFactor() {
             return GetVariantValue<float>(Variant.DashLength);
         }
 
@@ -92,7 +92,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private int applyDashTrailCounter(int dashTrailCounter) {
+        private static int applyDashTrailCounter(int dashTrailCounter) {
             if (GetVariantValue<float>(Variant.DashLength) != 1f) {
                 float lastDashDuration = SaveData.Instance.Assists.SuperDashing ? 0.3f : 0.15f;
                 return (int) Math.Round(lastDashDuration * GetVariantValue<float>(Variant.DashLength)) - 1;

@@ -22,7 +22,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.LightingRenderer.BeforeRender -= onLightingRender;
         }
 
-        private void onLightingRender(On.Celeste.LightingRenderer.orig_BeforeRender orig, LightingRenderer self, Scene scene) {
+        private static void onLightingRender(On.Celeste.LightingRenderer.orig_BeforeRender orig, LightingRenderer self, Scene scene) {
             float origSpotlightAlpha = 0f;
 
             Player player = scene?.Tracker.GetEntity<Player>();

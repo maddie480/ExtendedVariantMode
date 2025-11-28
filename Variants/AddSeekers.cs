@@ -15,18 +15,15 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class AddSeekers : AbstractExtendedVariant {
 
-        private Random randomGenerator = new Random();
+        private static Random randomGenerator = new Random();
 
-        private bool killSeekerSlowdownToFixHeart = false;
-        private string calcLogPrefix = null;
-        private bool pathfindingForVariant => calcLogPrefix != null;
+        private static bool killSeekerSlowdownToFixHeart = false;
+        private static string calcLogPrefix = null;
+        private static bool pathfindingForVariant => calcLogPrefix != null;
 
         private ILHook pathfinderFindHook = null;
 
-        private static AddSeekers instance;
-        public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) {
-            instance = this;
-        }
+        public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value;
@@ -61,7 +58,7 @@ namespace ExtendedVariants.Variants {
             orig(self, playerIntro, isFromLoader);
 
             // if we killed the slowdown earlier, stop now!
-            instance.killSeekerSlowdownToFixHeart = false;
+            killSeekerSlowdownToFixHeart = false;
 
             Level level = self;
             Player player = level.Tracker.GetEntity<Player>();
@@ -94,8 +91,8 @@ namespace ExtendedVariants.Variants {
 
                     for (int i = 0; i < 100; i++) {
                         // roll a seeker position in the room
-                        int x = instance.randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
-                        int y = instance.randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
+                        int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
+                        int y = randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
 
                         // should be at least 100 pixels from the player
                         double playerDistance = Math.Sqrt(Math.Pow(MathHelper.Distance(x, player.X), 2) + Math.Pow(MathHelper.Distance(y, player.Y), 2));
@@ -112,9 +109,9 @@ namespace ExtendedVariants.Variants {
                         }
 
                         // make sure we spawn the seeker in a zone accessible to the player (not "out of bounds")
-                        instance.calcLogPrefix = $"Rerolling seeker: pathfinding to position ({x}, {y}) ";
+                        calcLogPrefix = $"Rerolling seeker: pathfinding to position ({x}, {y}) ";
                         bool pathFound = level.Pathfinder.Find(ref nullref, from: clampedPlayerPosition, to: new Vector2(x, y), fewerTurns: false, logging: true);
-                        instance.calcLogPrefix = null;
+                        calcLogPrefix = null;
                         if (!pathFound) continue;
 
                         Logger.Log(LogLevel.Debug, "ExtendedVariantMode/AddSeekers", $"Spawning seeker: position ({x}, {y})");
@@ -149,11 +146,11 @@ namespace ExtendedVariants.Variants {
                 // by placing ourselves just in front of the 4f, we can turn this into
                 // Engine.TimeRate = Calc.Approach(Engine.TimeRate, transformTimeRate(target), 4f * Engine.DeltaTime);
                 // by injecting a single delegate call
-                cursor.EmitDelegate<Func<float, float>>(instance.transformTimeRate);
+                cursor.EmitDelegate<Func<float, float>>(transformTimeRate);
             }
         }
 
-        private float transformTimeRate(float vanillaTimeRate) {
+        private static float transformTimeRate(float vanillaTimeRate) {
             return GetVariantValue<bool>(Variant.DisableSeekerSlowdown) || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
         }
 
@@ -162,22 +159,22 @@ namespace ExtendedVariants.Variants {
 
             // prevent seekers from slowing down time!
             if (self.Scene.Entities.OfType<AutoDestroyingSeeker>().Count() != 0) {
-                instance.killSeekerSlowdownToFixHeart = true;
+                killSeekerSlowdownToFixHeart = true;
             }
         }
 
         private static void onCalcLog(On.Monocle.Calc.orig_Log_ObjectArray orig, object[] obj) {
             orig(obj);
 
-            if (instance.calcLogPrefix != null) {
+            if (calcLogPrefix != null) {
                 foreach (object o in obj) {
                     // all logs are prefixed with "PF: " which we can replace with our own prefix
-                    Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", instance.calcLogPrefix + o.ToString().Substring(4));
+                    Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", calcLogPrefix + o.ToString().Substring(4));
                 }
             }
         }
 
-        private void hookPathfinderFind(ILContext il) {
+        private static void hookPathfinderFind(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(instr => instr.MatchLdfld<Entity>("Collidable"))) {
@@ -200,12 +197,12 @@ namespace ExtendedVariants.Variants {
         }
 
         private static bool cutPathfindingShort() {
-            if (instance.pathfindingForVariant) Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", "Pathfinding is a SUCCESS");
-            return instance.pathfindingForVariant;
+            if (pathfindingForVariant) Logger.Log(LogLevel.Verbose, "ExtendedVariantMode/AddSeekers", "Pathfinding is a SUCCESS");
+            return pathfindingForVariant;
         }
 
         private static bool modIsCollidable(Entity entity, bool orig) {
-            if (!instance.pathfindingForVariant || (!(entity is DreamBlock) && !(entity is SeekerBarrier))) {
+            if (!pathfindingForVariant || (!(entity is DreamBlock) && !(entity is SeekerBarrier))) {
                 return orig;
             }
             Level level = (Engine.Scene as Level) ?? (Engine.Scene as LevelLoader)?.Level;

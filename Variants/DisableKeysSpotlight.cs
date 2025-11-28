@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void removeKeyLight(On.Celeste.Key.orig_ctor_Vector2_EntityID_Vector2Array orig, Key self, Vector2 position, EntityID id, Vector2[] nodes) {
+        private static void removeKeyLight(On.Celeste.Key.orig_ctor_Vector2_EntityID_Vector2Array orig, Key self, Vector2 position, EntityID id, Vector2[] nodes) {
             orig(self, position, id, nodes);
 
             if (GetVariantValue<bool>(Variant.DisableKeysSpotlight)) {

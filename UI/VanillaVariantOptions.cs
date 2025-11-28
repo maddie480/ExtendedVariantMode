@@ -225,7 +225,7 @@ namespace ExtendedVariants.UI {
 
             (ExtendedVariantsModule.Instance.VariantHandlers[variantChange] as AbstractVanillaVariant).VariantValueChangedByPlayer(newValue);
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
-            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            VariantRandomizer.RefreshEnabledVariantsDisplayList();
             if (newValue is bool value) updateIsaDefault?.Invoke(variantChange, value);
         }
     }

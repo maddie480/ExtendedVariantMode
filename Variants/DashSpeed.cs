@@ -44,7 +44,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float getDashSpeedMultiplier() {
+        private static float getDashSpeedMultiplier() {
             return GetVariantValue<float>(Variant.DashSpeed);
         }
     }

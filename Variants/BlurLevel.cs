@@ -8,12 +8,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BlurLevel : AbstractExtendedVariant {
-        private VirtualRenderTarget tempBuffer;
+        private static VirtualRenderTarget tempBuffer;
 
-        private static BlurLevel instance;
-        public BlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) {
-            instance = this;
-        }
+        public BlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
@@ -40,7 +37,7 @@ namespace ExtendedVariants.Variants {
             tempBuffer = null;
         }
 
-        private void ensureBufferIsCorrect() {
+        private static void ensureBufferIsCorrect() {
             if (tempBuffer == null || tempBuffer.Width != GameplayWidth || tempBuffer.Height != GameplayHeight) {
                 tempBuffer?.Dispose();
                 tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-blur-buffer", GameplayWidth, GameplayHeight);
@@ -56,11 +53,11 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/BlurLevel", $"Injecting call for blur at {cursor.Index} in IL for Level.Render");
 
-                cursor.EmitDelegate<Action>(instance.blurLevelBuffer);
+                cursor.EmitDelegate<Action>(blurLevelBuffer);
             }
         }
 
-        private void blurLevelBuffer() {
+        private static void blurLevelBuffer() {
             if (GetVariantValue<float>(Variant.BlurLevel) > 0) {
                 // what if... I just gaussian blur the level buffer
                 ensureBufferIsCorrect();
@@ -72,15 +69,15 @@ namespace ExtendedVariants.Variants {
             orig();
 
             // create the blur temp buffer as well.
-            instance.ensureBufferIsCorrect();
+            ensureBufferIsCorrect();
         }
 
         private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the blur temp buffer as well.
-            instance.tempBuffer?.Dispose();
-            instance.tempBuffer = null;
+            tempBuffer?.Dispose();
+            tempBuffer = null;
         }
     }
 }

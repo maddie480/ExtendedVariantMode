@@ -17,12 +17,9 @@ namespace ExtendedVariants.Variants {
 
         public static bool UsingWatchtower { get; private set; } = false;
 
-        private float lastChaserLag = 0f;
+        private static float lastChaserLag = 0f;
 
-        private static BadelineChasersEverywhere instance;
-        public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) {
-            instance = this;
-        }
+        public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -73,7 +70,7 @@ namespace ExtendedVariants.Variants {
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);
-                cursor.EmitDelegate<Func<float>>(instance.determineBadelineLag);
+                cursor.EmitDelegate<Func<float>>(determineBadelineLag);
             }
 
             cursor.Index = 0;
@@ -84,15 +81,15 @@ namespace ExtendedVariants.Variants {
 
                 // and substitute it with our own value
                 cursor.Emit(OpCodes.Pop);
-                cursor.EmitDelegate<Func<float>>(instance.determineDelayBetweenBadelines);
+                cursor.EmitDelegate<Func<float>>(determineDelayBetweenBadelines);
             }
         }
 
-        private float determineBadelineLag() {
+        private static float determineBadelineLag() {
             return ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings() ? 1.55f : GetVariantValue<float>(Variant.BadelineLag);
         }
 
-        private float determineDelayBetweenBadelines() {
+        private static float determineDelayBetweenBadelines() {
             return GetVariantValue<float>(Variant.DelayBetweenBadelines);
         }
 
@@ -115,9 +112,9 @@ namespace ExtendedVariants.Variants {
 
             if (playerIntro != Player.IntroTypes.Transition) {
                 if ((GetVariantValue<bool>(Variant.BadelineChasersEverywhere) || GetVariantValue<bool>(Variant.AffectExistingChasers))) {
-                    instance.injectBadelineChasers(self);
+                    injectBadelineChasers(self);
                 }
-                instance.updateLastChaserLag(self);
+                updateLastChaserLag(self);
             }
         }
 
@@ -134,8 +131,8 @@ namespace ExtendedVariants.Variants {
             yield return new SwapImmediately(orig(self, next, direction));
 
             // decide whether to add Badeline or not
-            instance.injectBadelineChasers(self);
-            instance.updateLastChaserLag(self);
+            injectBadelineChasers(self);
+            updateLastChaserLag(self);
         }
 
         /// <summary>
@@ -171,7 +168,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void injectBadelineChasers(Level level) {
+        private static void injectBadelineChasers(Level level) {
             bool hasChasersInBaseLevel = level.Tracker.CountEntities<BadelineOldsite>() != 0;
 
             if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere)) {
@@ -209,11 +206,11 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool notInBadelineIntroCutscene(Level level) {
+        private static bool notInBadelineIntroCutscene(Level level) {
             return (level.Session.Area.GetSID() != "Celeste/2-OldSite" || level.Session.Level != "3" || level.Session.Area.Mode != AreaMode.Normal);
         }
 
-        private EntityData generateBadelineEntityData(Level level, int badelineNumber) {
+        private static EntityData generateBadelineEntityData(Level level, int badelineNumber) {
             EntityData entityData = ExtendedVariantsModule.GenerateBasicEntityData(level, badelineNumber);
             entityData.Values["canChangeMusic"] = false;
             return entityData;
@@ -258,21 +255,21 @@ namespace ExtendedVariants.Variants {
             ILCursor cursor = new ILCursor(il);
 
             // go where the "4" is (this is the amount of player history vanilla is keeping)
-            while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdcR4(4f))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(4f))) {
                 Logger.Log("ExtendedVariantMode/BadelineChasersEverywhere", $"Modding constant at {cursor.Index} in the UpdateChaserStates method to allow more chasers to spawn");
 
                 // call a method that will compute the right delay instead
-                cursor.Remove();
-                cursor.EmitDelegate<Func<float>>(determineHistoryAmountToKeep);
+                cursor.EmitDelegate<Func<float, float>>(determineHistoryAmountToKeep);
             }
         }
 
-        private static float determineHistoryAmountToKeep() {
+        private static float determineHistoryAmountToKeep(float orig) {
             // return the amount of lag the farthest Badeline has (with a 0.1s margin), but make it 4 seconds minimum (= vanilla value).
-            return Math.Max(instance.lastChaserLag + 0.1f, 4f);
+            float moddedDelay = lastChaserLag + 0.1f;
+            return moddedDelay < 4f ? orig : moddedDelay;
         }
 
-        private void updateLastChaserLag(Level self) {
+        private static void updateLastChaserLag(Level self) {
             // called just after the extended Badelines are injected (if required).
             // we can count how many vanilla + extended Badelines we have on-screen.
             int badelineCount = self.Entities.AmountOf<BadelineOldsite>();

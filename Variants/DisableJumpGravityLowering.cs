@@ -16,7 +16,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate += modPlayerNormalUpdate;
         }
 
-        private void modPlayerNormalUpdate(ILContext il) {
+        private static void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
@@ -25,8 +25,12 @@ namespace ExtendedVariants.Variants {
                 && cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<VirtualButton>("get_Check"))) {
 
                 Logger.Log("ExtendedVariantMode/DisableJumpGravityLowering", $"Disabling jump gravity lowering at {cursor.Index} in IL for Player.NormalUpdate");
-                cursor.EmitDelegate<Func<bool, bool>>(orig => orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering));
+                cursor.EmitDelegate<Func<bool, bool>>(disableJumpGravityLowering);
             }
+        }
+
+        private static bool disableJumpGravityLowering(bool orig) {
+            return orig && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DisableJumpGravityLowering);
         }
     }
 }

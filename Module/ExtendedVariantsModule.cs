@@ -45,8 +45,6 @@ namespace ExtendedVariants.Module {
         public static int GameplayWidth => GameplayBuffers.Gameplay?.Width ?? 320;
         public static int GameplayHeight => GameplayBuffers.Gameplay?.Height ?? 180;
 
-        public VariantRandomizer Randomizer;
-
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
@@ -82,10 +80,8 @@ namespace ExtendedVariants.Module {
 
         public ExtendedVariantsModule() {
             Instance = this;
-            Randomizer = new VariantRandomizer();
             TriggerManager = new ExtendedVariantTriggerManager();
 
-            DashCount dashCount;
             JumpCooldown jumpCooldown;
             ZoomLevel zoomLevel;
             VariantHandlers[Variant.Gravity] = new Gravity();
@@ -95,7 +91,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SpeedX] = new SpeedX();
             VariantHandlers[Variant.Stamina] = new Stamina();
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
-            VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
+            VariantHandlers[Variant.DashCount] = new DashCount();
             VariantHandlers[Variant.CornerCorrection] = new CornerCorrection();
             VariantHandlers[Variant.DisableDashCooldown] = new DisableDashCooldown();
             VariantHandlers[Variant.HeldDash] = new HeldDash();
@@ -105,7 +101,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableClimbJumping] = new DisableClimbJumping();
             VariantHandlers[Variant.DisableJumpingOutOfWater] = new DisableJumpingOutOfWater();
             VariantHandlers[Variant.JumpCooldown] = (jumpCooldown = new JumpCooldown());
-            VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount, jumpCooldown);
+            VariantHandlers[Variant.JumpCount] = new JumpCount(jumpCooldown);
             VariantHandlers[Variant.ZoomLevel] = (zoomLevel = new ZoomLevel());
             VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();
@@ -479,7 +475,7 @@ namespace ExtendedVariants.Module {
             VanillaVariantOptions.Load();
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
-            Randomizer.Load();
+            VariantRandomizer.Load();
 
             foreach (Variant variant in VariantHandlers.Keys.ToList()) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant {variant}...");
@@ -535,7 +531,7 @@ namespace ExtendedVariants.Module {
             onLevelExit();
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant randomizer...");
-            Randomizer.Unload();
+            VariantRandomizer.Unload();
 
             foreach (Variant variant in VariantHandlers.Keys) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant {variant}...");
@@ -601,7 +597,7 @@ namespace ExtendedVariants.Module {
                 Settings.EnabledVariants.Remove(variantId);
                 Session?.VariantsOverridenByUser.Remove(variantId);
                 variant.VariantValueChanged();
-                Randomizer.RefreshEnabledVariantsDisplayList();
+                VariantRandomizer.RefreshEnabledVariantsDisplayList();
             }
         }
 
@@ -616,7 +612,7 @@ namespace ExtendedVariants.Module {
                     Session?.VariantsOverridenByUser.Remove(variantId);
                     vanillaVariant.VariantValueChangedByPlayer(TriggerManager.GetCurrentVariantValue(variantId));
                     variant.VariantValueChanged();
-                    Randomizer.RefreshEnabledVariantsDisplayList();
+                    VariantRandomizer.RefreshEnabledVariantsDisplayList();
                 }
             }
 

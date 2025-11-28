@@ -25,12 +25,12 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ClimbUpdate -= modClimbUpdate;
         }
 
-        private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
+        private static void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
             if (!GetVariantValue<bool>(Variant.DisableClimbJumping)) {
                 orig(self);
             }
         }
-        private void modClimbUpdate(ILContext il) {
+        private static void modClimbUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
@@ -46,7 +46,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool modJumpButtonCheck(bool actualValue, Player self, int moveX) {
+        private static bool modJumpButtonCheck(bool actualValue, Player self, int moveX) {
             if (!GetVariantValue<bool>(Variant.DisableClimbJumping)) {
                 // nothing to do
                 return actualValue;

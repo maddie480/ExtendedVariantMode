@@ -54,7 +54,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="self">the player</param>
         /// <param name="dir">the direction</param>
         /// <returns>true if walljumping is possible, false otherwise</returns>
-        private bool modWallJumpCheck(On.Celeste.Player.orig_WallJumpCheck orig, Player self, int dir) {
+        private static bool modWallJumpCheck(On.Celeste.Player.orig_WallJumpCheck orig, Player self, int dir) {
             if (GetVariantValue<bool>(Variant.DisableWallJumping)) {
                 return false;
             }

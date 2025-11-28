@@ -20,7 +20,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate += modNormalUpdate;
         }
 
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && (instr.Operand as MethodReference)?.FullName == "T Monocle.Entity::CollideFirst<Celeste.Water>(Microsoft.Xna.Framework.Vector2)")) {
@@ -35,7 +35,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modNormalUpdate;
         }
 
-        private void modSwimUpdate(ILContext il) {
+        private static void modSwimUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Jump"), instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
@@ -45,7 +45,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool modInputJumpResult(bool orig) {
+        private static bool modInputJumpResult(bool orig) {
             if (GetVariantValue<bool>(Variant.DisableJumpingOutOfWater)) {
                 return false;
             }
@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
             return orig;
         }
 
-        private Water ignoreWater(Water orig) {
+        private static Water ignoreWater(Water orig) {
             if (GetVariantValue<bool>(Variant.DisableJumpingOutOfWater)) {
                 return null;
             }

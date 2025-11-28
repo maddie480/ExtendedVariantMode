@@ -13,7 +13,8 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// This event is invoked whenever the dash is refilled.
         /// </summary>
-        public event Action OnDashRefill;
+        public static event Action OnDashRefill;
+
 
         public DashCount() : base(variantType: typeof(int), defaultVariantValue: -1) { }
 
@@ -42,12 +43,12 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="orig">The original RefillDash method</param>
         /// <param name="self">The Player instance</param>
-        private bool modRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
+        private static bool modRefillDash(On.Celeste.Player.orig_RefillDash orig, Player self) {
             // trigger the "on dash refill" event
             OnDashRefill?.Invoke();
 
             if (GetVariantValue<int>(Variant.DashCount) == -1) {
-                return orig.Invoke(self);
+                return orig(self);
             } else if (self.Dashes < GetVariantValue<int>(Variant.DashCount)) {
                 self.Dashes = GetVariantValue<int>(Variant.DashCount);
                 return true;
@@ -59,7 +60,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the UseRefill method in Player (called when the player gets a refill, obviously.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modUseRefill(ILContext il) {
+        private static void modUseRefill(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to insert ourselves just before the first stloc.0
@@ -80,7 +81,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void triggerOnDashRefill() {
+        private static void triggerOnDashRefill() {
             OnDashRefill?.Invoke();
         }
 
@@ -89,7 +90,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the UpdateHair method in Player (mainly computing the hair color).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modUpdateHair(ILContext il) {
+        private static void modUpdateHair(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // the goal here is to turn "this.Dashes == 2" checks into "this.Dashes >= 2" to make it look less weird
@@ -109,13 +110,13 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original Added method</param>
         /// <param name="self">The Player instance</param>
         /// <param name="scene">Argument of the original method (passed as is)</param>
-        private void modAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
-            orig.Invoke(self, scene);
+        private static void modAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
+            orig(self, scene);
             var spawnDashCount = GetVariantValue<int>(Variant.SpawnDashCount);
             self.Dashes = spawnDashCount != -1 ? spawnDashCount : determineDashCount(self.Dashes);
         }
 
-        private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
+        private static IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
             yield return new SwapImmediately(orig(self, player));
 
             // apply the dash refill rules here (this does not call RefillDash)
@@ -140,7 +141,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="defaultValue">The default value (= Player.MaxDashes)</param>
         /// <returns>The dash count</returns>
-        private int determineDashCount(int defaultValue) {
+        private static int determineDashCount(int defaultValue) {
             if (GetVariantValue<int>(Variant.DashCount) == -1) {
                 return defaultValue;
             }

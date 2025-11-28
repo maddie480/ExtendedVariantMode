@@ -20,12 +20,9 @@ namespace ExtendedVariants.Variants {
         private ILHook collectRoutineHook;
         private ILHook strawberryUpdateHook;
 
-        private bool strawberriesWereMadeGolden;
+        private static bool strawberriesWereMadeGolden;
 
-        private static AllStrawberriesAreGoldens instance;
-        public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) {
-            instance = this;
-        }
+        public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value != 0;
@@ -60,7 +57,7 @@ namespace ExtendedVariants.Variants {
 
         private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             // strawberries weren't made golden yet, they were just spawned.
-            instance.strawberriesWereMadeGolden = false;
+            strawberriesWereMadeGolden = false;
 
             orig(self, playerIntro, isFromLoader);
         }
@@ -145,12 +142,12 @@ namespace ExtendedVariants.Variants {
         }
 
         private static Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
-            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !instance.strawberriesWereMadeGolden) {
+            if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !strawberriesWereMadeGolden) {
                 // nothing to do actually.
                 return currentSprite;
             }
 
-            instance.strawberriesWereMadeGolden = true;
+            strawberriesWereMadeGolden = true;
 
             bool isGolden = currentSprite.Texture?.AtlasPath?.Contains("gold") ?? false;
             // in vanilla, if a berry happens to be a moon golden strawberry, it will appear as a moon berry.

@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float modDashCooldownTimer(float orig) {
+        private static float modDashCooldownTimer(float orig) {
             if (GetVariantValue<bool>(Variant.DisableDashCooldown)) {
                 return 0f;
             }

@@ -31,13 +31,16 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.OnCollideV -= modUltraBoosts;
         }
 
-        private void modUltraBoosts(ILContext il) {
+        private static void modUltraBoosts(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(1.2f))) {
                 Logger.Log("ExtendedVariantMode/UltraSpeedMultiplier", $"Modifying ultra speed multiplier at {cursor.Index} in IL for Player.OnCollideV");
-                cursor.EmitDelegate<Func<float, float>>(orig => GetVariantValue<float>(Variant.UltraSpeedMultiplier) == 1.2f ? orig : GetVariantValue<float>(Variant.UltraSpeedMultiplier));
+                cursor.EmitDelegate<Func<float, float>>(modUltraSpeed);
             }
+        }
+        private static float modUltraSpeed(float orig) {
+            return GetVariantValue<float>(Variant.UltraSpeedMultiplier) == 1.2f ? orig : GetVariantValue<float>(Variant.UltraSpeedMultiplier);
         }
     }
 }

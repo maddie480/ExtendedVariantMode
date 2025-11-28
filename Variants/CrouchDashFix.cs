@@ -15,7 +15,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_DashBegin_il(ILContext il) {
+        private static void Player_DashBegin_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.GotoNext(instr => instr.MatchCallvirt<Player>("set_Ducking"));
@@ -24,12 +24,14 @@ namespace ExtendedVariants.Variants {
                 instr => instr.MatchLdfld<Player>("onGround"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Func<bool, Player, bool>>((onGround, player) => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CrouchDashFix))
-                    return onGround;
+            cursor.EmitDelegate<Func<bool, Player, bool>>(modOnGround);
+        }
 
-                return Input.MoveY.Value == 1 || DynamicData.For(player).Get<bool>("demoDashed");
-            });
+        private static bool modOnGround(bool onGround, Player player) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CrouchDashFix))
+                return onGround;
+
+            return Input.MoveY.Value == 1 || DynamicData.For(player).Get<bool>("demoDashed");
         }
     }
 }
