@@ -15,7 +15,7 @@ namespace ExtendedVariants.Variants {
         private static FieldInfo playerBeforeDashSpeed = typeof(Player).GetField("beforeDashSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
         private static FieldInfo playerLastDashes = typeof(Player).GetField("lastDashes", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private Hook canDashHook;
+        private static Hook canDashHook;
         private static int dashCountBeforeDash;
         private static Vector2 dashDirectionBeforeDash;
 
@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(DashDirection).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
+            canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(DashDirection).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Static));
             On.Celeste.Player.StartDash += onStartDash;
             On.Celeste.Player.BoostEnd += onBoostEnd;
             On.Celeste.Player.DashCoroutine += onDashCoroutine;
@@ -66,9 +66,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.RedDashCoroutine -= onRedDashCoroutine;
         }
 
-        private delegate bool orig_CanDash(Player self);
-
-        private bool modCanDash(orig_CanDash orig, Player self) {
+        private static bool modCanDash(Func<Player, bool> orig, Player self) {
             Vector2 aim = Input.GetAimVector();
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.

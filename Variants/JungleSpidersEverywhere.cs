@@ -42,7 +42,7 @@ namespace ExtendedVariants.Variants {
             hookShouldPause = null;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -50,12 +50,12 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
             addSpiderToLevel(self);
         }
 
-        private void addSpiderToLevel(Level self) {
+        private static void addSpiderToLevel(Level self) {
             spawnedSpider = false;
 
             // do not do anything if the variant is disabled (obviously)

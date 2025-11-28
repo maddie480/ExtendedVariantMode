@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.OnTransition -= onPlayerTransition;
         }
 
-        private void onPlayerTransition(On.Celeste.Player.orig_OnTransition orig, Celeste.Player self) {
+        private static void onPlayerTransition(On.Celeste.Player.orig_OnTransition orig, Celeste.Player self) {
             int bakDashes = self.Dashes;
             float bakStamina = self.Stamina;
 

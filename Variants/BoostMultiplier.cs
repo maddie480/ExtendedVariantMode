@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             liftBoostHook = new Hook(
                 typeof(Player).GetMethod("get_LiftBoost", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BoostMultiplier).GetMethod("multiplyLiftBoost", BindingFlags.NonPublic | BindingFlags.Instance), this);
+                typeof(BoostMultiplier).GetMethod("multiplyLiftBoost", BindingFlags.NonPublic | BindingFlags.Static));
 
             IL.Celeste.Player.NormalUpdate += modPlayerNormalUpdate;
         }
@@ -33,7 +33,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modPlayerNormalUpdate;
         }
 
-        private Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
+        private static Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
             Vector2 result = orig(self);
 
             float capX = GetVariantValue<float>(Variant.LiftboostCapX);

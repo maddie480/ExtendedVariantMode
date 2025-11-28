@@ -27,7 +27,7 @@ namespace ExtendedVariants.Variants {
             On.Monocle.Calc.RotateTowards_Vector2_float_float -= onRotateTowards;
         }
 
-        private void modDashUpdate(ILContext il) {
+        private static void modDashUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(4.18879032f))) {
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private int onDashUpdate(On.Celeste.Player.orig_DashUpdate orig, Celeste.Player self) {
+        private static int onDashUpdate(On.Celeste.Player.orig_DashUpdate orig, Celeste.Player self) {
             inDashUpdate = true;
             int result = orig(self);
             inDashUpdate = false;
@@ -46,7 +46,7 @@ namespace ExtendedVariants.Variants {
             return result;
         }
 
-        private Vector2 onRotateTowards(On.Monocle.Calc.orig_RotateTowards_Vector2_float_float orig, Vector2 vec, float targetAngleRadians, float maxMoveRadians) {
+        private static Vector2 onRotateTowards(On.Monocle.Calc.orig_RotateTowards_Vector2_float_float orig, Vector2 vec, float targetAngleRadians, float maxMoveRadians) {
             if (maxMoveRadians == 0f && inDashUpdate && determineSuperdashSteeringFactor() == 0f) {
                 // rotating a vector by 0 does nothing, except cause floating point imprecision errors.
                 return vec;
@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
             return orig(vec, targetAngleRadians, maxMoveRadians);
         }
 
-        private float determineSuperdashSteeringFactor() {
+        private static float determineSuperdashSteeringFactor() {
             return GetVariantValue<float>(Variant.SuperdashSteeringSpeed);
         }
     }

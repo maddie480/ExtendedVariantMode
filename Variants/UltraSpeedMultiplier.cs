@@ -9,7 +9,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class UltraSpeedMultiplier : AbstractExtendedVariant {
-        private ILHook dashCoroutineHookForTimer;
+        private static ILHook dashCoroutineHookForTimer;
 
         public UltraSpeedMultiplier() : base(variantType: typeof(float), defaultVariantValue: 1.2f) { }
 

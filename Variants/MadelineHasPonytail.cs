@@ -46,25 +46,26 @@ namespace ExtendedVariants.Variants {
             doneILHooks.Clear();
         }
 
-        private void hookMadelineHasPonytail(ILContext il) {
+        private static void hookMadelineHasPonytail(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).Name == "get_MadelineHasPonytail")) {
                 Logger.Log("ExtendedVariantMode/MadelineHasPonytail", $"Hooking MadelineHasPonytail at {cursor.Index} in IL for {cursor.Method.FullName}");
-                cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (GetVariantValue<bool>(Variant.MadelineHasPonytail)) {
-                        // before returning true, ensure hair has enough nodes to handle the ponytail (6).
-                        // this prevents crashes when enabling the variant in the middle of a level.
-                        Player player;
-                        if ((player = Engine.Scene?.Tracker?.GetEntity<Player>()) != null && player.Hair != null) {
-                            while (player.Hair.Nodes.Count < 6) {
-                                player.Hair.Nodes.Add(Vector2.Zero);
-                            }
-                        }
-                        return true;
-                    }
-                    return orig;
-                });
+                cursor.EmitDelegate<Func<bool, bool>>(applyMadelineHasPonytail);
             }
+        }
+        private static bool applyMadelineHasPonytail(bool orig) {
+            if (GetVariantValue<bool>(Variant.MadelineHasPonytail)) {
+                // before returning true, ensure hair has enough nodes to handle the ponytail (6).
+                // this prevents crashes when enabling the variant in the middle of a level.
+                Player player;
+                if ((player = Engine.Scene?.Tracker?.GetEntity<Player>()) != null && player.Hair != null) {
+                    while (player.Hair.Nodes.Count < 6) {
+                        player.Hair.Nodes.Add(Vector2.Zero);
+                    }
+                }
+                return true;
+            }
+            return orig;
         }
     }
 }

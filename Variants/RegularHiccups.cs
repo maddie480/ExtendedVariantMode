@@ -10,7 +10,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class RegularHiccups : AbstractExtendedVariant {
 
-        private float regularHiccupTimer = 0f;
+        private static float regularHiccupTimer = 0f;
 
         public RegularHiccups() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
@@ -34,14 +34,14 @@ namespace ExtendedVariants.Variants {
             regularHiccupTimer = GetVariantValue<float>(Variant.RegularHiccups);
         }
 
-        private void onPlayerAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
+        private static void onPlayerAdded(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
             orig(self, scene);
 
             // reset the hiccup timer when the player respawns, for more consistency.
             regularHiccupTimer = GetVariantValue<float>(Variant.RegularHiccups);
         }
 
-        private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             if (GetVariantValue<float>(Variant.RegularHiccups) != 0f) {
@@ -57,7 +57,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modHiccupJump(ILContext il) {
+        private static void modHiccupJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-60f))) {
@@ -68,7 +68,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float determineHiccupStrengthFactor() {
+        private static float determineHiccupStrengthFactor() {
             return GetVariantValue<float>(Variant.HiccupStrength);
         }
     }

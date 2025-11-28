@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Glitch.Apply -= modGlitchApply;
         }
 
-        private void modGlitchApply(ILContext il) {
+        private static void modGlitchApply(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // instead of messing with Glitch.Value, we replace it in the actual rendering method.
@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float modGlitchValue(float vanilla) {
+        private static float modGlitchValue(float vanilla) {
             if (GetVariantValue<float>(Variant.GlitchEffect) == -1f) return vanilla;
             return GetVariantValue<float>(Variant.GlitchEffect);
         }

@@ -23,7 +23,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.ExplodeLaunch_Vector2_bool_bool -= correctExplodeLaunchSpeed;
         }
 
-        private Vector2 correctExplodeLaunchSpeed(On.Celeste.Player.orig_ExplodeLaunch_Vector2_bool_bool orig, Player self, Vector2 from, bool snapUp, bool sidesOnly) {
+        private static Vector2 correctExplodeLaunchSpeed(On.Celeste.Player.orig_ExplodeLaunch_Vector2_bool_bool orig, Player self, Vector2 from, bool snapUp, bool sidesOnly) {
             Vector2 result = orig(self, from, snapUp, sidesOnly);
 
             Player player = Engine.Scene.Tracker.GetEntity<Player>();

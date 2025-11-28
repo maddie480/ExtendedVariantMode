@@ -49,24 +49,25 @@ namespace ExtendedVariants.Variants {
         }
 
         // save dash count when hitting a change respawn trigger
-        private void updateDashCountOnRespawnPointChange(ILContext il) {
+        private static void updateDashCountOnRespawnPointChange(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to the point(s) where the respawn point is changed
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Session>("RespawnPoint"))) {
                 Logger.Log("ExtendedVariantMode/RestoreDashesOnRespawn", $"Adding save for dash count on respawn change at {cursor.Index} in CIL code for " + il.Method.FullName);
-                cursor.EmitDelegate<Action>(() => {
-                    Player player = Engine.Scene.Tracker.GetEntity<Player>();
-                    if (player != null) {
-                        ExtendedVariantsModule.Session.DashCountOnLatestRespawn = player.Dashes;
-                    }
-                });
+                cursor.EmitDelegate<Action>(saveDashCountOnLastRespawn);
 
                 cursor.Index++;
             }
         }
+        private static void saveDashCountOnLastRespawn() {
+            Player player = Engine.Scene.Tracker.GetEntity<Player>();
+            if (player != null) {
+                ExtendedVariantsModule.Session.DashCountOnLatestRespawn = player.Dashes;
+            }
+        }
 
-        private void onPlayerSpawn(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
+        private static void onPlayerSpawn(On.Celeste.Player.orig_Added orig, Player self, Scene scene) {
             orig(self, scene);
 
             if (GetVariantValue<bool>(Variant.RestoreDashesOnRespawn) && ExtendedVariantsModule.Session.DashCountOnLatestRespawn != -1) {

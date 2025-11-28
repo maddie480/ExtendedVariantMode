@@ -12,7 +12,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class FallSpeed : AbstractExtendedVariant {
 
-        private ILHook hookUpdateSprite;
+        private static ILHook hookUpdateSprite;
 
         public FallSpeed() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -48,7 +48,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the NormalBegin method in Player, so that ma fall speed is applied right when entering the "normal" state.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalBegin(ILContext il) {
+        private static void modNormalBegin(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go wherever the maxFall variable is initialized to 160 (... I mean, that's a one-line method, but maxFall is private so...)
@@ -65,7 +65,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we will edit 2 constants here:
@@ -104,7 +104,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the UpdateSprite method in Player (updating the player animation.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modUpdateSprite(ILContext il) {
+        private static void modUpdateSprite(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // the goal is to multiply 160 (max falling speed) with the fall speed factor to fix the falling animation
@@ -125,11 +125,11 @@ namespace ExtendedVariants.Variants {
         /// Returns the currently configured fall speed factor.
         /// </summary>
         /// <returns>The fall speed factor (1 = default fall speed)</returns>
-        private float determineFallSpeedFactor() {
+        private static float determineFallSpeedFactor() {
             return GetVariantValue<float>(Variant.FallSpeed);
         }
 
-        private float mixFallSpeedAndGravity() {
+        private static float mixFallSpeedAndGravity() {
             return Math.Min(GetVariantValue<float>(Variant.FallSpeed), GetVariantValue<float>(Variant.Gravity));
         }
     }

@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
             dashCoroutineHook?.Dispose();
         }
 
-        private void Player_DashCoroutine(ILContext il) {
+        private static void Player_DashCoroutine(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             Func<Instruction, bool>[] ilSequence = {
@@ -54,7 +54,7 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Stloc_S, (byte)3);
         }
 
-        private Vector2 doUpDashStretch(Vector2 beforeDashSpeed, Vector2 dashSpeed) {
+        private static Vector2 doUpDashStretch(Vector2 beforeDashSpeed, Vector2 dashSpeed) {
             // the part which stretches dashes in the x direction based on velocity looks like this:
             //
             // if (Math.Sign(this.beforeDashSpeed.X) == Math.Sign(dashSpeed.X)

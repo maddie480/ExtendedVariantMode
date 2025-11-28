@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
                     .GetType("FrostHelper.CustomSpinner").GetConstructor(new Type[] { typeof(EntityData), typeof(Vector2), typeof(bool), typeof(string), typeof(string), typeof(bool), typeof(string) });
 
                 frostHelperHook = new Hook(frostConstructor,
-                    typeof(SpinnerColor).GetMethod("onFrostHelperSpinnerConstructor", BindingFlags.NonPublic | BindingFlags.Instance), this);
+                    typeof(SpinnerColor).GetMethod("onFrostHelperSpinnerConstructor", BindingFlags.NonPublic | BindingFlags.Static));
             }
 
             if (vivHelperHook == null && Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "VivHelper", Version = new Version(1, 12, 2) })) {
@@ -58,11 +58,11 @@ namespace ExtendedVariants.Variants {
                     .GetType("VivHelper.Entities.CustomSpinner").GetConstructor(new Type[] { typeof(EntityData), typeof(Vector2) });
 
                 vivHelperHook = new Hook(vivConstructor,
-                    typeof(SpinnerColor).GetMethod("onVivHelperSpinnerConstructor", BindingFlags.NonPublic | BindingFlags.Instance), this);
+                    typeof(SpinnerColor).GetMethod("onVivHelperSpinnerConstructor", BindingFlags.NonPublic | BindingFlags.Static));
             }
         }
 
-        private void onCrystalSpinnerConstructor(On.Celeste.CrystalStaticSpinner.orig_ctor_Vector2_bool_CrystalColor orig, CrystalStaticSpinner self,
+        private static void onCrystalSpinnerConstructor(On.Celeste.CrystalStaticSpinner.orig_ctor_Vector2_bool_CrystalColor orig, CrystalStaticSpinner self,
             Vector2 position, bool attachToSolid, CrystalColor color) {
 
             Color spinnerColor = GetVariantValue<Color>(Variant.SpinnerColor);
@@ -73,7 +73,7 @@ namespace ExtendedVariants.Variants {
             orig(self, position, attachToSolid, color);
         }
 
-        private void onFrostHelperSpinnerConstructor(Action<Entity, EntityData, Vector2, bool, string, string, bool, string> orig, Entity self,
+        private static void onFrostHelperSpinnerConstructor(Action<Entity, EntityData, Vector2, bool, string, string, bool, string> orig, Entity self,
             EntityData data, Vector2 position, bool attachToSolid, string directory, string destroyColor, bool isCore, string tint) {
 
             Color spinnerColor = GetVariantValue<Color>(Variant.SpinnerColor);
@@ -98,7 +98,7 @@ namespace ExtendedVariants.Variants {
         }
 
 
-        private void onVivHelperSpinnerConstructor(Action<Entity, EntityData, Vector2> orig, Entity self, EntityData data, Vector2 offset) {
+        private static void onVivHelperSpinnerConstructor(Action<Entity, EntityData, Vector2> orig, Entity self, EntityData data, Vector2 offset) {
             Color spinnerColor = GetVariantValue<Color>(Variant.SpinnerColor);
             if (spinnerColor != Color.Default) {
                 data = new EntityData {

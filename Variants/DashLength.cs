@@ -12,8 +12,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DashLength : AbstractExtendedVariant {
 
-        private ILHook dashCoroutineHookForTimer;
-        private ILHook dashCoroutineHookForCounter;
+        private static ILHook dashCoroutineHookForTimer;
+        private static ILHook dashCoroutineHookForCounter;
 
         public DashLength() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -58,7 +58,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modDashLength(ILContext il) {
+        private static void modDashLength(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump where 0.3 or 0.15f are loaded (those are dash times)
@@ -78,7 +78,7 @@ namespace ExtendedVariants.Variants {
             return GetVariantValue<float>(Variant.DashLength);
         }
 
-        private void modDashTrailCounter(ILContext il) {
+        private static void modDashTrailCounter(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump wherever dashTrailCounter is saved

@@ -57,24 +57,25 @@ namespace ExtendedVariants.Variants {
             refreshPlayerSpriteMode = null;
         }
 
-        private void hookMadelineIsSilhouette(ILContext il) {
+        private static void hookMadelineIsSilhouette(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Callvirt && (instr.Operand as MethodReference).Name == "get_MadelineIsSilhouette")) {
                 Logger.Log("ExtendedVariantMode/MadelineIsSilhouette", $"Hooking MadelineIsSilhouette at {cursor.Index} in IL for {cursor.Method.FullName}");
-                cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (previouslyEnabled != GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
-                        previouslyEnabled = GetVariantValue<bool>(Variant.MadelineIsSilhouette);
-                        runRefreshPlayerSpriteMode(orig || GetVariantValue<bool>(Variant.MadelineIsSilhouette));
-                    }
-                    if (GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
-                        return true;
-                    }
-                    return orig;
-                });
+                cursor.EmitDelegate<Func<bool, bool>>(applyMadelineIsSilhouette);
             }
         }
+        private static bool applyMadelineIsSilhouette(bool orig) {
+            if (previouslyEnabled != GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
+                previouslyEnabled = GetVariantValue<bool>(Variant.MadelineIsSilhouette);
+                runRefreshPlayerSpriteMode(orig || GetVariantValue<bool>(Variant.MadelineIsSilhouette));
+            }
+            if (GetVariantValue<bool>(Variant.MadelineIsSilhouette)) {
+                return true;
+            }
+            return orig;
+        }
 
-        private void runRefreshPlayerSpriteMode(bool enable) {
+        private static void runRefreshPlayerSpriteMode(bool enable) {
             Player player = Engine.Scene?.Tracker?.GetEntity<Player>();
             if (refreshPlayerSpriteMode != null && player != null) {
                 Logger.Log(LogLevel.Debug, "ExtendedVariantMode/MadelineIsSilhouette", "Running refreshPlayerSpriteMode()");

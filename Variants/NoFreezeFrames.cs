@@ -27,7 +27,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Celeste.Freeze -= onCelesteFreeze;
         }
 
-        private void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
+        private static void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
             if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
                 if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
                     Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(time);
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             orig(time);
         }
 
-        private void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
+        private static void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
             if (GetVariantValue<bool>(Variant.NoFreezeFrames) && Engine.FreezeTimer > 0f) {
                 if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
                     Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(Engine.FreezeTimer);

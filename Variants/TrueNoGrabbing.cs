@@ -6,11 +6,11 @@ using MonoMod.RuntimeDetour;
 
 namespace ExtendedVariants.Variants {
     public class TrueNoGrabbing : AbstractExtendedVariant {
-        private Hook Celeste_Input_get_GrabCheck;
+        private static Hook Celeste_Input_get_GrabCheck;
 
         public override void Load() => Celeste_Input_get_GrabCheck = new Hook(
             typeof(Input).GetProperty("GrabCheck", BindingFlags.Public | BindingFlags.Static).GetGetMethod(),
-            typeof(TrueNoGrabbing).GetMethod("Input_get_GrabCheck", BindingFlags.NonPublic | BindingFlags.Instance), this);
+            typeof(TrueNoGrabbing).GetMethod("Input_get_GrabCheck", BindingFlags.NonPublic | BindingFlags.Static));
 
         public override void Unload() => Celeste_Input_get_GrabCheck.Dispose();
 
@@ -18,6 +18,6 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private bool Input_get_GrabCheck(Func<bool> grabCheck) => !GetVariantValue<bool>(ExtendedVariantsModule.Variant.TrueNoGrabbing) && grabCheck();
+        private static bool Input_get_GrabCheck(Func<bool> grabCheck) => !GetVariantValue<bool>(ExtendedVariantsModule.Variant.TrueNoGrabbing) && grabCheck();
     }
 }

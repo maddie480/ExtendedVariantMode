@@ -9,7 +9,7 @@ using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class CornerboostProtection : AbstractExtendedVariant {
-        private  ILHook il_Celeste_Player_Orig_Update;
+        private static ILHook il_Celeste_Player_Orig_Update;
 
         public override void Load() {
             il_Celeste_Player_Orig_Update = new ILHook(typeof(Player).GetMethod(nameof(Player.orig_Update), BindingFlags.Instance | BindingFlags.Public), Player_orig_Update_il);
@@ -27,7 +27,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_orig_Update_il(ILContext il) {
+        private static void Player_orig_Update_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.GotoNext(MoveType.After, instr => instr.MatchCall<Actor>("Update"));

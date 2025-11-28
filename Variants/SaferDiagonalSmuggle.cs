@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private IEnumerator Player_PickupCoroutine(On.Celeste.Player.orig_PickupCoroutine pickupCoroutine, Player player) {
+        private static IEnumerator Player_PickupCoroutine(On.Celeste.Player.orig_PickupCoroutine pickupCoroutine, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.SaferDiagonalSmuggle) && player.DashDir.X != 0f && player.DashDir.Y < 0f) {
                 var dynamicData = DynamicData.For(player);
                 float dashAttackTimer = dynamicData.Get<float>("dashAttackTimer");

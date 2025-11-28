@@ -30,7 +30,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate -= modDashUpdate;
         }
 
-        private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
+        private static IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             // intercept the moment when the dash coroutine sends out the dash time
             // so that we can extend it as long as Dash is pressed.
             IEnumerator coroutine = orig(self).SafeEnumerate();
@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
             yield break;
         }
 
-        private bool crouchDashCheck() {
+        private static bool crouchDashCheck() {
             return Input.CrouchDash.Check;
         }
 
@@ -61,7 +61,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the DashUpdate method in Player (called while the player is dashing).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modDashUpdate(ILContext il) {
+        private static void modDashUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             Logger.Log("ExtendedVariantMode/HeldDash", $"Patching dashTrailCounter to fix animation with infinite dashes at {cursor.Index} in CIL code for DashUpdate");
@@ -76,14 +76,14 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Stfld, typeof(Player).GetField("dashTrailCounter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance));
         }
 
-        private int modDashTrailCounter(int dashTrailCounter, Player self) {
+        private static int modDashTrailCounter(int dashTrailCounter, Player self) {
             if (hasHeldDash(self)) {
                 return 2; // lock the counter to 2 to have an infinite trail
             }
             return dashTrailCounter;
         }
 
-        private bool hasHeldDash(Player self) {
+        private static bool hasHeldDash(Player self) {
             // expose an "ExtendedVariantsHeldDash" DynData field to other mods.
             return GetVariantValue<bool>(Variant.HeldDash) || (new DynData<Player>(self).Data.TryGetValue("ExtendedVariantsHeldDash", out object o) && o is bool b && b);
         }

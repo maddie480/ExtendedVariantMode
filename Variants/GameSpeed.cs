@@ -11,9 +11,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class GameSpeed : AbstractExtendedVariant {
-        private float previousGameSpeed = 1f;
+        private static float previousGameSpeed = 1f;
 
-        private ILHook hookAntiSoftlock = null;
+        private static ILHook hookAntiSoftlock = null;
 
         public GameSpeed() : base(variantType: typeof(float), defaultVariantValue: 1f) {}
 
@@ -49,7 +49,7 @@ namespace ExtendedVariants.Variants {
             previousGameSpeed = 10;
         }
 
-        private void modLevelUpdate(ILContext il) {
+        private static void modLevelUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Assists>("GameSpeed"))) {
@@ -86,7 +86,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private int modGameSpeed(int gameSpeed) {
+        private static int modGameSpeed(int gameSpeed) {
             if (previousGameSpeed > GetVariantValue<float>(Variant.GameSpeed)) {
                 Logger.Log("ExtendedVariantMode/GameSpeed", "Game speed slowed down, ensuring cassette blocks and sprites are sane...");
                 if (Engine.Scene is Level level) {
@@ -122,7 +122,7 @@ namespace ExtendedVariants.Variants {
             return (int) (gameSpeed * GetVariantValue<float>(Variant.GameSpeed));
         }
 
-        private int modSpeedSoundSnapshot(int originalSnapshot) {
+        private static int modSpeedSoundSnapshot(int originalSnapshot) {
             // vanilla values are 5, 6, 7, 8, 9, 10, 12, 14 and 16
             // mod the snapshot to a "close enough" value
             if (originalSnapshot <= 5) return 5; // 5 or lower => 5
@@ -132,7 +132,7 @@ namespace ExtendedVariants.Variants {
             else return 16; // 16 or higher => 16
         }
 
-        private void modVirtualButtonUpdate(ILContext il) {
+        private static void modVirtualButtonUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // the goal is to jump at this.repeatCounter -= Engine.DeltaTime;
@@ -141,18 +141,14 @@ namespace ExtendedVariants.Variants {
                 instr => instr.MatchLdfld<VirtualButton>("repeatCounter"),
                 instr => instr.MatchCall<Engine>("get_DeltaTime"))) {
 
-                cursor.Index--;
-
                 Logger.Log("ExtendedVariantMode/GameSpeed", $"Modding DeltaTime at {cursor.Index} in IL code for VirtualButton.Update");
-
-                cursor.Remove();
-                cursor.EmitDelegate<Func<float>>(getRepeatTimerDeltaTime);
+                cursor.EmitDelegate<Func<float, float>>(getRepeatTimerDeltaTime);
 
                 // what we have now is this.repeatCounter -= getRepeatTimerDeltaTime();
             }
         }
 
-        private float getRepeatTimerDeltaTime() {
+        private static float getRepeatTimerDeltaTime(float orig) {
             // the delta time is Engine.RawDeltaTime * TimeRate * TimeRateB
             // we want to bound TimeRate * TimeRateB between 0.5 and 1.6
             // (this is the span of the vanilla Game Speed variant)
@@ -164,30 +160,31 @@ namespace ExtendedVariants.Variants {
                 return Engine.RawDeltaTime * 1.6f;
             }
             // return the original value
-            return Engine.DeltaTime;
+            return orig;
         }
 
-        private void fixupAntiSoftlockDelay(ILContext il) {
+        private static void fixupAntiSoftlockDelay(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR8(5.0))) {
                 Logger.Log("ExtendedVariantMode/GameSpeed", $"Fixing up anti-softlock delay at {cursor.Index} in IL for Level.TransitionRoutine ({il.Method.DeclaringType.Name})");
-                cursor.EmitDelegate<Func<double, double>>(orig => {
-                    float gameSpeed = GetVariantValue<float>(Variant.GameSpeed);
-                    if (gameSpeed <= 0 || !(Engine.Scene is Level level)) {
-                        return orig;
-                    }
-
-                    // make sure the softlock timer gives at least the theoretical transition time + 2 seconds.
-                    float transitionDuration = (level.NextTransitionDuration / gameSpeed) + 2f;
-                    if (transitionDuration > orig) {
-                        Logger.Log("ExtendedVariantMode/GameSpeed", $"Extending allowed transition duration to {transitionDuration} seconds!");
-                        return transitionDuration;
-                    }
-
-                    return orig;
-                });
+                cursor.EmitDelegate<Func<double, double>>(applyNewAntiSoftlockDelay);
             }
+        }
+        private static double applyNewAntiSoftlockDelay(double orig) {
+            float gameSpeed = GetVariantValue<float>(Variant.GameSpeed);
+            if (gameSpeed <= 0 || !(Engine.Scene is Level level)) {
+                return orig;
+            }
+
+            // make sure the softlock timer gives at least the theoretical transition time + 2 seconds.
+            float transitionDuration = (level.NextTransitionDuration / gameSpeed) + 2f;
+            if (transitionDuration > orig) {
+                Logger.Log("ExtendedVariantMode/GameSpeed", $"Extending allowed transition duration to {transitionDuration} seconds!");
+                return transitionDuration;
+            }
+
+            return orig;
         }
     }
 }

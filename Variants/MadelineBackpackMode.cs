@@ -41,7 +41,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.LevelLoader.ctor -= onLevelLoaderConstructor;
         }
 
-        private void onPlayerSpriteConstructor(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode) {
+        private static void onPlayerSpriteConstructor(On.Celeste.PlayerSprite.orig_ctor orig, PlayerSprite self, PlayerSpriteMode mode) {
             // modify Madeline or MadelineNoBackpack as needed, if the variant is enabled.
             if (mode == PlayerSpriteMode.Madeline || mode == PlayerSpriteMode.MadelineNoBackpack) {
                 if (GetVariantValue<MadelineBackpackModes>(Variant.MadelineBackpackMode) == MadelineBackpackModes.Backpack) {
@@ -54,14 +54,14 @@ namespace ExtendedVariants.Variants {
             orig(self, mode);
         }
 
-        private void onLevelLoaderConstructor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+        private static void onLevelLoaderConstructor(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
             orig(self, session, startPosition);
 
             // Everest reinitializes GFX.SpriteBank in the LevelLoader constructor, so we need to initialize the sprites again.
             initializeRollBackpackSprites();
         }
 
-        private void initializeRollBackpackSprites() {
+        private static void initializeRollBackpackSprites() {
             Dictionary<string, Sprite.Animation> player = GFX.SpriteBank.SpriteData["player"].Sprite.Animations;
             Dictionary<string, Sprite.Animation> playerNoBackpack = GFX.SpriteBank.SpriteData["player_no_backpack"].Sprite.Animations;
 

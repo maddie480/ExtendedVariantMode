@@ -130,7 +130,7 @@ namespace ExtendedVariants.Entities.ForMappers {
             if (extraJumpRefill) {
                 return jumpCountVariant.AddJumps(extraJumps, capped, cap);
             } else {
-                return jumpCountVariant.RefillJumpBuffer();
+                return JumpCount.RefillJumpBuffer();
             }
         }
     }

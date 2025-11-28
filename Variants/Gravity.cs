@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using Monocle;
@@ -11,7 +12,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class Gravity : AbstractExtendedVariant {
 
-        private float climbJumpGrabCooldown = -1f;
+        private static float climbJumpGrabCooldown = -1f;
 
         public Gravity() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -45,7 +46,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // find out where the constant 900 (downward acceleration) is loaded into the stack
@@ -61,34 +62,24 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/Gravity", $"Applying gravity to constant at {cursor.Index} in CIL code for NormalUpdate");
 
                 cursor.Index++;
-                if(cursor.Next.OpCode == OpCodes.Dup) cursor.Index++;
+                if (cursor.Next.OpCode == OpCodes.Dup) cursor.Index++;
                 cursor.Emit(OpCodes.Dup);
                 cursor.Index++;
                 cursor.Emit(OpCodes.Ldarg_0);
 
-                cursor.EmitDelegate<Func<float, float, Player, float>>((target, gravity, player) => {
-                    float gravityMultiplier = GetVariantValue<float>(Variant.Gravity);
-
-                    if (gravityMultiplier < 0f && player.Speed.Y > target) {
-                        // if going faster than the target speed, do not invert gravity to avoid speeding Maddy up,
-                        // since the gravity is supposed to be negative and all that.
-                        return gravity * Math.Abs(gravityMultiplier);
-                    }
-
-                    return gravity * gravityMultiplier;
-                });
+                cursor.EmitDelegate<Func<float, float, Player, float>>(applyGravityMultiplier);
             }
 
             cursor.Index = 0;
 
             // let's jump to if (this.Speed.Y < 0f) => "is the player going up? if so, they can't grab!"
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Grab") || instr.MatchCall(typeof(Input), "get_GrabCheck")) &&
-                cursor.TryGotoNext(MoveType.After,
-                instr => instr.MatchLdarg(0), // this
-                instr => instr.MatchLdflda<Player>("Speed"),
-                instr => instr.MatchLdfld<Vector2>("Y"),
-                instr => instr.MatchLdcR4(0f),
-                instr => instr.OpCode == OpCodes.Blt_Un || instr.OpCode == OpCodes.Blt_Un_S)) {
+                cursor.TryGotoNextBestFit(MoveType.After,
+                    instr => instr.MatchLdarg(0), // this
+                    instr => instr.MatchLdflda<Player>("Speed"),
+                    instr => instr.MatchLdfld<Vector2>("Y"),
+                    instr => instr.MatchLdcR4(0f),
+                    instr => instr.OpCode == OpCodes.Blt_Un || instr.OpCode == OpCodes.Blt_Un_S)) {
 
                 Instruction afterCheck = cursor.Next;
 
@@ -105,14 +96,26 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
+        private static float applyGravityMultiplier(float target, float gravity, Player player) {
+            float gravityMultiplier = GetVariantValue<float>(Variant.Gravity);
+
+            if (gravityMultiplier < 0f && player.Speed.Y > target) {
+                // if going faster than the target speed, do not invert gravity to avoid speeding Maddy up,
+                // since the gravity is supposed to be negative and all that.
+                return gravity * Math.Abs(gravityMultiplier);
+            }
+
+            return gravity * gravityMultiplier;
+        }
+
+        private static void modClimbJump(On.Celeste.Player.orig_ClimbJump orig, Player self) {
             orig(self);
 
             // trigger the cooldown
             climbJumpGrabCooldown = 0.25f;
         }
 
-        private void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void modUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             // deplete the cooldown
@@ -120,12 +123,12 @@ namespace ExtendedVariants.Variants {
                 climbJumpGrabCooldown -= Engine.DeltaTime;
         }
 
-        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+        private static void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             // reset the cooldown
             climbJumpGrabCooldown = -1f;
         }
 
-        private bool canGrabEvenWhenGoingUp() {
+        private static bool canGrabEvenWhenGoingUp() {
             return GetVariantValue<float>(Variant.Gravity) == 0f && climbJumpGrabCooldown <= 0f;
         }
 

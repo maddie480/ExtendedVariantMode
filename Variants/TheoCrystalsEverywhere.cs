@@ -35,7 +35,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.TheoCrystal.Added -= excludeExtendedVariantTheoCrystalFromAdded;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -53,7 +53,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void injectTheoCrystal(Level level) {
+        private static void injectTheoCrystal(Level level) {
             if (GetVariantValue<bool>(Variant.TheoCrystalsEverywhere)) {
                 Player player = level.Tracker.GetEntity<Player>();
                 bool hasCrystalInBaseLevel = level.Tracker.CountEntities<TheoCrystal>() != 0;
@@ -67,7 +67,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void injectTheoCrystalAfterTransition(Level level) {
+        private static void injectTheoCrystalAfterTransition(Level level) {
             if (GetVariantValue<bool>(Variant.TheoCrystalsEverywhere)) {
                 Player player = level.Tracker.GetEntity<Player>();
                 bool hasCrystalInBaseLevel = level.Session.LevelData.Entities.Any(entity => entity.Name == "theoCrystal");
@@ -82,7 +82,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
+        private static void modEnforceBounds(On.Celeste.Level.orig_EnforceBounds orig, Level self, Player player) {
             if (isTheoCrystalsEverywhere() && !isAllowLeavingTheoBehind() &&
                 // the player is holding nothing...
                 (player.Holding == null || player.Holding.Entity == null || !player.Holding.IsHeld ||
@@ -124,7 +124,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void excludeExtendedVariantTheoCrystalFromEnforceBounds(ILContext il) {
+        private static void excludeExtendedVariantTheoCrystalFromEnforceBounds(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCall<Scene>("get_Tracker"))) {
@@ -132,37 +132,41 @@ namespace ExtendedVariants.Variants {
                 Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Excluding Extended Variant Theo Crystals at {cursor.Index} from Level.EnforceBounds");
 
                 cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Func<TheoCrystal, Level, TheoCrystal>>((orig, self) => {
-                    if (orig is not ExtendedVariantTheoCrystal) return orig;
-                    return findFirstNonExtendedTheoCrystal(self.Tracker.GetEntities<TheoCrystal>());
-                });
+                cursor.EmitDelegate<Func<TheoCrystal, Level, TheoCrystal>>(searchNonExtendedTheoCrystal);
             }
         }
+        private static TheoCrystal searchNonExtendedTheoCrystal(TheoCrystal orig, Level self) {
+            if (orig is not ExtendedVariantTheoCrystal) return orig;
+            return findFirstNonExtendedTheoCrystal(self.Tracker.GetEntities<TheoCrystal>());
+        }
 
-        private void excludeExtendedVariantTheoCrystalFromAdded(ILContext il) {
+        private static void excludeExtendedVariantTheoCrystalFromAdded(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Scene>("get_Tracker"))) {
                 cursor.Index++;
                 Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Excluding Extended Variant Theo Crystals at {cursor.Index} from TheoCrystal.Added");
 
-                cursor.EmitDelegate<Func<List<Entity>, List<Entity>>>(orig =>
-                    orig.Where(entity => entity is not ExtendedVariantTheoCrystal).ToList());
+                cursor.EmitDelegate<Func<List<Entity>, List<Entity>>>(filterOutExtendedCrystals);
             }
         }
+        private static List<Entity> filterOutExtendedCrystals(List<Entity> orig) {
+            return orig.Where(entity => entity is not ExtendedVariantTheoCrystal).ToList();
+        }
 
-        private void excludeExtendedVariantTheoCrystalFromCassetteBlockBlockedCheck(ILContext il) {
+        private static void excludeExtendedVariantTheoCrystalFromCassetteBlockBlockedCheck(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Call && ((MethodReference) instr.Operand).Name == "CollideFirst")) {
                 Logger.Log("ExtendedVariantMode/TheoCrystalsEverywhere", $"Excluding Extended Variant Theo Crystals at {cursor.Index} from CassetteBlock.BlockedCheck");
 
                 cursor.Emit(OpCodes.Ldarg_0);
-                cursor.EmitDelegate<Func<TheoCrystal, CassetteBlock, TheoCrystal>>((orig, self) => {
-                    if (orig is not ExtendedVariantTheoCrystal) return orig;
-                    return findFirstNonExtendedTheoCrystal(self.CollideAll<TheoCrystal>());
-                });
+                cursor.EmitDelegate<Func<TheoCrystal, CassetteBlock, TheoCrystal>>(searchFirstNonExtendedTheoCrystalToCollideWith);
             }
+        }
+        private static TheoCrystal searchFirstNonExtendedTheoCrystalToCollideWith(TheoCrystal orig, CassetteBlock self) {
+            if (orig is not ExtendedVariantTheoCrystal) return orig;
+            return findFirstNonExtendedTheoCrystal(self.CollideAll<TheoCrystal>());
         }
 
         private static TheoCrystal findFirstNonExtendedTheoCrystal(List<Entity> theoCrystals) {
@@ -172,13 +176,13 @@ namespace ExtendedVariants.Variants {
                 .FirstOrDefault();
         }
 
-        private bool isTheoCrystalsEverywhere() {
+        private static bool isTheoCrystalsEverywhere() {
             // the variant is on, or an Extended Variant Theo crystal is in the level.
             return GetVariantValue<bool>(Variant.TheoCrystalsEverywhere) ||
                 Engine.Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>().OfType<ExtendedVariantTheoCrystal>().Any(t => t.SpawnedAsEntity);
         }
 
-        private bool isAllowLeavingTheoBehind() {
+        private static bool isAllowLeavingTheoBehind() {
             // get all Theo crystals in the level that were placed in Ahorn.
             IEnumerable<ExtendedVariantTheoCrystal> entities =
                 Engine.Scene.Tracker.GetEntities<ExtendedVariantTheoCrystal>().OfType<ExtendedVariantTheoCrystal>().Where(t => t.SpawnedAsEntity);

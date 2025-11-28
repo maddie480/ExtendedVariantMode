@@ -19,13 +19,16 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modPlayerNormalUpdate;
         }
 
-        private void modPlayerNormalUpdate(ILContext il) {
+        private static void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(300f))) {
                 Logger.Log("ExtendedVariantMode/FastFallAcceleration", $"Modding fast fall acceleration at {cursor.Index} in IL for Player.NormalUpdate");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.FastFallAcceleration));
+                cursor.EmitDelegate<Func<float, float>>(applyFastFallAcceleration);
             }
+        }
+        private static float applyFastFallAcceleration(float orig) {
+            return orig * GetVariantValue<float>(Variant.FastFallAcceleration);
         }
     }
 }

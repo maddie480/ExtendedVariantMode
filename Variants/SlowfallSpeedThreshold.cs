@@ -20,16 +20,17 @@ public class SlowfallSpeedThreshold : AbstractExtendedVariant {
         return (float) value;
     }
 
-    private void modNormalUpdate(ILContext il) {
+    private static void modNormalUpdate(ILContext il) {
         ILCursor cursor = new ILCursor(il);
         if (cursor.TryGotoNext(MoveType.After,
             instr => instr.MatchCall(typeof(Math), "Abs"),
             instr => instr.MatchLdcR4(40f))) {
-            cursor.EmitDelegate((float orig) => {
-                float value = GetVariantValue<float>(Variant.SlowfallSpeedThreshold);
-                if (value != 40) return value;
-                return orig;
-            });
+            cursor.EmitDelegate(applySlowfallSpeedThreshold);
         }
+    }
+    private static float applySlowfallSpeedThreshold(float orig) {
+        float value = GetVariantValue<float>(Variant.SlowfallSpeedThreshold);
+        if (value != 40) return value;
+        return orig;
     }
 }

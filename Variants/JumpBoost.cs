@@ -19,8 +19,8 @@ public class JumpBoost : AbstractExtendedVariant {
         return value / 10f;
     }
 
-    private ILHook Player_orig_WallJump;
-    private ILHook Player_orig_Update;
+    private static ILHook Player_orig_WallJump;
+    private static ILHook Player_orig_Update;
 
     public override void Load() {
         IL.Celeste.Player.HiccupJump += ChangeJumpHBoost;
@@ -46,7 +46,7 @@ public class JumpBoost : AbstractExtendedVariant {
         IL.Celeste.Player.SuperWallJump -= ChangeSuperWallJumpH;
     }
 
-    private void ChangeJumpHBoost(ILContext il) {
+    private static void ChangeJumpHBoost(ILContext il) {
         ILCursor cursor = new(il);
 
         // hELPER emits some il in Player.Jump which also puts a ldc.r4 40. we need to change all of those +40s.
@@ -62,7 +62,7 @@ public class JumpBoost : AbstractExtendedVariant {
         }
     }
 
-    private void ChangeWallJumpHSpeed(ILContext il) {
+    private static void ChangeWallJumpHSpeed(ILContext il) {
         ILCursor cursor = new(il);
 
         while (cursor.TryGotoNextBestFit(MoveType.Before,
@@ -76,7 +76,7 @@ public class JumpBoost : AbstractExtendedVariant {
         }
     }
 
-    private void ChangeWallJumpHSpeedInUpdate(ILContext il) {
+    private static void ChangeWallJumpHSpeedInUpdate(ILContext il) {
         ILCursor cursor = new(il);
 
         // this code handles wallboosts so we need to also affect that
@@ -92,7 +92,7 @@ public class JumpBoost : AbstractExtendedVariant {
         }
     }
 
-    private void ChangeSuperWallJumpH(ILContext il) {
+    private static void ChangeSuperWallJumpH(ILContext il) {
         ILCursor cursor = new(il);
 
         while (cursor.TryGotoNextBestFit(MoveType.Before,
@@ -106,16 +106,16 @@ public class JumpBoost : AbstractExtendedVariant {
         }
     }
 
-    private float ApplyJumpHBoostMultiplier(float orig) {
+    private static float ApplyJumpHBoostMultiplier(float orig) {
         return orig * GetVariantValue<float>(ExtendedVariantsModule.Variant.JumpBoost);
     }
 
-    private float ApplyWallJumpHSpeedMultiplier(float orig) {
+    private static float ApplyWallJumpHSpeedMultiplier(float orig) {
         // orig already contains JumpHBoost
         return orig + JumpHBoost * (GetVariantValue<float>(ExtendedVariantsModule.Variant.JumpBoost) - 1);
     }
 
-    private float ApplySuperWallJumpHMultiplier(float orig) {
+    private static float ApplySuperWallJumpHMultiplier(float orig) {
         // orig already contains JumpHBoost * 2
         return orig + 2 * JumpHBoost * (GetVariantValue<float>(ExtendedVariantsModule.Variant.JumpBoost) - 1);
     }

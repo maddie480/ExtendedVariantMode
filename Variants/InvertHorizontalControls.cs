@@ -22,7 +22,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.Update -= onLevelUpdate;
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             if (Input.Aim == null || Input.MoveX == null || SaveData.Instance?.Assists == null) {
                 orig(self);
                 return;

@@ -5,10 +5,10 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ScreenShakeIntensity : AbstractExtendedVariant {
-        private PropertyInfo shakeVectorInfo = typeof(Level).GetProperty("ShakeVector",
+        private static PropertyInfo shakeVectorInfo = typeof(Level).GetProperty("ShakeVector",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        private FieldInfo rumbleInfo = typeof(RumbleTrigger).GetField("rumble",
+        private static FieldInfo rumbleInfo = typeof(RumbleTrigger).GetField("rumble",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         public ScreenShakeIntensity() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
@@ -27,7 +27,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.RumbleTrigger.RenderDisplacement -= onRumbleTriggerRenderDisplacement;
         }
 
-        private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
+        private static void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
             if (GetVariantValue<float>(Variant.ScreenShakeIntensity) == 1f) {
                 orig(self);
                 return;
@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
             orig(self);
         }
 
-        private void onRumbleTriggerRenderDisplacement(On.Celeste.RumbleTrigger.orig_RenderDisplacement orig, RumbleTrigger self) {
+        private static void onRumbleTriggerRenderDisplacement(On.Celeste.RumbleTrigger.orig_RenderDisplacement orig, RumbleTrigger self) {
             if (GetVariantValue<float>(Variant.ScreenShakeIntensity) == 1f) {
                 orig(self);
                 return;

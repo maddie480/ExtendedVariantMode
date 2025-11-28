@@ -10,7 +10,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class SpeedX : AbstractExtendedVariant {
 
-        private ILHook wallJumpHook;
+        private static ILHook wallJumpHook;
 
         public SpeedX() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
         /// to handle the X speed part.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we use 90 as an anchor (an "if" before the instruction we want to mod loads 90 in the stack)
@@ -72,7 +72,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperJump method in Player (called when super/hyperdashing.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperJump(ILContext il) {
+        private static void modSuperJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply 260f (speed given by a superdash) with the X speed factor
@@ -87,7 +87,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperJump method in Player (called when super/hyperdashing on a wall.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperWallJump(ILContext il) {
+        private static void modSuperWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply 170f (X speed given by a superdash) with the X speed factor
@@ -102,7 +102,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the WallJump method in Player (called when walljumping, obviously.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modWallJump(ILContext il) {
+        private static void modWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply 130f (X speed given by a walljump) with the X speed factor
@@ -117,7 +117,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the currently configured X speed factor.
         /// </summary>
         /// <returns>The speed factor (1 = default speed)</returns>
-        private float determineSpeedXFactor() {
+        private static float determineSpeedXFactor() {
             return GetVariantValue<float>(Variant.SpeedX);
         }
 

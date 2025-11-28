@@ -12,8 +12,8 @@ namespace ExtendedVariants.Variants {
     public class ClimbJumpStaminaCost : AbstractExtendedVariant {
         public ClimbJumpStaminaCost() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
-        private Hook checkStaminaHook;
-        private ILHook playerUpdateHook;
+        private static Hook checkStaminaHook;
+        private static ILHook playerUpdateHook;
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;

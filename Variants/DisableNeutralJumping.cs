@@ -11,7 +11,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DisableNeutralJumping : AbstractExtendedVariant {
 
-        private ILHook wallJumpHook;
+        private static ILHook wallJumpHook;
 
         public DisableNeutralJumping() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -28,7 +28,7 @@ namespace ExtendedVariants.Variants {
         }
 
 
-        private void modWallJump(ILContext il) {
+        private static void modWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to the first MoveX usage (this.MoveX => ldarg.0 then ldfld MoveX basically)
@@ -60,7 +60,7 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// Indicates if neutral jumping is enabled.
         /// </summary>
-        private bool neutralJumpingEnabled() {
+        private static bool neutralJumpingEnabled() {
             return !GetVariantValue<bool>(Variant.DisableNeutralJumping);
         }
     }

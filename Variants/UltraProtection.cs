@@ -46,7 +46,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
+        private static void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
                 && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f
                 && DynamicData.For(player).Get<bool>("onGround")) {
@@ -59,7 +59,7 @@ namespace ExtendedVariants.Variants {
             jump(player, particles, playsfx);
         }
 
-        private void Player_DashBegin(On.Celeste.Player.orig_DashBegin dashBegin, Player player) {
+        private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin dashBegin, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
                 && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f
                 && DynamicData.For(player).Get<bool>("onGround")) {

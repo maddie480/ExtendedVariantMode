@@ -23,7 +23,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.RedDashUpdate -= modMidairTech;
         }
 
-        private void modMidairTech(ILContext il) {
+        private static void modMidairTech(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // Remove the grounded check
@@ -55,7 +55,7 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Brtrue, labelPastCheck);
         }
 
-        private bool GetMidairTechAllowed() {
+        private static bool GetMidairTechAllowed() {
             return GetVariantValue<bool>(Variant.MidairTech);
         }
     }

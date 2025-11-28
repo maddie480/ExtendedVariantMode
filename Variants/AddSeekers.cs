@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
         private static string calcLogPrefix = null;
         private static bool pathfindingForVariant => calcLogPrefix != null;
 
-        private ILHook pathfinderFindHook = null;
+        private static ILHook pathfinderFindHook = null;
 
         public AddSeekers() : base(variantType: typeof(int), defaultVariantValue: 0) { }
 

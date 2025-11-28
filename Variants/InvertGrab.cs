@@ -11,7 +11,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class InvertGrab : AbstractExtendedVariant {
 
-        private ILHook dashCoroutineHook;
+        private static ILHook dashCoroutineHook;
 
         public InvertGrab() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -49,16 +49,16 @@ namespace ExtendedVariants.Variants {
             if (dashCoroutineHook != null) dashCoroutineHook.Dispose();
         }
 
-        private void modInputGrabCheck(ILContext il) {
+        private static void modInputGrabCheck(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // mod all Input.Grab.Check
-            while (cursor.TryGotoNext(MoveType.Before,
+            while (cursor.TryGotoNext(MoveType.After,
                 instr => instr.MatchLdsfld(typeof(Input), "Grab"),
                 instr => instr.MatchCallvirt<VirtualButton>("get_Check")
             )) {
                 Logger.Log("ExtendedVariantMode/InvertGrab", $"Adding code to apply Invert Grab at index {cursor.Index} in CIL code for Player.{cursor.Method.Name}");
-                cursor.GotoNext().Remove().EmitDelegate<Func<VirtualButton, bool>>(invertButtonCheck);
+                cursor.EmitDelegate<Func<bool, bool>>(invertButtonCheck);
             }
 
             cursor.Index = 0;
@@ -68,11 +68,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool invertButtonCheck(VirtualButton button) {
-            return GetVariantValue<bool>(Variant.InvertGrab) ? !button.Check : button.Check;
-        }
-
-        private bool invertButtonCheck(bool buttonCheck) {
+        private static bool invertButtonCheck(bool buttonCheck) {
             return GetVariantValue<bool>(Variant.InvertGrab) ? !buttonCheck : buttonCheck;
         }
     }

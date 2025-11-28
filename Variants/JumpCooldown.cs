@@ -17,7 +17,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= onPlayerUpdate;
         }
 
-        private float jumpCooldownTimer = 0f;
+        private static float jumpCooldownTimer = 0f;
 
         public override void VariantValueChanged() {
             // make sure the timer does not exceed the new jump cooldown cap
@@ -32,7 +32,7 @@ namespace ExtendedVariants.Variants {
             return jumpCooldownTimer > 0f;
         }
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Celeste.Player self) {
+        private static void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Celeste.Player self) {
             orig(self);
             if (jumpCooldownTimer > 0f) jumpCooldownTimer -= Engine.DeltaTime;
         }

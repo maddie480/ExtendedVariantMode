@@ -9,7 +9,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class CoyoteTime : AbstractExtendedVariant {
-        private ILHook hookOrigUpdate;
+        private static ILHook hookOrigUpdate;
 
         public CoyoteTime() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 

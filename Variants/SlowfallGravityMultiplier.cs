@@ -19,7 +19,7 @@ public class SlowfallGravityMultiplier : AbstractExtendedVariant {
         return value / 10f;
     }
 
-    private void modNormalUpdate(ILContext il) {
+    private static void modNormalUpdate(ILContext il) {
         ILCursor cursor = new ILCursor(il);
         //we try to find the place in NormalUpdate where it loads a 0.5f constant, then stores it in local var 12
         //this is the constant that defines the initial gravity multiplier affected by slowfall
@@ -27,11 +27,12 @@ public class SlowfallGravityMultiplier : AbstractExtendedVariant {
         if (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchLdcR4(0.5f), instr => instr.MatchStloc(12))) {
             //move forward to after the 0.5f load but before the local var storage
             cursor.Index++;
-            cursor.EmitDelegate((float orig) => {
-                float gravity = GetVariantValue<float>(Variant.SlowfallGravityMultiplier);
-                if (gravity != 0.5f) return gravity;
-                return orig;
-            });
+            cursor.EmitDelegate(applySlowfallGravityMultiplier);
         }
+    }
+    private static float applySlowfallGravityMultiplier(float orig) {
+        float gravity = GetVariantValue<float>(Variant.SlowfallGravityMultiplier);
+        if (gravity != 0.5f) return gravity;
+        return orig;
     }
 }

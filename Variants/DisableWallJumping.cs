@@ -11,7 +11,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DisableWallJumping : AbstractExtendedVariant {
 
-        private ILHook wallJumpHook;
+        private static ILHook wallJumpHook;
 
         public DisableWallJumping() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -35,7 +35,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">the original method</param>
         /// <param name="self">the player</param>
         /// <param name="dir">the wall jump direction</param>
-        private void modWallJump(ILContext il) {
+        private static void modWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             Instruction firstInstruction = cursor.Next;
@@ -61,7 +61,7 @@ namespace ExtendedVariants.Variants {
             return orig(self, dir);
         }
 
-        private bool isWallJumpingDisabled() {
+        private static bool isWallJumpingDisabled() {
             return GetVariantValue<bool>(Variant.DisableWallJumping);
         }
     }

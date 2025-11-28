@@ -26,7 +26,7 @@ namespace ExtendedVariants.Variants {
         /// to handle the "force duck on ground" variant.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to "if(this.Ducking)" => that's a brfalse
@@ -69,6 +69,6 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool ForceDuckOnGroundEnabled() => GetVariantValue<bool>(Variant.ForceDuckOnGround);
+        private static bool ForceDuckOnGroundEnabled() => GetVariantValue<bool>(Variant.ForceDuckOnGround);
     }
 }

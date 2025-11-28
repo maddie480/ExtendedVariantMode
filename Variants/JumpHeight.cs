@@ -11,7 +11,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class JumpHeight : AbstractExtendedVariant {
 
-        private ILHook wallJumpHook;
+        private static ILHook wallJumpHook;
 
         public JumpHeight() : base(variantType: typeof(float), defaultVariantValue: 1f) {}
 
@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the Jump method in Player (called when jumping, simply.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modJump(ILContext il) {
+        private static void modJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // the speed applied to jumping is simply -105f (negative = up). Let's multiply this with our jump height factor.
@@ -54,7 +54,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperJump method in Player (called when super/hyperdashing.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperJump(ILContext il) {
+        private static void modSuperJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply -105f (height given by a superdash) with the jump height factor
@@ -69,7 +69,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the WallJump method in Player (called when walljumping, obviously.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modWallJump(ILContext il) {
+        private static void modWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply -105f (height given by a superdash) with the jump height factor
@@ -84,7 +84,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperWallJump method in Player (called when super/hyperdashing on a wall.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperWallJump(ILContext il) {
+        private static void modSuperWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply -160f (height given by a superdash) with the jump height factor
@@ -99,7 +99,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the currently configured jump height factor.
         /// </summary>
         /// <returns>The jump height factor (1 = default jump height)</returns>
-        private float determineJumpHeightFactor() {
+        private static float determineJumpHeightFactor() {
             return GetVariantValue<float>(Variant.JumpHeight);
         }
     }

@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class DashRestriction : AbstractExtendedVariant {
-        private Hook canDashHook;
+        private static Hook canDashHook;
 
         public override object ConvertLegacyVariantValue(int value) {
             return GetDefaultVariantValue();

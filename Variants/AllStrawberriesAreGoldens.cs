@@ -17,8 +17,8 @@ namespace ExtendedVariants.Variants {
         private static FieldInfo bloom = typeof(Strawberry).GetField("bloom", BindingFlags.NonPublic | BindingFlags.Instance);
         private static MethodInfo onAnimate = typeof(Strawberry).GetMethod("OnAnimate", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private ILHook collectRoutineHook;
-        private ILHook strawberryUpdateHook;
+        private static ILHook collectRoutineHook;
+        private static ILHook strawberryUpdateHook;
 
         private static bool strawberriesWereMadeGolden;
 

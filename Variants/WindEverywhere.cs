@@ -131,7 +131,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+        private static void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             snowBackdropAddedByEVM = false;
         }
 

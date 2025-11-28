@@ -25,12 +25,15 @@ namespace ExtendedVariants.Variants {
             hookPickup = null;
         }
 
-        private void hookOrigPickup(ILContext il) {
+        private static void hookOrigPickup(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(0.35f))) {
                 Logger.Log("ExtendedVariantMode/MinimumDelayBeforeThrowing", $"Modding minimum delay before throwing at {cursor.Index} in IL for Player.orig_Pickup");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.MinimumDelayBeforeThrowing));
+                cursor.EmitDelegate<Func<float, float>>(applyMinimumDelayBeforeThrowing);
             }
+        }
+        private static float applyMinimumDelayBeforeThrowing(float orig) {
+            return orig * GetVariantValue<float>(Variant.MinimumDelayBeforeThrowing);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace ExtendedVariants.Variants {
                 => Math.Sign(current) * Math.Max(Math.Abs(current), Math.Min(Math.Sign(current) * minusOne, Math.Sign(current) * (2f * minusOne - minusTwo)));
         }
 
-        private ILHook il_Celeste_Player_Orig_WallJump;
+        private static ILHook il_Celeste_Player_Orig_WallJump;
 
         public override void Load() {
             On.Celeste.Player.Jump += Player_Jump;
@@ -94,7 +94,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
+        private static void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
                 var liftSpeed = GetCorrectedLiftSpeed(platform);
@@ -106,7 +106,7 @@ namespace ExtendedVariants.Variants {
             jump(player, particles, playsfx);
         }
 
-        private void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
+        private static void Player_SuperJump(On.Celeste.Player.orig_SuperJump superJump, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, Vector2.UnitY, out var platform)) {
                 var liftSpeed = GetCorrectedLiftSpeed(platform);
@@ -118,27 +118,28 @@ namespace ExtendedVariants.Variants {
             superJump(player);
         }
 
-        private void Player_orig_WallJump_il(ILContext il) {
+        private static void Player_orig_WallJump_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.GotoNext(instr => instr.MatchCall<Actor>("set_LiftSpeed"));
 
             cursor.Emit(OpCodes.Ldloc_2);
             cursor.Emit(OpCodes.Ldarg_1);
-            cursor.EmitDelegate<Func<Vector2, Solid, int, Vector2>>((value, solid, dir) => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
-                    return value;
-
-                var liftSpeed = GetCorrectedLiftSpeed(solid);
-
-                if (Math.Sign(liftSpeed.X) == dir)
-                    return liftSpeed.X * Vector2.UnitX;
-
+            cursor.EmitDelegate<Func<Vector2, Solid, int, Vector2>>(applyCorrectedLiftSpeedX);
+        }
+        private static Vector2 applyCorrectedLiftSpeedX(Vector2 value, Solid solid, int dir) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
                 return value;
-            });
+
+            Vector2 liftSpeed = GetCorrectedLiftSpeed(solid);
+
+            if (Math.Sign(liftSpeed.X) == dir)
+                return liftSpeed.X * Vector2.UnitX;
+
+            return value;
         }
 
-        private void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump superWallJump, Player player, int dir) {
+        private static void Player_SuperWallJump(On.Celeste.Player.orig_SuperWallJump superWallJump, Player player, int dir) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
                 && player.LiftSpeed == Vector2.Zero && TryGetPlatform(player, -5 * dir * Vector2.UnitX, out var platform)) {
                 var liftSpeed = GetCorrectedLiftSpeed(platform);
@@ -150,7 +151,7 @@ namespace ExtendedVariants.Variants {
             superWallJump(player, dir);
         }
 
-        private void Platform_Update(On.Celeste.Platform.orig_Update update, Platform platform) {
+        private static void Platform_Update(On.Celeste.Platform.orig_Update update, Platform platform) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection) && TryGetLiftSpeedHistory(platform, out var liftSpeedHistory)) {
                 liftSpeedHistory.MinusTwo = liftSpeedHistory.MinusOne;
                 liftSpeedHistory.MinusOne = liftSpeedHistory.Current;
@@ -160,7 +161,7 @@ namespace ExtendedVariants.Variants {
             update(platform);
         }
 
-        private void PatchLiftboostProtectionX(ILContext il) {
+        private static void PatchLiftboostProtectionX(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.Index = -1;
@@ -168,84 +169,92 @@ namespace ExtendedVariants.Variants {
             cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<Vector2>("X"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Action<Platform>>(platform => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
-                    return;
-
-                float liftSpeed = platform.LiftSpeed.X;
-
-                if (liftSpeed == 0f)
-                    return;
-
-                GetLiftSpeedHistory(platform).Current.X = liftSpeed;
-                platform.LiftSpeed.X = GetCorrectedLiftSpeed(platform).X;
-            });
+            cursor.EmitDelegate<Action<Platform>>(applyLiftSpeedXToPlatform);
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.Emit(OpCodes.Ldloc_0);
-            cursor.EmitDelegate<Action<Platform, int>>((platform, move) => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
-                    || move != 0 || platform.LiftSpeed.X == 0f || !platform.Collidable || platform is not Solid solid)
-                    return;
-
-                foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
-                    var actor = (Actor) entity;
-
-                    if (actor.IsRiding(solid))
-                        actor.LiftSpeed = solid.LiftSpeed;
-                }
-            });
+            cursor.EmitDelegate<Action<Platform, int>>(applyLiftBoostXToActor);
         }
 
-        private void PatchLiftboostProtectionY(ILContext il) {
-            var cursor = new ILCursor(il);
+        private static void applyLiftSpeedXToPlatform(Platform platform) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
+                return;
+
+            float liftSpeed = platform.LiftSpeed.X;
+
+            if (liftSpeed == 0f)
+                return;
+
+            GetLiftSpeedHistory(platform).Current.X = liftSpeed;
+            platform.LiftSpeed.X = GetCorrectedLiftSpeed(platform).X;
+        }
+
+        private static void applyLiftBoostXToActor(Platform platform, int move) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
+                || move != 0 || platform.LiftSpeed.X == 0f || !platform.Collidable || platform is not Solid solid)
+                return;
+
+            foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
+                var actor = (Actor) entity;
+
+                if (actor.IsRiding(solid))
+                    actor.LiftSpeed = solid.LiftSpeed;
+            }
+        }
+
+        private static void PatchLiftboostProtectionY(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
 
             cursor.Index = -1;
             cursor.GotoPrev(instr => instr.MatchLdflda<Platform>("LiftSpeed"));
             cursor.GotoNext(MoveType.After, instr => instr.MatchStfld<Vector2>("Y"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Action<Platform>>(platform => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
-                    return;
-
-                float liftSpeed = platform.LiftSpeed.Y;
-
-                if (liftSpeed == 0f)
-                    return;
-
-                GetLiftSpeedHistory(platform).Current.Y = liftSpeed;
-                platform.LiftSpeed.Y = GetCorrectedLiftSpeed(platform).Y;
-            });
+            cursor.EmitDelegate<Action<Platform>>(applyLiftBoostYToPlatform);
 
             cursor.GotoNext(MoveType.After, instr => instr.OpCode == OpCodes.Stloc_0);
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.Emit(OpCodes.Ldloc_0);
-            cursor.EmitDelegate<Action<Platform, int>>((platform, move) => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
-                    || move != 0 || platform.LiftSpeed.Y == 0f || !platform.Collidable)
-                    return;
+            cursor.EmitDelegate<Action<Platform, int>>(applyLiftBoostYToActor);
+        }
 
-                if (platform is Solid solid) {
-                    foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
-                        var actor = (Actor) entity;
+        private static void applyLiftBoostYToPlatform(Platform platform) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection))
+                return;
 
-                        if (actor.IsRiding(solid))
-                            actor.LiftSpeed = solid.LiftSpeed;
-                    }
+            float liftSpeed = platform.LiftSpeed.Y;
+
+            if (liftSpeed == 0f)
+                return;
+
+            GetLiftSpeedHistory(platform).Current.Y = liftSpeed;
+            platform.LiftSpeed.Y = GetCorrectedLiftSpeed(platform).Y;
+        }
+
+        private static void applyLiftBoostYToActor(Platform platform, int move) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.LiftboostProtection)
+                || move != 0 || platform.LiftSpeed.Y == 0f || !platform.Collidable)
+                return;
+
+            if (platform is Solid solid) {
+                foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
+                    var actor = (Actor) entity;
+
+                    if (actor.IsRiding(solid))
+                        actor.LiftSpeed = solid.LiftSpeed;
                 }
-                else if (platform is JumpThru jumpThru) {
-                    foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
-                        var actor = (Actor) entity;
+            }
+            else if (platform is JumpThru jumpThru) {
+                foreach (var entity in platform.Scene.Tracker.GetEntities<Actor>()) {
+                    var actor = (Actor) entity;
 
-                        if (actor.IsRiding(jumpThru))
-                            actor.LiftSpeed = jumpThru.LiftSpeed;
-                    }
+                    if (actor.IsRiding(jumpThru))
+                        actor.LiftSpeed = jumpThru.LiftSpeed;
                 }
-            });
+            }
         }
 
         private class LiftSpeedHistory {

@@ -9,7 +9,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class RoomLighting : AbstractExtendedVariant {
 
-        private float initialBaseLightingAlpha = -1f;
+        private static float initialBaseLightingAlpha = -1f;
 
         public RoomLighting() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
@@ -46,7 +46,7 @@ namespace ExtendedVariants.Variants {
         /// </summary>
         /// <param name="self">The level we are in</param>
         /// <param name="introType">How the player enters the level</param>
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (GetVariantValue<float>(Variant.RoomLighting) != -1f) {
@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
                 }
             }
         }
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
 
             // Resets the BaseLightingAlpha to its initial value (if modified by modLoadLevel)
@@ -83,7 +83,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="orig">The original method</param>
         /// <param name="self">The trigger itself</param>
         /// <param name="player">The player hitting the trigger</param>
-        private void modLightFadeTriggerOnStay(On.Celeste.LightFadeTrigger.orig_OnStay orig, LightFadeTrigger self, Player player) {
+        private static void modLightFadeTriggerOnStay(On.Celeste.LightFadeTrigger.orig_OnStay orig, LightFadeTrigger self, Player player) {
             orig(self, player);
 
             if (GetVariantValue<float>(Variant.RoomLighting) != -1f) {
