@@ -8,9 +8,14 @@ using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class MultiBuffering : AbstractExtendedVariant {
+        private static readonly Dictionary<VirtualButton, List<float>> bufferQueues = new Dictionary<VirtualButton, List<float>>();
+
         public override void Load() => IL.Monocle.VirtualButton.Update += VirtualButton_Update_il;
 
-        public override void Unload() => IL.Monocle.VirtualButton.Update -= VirtualButton_Update_il;
+        public override void Unload() {
+            IL.Monocle.VirtualButton.Update -= VirtualButton_Update_il;
+            bufferQueues.Clear();
+        }
 
         public MultiBuffering() : base(variantType: typeof(int), defaultVariantValue: 1) { }
 
@@ -47,11 +52,9 @@ namespace ExtendedVariants.Variants {
             if (size == 1)
                 return bufferCounter;
 
-            var dynamicData = DynamicData.For(button);
-
-            if (!dynamicData.TryGet("bufferQueue", out List<float> bufferQueue) || bufferQueue.Capacity != size - 1) {
+            if (!bufferQueues.TryGetValue(button, out List<float> bufferQueue) || bufferQueue.Capacity != size - 1) {
                 bufferQueue = new List<float>(size - 1);
-                dynamicData.Set("bufferQueue", bufferQueue);
+                bufferQueues[button] = bufferQueue;
             }
 
             for (int i = 0; i < bufferQueue.Count; i++)
@@ -74,7 +77,7 @@ namespace ExtendedVariants.Variants {
             if (size == 1)
                 return bufferTime;
 
-            var bufferQueue = DynamicData.For(button).Get<List<float>>("bufferQueue");
+            var bufferQueue = bufferQueues[button];
 
             if (bufferQueue.Count == size - 1) {
                 bufferCounter = bufferQueue[0];
@@ -89,7 +92,7 @@ namespace ExtendedVariants.Variants {
         private static void clearBufferQueue(VirtualButton button) {
             if (GetVariantValue<int>(ExtendedVariantsModule.Variant.MultiBuffering) > 1
                 && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.AlternativeBuffering))
-                DynamicData.For(button).Get<List<float>>("bufferQueue").Clear();
+                bufferQueues[button].Clear();
         }
     }
 }

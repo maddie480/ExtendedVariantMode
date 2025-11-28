@@ -12,7 +12,6 @@ using Mono.Cecil.Cil;
 namespace ExtendedVariants.Variants {
     public class PermanentDashAttack : AbstractExtendedVariant {
         private static Hook dashAttackingHook;
-        private static MethodInfo playerCorrectDashPrecision = typeof(Player).GetMethod("CorrectDashPrecision", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public PermanentDashAttack() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -53,7 +52,7 @@ namespace ExtendedVariants.Variants {
                 // make the (fake) dash direction match the player's direction, to trigger dash blocks when running into them
                 // without having to dash in the right direction first for example.
                 self.DashDir = self.Speed.SafeNormalize();
-                self.DashDir = (Vector2) playerCorrectDashPrecision.Invoke(self, new object[] { self.DashDir });
+                self.DashDir = self.CorrectDashPrecision(self.DashDir);
             }
 
             orig(self);

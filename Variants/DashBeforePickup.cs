@@ -41,7 +41,7 @@ namespace ExtendedVariants.Variants {
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.DashBeforePickup) || !player.CanDash)
                 return false;
 
-            player.Speed += DynamicData.For(player).Invoke<Vector2>("get_LiftBoost");
+            player.Speed += player.LiftBoost;
             player.StartDash();
 
             return true;

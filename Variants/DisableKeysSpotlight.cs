@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
                 // add back the light of all keys in the scene (it's still stored in a private field inside it)
                 foreach (Key key in Engine.Scene.Entities.FindAll<Key>()) {
                     if (key.Get<VertexLight>() == null) {
-                        key.Add(new DynData<Key>(key).Get<VertexLight>("light"));
+                        key.Add(key.light);
                     }
                 }
             }

@@ -26,7 +26,7 @@ public class ConsistentThrowing : AbstractExtendedVariant {
         // so we need to check if self.Holder is not null
         if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.ConsistentThrowing) && self.Holder is { } holder) {
             Vector2 holdablePosition = holder.Position
-                + DynamicData.For(holder).Get<Vector2>("carryOffset")
+                + holder.carryOffset
                 + Vector2.UnitY * (holder.Sprite.CarryYOffset / holder.Sprite.Scale.Y);
             self.Carry(holdablePosition.Floor());
 

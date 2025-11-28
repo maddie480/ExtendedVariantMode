@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
         private static void modJumpGraceTimer(Player p) {
             if (GetVariantValue<float>(Variant.CoyoteTime) != 1f) {
                 // default is 0.1
-                new DynData<Player>(p)["jumpGraceTimer"] = GetVariantValue<float>(Variant.CoyoteTime) * 0.1f;
+                p.jumpGraceTimer = GetVariantValue<float>(Variant.CoyoteTime) * 0.1f;
             }
         }
 

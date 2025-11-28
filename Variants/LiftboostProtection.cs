@@ -6,12 +6,13 @@ using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
+using System.Collections.Generic;
 using Platform = Celeste.Platform;
+using Monocle;
 
 namespace ExtendedVariants.Variants {
     public class LiftboostProtection : AbstractExtendedVariant {
-        private const string PLATFORM_LIFT_SPEED_HISTORY = "ExtendedVariantMode.Platform.liftSpeedHistory";
+        private static readonly Dictionary<Platform, LiftSpeedHistory> histories = new Dictionary<Platform, LiftSpeedHistory>();
 
         private static bool TryGetPlatform(Player player, Vector2 dir, out Platform platform) {
             if (dir.X == 0f && dir.Y > 0f)
@@ -23,19 +24,17 @@ namespace ExtendedVariants.Variants {
         }
 
         private static LiftSpeedHistory GetLiftSpeedHistory(Platform platform) {
-            var dynamicData = DynamicData.For(platform);
-
-            if (dynamicData.TryGet<LiftSpeedHistory>(PLATFORM_LIFT_SPEED_HISTORY, out var liftSpeedHistory))
+            if (histories.TryGetValue(platform, out var liftSpeedHistory))
                 return liftSpeedHistory;
 
             liftSpeedHistory = new LiftSpeedHistory();
-            dynamicData.Set(PLATFORM_LIFT_SPEED_HISTORY, liftSpeedHistory);
+            histories[platform] = liftSpeedHistory;
 
             return liftSpeedHistory;
         }
 
         private static bool TryGetLiftSpeedHistory(Platform platform, out LiftSpeedHistory liftSpeedHistory)
-            => DynamicData.For(platform).TryGet(PLATFORM_LIFT_SPEED_HISTORY, out liftSpeedHistory);
+            => histories.TryGetValue(platform, out liftSpeedHistory);
 
         private static Vector2 GetCorrectedLiftSpeed(Platform platform) {
             if (!TryGetLiftSpeedHistory(platform, out var liftSpeedHistory))
@@ -49,6 +48,16 @@ namespace ExtendedVariants.Variants {
 
             float CorrectLiftSpeed(float minusTwo, float minusOne, float current)
                 => Math.Sign(current) * Math.Max(Math.Abs(current), Math.Min(Math.Sign(current) * minusOne, Math.Sign(current) * (2f * minusOne - minusTwo)));
+        }
+
+        private static void onEntityRemoved(On.Monocle.Entity.orig_Removed orig, Entity self, Scene scene) {
+            if (self is Platform platform) histories.Remove(platform);
+            orig(self, scene);
+        }
+
+        private static void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+            histories.Clear();
+            orig(self);
         }
 
         private static ILHook il_Celeste_Player_Orig_WallJump;
@@ -70,6 +79,8 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Platform.MoveVCollideSolids += PatchLiftboostProtectionY;
             IL.Celeste.Platform.MoveHCollideSolidsAndBounds += PatchLiftboostProtectionX;
             IL.Celeste.Platform.MoveVCollideSolidsAndBounds_Level_float_bool_Action3_bool += PatchLiftboostProtectionY;
+            On.Monocle.Entity.Removed += onEntityRemoved;
+            On.Celeste.Level.End += onLevelEnd;
         }
 
         public override void Unload() {
@@ -88,6 +99,10 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Platform.MoveVCollideSolids -= PatchLiftboostProtectionY;
             IL.Celeste.Platform.MoveHCollideSolidsAndBounds -= PatchLiftboostProtectionX;
             IL.Celeste.Platform.MoveVCollideSolidsAndBounds_Level_float_bool_Action3_bool -= PatchLiftboostProtectionY;
+            On.Monocle.Entity.Removed -= onEntityRemoved;
+            On.Celeste.Level.End -= onLevelEnd;
+
+            histories.Clear();
         }
 
         public LiftboostProtection() : base(variantType: typeof(bool), defaultVariantValue: false) { }

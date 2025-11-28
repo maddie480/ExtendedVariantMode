@@ -25,8 +25,7 @@ namespace ExtendedVariants.Variants {
 
             if (player != null) {
                 // forcefully drag back maxFall to a sensical value if going from 100x fall speed to 1x for example.
-                DynData<Player> playerData = new DynData<Player>(player);
-                playerData["maxFall"] = Math.Min(playerData.Get<float>("maxFall"), 240f * GetVariantValue<float>(Variant.FallSpeed));
+                player.maxFall = Math.Min(player.maxFall, 240f * GetVariantValue<float>(Variant.FallSpeed));
             }
         }
 

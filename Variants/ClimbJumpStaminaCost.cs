@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
             if ((float) Instance.TriggerManager.GetCurrentVariantValue(Variant.ClimbJumpStaminaCost) == 1f) {
                 return orig(self);
             }
-            if (DynamicData.For(self).Get<float>("wallBoostTimer") > 0f) {
+            if (self.wallBoostTimer > 0f) {
                 float climbJumpStaminaCost = (float) Instance.TriggerManager.GetCurrentVariantValue(Variant.ClimbJumpStaminaCost);
                 return self.Stamina + 27.5f * climbJumpStaminaCost;
             }

@@ -37,14 +37,12 @@ namespace ExtendedVariants.Variants {
             => currentState is Player.StNormal or Player.StRedDash or Player.StStarFly or Player.StSwim or Player.StClimb or Player.StBoost;
 
         private static void ForceDash(Player self) {
-            DynamicData selfData = DynamicData.For(self);
-
-            if (selfData.Get<float>("dashCooldownTimer") <= 0f && self.Dashes > 0 && (TalkComponent.PlayerOver == null || !Input.Talk.Pressed)) {
+            if (self.dashCooldownTimer <= 0f && self.Dashes > 0 && (TalkComponent.PlayerOver == null || !Input.Talk.Pressed)) {
                 if (self.LastBooster != null && self.LastBooster.Ch9HubTransition && self.LastBooster.BoostingPlayer)
                     return;
 
                 if (self.CurrentBooster != null) {
-                    if (selfData.Get<bool>("boostRed")) self.StateMachine.State = Player.StRedDash;
+                    if (self.boostRed) self.StateMachine.State = Player.StRedDash;
                     else self.StateMachine.State = Player.StDash;
                 } else {
                     self.StateMachine.State = self.StartDash();

@@ -12,7 +12,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WalllessWallbounce : AbstractExtendedVariant {
         private static readonly MethodInfo m_SuperWallJump = typeof(Player).GetMethod("SuperWallJump", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly MethodInfo m_WallJumpCheck = typeof(Player).GetMethod("WallJumpCheck", BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly MethodInfo m_WallJump = typeof(Player).GetMethod("WallJump", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -132,12 +131,10 @@ namespace ExtendedVariants.Variants {
             bool variantEnabled = (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
             if (!variantEnabled) return false;
 
-            DynamicData playerData = DynamicData.For(player);
-
             bool canWallbounce
                 = canUnDuck
                 && player.DashAttacking
-                && playerData.Invoke<bool>("get_SuperWallJumpAngleCheck")
+                && player.SuperWallJumpAngleCheck
                 && variantEnabled;
 
             if (canWallbounce)
@@ -146,7 +143,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void DoWallbounce(Player player) {
-            DynamicData.For(player).Invoke("SuperWallJump", (int) player.Facing);
+            player.SuperWallJump((int) player.Facing);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace ExtendedVariants.Variants {
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CrouchDashFix))
                 return onGround;
 
-            return Input.MoveY.Value == 1 || DynamicData.For(player).Get<bool>("demoDashed");
+            return Input.MoveY.Value == 1 || player.demoDashed;
         }
     }
 }

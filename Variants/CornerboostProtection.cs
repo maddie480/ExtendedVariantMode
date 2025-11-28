@@ -11,6 +11,8 @@ namespace ExtendedVariants.Variants {
     public class CornerboostProtection : AbstractExtendedVariant {
         private static ILHook il_Celeste_Player_Orig_Update;
 
+        private static bool safeCornerboostReady = false;
+
         public override void Load() {
             il_Celeste_Player_Orig_Update = new ILHook(typeof(Player).GetMethod(nameof(Player.orig_Update), BindingFlags.Instance | BindingFlags.Public), Player_orig_Update_il);
             IL.Celeste.Player.OnCollideH += Player_OnCollideH_il;
@@ -36,7 +38,7 @@ namespace ExtendedVariants.Variants {
             cursor.EmitDelegate<Action<Player>>(disableSafeCornerboostReady);
         }
         private static void disableSafeCornerboostReady(Player player) {
-            DynamicData.For(player).Set("safeCornerboostReady", false);
+            safeCornerboostReady = false;
         }
 
         private static void Player_OnCollideH_il(ILContext il) {
@@ -56,7 +58,7 @@ namespace ExtendedVariants.Variants {
             int state = player.StateMachine.State;
 
             if (state == 0 || state == 2 || state == 5)
-                DynamicData.For(player).Set("safeCornerboostReady", true);
+                safeCornerboostReady = true;
         }
 
         private static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump climbJump, Player player) {
@@ -65,17 +67,15 @@ namespace ExtendedVariants.Variants {
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection))
                 return;
 
-            var dynamicData = DynamicData.For(player);
-
-            if (!(dynamicData.Get<bool?>("safeCornerboostReady") ?? false))
+            if (!safeCornerboostReady)
                 return;
 
-            float wallSpeedRetained = dynamicData.Get<float>("wallSpeedRetained");
+            float wallSpeedRetained = player.wallSpeedRetained;
 
             if (Input.MoveX == Math.Sign(wallSpeedRetained))
-                dynamicData.Set("wallSpeedRetained", wallSpeedRetained + 40f * Input.MoveX);
+                player.wallSpeedRetained = wallSpeedRetained + 40f * Input.MoveX;
 
-            dynamicData.Set("safeCornerboostReady", false);
+            safeCornerboostReady = false;
         }
     }
 }

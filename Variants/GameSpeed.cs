@@ -96,9 +96,8 @@ namespace ExtendedVariants.Variants {
                         foreach (Sprite sprite in entity.Components.GetAll<Sprite>()) {
                             if (sprite.Animating) {
                                 // if the current animation is waaaay over, bring it to a more sane value.
-                                DynData<Sprite> data = new DynData<Sprite>(sprite);
-                                if (Math.Abs(data.Get<float>("animationTimer")) >= data.Get<Sprite.Animation>("currentAnimation").Delay * 2) {
-                                    data["animationTimer"] = data.Get<Sprite.Animation>("currentAnimation").Delay;
+                                if (Math.Abs(sprite.animationTimer) >= sprite.currentAnimation.Delay * 2) {
+                                    sprite.animationTimer = sprite.currentAnimation.Delay;
                                     Logger.Log(LogLevel.Info, "ExtendedVariantMode/GameSpeed", $"Sanified animation for {sprite.Texture?.AtlasPath}");
                                 }
                             }
@@ -108,10 +107,9 @@ namespace ExtendedVariants.Variants {
                     CassetteBlockManager manager = level.Tracker.GetEntity<CassetteBlockManager>();
                     if (manager != null) {
                         // check if the beatTimer of the cassette block manager went overboard or not.
-                        DynData<CassetteBlockManager> data = new DynData<CassetteBlockManager>(manager);
-                        if (data.Get<float>("beatTimer") > 0.166666672f * 2) {
+                        if (manager.beatTimer > 0.166666672f * 2) {
                             // this is madness!
-                            data["beatTimer"] = 0.166666672f;
+                            manager.beatTimer = 0.166666672f;
                             Logger.Log(LogLevel.Info, "ExtendedVariantMode/GameSpeed", "Sanified cassette block beat timer");
                         }
                     }

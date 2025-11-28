@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
                     origSpotlightAlpha = player.Light.Alpha;
                     player.Light.Alpha = 0f;
                 } else if (deadPlayer != null) {
-                    VertexLight light = new DynData<PlayerDeadBody>(deadPlayer).Get<VertexLight>("light");
+                    VertexLight light = deadPlayer.light;
                     origSpotlightAlpha = light.Alpha;
                     light.Alpha = 0f;
                 }
@@ -50,7 +50,7 @@ namespace ExtendedVariants.Variants {
                 if (player != null) {
                     player.Light.Alpha = origSpotlightAlpha;
                 } else if (deadPlayer != null) {
-                    VertexLight light = new DynData<PlayerDeadBody>(deadPlayer).Get<VertexLight>("light");
+                    VertexLight light = deadPlayer.light;
                     light.Alpha = origSpotlightAlpha;
                 }
             }

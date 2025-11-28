@@ -38,10 +38,9 @@ namespace ExtendedVariants.Variants {
                 object o = coroutine.Current;
                 if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while (hasHeldDash(self) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
-                        DynData<Player> selfData = new DynData<Player>(self);
-                        selfData["dashAttackTimer"] = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
-                        selfData["gliderBoostTimer"] = 0.30f; // hold the glider boost timer to still get boosted by jellies.
+                    while (GetVariantValue<bool>(Variant.HeldDash) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
+                        self.dashAttackTimer = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
+                        self.gliderBoostTimer = 0.30f; // hold the glider boost timer to still get boosted by jellies.
 
                         yield return null;
                     }
@@ -77,15 +76,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private static int modDashTrailCounter(int dashTrailCounter, Player self) {
-            if (hasHeldDash(self)) {
+            if (GetVariantValue<bool>(Variant.HeldDash)) {
                 return 2; // lock the counter to 2 to have an infinite trail
             }
             return dashTrailCounter;
-        }
-
-        private static bool hasHeldDash(Player self) {
-            // expose an "ExtendedVariantsHeldDash" DynData field to other mods.
-            return GetVariantValue<bool>(Variant.HeldDash) || (new DynData<Player>(self).Data.TryGetValue("ExtendedVariantsHeldDash", out object o) && o is bool b && b);
         }
     }
 }
