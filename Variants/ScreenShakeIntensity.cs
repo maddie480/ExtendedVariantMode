@@ -5,12 +5,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ScreenShakeIntensity : AbstractExtendedVariant {
-        private static PropertyInfo shakeVectorInfo = typeof(Level).GetProperty("ShakeVector",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        private static FieldInfo rumbleInfo = typeof(RumbleTrigger).GetField("rumble",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
         public ScreenShakeIntensity() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -33,7 +27,7 @@ namespace ExtendedVariants.Variants {
                 return;
             }
 
-            shakeVectorInfo.SetValue(self, self.ShakeVector * GetVariantValue<float>(Variant.ScreenShakeIntensity), null);
+            self.ShakeVector *= GetVariantValue<float>(Variant.ScreenShakeIntensity);
             orig(self);
         }
 
@@ -43,10 +37,10 @@ namespace ExtendedVariants.Variants {
                 return;
             }
 
-            float tempRumble = (float) rumbleInfo.GetValue(self);
-            rumbleInfo.SetValue(self, tempRumble * GetVariantValue<float>(Variant.ScreenShakeIntensity));
+            float tempRumble = self.rumble;
+            self.rumble = tempRumble * GetVariantValue<float>(Variant.ScreenShakeIntensity);
             orig(self);
-            rumbleInfo.SetValue(self, tempRumble);
+            self.rumble = tempRumble;
         }
     }
 }

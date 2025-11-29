@@ -7,9 +7,6 @@ using System.Reflection;
 namespace ExtendedVariants.Entities {
     [TrackedAs(typeof(AngryOshiro))]
     public class AutoDestroyingAngryOshiro : AngryOshiro {
-        // cached accessor for AngryOshiro's "state" private field.
-        private static FieldInfo stateMachine = typeof(AngryOshiro).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
-
         private const int StWaitingOffset = 9;
 
         private float waitTimer;

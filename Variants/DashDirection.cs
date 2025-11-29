@@ -10,11 +10,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DashDirection : AbstractExtendedVariant {
 
-        private static FieldInfo playerLastAim = typeof(Player).GetField("lastAim", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerCalledDashEvents = typeof(Player).GetField("calledDashEvents", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerBeforeDashSpeed = typeof(Player).GetField("beforeDashSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerLastDashes = typeof(Player).GetField("lastDashes", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private static Hook canDashHook;
         private static int dashCountBeforeDash;
         private static Vector2 dashDirectionBeforeDash;
@@ -75,14 +70,14 @@ namespace ExtendedVariants.Variants {
 
         private static int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
             dashCountBeforeDash = self.Dashes;
-            dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
+            dashDirectionBeforeDash = self.lastAim;
             return orig(self);
         }
 
         private static void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
             if (self.StateMachine.State == Player.StDash || self.StateMachine.State == Player.StRedDash) {
                 dashCountBeforeDash = self.Dashes;
-                dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
+                dashDirectionBeforeDash = self.lastAim;
             }
 
             orig(self);
@@ -114,7 +109,7 @@ namespace ExtendedVariants.Variants {
             if (self.OverrideDashDirection.HasValue) {
                 direction = self.OverrideDashDirection.Value;
             } else {
-                direction = (Vector2) playerLastAim.GetValue(self);
+                direction = self.lastAim;
             }
 
             if (isDashDirectionAllowed(direction)) {
@@ -129,7 +124,7 @@ namespace ExtendedVariants.Variants {
             // forbidden direction! aaa
             if (direction != dashDirectionBeforeDash && isDashDirectionAllowed(dashDirectionBeforeDash)) {
                 // an allowed dash direction was held before the freeze frames, so just redirect the dash
-                playerLastAim.SetValue(self, dashDirectionBeforeDash);
+                self.lastAim = dashDirectionBeforeDash;
 
                 // continue with the dash like normal.
                 while (vanillaCoroutine.MoveNext()) {
@@ -140,13 +135,13 @@ namespace ExtendedVariants.Variants {
             }
 
             // prevent DashEnd from triggering dash events (no dash sound)
-            playerCalledDashEvents.SetValue(self, true);
+            self.calledDashEvents = true;
             // restore pre-dash speed
-            self.Speed = (Vector2) playerBeforeDashSpeed.GetValue(self);
+            self.Speed = self.beforeDashSpeed;
             // restore pre-dash dash count
             self.Dashes = dashCountBeforeDash;
             // prevent the hair from flashing
-            playerLastDashes.SetValue(self, self.Dashes);
+            self.lastDashes = self.Dashes;
 
             // if in a bubble, make the bubble explode
             if (self.CurrentBooster != null) {

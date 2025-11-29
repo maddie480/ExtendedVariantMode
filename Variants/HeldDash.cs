@@ -11,9 +11,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class HeldDash : AbstractExtendedVariant {
-        // allows to check with reflection that Input.CrouchDash exists before using it.
-        private static FieldInfo crouchDash = typeof(Input).GetField("CrouchDash");
-
         public HeldDash() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -38,7 +35,7 @@ namespace ExtendedVariants.Variants {
                 object o = coroutine.Current;
                 if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while (GetVariantValue<bool>(Variant.HeldDash) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
+                    while (GetVariantValue<bool>(Variant.HeldDash) && (Input.Dash.Check || Input.CrouchDash.Check)) {
                         self.dashAttackTimer = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
                         self.gliderBoostTimer = 0.30f; // hold the glider boost timer to still get boosted by jellies.
 
@@ -50,10 +47,6 @@ namespace ExtendedVariants.Variants {
             }
 
             yield break;
-        }
-
-        private static bool crouchDashCheck() {
-            return Input.CrouchDash.Check;
         }
 
         /// <summary>

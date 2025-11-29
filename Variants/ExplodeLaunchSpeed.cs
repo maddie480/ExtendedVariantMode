@@ -7,8 +7,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ExplodeLaunchSpeed : AbstractExtendedVariant {
-        private static readonly FieldInfo playerExplodeLaunchBoostTimer = typeof(Player).GetField("explodeLaunchBoostTimer", BindingFlags.NonPublic | BindingFlags.Instance);
-
         public ExplodeLaunchSpeed() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -35,8 +33,8 @@ namespace ExtendedVariants.Variants {
                         // cancel super boost
                         player.Speed.X /= 1.2f;
                     } else {
-                        // cancel super boost leniency on the Celeste beta (this field does not exist on stable)
-                        playerExplodeLaunchBoostTimer?.SetValue(player, 0f);
+                        // cancel super boost leniency
+                        player.explodeLaunchBoostTimer = 0f;
                     }
                 }
             }

@@ -16,9 +16,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class JumpCount : AbstractExtendedVariant {
 
-        private static FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerJumpGraceTimer = typeof(Player).GetField("jumpGraceTimer", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private static int jumpBuffer = 0;
 
         private static JumpCooldown jumpCooldown;
@@ -167,7 +164,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void refillJumpBuffer(Player player) {
-            float jumpGraceTimer = (float) playerJumpGraceTimer.GetValue(player);
+            float jumpGraceTimer = player.jumpGraceTimer;
 
             if (jumpGraceTimer > 0f && GetVariantValue<bool>(Variant.ResetJumpCountOnGround)) {
                 // JumpCount - 1 because the first jump is from vanilla Celeste
@@ -250,7 +247,7 @@ namespace ExtendedVariants.Variants {
             jumpCooldown.ArmCooldown();
 
             // be sure that the sound played is not the dream jump one.
-            playerDreamJump.SetValue(self, false);
+            self.dreamJump = false;
 
             return 1f;
         }

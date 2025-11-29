@@ -20,7 +20,7 @@ namespace ExtendedVariants {
             if (Everest.LuaLoader.Context != null) {
                 // break NLua open and get its reference map. it stays the same, so we only have to do that once.
                 nluaObjectTranslator = (ObjectTranslator) typeof(Lua).GetField("_translator", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Everest.LuaLoader.Context);
-                nluaReferenceMap = (Dictionary<object, int>) typeof(ObjectTranslator).GetField("_objectsBackMap").GetValue(nluaObjectTranslator);
+                nluaReferenceMap = (Dictionary<object, int>) typeof(ObjectTranslator).GetField("_objectsBackMap", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(nluaObjectTranslator);
                 nluaCollectObject = typeof(ObjectTranslator).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance, null,
                     CallingConventions.Any, new Type[] { typeof(int) }, null);
             }
