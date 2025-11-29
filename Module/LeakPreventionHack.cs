@@ -19,8 +19,8 @@ namespace ExtendedVariants {
         static LeakPreventionHack() {
             if (Everest.LuaLoader.Context != null) {
                 // break NLua open and get its reference map. it stays the same, so we only have to do that once.
-                nluaObjectTranslator = new DynData<Lua>(Everest.LuaLoader.Context).Get<ObjectTranslator>("_translator");
-                nluaReferenceMap = new DynData<ObjectTranslator>(nluaObjectTranslator).Get<Dictionary<object, int>>("_objectsBackMap");
+                nluaObjectTranslator = (ObjectTranslator) typeof(Lua).GetField("_translator", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Everest.LuaLoader.Context);
+                nluaReferenceMap = (Dictionary<object, int>) typeof(ObjectTranslator).GetField("_objectsBackMap").GetValue(nluaObjectTranslator);
                 nluaCollectObject = typeof(ObjectTranslator).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance, null,
                     CallingConventions.Any, new Type[] { typeof(int) }, null);
             }
