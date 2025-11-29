@@ -98,16 +98,11 @@ namespace ExtendedVariants.Variants {
 
             // jump to the next MirrorMode usage again
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Ldfld && ((FieldReference) instr.Operand).Name.Contains("MirrorMode"))) {
-                // jump back 2 steps
-                cursor.Index -= 2;
-
                 Logger.Log("ExtendedVariantMode/UpsideDown", $"Adding upside down delegate call at {cursor.Index} in CIL code for LevelRender for sprite effects");
 
                 // jump over "SaveData.Instance.Assists.MirrorMode ? SpriteEffects.FlipHorizontally : SpriteEffects.None"
-                // that's 3 instructions to load MirrorMode, and 4 assigning either 1 or 0 to it
-                cursor.Index += 7;
-
-                // and replace it with a delegate call
+                // to the next parameter, that is 0f
+                cursor.GotoNext(MoveType.AfterLabel, instr => instr.MatchLdcR4(0f));
                 cursor.EmitDelegate<Func<SpriteEffects, SpriteEffects>>(applyUpsideDownEffectToSprites);
             }
         }
