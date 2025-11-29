@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Runtime.CompilerServices;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -53,6 +54,8 @@ namespace ExtendedVariants.Variants {
             // CelesteTAS relies on this method being non-static
             return instance.modZoom(zoom);
         }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private float modZoom(float zoom) {
             return zoom * GetVariantValue<float>(Variant.ZoomLevel);
         }

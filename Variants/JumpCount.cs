@@ -10,6 +10,7 @@ using MonoMod.Cil;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -22,7 +23,11 @@ namespace ExtendedVariants.Variants {
 
         private static JumpCooldown jumpCooldown;
 
+        private static JumpCount instance;
+
         public JumpCount(JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
+            instance = this;
+
             DashCount.OnDashRefill += dashRefilled;
             JumpCount.jumpCooldown = jumpCooldown;
         }
@@ -104,7 +109,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
 
                 // replace the jumpGraceTimer with the modded value
-                cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJump);
+                cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJumpStatic);
             }
 
             // go back to the beginning of the method
@@ -215,10 +220,16 @@ namespace ExtendedVariants.Variants {
             }
         }
 
+        private static float canJumpStatic(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
+            // Frogeline Project relies on this method being non-static
+            return instance.canJump(initialJumpGraceTimer, self, canWallJumpRight, canWallJumpLeft);
+        }
+
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
-        private static float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
             if (GetVariantValue<int>(Variant.JumpCount) == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
                 return 0f;
