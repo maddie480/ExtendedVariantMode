@@ -23,9 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-<!--/-:replacements:noEmit -->
         <PackageReference Include="CelesteMod.Publicizer" Version="*" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
-<!--/+:replacements:noEmit -->
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll" Private="false" />
         <Reference Include="$(CelestePrefix)\FNA.dll" Private="false" />
 
