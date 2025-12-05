@@ -150,7 +150,7 @@ namespace ExtendedVariants.Variants {
             // the delta time is Engine.RawDeltaTime * TimeRate * TimeRateB
             // we want to bound TimeRate * TimeRateB between 0.5 and 1.6
             // (this is the span of the vanilla Game Speed variant)
-            float timeRate = Engine.TimeRate * Engine.TimeRateB;
+            float timeRate = Engine.EffectiveTimeRate;
 
             if (timeRate < 0.5f) {
                 return Engine.RawDeltaTime * 0.5f;

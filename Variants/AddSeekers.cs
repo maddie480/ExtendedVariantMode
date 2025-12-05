@@ -151,7 +151,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static float transformTimeRate(float vanillaTimeRate) {
-            return GetVariantValue<bool>(Variant.DisableSeekerSlowdown) || killSeekerSlowdownToFixHeart ? Engine.TimeRate : vanillaTimeRate;
+            return GetVariantValue<bool>(Variant.DisableSeekerSlowdown) || killSeekerSlowdownToFixHeart ? 1f : vanillaTimeRate;
         }
 
         private static void onHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {

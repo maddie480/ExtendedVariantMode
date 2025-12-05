@@ -19,7 +19,9 @@ namespace ExtendedVariants.Variants.Vanilla {
 
         public override void VariantValueChanged() {
             int gameSpeed = getActiveAssistValues().GameSpeed;
+#pragma warning disable CS0618 // ignore the warning, because we're actually manipulating vanilla Variant Mode here
             Engine.TimeRateB = gameSpeed / 10f;
+#pragma warning restore CS0618
         }
 
         protected override Assists applyVariantValue(Assists target, object value) {
