@@ -92,6 +92,7 @@ const BooleanVariants = [
     "BadelineChasersEverywhere",
     "BounceEverywhere",
     "BufferableGrab",
+    "CancelStLaunchOnGround",
     "ChangePatternsOfExistingBosses",
     "ConsistentThrowing",
     "CornerboostProtection",
