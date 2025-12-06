@@ -459,15 +459,15 @@ namespace ExtendedVariants {
                     ExtendedVariantsModule.Variant.GlitchEffect, ExtendedVariantsModule.Variant.AnxietyEffect, ExtendedVariantsModule.Variant.BlurLevel, ExtendedVariantsModule.Variant.BackgroundBlurLevel }
                     .Contains(variant)) {
                     // percentage variants
-                    enabledVariantsToDisplay.Add($"{variantName}: {((float) variantValue) * 100}%");
+                    enabledVariantsToDisplay.Add($"{variantName}: {FormatFloat((float)variantValue * 100)}%");
 
                 } else if (new ExtendedVariantsModule.Variant[] { ExtendedVariantsModule.Variant.BadelineLag, ExtendedVariantsModule.Variant.DelayBetweenBadelines,
                     ExtendedVariantsModule.Variant.SnowballDelay, ExtendedVariantsModule.Variant.RegularHiccups }.Contains(variant)) {
                     // time variants
-                    enabledVariantsToDisplay.Add($"{variantName}: {variantValue}s");
+                    enabledVariantsToDisplay.Add($"{variantName}: {FormatFloat(variantValue)}s");
 
                 } else if (variant == ExtendedVariantsModule.Variant.SlowfallSpeedThreshold) {
-                    enabledVariantsToDisplay.Add($"{variantName}: {variantValue}px/s");
+                    enabledVariantsToDisplay.Add($"{variantName}: {FormatFloat(variantValue)}px/s");
 
                 } else if (variant == ExtendedVariantsModule.Variant.CornerCorrection) {
                     enabledVariantsToDisplay.Add($"{variantName}: {variantValue}px");
@@ -484,7 +484,7 @@ namespace ExtendedVariants {
 
                 } else if (variantType == typeof(float)) {
                     // multiplier variants
-                    enabledVariantsToDisplay.Add($"{variantName}: {variantValue}x");
+                    enabledVariantsToDisplay.Add($"{variantName}: {FormatFloat(variantValue)}x");
 
                 } else if (variantType.IsEnum) {
                     // enum variants
@@ -496,6 +496,8 @@ namespace ExtendedVariants {
             }
 
             infoPanel.Update(enabledVariantsToDisplay);
+
+            static string FormatFloat(object f) => ModOptionsEntries.FormatFloat((float)f);
         }
 
         public static string GetVanillaVariantLabel(ExtendedVariantsModule.Variant variant) {
