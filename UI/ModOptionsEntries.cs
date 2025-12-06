@@ -122,12 +122,7 @@ namespace ExtendedVariants.UI {
                     }
 
                     if (valueToFormat is float f) {
-                        string formatted = $"{f:n3}";
-                        // trim trailing zeroes
-                        while (formatted.EndsWith("0")) formatted = formatted.Substring(0, formatted.Length - 1);
-                        // if we trimmed all zeroes, trim the dot as well
-                        if (formatted.EndsWith(".")) formatted = formatted.Substring(0, formatted.Length - 1);
-                        return formatted + suffix;
+                        return FormatFloat(f) + suffix;
                     }
 
                     return valueToFormat + suffix;
@@ -137,6 +132,15 @@ namespace ExtendedVariants.UI {
             slider.Change(i => valueSetter(choices[i]));
 
             return slider;
+        }
+
+        internal static string FormatFloat(float f) {
+            string formatted = $"{f:n3}";
+            // trim trailing zeroes
+            while (formatted.EndsWith("0")) formatted = formatted.Substring(0, formatted.Length - 1);
+            // if we trimmed all zeroes, trim the dot as well
+            if (formatted.EndsWith(".")) formatted = formatted.Substring(0, formatted.Length - 1);
+            return formatted;
         }
 
         private int valueToIndex<T>(T value, List<T> choices) where T : IComparable {
