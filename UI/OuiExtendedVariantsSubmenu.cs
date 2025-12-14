@@ -1,5 +1,5 @@
 ﻿using Celeste;
-using Celeste.Mod.EV;
+using Celeste.Mod;
 using Celeste.Mod.UI;
 using System.Collections;
 
