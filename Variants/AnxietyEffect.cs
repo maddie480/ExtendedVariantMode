@@ -7,7 +7,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AnxietyEffect : AbstractExtendedVariant {
-        private bool anxietyCustomized = false;
+        private static bool anxietyCustomized = false;
 
         public AnxietyEffect() : base(variantType: typeof(float), defaultVariantValue: -1f) { }
 
@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
             Distort.AnxietyOrigin = Distort.AnxietyOrigin;
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             orig(self);
 
             if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
@@ -60,7 +60,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modDistortRender(ILContext il) {
+        private static void modDistortRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // make the vanilla Distort.Render method aware of manually modded anxiety
@@ -70,7 +70,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float transformAnxietyValue(float originalValue) {
+        private static float transformAnxietyValue(float originalValue) {
             if (GetVariantValue<float>(Variant.AnxietyEffect) != -1) {
                 // anxiety is modded
                 return GetVariantValue<float>(Variant.AnxietyEffect);

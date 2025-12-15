@@ -19,7 +19,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.SwimUpdate -= onSwimUpdate;
         }
 
-        private int onSwimUpdate(On.Celeste.Player.orig_SwimUpdate orig, Player self) {
+        private static int onSwimUpdate(On.Celeste.Player.orig_SwimUpdate orig, Player self) {
             int result = orig(self);
 
             if (!GetVariantValue<bool>(Variant.PreserveExtraDashesUnderwater)

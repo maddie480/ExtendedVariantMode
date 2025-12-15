@@ -19,7 +19,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modPlayerNormalUpdate;
         }
 
-        private void modPlayerNormalUpdate(ILContext il) {
+        private static void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(20f))) {
@@ -28,7 +28,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float getWallSlidingSpeed(float orig) {
+        private static float getWallSlidingSpeed(float orig) {
             return orig * GetVariantValue<float>(Variant.WallSlidingSpeed);
         }
     }

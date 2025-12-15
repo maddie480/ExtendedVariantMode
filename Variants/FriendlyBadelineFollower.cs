@@ -24,9 +24,9 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= onPlayerUpdate;
         }
 
-        private bool wasActiveOnLastFrame = false;
+        private static bool wasActiveOnLastFrame = false;
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             Player player = self.Tracker.GetEntity<Player>();
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             wasActiveOnLastFrame = GetVariantValue<bool>(Variant.FriendlyBadelineFollower);
         }
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             Level level = Engine.Scene as Level;

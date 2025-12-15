@@ -122,12 +122,7 @@ namespace ExtendedVariants.UI {
                     }
 
                     if (valueToFormat is float f) {
-                        string formatted = $"{f:n3}";
-                        // trim trailing zeroes
-                        while (formatted.EndsWith("0")) formatted = formatted.Substring(0, formatted.Length - 1);
-                        // if we trimmed all zeroes, trim the dot as well
-                        if (formatted.EndsWith(".")) formatted = formatted.Substring(0, formatted.Length - 1);
-                        return formatted + suffix;
+                        return FormatFloat(f) + suffix;
                     }
 
                     return valueToFormat + suffix;
@@ -137,6 +132,15 @@ namespace ExtendedVariants.UI {
             slider.Change(i => valueSetter(choices[i]));
 
             return slider;
+        }
+
+        internal static string FormatFloat(float f) {
+            string formatted = $"{f:n3}";
+            // trim trailing zeroes
+            while (formatted.EndsWith("0")) formatted = formatted.Substring(0, formatted.Length - 1);
+            // if we trimmed all zeroes, trim the dot as well
+            if (formatted.EndsWith(".")) formatted = formatted.Substring(0, formatted.Length - 1);
+            return formatted;
         }
 
         private int valueToIndex<T>(T value, List<T> choices) where T : IComparable {
@@ -198,7 +202,7 @@ namespace ExtendedVariants.UI {
             }
 
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
-            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            VariantRandomizer.RefreshEnabledVariantsDisplayList();
         }
 
         private void setVariantValue(Variant variantChange, object newValue) {
@@ -308,14 +312,15 @@ namespace ExtendedVariants.UI {
                     Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
                     Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
                     Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
-                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn,
+                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.SpawnDashCount, Variant.ScreenTransitionDashCount,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
                     Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround, Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown,
                     Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
                     Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
                     Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
                     Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
-                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold
+                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold, Variant.JumpBoost,
+                    Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -364,10 +369,15 @@ namespace ExtendedVariants.UI {
 
                 menu.Add(buildHeading(menu, "JUMPING"));
                 menu.Add(getScaleOption(Variant.JumpHeight, "x", multiplierScale));
+
+                TextMenuOptionExt<int> jumpBoostOption;
+                menu.Add(jumpBoostOption = getScaleOption(Variant.JumpBoost, "x", multiplierScaleWithNegatives));
+                jumpBoostOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPBOOST_HINT_2"));
+                jumpBoostOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_JUMPBOOST_HINT_1"));
+
                 menu.Add(getScaleOption(Variant.JumpDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.WallBouncingSpeed, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.DisableWallJumping));
-                menu.Add(getToggleOption(Variant.DisableClimbJumping));
                 menu.Add(getToggleOption(Variant.DisableJumpingOutOfWater));
                 menu.Add(getToggleOption(Variant.DisableNeutralJumping));
                 menu.Add(getScaleOption(Variant.WallJumpDistance, "px", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }));
@@ -420,6 +430,39 @@ namespace ExtendedVariants.UI {
                 TextMenuOptionExt<int> slowfallSpeedThreshold;
                 menu.Add(slowfallSpeedThreshold = getScaleOption(Variant.SlowfallSpeedThreshold, "px/s", new float[] { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000 }));
                 slowfallSpeedThreshold.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_SLOWFALLSPEEDTHRESHOLD_HINT"));
+
+                menu.Add(buildHeading(menu, "CLIMBING"));
+                TextMenuOptionExt<int> climbUpSpeedMult;
+                menu.Add(climbUpSpeedMult = getScaleOption(Variant.ClimbUpSpeed, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbDownSpeedMult;
+                menu.Add(climbDownSpeedMult = getScaleOption(Variant.ClimbDownSpeed, "x", multiplierScaleWithNegatives));
+
+                menu.Add(getToggleOption(Variant.DisableClimbJumping));
+
+                menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
+                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
+
+                TextMenuExt.OnOff trueNoGrabbingOption;
+                menu.Add(trueNoGrabbingOption = getToggleOption(Variant.TrueNoGrabbing));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2"));
+                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1"));
+
+                menu.Add(getScaleOption(Variant.Stamina, "", new int[] {
+                    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
+                    310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
+                }));
+
+                menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
+
+                TextMenuOptionExt<int> climbJumpStaminaCostMult;
+                menu.Add(climbJumpStaminaCostMult = getScaleOption(Variant.ClimbJumpStaminaCost, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbUpStaminaDrainRate;
+                menu.Add(climbUpStaminaDrainRate = getScaleOption(Variant.ClimbUpStaminaDrainRate, "x", multiplierScaleWithNegatives));
+
+                TextMenuOptionExt<int> climbHoldStaminaDrainRate;
+                menu.Add(climbHoldStaminaDrainRate = getScaleOption(Variant.ClimbHoldStaminaDrainRate, "x", multiplierScaleWithNegatives));
 
                 menu.Add(buildHeading(menu, "DASHING"));
                 menu.Add(getScaleOption(Variant.DashSpeed, "x", multiplierScale));
@@ -519,11 +562,24 @@ namespace ExtendedVariants.UI {
                     }[(int) i]
                 ));
                 menu.Add(getToggleOption(Variant.DisableRefillsOnScreenTransition));
-                menu.Add(getToggleOption(Variant.DontRefillStaminaOnGround));
 
                 TextMenuExt.OnOff restoreDashesOnRespawnOption;
                 menu.Add(restoreDashesOnRespawnOption = getToggleOption(Variant.RestoreDashesOnRespawn));
                 restoreDashesOnRespawnOption.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RESTOREDASHESONRESPAWN_NOTE"));
+
+                menu.Add(getScaleOption(Variant.SpawnDashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
+                    if (i == -1) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                    }
+                    return i.ToString();
+                }));
+
+                menu.Add(getScaleOption(Variant.ScreenTransitionDashCount, "", new int[] { -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, i => {
+                    if (i == -1) {
+                        return Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DEFAULT");
+                    }
+                    return i.ToString();
+                }));
 
                 menu.Add(getToggleOption(Variant.PreserveExtraDashesUnderwater));
                 menu.Add(getToggleOption(Variant.DisableDashCooldown));
@@ -574,15 +630,8 @@ namespace ExtendedVariants.UI {
                     return $"{i:F1}px/s";
                 }));
 
-                menu.Add(getScaleOption(Variant.DisableClimbingUpOrDown, "", getEnumValues<DisableClimbingUpOrDown.ClimbUpOrDownOptions>(),
-                    i => Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLECLIMBINGUPORDOWN_" + i)));
                 menu.Add(getScaleOption(Variant.HorizontalSpringBounceDuration, "x", multiplierScale));
                 menu.Add(getScaleOption(Variant.FastFallAcceleration, "x", multiplierScale));
-
-                TextMenuExt.OnOff trueNoGrabbingOption;
-                menu.Add(trueNoGrabbingOption = getToggleOption(Variant.TrueNoGrabbing));
-                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_2"));
-                trueNoGrabbingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_TRUENOGRABBING_HINT_1"));
 
                 menu.Add(buildHeading(menu, "HOLDABLES"));
                 menu.Add(getScaleOption(Variant.PickupDuration, "x", multiplierScale));
@@ -743,10 +792,6 @@ namespace ExtendedVariants.UI {
                 menu.Add(binoStorageToggle = getToggleOption(Variant.PermanentBinoStorage));
                 binoStorageToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_PERMANENTBINOSTORAGE_HINT"));
 
-                menu.Add(getScaleOption(Variant.Stamina, "", new int[] {
-                    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300,
-                    310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500
-                }));
                 menu.Add(getScaleOption(Variant.RegularHiccups, "", multiplierScale, f => f == 0f ? Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DISABLED") : $"{f}s"));
                 menu.Add(getScaleOption(Variant.HiccupStrength, "x", multiplierScale));
                 menu.Add(getToggleOption(Variant.AllStrawberriesAreGoldens));

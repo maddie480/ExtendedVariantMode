@@ -19,6 +19,9 @@ using ..Ahorn, Maple
     variantChange::String="Gravity", enable::Bool=true, newValue::Number=1.0, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
     coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/FloatExtendedVariantSliderTrigger" FloatExtendedVariantSliderTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+    variantChange::String="Gravity", slider::String="gravity", revertOnDeath::Bool=true)
+
 @mapdef Trigger "ExtendedVariantMode/BadelineAttackPatternTrigger" BadelineAttackPatternTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
     variantChange::String="BadelineAttackPattern", enable::Bool=true, newValue::Int=1, revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false,
     coversScreen::Bool=false, flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
@@ -97,6 +100,10 @@ const placements = Ahorn.PlacementDict(
         FloatExtendedVariantTrigger,
         "rectangle"
     ),
+    "Extended Variant from Slider (Extended Variant Mode)" => Ahorn.EntityPlacement(
+        FloatExtendedVariantSliderTrigger,
+        "rectangle"
+    ),
     "Extended Variant Trigger (Badeline Attack Pattern) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         BadelineAttackPatternTrigger,
         "rectangle"
@@ -170,6 +177,9 @@ Ahorn.editingOptions(trigger::IntegerExtendedVariantTrigger) = Dict{String, Any}
     "variantChange" => Ahorn.ExtendedVariantDictionary.IntegerVariants
 )
 Ahorn.editingOptions(trigger::FloatExtendedVariantTrigger) = Dict{String, Any}(
+    "variantChange" => Ahorn.ExtendedVariantDictionary.FloatVariants
+)
+Ahorn.editingOptions(trigger::FloatExtendedVariantSliderTrigger) = Dict{String, Any}(
     "variantChange" => Ahorn.ExtendedVariantDictionary.FloatVariants
 )
 Ahorn.editingOptions(trigger::BadelineAttackPatternTrigger) = Dict{String, Any}(

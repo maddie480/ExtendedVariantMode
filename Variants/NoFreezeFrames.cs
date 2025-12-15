@@ -1,7 +1,4 @@
 ﻿using Celeste;
-using Celeste.Mod;
-using MonoMod.Cil;
-using System;
 using Monocle;
 using Microsoft.Xna.Framework;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
@@ -20,7 +17,7 @@ namespace ExtendedVariants.Variants {
             On.Monocle.Engine.Update += onEngineUpdate;
 
             // this one cuts off calls to orig, so we want to make sure it as close to vanilla as possible.
-            using (new DetourContext { Before = { "*" } }) {
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_BeforeAll").WithPriority(int.MinValue)).Use()) {
                 On.Celeste.Celeste.Freeze += onCelesteFreeze;
             }
         }
@@ -30,7 +27,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Celeste.Freeze -= onCelesteFreeze;
         }
 
-        private void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
+        private static void onCelesteFreeze(On.Celeste.Celeste.orig_Freeze orig, float time) {
             if (GetVariantValue<bool>(Variant.NoFreezeFrames)) {
                 if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
                     Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(time);
@@ -41,7 +38,7 @@ namespace ExtendedVariants.Variants {
             orig(time);
         }
 
-        private void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
+        private static void onEngineUpdate(On.Monocle.Engine.orig_Update orig, Engine self, GameTime gameTime) {
             if (GetVariantValue<bool>(Variant.NoFreezeFrames) && Engine.FreezeTimer > 0f) {
                 if (GetVariantValue<bool>(Variant.NoFreezeFramesAdvanceCassetteBlocks)) {
                     Engine.Scene?.Tracker.GetEntity<CassetteBlockManager>()?.AdvanceMusic(Engine.FreezeTimer);

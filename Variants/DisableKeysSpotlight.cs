@@ -39,13 +39,13 @@ namespace ExtendedVariants.Variants {
                 // add back the light of all keys in the scene (it's still stored in a private field inside it)
                 foreach (Key key in Engine.Scene.Entities.FindAll<Key>()) {
                     if (key.Get<VertexLight>() == null) {
-                        key.Add(new DynData<Key>(key).Get<VertexLight>("light"));
+                        key.Add(key.light);
                     }
                 }
             }
         }
 
-        private void removeKeyLight(On.Celeste.Key.orig_ctor_Vector2_EntityID_Vector2Array orig, Key self, Vector2 position, EntityID id, Vector2[] nodes) {
+        private static void removeKeyLight(On.Celeste.Key.orig_ctor_Vector2_EntityID_Vector2Array orig, Key self, Vector2 position, EntityID id, Vector2[] nodes) {
             orig(self, position, id, nodes);
 
             if (GetVariantValue<bool>(Variant.DisableKeysSpotlight)) {

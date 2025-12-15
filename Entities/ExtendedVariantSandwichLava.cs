@@ -7,10 +7,6 @@ using System.Reflection;
 
 namespace ExtendedVariants.Entities {
     public class ExtendedVariantSandwichLava : SandwichLava {
-        private static FieldInfo iceMode = typeof(SandwichLava).GetField("iceMode", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo topRect = typeof(SandwichLava).GetField("topRect", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo bottomRect = typeof(SandwichLava).GetField("bottomRect", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private bool isIceMode;
         private bool triggeredLeave = false;
 
@@ -31,14 +27,14 @@ namespace ExtendedVariants.Entities {
 
         private void OnDash(Vector2 dashDir) {
             isIceMode = !isIceMode;
-            iceMode.SetValue(this, isIceMode);
+            iceMode = isIceMode;
         }
 
         public override void Added(Scene scene) {
             base.Added(scene);
 
             // initialize the iceMode variable to what we asked for. Nothing else will change it afterwards.
-            iceMode.SetValue(this, isIceMode);
+            iceMode = isIceMode;
 
             // initialize the Y so that the player is in the middle of the sandwich lava
             Player player = SceneAs<Level>().Tracker.GetEntity<Player>();
@@ -54,10 +50,8 @@ namespace ExtendedVariants.Entities {
             Waiting = false;
 
             // prevent the "ease in" effect that is more confusing than anything in our case.
-            LavaRect topRectVal = (LavaRect) topRect.GetValue(this);
-            LavaRect bottomRectVal = (LavaRect) bottomRect.GetValue(this);
-            topRectVal.Position.Y = -360f;
-            bottomRectVal.Position.Y = 0f;
+            topRect.Position.Y = -360f;
+            bottomRect.Position.Y = 0f;
         }
 
         public override void Update() {

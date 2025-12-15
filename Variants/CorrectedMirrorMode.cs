@@ -37,9 +37,7 @@ namespace ExtendedVariants.Variants {
             cursor.GotoNext(MoveType.After, inter => inter.MatchBrfalse(out afterInvertedLabel));
 
             // test if the variant is active
-            cursor.EmitDelegate<Func<bool>>(() => {
-                return (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.CorrectedMirrorMode);
-            });
+            cursor.EmitDelegate<Func<bool>>(checkVariantIsActive);
 
             // if it isn't, skip over the correction check
             cursor.Emit(OpCodes.Brfalse, afterTurnedCheckLabel);
@@ -49,6 +47,10 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Ldfld, f_turned);
             cursor.Emit(OpCodes.Brtrue, afterInvertedLabel);
             cursor.MarkLabel(afterTurnedCheckLabel);
+        }
+
+        private static bool checkVariantIsActive() {
+            return (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.CorrectedMirrorMode);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -11,7 +12,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WalllessWallbounce : AbstractExtendedVariant {
         private static readonly MethodInfo m_SuperWallJump = typeof(Player).GetMethod("SuperWallJump", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly MethodInfo m_WallJumpCheck = typeof(Player).GetMethod("WallJumpCheck", BindingFlags.NonPublic | BindingFlags.Instance);
         private static readonly MethodInfo m_WallJump = typeof(Player).GetMethod("WallJump", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -37,12 +37,13 @@ namespace ExtendedVariants.Variants {
 
             // we want to favor vanilla wallbounce behavior, so we append our own to the end
 
-            if (!cursor.TryGotoNext(
-                    static instr => instr.MatchLdarg(0),
-                    static instr => instr.MatchLdcI4(1),
-                    static instr => instr.MatchCallvirt(m_SuperWallJump),
-                    static instr => instr.MatchLdcI4(0),
-                    static instr => instr.MatchRet())) {
+            if (!cursor.TryGotoNextBestFit(
+                MoveType.Before,
+                static instr => instr.MatchLdarg(0),
+                static instr => instr.MatchLdcI4(1),
+                static instr => instr.MatchCallvirt(m_SuperWallJump),
+                static instr => instr.MatchLdcI4(0),
+                static instr => instr.MatchRet())) {
                 Logger.Log(
                     LogLevel.Error, $"{nameof(ExtendedVariantsModule)}/{nameof(WalllessWallbounce)}",
                     $"Couldn't find this.SuperWallJump(1) IL sequence to hook in {il.Method.FullName}!"
@@ -84,9 +85,9 @@ namespace ExtendedVariants.Variants {
 
             // we want to favor vanilla wallbounce behavior, so we append our own to the end
             if (!cursor.TryGotoNext(MoveType.After,
-                    static instr => instr.MatchLdarg(0),
-                    static instr => instr.MatchLdcI4(1),
-                    static instr => instr.MatchCallvirt(m_WallJump))) {
+                static instr => instr.MatchLdarg(0),
+                static instr => instr.MatchLdcI4(1),
+                static instr => instr.MatchCallvirt(m_WallJump))) {
                 Logger.Log(
                     LogLevel.Error, $"{nameof(ExtendedVariantsModule)}/{nameof(WalllessWallbounce)}",
                     $"Couldn't find this.WallJump(1) IL sequence to hook in {il.Method.FullName}!"
@@ -130,12 +131,10 @@ namespace ExtendedVariants.Variants {
             bool variantEnabled = (bool) Instance.TriggerManager.GetCurrentVariantValue(Variant.WalllessWallbounce);
             if (!variantEnabled) return false;
 
-            DynamicData playerData = DynamicData.For(player);
-
             bool canWallbounce
                 = canUnDuck
                 && player.DashAttacking
-                && playerData.Invoke<bool>("get_SuperWallJumpAngleCheck")
+                && player.SuperWallJumpAngleCheck
                 && variantEnabled;
 
             if (canWallbounce)
@@ -144,7 +143,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void DoWallbounce(Player player) {
-            DynamicData.For(player).Invoke("SuperWallJump", (int) player.Facing);
+            player.SuperWallJump((int) player.Facing);
         }
     }
 }

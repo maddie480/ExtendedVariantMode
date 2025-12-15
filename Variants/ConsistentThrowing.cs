@@ -21,12 +21,12 @@ public class ConsistentThrowing : AbstractExtendedVariant {
         On.Celeste.Holdable.Release -= MakeHoldableOffsetConsistent;
     }
 
-    private void MakeHoldableOffsetConsistent(On.Celeste.Holdable.orig_Release orig, Holdable self, Vector2 force) {
-        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.ConsistentThrowing)) {
-            Player holder = self.Holder;
-
+    private static void MakeHoldableOffsetConsistent(On.Celeste.Holdable.orig_Release orig, Holdable self, Vector2 force) {
+        // some mods call Release even though the entity is not held (like PandoraBox clear pipes when entering them)
+        // so we need to check if self.Holder is not null
+        if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.ConsistentThrowing) && self.Holder is { } holder) {
             Vector2 holdablePosition = holder.Position
-                + DynamicData.For(holder).Get<Vector2>("carryOffset")
+                + holder.carryOffset
                 + Vector2.UnitY * (holder.Sprite.CarryYOffset / holder.Sprite.Scale.Y);
             self.Carry(holdablePosition.Floor());
 

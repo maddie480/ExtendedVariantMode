@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using MonoMod.RuntimeDetour;
-using System;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -13,9 +12,8 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            using (new DetourContext {
-                After = { "*" } // we want to be extra sure we're applied after other mods here.
-            }) {
+            // we want to be extra sure we're applied after other mods here.
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_AfterAll").WithPriority(int.MaxValue)).Use()) {
                 On.Celeste.Level.Update += onLevelUpdate;
             }
         }
@@ -24,7 +22,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.Update -= onLevelUpdate;
         }
 
-        private void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
             if (Input.Aim == null || Input.GliderMoveY == null || Input.MoveY == null || Input.Feather == null) {
                 orig(self);
                 return;

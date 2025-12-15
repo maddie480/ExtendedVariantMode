@@ -18,7 +18,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.OnTransition -= Player_OnTransition;
         }
 
-        private void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self) {
+        private static void Player_OnTransition(On.Celeste.Player.orig_OnTransition orig, Player self) {
             if (GetVariantValue<bool>(Variant.PermanentBinoStorage)) {
                 self.StateMachine.State = Player.StNormal;
             }

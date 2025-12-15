@@ -7,6 +7,7 @@ using Monocle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace ExtendedVariants.Entities {
     /// <summary>
@@ -67,6 +68,7 @@ namespace ExtendedVariants.Entities {
             }
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public override void Render() {
             if (!shouldShowCounter()) {
                 // hide the dash count.

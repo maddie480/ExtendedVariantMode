@@ -8,20 +8,18 @@ using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MonoMod.Utils;
+using System.Collections.Generic;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class AllStrawberriesAreGoldens : AbstractExtendedVariant {
-        private static FieldInfo wiggler = typeof(Strawberry).GetField("wiggler", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo rotateWiggler = typeof(Strawberry).GetField("rotateWiggler", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo bloom = typeof(Strawberry).GetField("bloom", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static MethodInfo onAnimate = typeof(Strawberry).GetMethod("OnAnimate", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static ILHook collectRoutineHook;
+        private static ILHook strawberryUpdateHook;
 
-        private ILHook collectRoutineHook;
-        private ILHook strawberryUpdateHook;
+        private static bool strawberriesWereMadeGolden;
 
-        private bool strawberriesWereMadeGolden;
-
+        private static readonly Dictionary<Strawberry, PlayerInventory> playerInventoriesOnCollection = new Dictionary<Strawberry, PlayerInventory>();
+        private static PlayerInventory? playerInventoryToRestore = null;
 
         public AllStrawberriesAreGoldens() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -36,6 +34,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel += onLoadLevel;
             On.Celeste.Strawberry.OnPlayer += onStrawberryCollected;
             On.Celeste.Session.Restart += onSessionRestart;
+            On.Celeste.LevelLoader.ctor += onEnterNewLevel;
 
             collectRoutineHook = new ILHook(typeof(Strawberry).GetMethod("CollectRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchAllGoldenFlags);
             strawberryUpdateHook = new ILHook(typeof(Strawberry).GetMethod("orig_Update"), onStrawberryUpdate);
@@ -51,19 +50,23 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= onLoadLevel;
             On.Celeste.Strawberry.OnPlayer -= onStrawberryCollected;
             On.Celeste.Session.Restart -= onSessionRestart;
+            On.Celeste.LevelLoader.ctor -= onEnterNewLevel;
 
             if (collectRoutineHook != null) collectRoutineHook.Dispose();
             if (strawberryUpdateHook != null) strawberryUpdateHook.Dispose();
+
+            playerInventoriesOnCollection.Clear();
+            playerInventoryToRestore = null;
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             // strawberries weren't made golden yet, they were just spawned.
             strawberriesWereMadeGolden = false;
 
             orig(self, playerIntro, isFromLoader);
         }
 
-        private PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
+        private static PlayerDeadBody onPlayerDie(On.Celeste.Player.orig_Die orig, Player self, Vector2 direction, bool evenIfInvincible, bool registerDeathInStats) {
             if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 return orig(self, direction, evenIfInvincible, registerDeathInStats);
             }
@@ -93,9 +96,8 @@ namespace ExtendedVariants.Variants {
                     };
 
                     // if the berry saved the player's inventory on collection, pass it over to the scene.
-                    DynData<Strawberry> firstStrawberryData = new DynData<Strawberry>(firstStrawberry);
-                    if (firstStrawberryData.Data.ContainsKey("playerInventoryOnCollection")) {
-                        new DynData<LevelExit>(exit)["playerInventoryToRestore"] = firstStrawberryData.Get<PlayerInventory>("playerInventoryOnCollection");
+                    if (playerInventoriesOnCollection.ContainsKey(firstStrawberry)) {
+                        playerInventoryToRestore = playerInventoriesOnCollection[firstStrawberry];
                     }
 
                     Engine.Scene = exit;
@@ -106,7 +108,7 @@ namespace ExtendedVariants.Variants {
             return deadBody;
         }
 
-        private void onStrawberryUpdate(ILContext il) {
+        private static void onStrawberryUpdate(ILContext il) {
             patchAllGoldenFlags(il);
 
             ILCursor cursor = new ILCursor(il);
@@ -131,19 +133,18 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void patchAllGoldenFlags(ILContext il) {
+        private static void patchAllGoldenFlags(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            while (cursor.TryGotoNext(MoveType.Before, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt<Strawberry>("get_Golden"))) {
                 // replace the Golden flag with a method call (that returns Golden || AllStrawberriesAreGoldens)
                 Logger.Log("ExtendedVariantMode/AllStrawberriesAreGoldens", $"Patching golden strawberry check at {cursor.Index} in IL code for Strawberry.{cursor.Method.Name}");
 
-                cursor.Remove();
-                cursor.EmitDelegate<Func<Strawberry, bool>>(strawberryHasGoldenCollectBehavior);
+                cursor.EmitDelegate<Func<bool, bool>>(strawberryHasGoldenCollectBehavior);
             }
         }
 
-        private Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
+        private static Sprite updateStrawberrySprite(Strawberry self, Sprite currentSprite) {
             if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && !strawberriesWereMadeGolden) {
                 // nothing to do actually.
                 return currentSprite;
@@ -174,8 +175,8 @@ namespace ExtendedVariants.Variants {
 
                 // first, let's remove the components we will replace
                 self.Remove(currentSprite);
-                self.Remove((Wiggler) wiggler.GetValue(self));
-                self.Remove((Wiggler) rotateWiggler.GetValue(self));
+                self.Remove(self.wiggler);
+                self.Remove(self.rotateWiggler);
 
                 // create the new components
                 Sprite newSprite = GFX.SpriteBank.Create(spriteName);
@@ -185,7 +186,7 @@ namespace ExtendedVariants.Variants {
                 if (isGhostBerry) {
                     newSprite.Color = Color.White * 0.8f;
                 }
-                newSprite.OnFrameChange = id => onAnimate.Invoke(self, new object[] { id });
+                newSprite.OnFrameChange = self.OnAnimate;
                 Wiggler newWiggler = Wiggler.Create(0.4f, 4f, v => {
                     newSprite.Scale = Vector2.One * (1f + v * 0.35f);
                 });
@@ -194,23 +195,23 @@ namespace ExtendedVariants.Variants {
                 });
 
                 // fix the bloom (if switched from a strawberry to a golden for example)
-                (bloom.GetValue(self) as BloomPoint).Alpha = (shouldBeGolden || self.Moon || isGhostBerry) ? 0.5f : 1f;
+                self.bloom.Alpha = (shouldBeGolden || self.Moon || isGhostBerry) ? 0.5f : 1f;
 
                 // add the new components and inject them into the strawberry
                 self.Add(newSprite);
                 self.Add(newWiggler);
                 self.Add(newRotateWiggler);
-                wiggler.SetValue(self, newWiggler);
-                rotateWiggler.SetValue(self, newRotateWiggler);
+                self.wiggler = newWiggler;
+                self.rotateWiggler = newRotateWiggler;
                 return newSprite;
             }
         }
 
-        private bool strawberryHasGoldenCollectBehavior(Strawberry berry) {
-            return berry.Golden || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens);
+        private static bool strawberryHasGoldenCollectBehavior(bool orig) {
+            return orig || GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens);
         }
 
-        private void onStrawberryCollected(On.Celeste.Strawberry.orig_OnPlayer orig, Strawberry self, Player player) {
+        private static void onStrawberryCollected(On.Celeste.Strawberry.orig_OnPlayer orig, Strawberry self, Player player) {
             if (!GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens)) {
                 orig(self, player);
                 return;
@@ -228,21 +229,30 @@ namespace ExtendedVariants.Variants {
 
             if (wasCollected) {
                 // store the inventory to restore it if needed.
-                new DynData<Strawberry>(self)["playerInventoryOnCollection"] = player.Inventory;
+                playerInventoriesOnCollection[self] = player.Inventory;
             }
         }
 
-        private Session onSessionRestart(On.Celeste.Session.orig_Restart orig, Session self, string intoLevel) {
+        private static Session onSessionRestart(On.Celeste.Session.orig_Restart orig, Session self, string intoLevel) {
             Session session = orig(self, intoLevel);
 
             if (GetVariantValue<bool>(Variant.AllStrawberriesAreGoldens) && Engine.Scene is LevelExit levelExit) {
-                DynData<LevelExit> exitData = new DynData<LevelExit>(levelExit);
-                if (exitData.Get<LevelExit.Mode>("mode") == LevelExit.Mode.GoldenBerryRestart && exitData.Data.ContainsKey("playerInventoryToRestore")) {
-                    session.Inventory = exitData.Get<PlayerInventory>("playerInventoryToRestore");
+                if (levelExit.mode == LevelExit.Mode.GoldenBerryRestart && playerInventoryToRestore.HasValue) {
+                    session.Inventory = playerInventoryToRestore.Value;
                 }
             }
 
+            playerInventoriesOnCollection.Clear();
+            playerInventoryToRestore = null;
+
             return session;
+        }
+
+        private static void onEnterNewLevel(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            orig(self, session, startPosition);
+
+            playerInventoriesOnCollection.Clear();
+            playerInventoryToRestore = null;
         }
     }
 }

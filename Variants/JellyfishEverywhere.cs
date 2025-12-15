@@ -28,7 +28,7 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -36,12 +36,12 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
             addJellyfishToLevel(self);
         }
 
-        private void addJellyfishToLevel(Level level) {
+        private static void addJellyfishToLevel(Level level) {
             for (int i = 0; i < GetVariantValue<int>(Variant.JellyfishEverywhere); i++) {
                 Player player = level.Tracker.GetEntity<Player>();
                 if (player != null && player.Holding?.Entity?.GetType() != typeof(Glider)) {
@@ -92,7 +92,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool collideOrOffscreenCheck(Level level, Glider jellyfish) {
+        private static bool collideOrOffscreenCheck(Level level, Glider jellyfish) {
             return jellyfish.Position.X + jellyfish.Collider.Right > level.Bounds.Right
                 || jellyfish.Position.X + jellyfish.Collider.Left < level.Bounds.Left
                 || jellyfish.Position.Y + jellyfish.Collider.Top < level.Bounds.Top

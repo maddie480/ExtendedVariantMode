@@ -30,7 +30,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.BloomRenderer.Apply -= onBloomRendererApply;
         }
 
-        private void onBloomRendererApply(ILContext il) {
+        private static void onBloomRendererApply(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<BloomRenderer>("Base"))) {
@@ -48,12 +48,12 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float modBloomBase(float vanilla) {
+        private static float modBloomBase(float vanilla) {
             if (GetVariantValue<float>(Variant.RoomBloom) == -1f) return vanilla;
             return Math.Min(GetVariantValue<float>(Variant.RoomBloom), 1f);
         }
 
-        private float modBloomStrength(float vanilla) {
+        private static float modBloomStrength(float vanilla) {
             if (GetVariantValue<float>(Variant.RoomBloom) == -1f) return vanilla;
             return Math.Max(1, GetVariantValue<float>(Variant.RoomBloom));
         }

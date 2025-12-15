@@ -2,18 +2,12 @@
 using Celeste.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using MonoMod.Utils;
 using System;
 using System.Collections;
-using System.Reflection;
-using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class HeldDash : AbstractExtendedVariant {
-        // allows to check with reflection that Input.CrouchDash exists before using it.
-        private static FieldInfo crouchDash = typeof(Input).GetField("CrouchDash");
-
         public HeldDash() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -30,7 +24,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DashUpdate -= modDashUpdate;
         }
 
-        private IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
+        private static IEnumerator modDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             // intercept the moment when the dash coroutine sends out the dash time
             // so that we can extend it as long as Dash is pressed.
             IEnumerator coroutine = orig(self).SafeEnumerate();
@@ -38,10 +32,9 @@ namespace ExtendedVariants.Variants {
                 object o = coroutine.Current;
                 if (o != null && o.GetType() == typeof(float)) {
                     yield return o;
-                    while (hasHeldDash(self) && (Input.Dash.Check || (crouchDash != null && crouchDashCheck()))) {
-                        DynData<Player> selfData = new DynData<Player>(self);
-                        selfData["dashAttackTimer"] = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
-                        selfData["gliderBoostTimer"] = 0.30f; // hold the glider boost timer to still get boosted by jellies.
+                    while (GetVariantValue<bool>(Variant.HeldDash) && (Input.Dash.Check || Input.CrouchDash.Check)) {
+                        self.dashAttackTimer = 0.15f; // hold the dash attack timer to continue breaking dash blocks and such.
+                        self.gliderBoostTimer = 0.30f; // hold the glider boost timer to still get boosted by jellies.
 
                         yield return null;
                     }
@@ -53,15 +46,11 @@ namespace ExtendedVariants.Variants {
             yield break;
         }
 
-        private bool crouchDashCheck() {
-            return Input.CrouchDash.Check;
-        }
-
         /// <summary>
         /// Edits the DashUpdate method in Player (called while the player is dashing).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modDashUpdate(ILContext il) {
+        private static void modDashUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             Logger.Log("ExtendedVariantMode/HeldDash", $"Patching dashTrailCounter to fix animation with infinite dashes at {cursor.Index} in CIL code for DashUpdate");
@@ -76,16 +65,11 @@ namespace ExtendedVariants.Variants {
             cursor.Emit(OpCodes.Stfld, typeof(Player).GetField("dashTrailCounter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance));
         }
 
-        private int modDashTrailCounter(int dashTrailCounter, Player self) {
-            if (hasHeldDash(self)) {
+        private static int modDashTrailCounter(int dashTrailCounter, Player self) {
+            if (GetVariantValue<bool>(Variant.HeldDash)) {
                 return 2; // lock the counter to 2 to have an infinite trail
             }
             return dashTrailCounter;
-        }
-
-        private bool hasHeldDash(Player self) {
-            // expose an "ExtendedVariantsHeldDash" DynData field to other mods.
-            return GetVariantValue<bool>(Variant.HeldDash) || (new DynData<Player>(self).Data.TryGetValue("ExtendedVariantsHeldDash", out object o) && o is bool b && b);
         }
     }
 }

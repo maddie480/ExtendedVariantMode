@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace ExtendedVariants.Variants {
     public class DashRestriction : AbstractExtendedVariant {
-        private Hook canDashHook;
+        private static Hook canDashHook;
 
         public override object ConvertLegacyVariantValue(int value) {
             return GetDefaultVariantValue();
@@ -34,7 +34,7 @@ namespace ExtendedVariants.Variants {
             if (dashRestrictionType == DashRestrictionType.None)
                 return orig(self);
 
-            bool isGrounded = self.OnGround() || DynamicData.For(self).Get<float>("jumpGraceTimer") > 0f;
+            bool isGrounded = self.OnGround() || self.jumpGraceTimer > 0f;
 
             if ((dashRestrictionType == DashRestrictionType.GroundedOnly && !isGrounded)
                 || (dashRestrictionType == DashRestrictionType.AirborneOnly && isGrounded))

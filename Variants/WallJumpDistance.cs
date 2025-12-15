@@ -20,13 +20,17 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.WallJumpCheck -= onPlayerWallJumpCheck;
         }
 
-        private void onPlayerWallJumpCheck(ILContext il) {
+        private static void onPlayerWallJumpCheck(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(instr => instr.MatchLdcI4(3), instr => instr.MatchStloc(0))) {
                 cursor.Index++;
                 Logger.Log("ExtendedVariantMode/WallJumpDistance", $"Modding wall jump distance at {cursor.Index} in IL for Player.WallJumpCheck");
-                cursor.EmitDelegate<Func<int, int>>(orig => GetVariantValue<int>(Variant.WallJumpDistance));
+                cursor.EmitDelegate<Func<int, int>>(getVariantValue);
             }
+        }
+        private static int getVariantValue(int orig) {
+            if (GetVariantValue<int>(Variant.WallJumpDistance) == 3) return orig;
+            return GetVariantValue<int>(Variant.WallJumpDistance);
         }
     }
 }

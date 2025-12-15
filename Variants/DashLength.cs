@@ -12,8 +12,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class DashLength : AbstractExtendedVariant {
 
-        private ILHook dashCoroutineHookForTimer;
-        private ILHook dashCoroutineHookForCounter;
+        private static ILHook dashCoroutineHookForTimer;
+        private static ILHook dashCoroutineHookForCounter;
 
         public DashLength() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -36,29 +36,27 @@ namespace ExtendedVariants.Variants {
             if (dashCoroutineHookForCounter != null) dashCoroutineHookForCounter.Dispose();
         }
 
-        private void modDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
+        private static void modDashBegin(On.Celeste.Player.orig_DashBegin orig, Player self) {
             orig(self);
 
             if (GetVariantValue<float>(Variant.DashLength) != 1f) {
-                DynData<Player> selfData = new DynData<Player>(self);
                 bool superDash = SaveData.Instance.Assists.SuperDashing;
 
                 // vanilla dash is 0.15, 0.3 with superdash
 
                 // vanilla is 0.3, 0.45 with superdash => in 2x, you get 0.45, 0.75 with superdash
-                selfData["dashAttackTimer"] = (superDash ? 0.3f : 0.15f) * GetVariantValue<float>(Variant.DashLength) + 0.15f;
+                self.dashAttackTimer = (superDash ? 0.3f : 0.15f) * GetVariantValue<float>(Variant.DashLength) + 0.15f;
 
                 // vanilla is 0.55 all the time => in 2x, you get 0.7, 0.85 with superdash
-                selfData["gliderBoostTimer"] = (superDash ? 0.3f : 0.15f) * GetVariantValue<float>(Variant.DashLength) + (superDash ? 0.25f : 0.4f);
+                self.gliderBoostTimer = (superDash ? 0.3f : 0.15f) * GetVariantValue<float>(Variant.DashLength) + (superDash ? 0.25f : 0.4f);
             }
 
             if (GetVariantValue<float>(Variant.DashTimerMultiplier) != 1f) {
-                DynData<Player> selfData = new DynData<Player>(self);
-                selfData["dashAttackTimer"] = GetVariantValue<float>(Variant.DashTimerMultiplier) * selfData.Get<float>("dashAttackTimer");
+                self.dashAttackTimer = GetVariantValue<float>(Variant.DashTimerMultiplier) * self.dashAttackTimer;
             }
         }
 
-        private void modDashLength(ILContext il) {
+        private static void modDashLength(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump where 0.3 or 0.15f are loaded (those are dash times)
@@ -74,11 +72,11 @@ namespace ExtendedVariants.Variants {
         /// Returns the current dash length factor.
         /// </summary>
         /// <returns>The dash length factor (1 = default dash length)</returns>
-        private float determineDashLengthFactor() {
+        private static float determineDashLengthFactor() {
             return GetVariantValue<float>(Variant.DashLength);
         }
 
-        private void modDashTrailCounter(ILContext il) {
+        private static void modDashTrailCounter(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump wherever dashTrailCounter is saved
@@ -92,7 +90,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private int applyDashTrailCounter(int dashTrailCounter) {
+        private static int applyDashTrailCounter(int dashTrailCounter) {
             if (GetVariantValue<float>(Variant.DashLength) != 1f) {
                 float lastDashDuration = SaveData.Instance.Assists.SuperDashing ? 0.3f : 0.15f;
                 return (int) Math.Round(lastDashDuration * GetVariantValue<float>(Variant.DashLength)) - 1;

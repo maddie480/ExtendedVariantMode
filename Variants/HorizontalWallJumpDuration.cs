@@ -25,14 +25,17 @@ namespace ExtendedVariants.Variants {
             hookPlayerOrigWallJump = null;
         }
 
-        private void modForceMoveXTimer(ILContext il) {
+        private static void modForceMoveXTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("forceMoveXTimer"))) {
                 Logger.Log("ExtendedVariantMode/HorizontalWallJumpDuration", $"Modding forceMoveXTimer at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.HorizontalWallJumpDuration));
+                cursor.EmitDelegate<Func<float, float>>(applyHorizontalWallJumpDuration);
                 cursor.Index++;
             }
+        }
+        private static float applyHorizontalWallJumpDuration(float orig) {
+            return orig * GetVariantValue<float>(Variant.HorizontalWallJumpDuration);
         }
     }
 }

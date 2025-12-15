@@ -19,12 +19,16 @@ namespace ExtendedVariants.Variants {
         public override void Unload() {
             IL.Celeste.Holdable.Release -= modHoldableRelease;
         }
-        private void modHoldableRelease(ILContext il) {
+        private static void modHoldableRelease(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Holdable>("cannotHoldDelay"))) {
                 Logger.Log("ExtendedVariantMode/DelayBeforeRegrabbing", $"Modding delay before regrabbing at {cursor.Index} in IL for Holdable.Release");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.DelayBeforeRegrabbing));
+                cursor.EmitDelegate<Func<float, float>>(editDelay);
             }
+        }
+
+        private static float editDelay(float orig) {
+            return orig * GetVariantValue<float>(Variant.DelayBeforeRegrabbing);
         }
     }
 }

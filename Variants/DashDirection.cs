@@ -1,23 +1,18 @@
 ﻿using Celeste;
+using Celeste.Mod;
 using Microsoft.Xna.Framework;
 using System.Reflection;
 using System.Collections;
 using MonoMod.RuntimeDetour;
 using System;
-using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DashDirection : AbstractExtendedVariant {
 
-        private static FieldInfo playerLastAim = typeof(Player).GetField("lastAim", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerCalledDashEvents = typeof(Player).GetField("calledDashEvents", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerBeforeDashSpeed = typeof(Player).GetField("beforeDashSpeed", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerLastDashes = typeof(Player).GetField("lastDashes", BindingFlags.NonPublic | BindingFlags.Instance);
-
-        private Hook canDashHook;
-        private int dashCountBeforeDash;
-        private Vector2 dashDirectionBeforeDash;
+        private static Hook canDashHook;
+        private static int dashCountBeforeDash;
+        private static Vector2 dashDirectionBeforeDash;
 
         public DashDirection() : base(variantType: typeof(bool[][]), defaultVariantValue: new bool[][] { new bool[] { true, true, true }, new bool[] { true, true, true }, new bool[] { true, true, true } }) { }
 
@@ -51,7 +46,7 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void Load() {
-            canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(DashDirection).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Instance), this);
+            canDashHook = new Hook(typeof(Player).GetMethod("get_CanDash"), typeof(DashDirection).GetMethod("modCanDash", BindingFlags.NonPublic | BindingFlags.Static));
             On.Celeste.Player.StartDash += onStartDash;
             On.Celeste.Player.BoostEnd += onBoostEnd;
             On.Celeste.Player.DashCoroutine += onDashCoroutine;
@@ -66,45 +61,43 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.RedDashCoroutine -= onRedDashCoroutine;
         }
 
-        private delegate bool orig_CanDash(Player self);
-
-        private bool modCanDash(orig_CanDash orig, Player self) {
+        private static bool modCanDash(Func<Player, bool> orig, Player self) {
             Vector2 aim = Input.GetAimVector();
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
             return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim));
         }
 
-        private int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
+        private static int onStartDash(On.Celeste.Player.orig_StartDash orig, Player self) {
             dashCountBeforeDash = self.Dashes;
-            dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
+            dashDirectionBeforeDash = self.lastAim;
             return orig(self);
         }
 
-        private void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
+        private static void onBoostEnd(On.Celeste.Player.orig_BoostEnd orig, Player self) {
             if (self.StateMachine.State == Player.StDash || self.StateMachine.State == Player.StRedDash) {
                 dashCountBeforeDash = self.Dashes;
-                dashDirectionBeforeDash = (Vector2) playerLastAim.GetValue(self);
+                dashDirectionBeforeDash = self.lastAim;
             }
 
             orig(self);
         }
 
-        private IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
+        private static IEnumerator onDashCoroutine(On.Celeste.Player.orig_DashCoroutine orig, Player self) {
             if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
         }
 
-        private IEnumerator onRedDashCoroutine(On.Celeste.Player.orig_RedDashCoroutine orig, Player self) {
+        private static IEnumerator onRedDashCoroutine(On.Celeste.Player.orig_RedDashCoroutine orig, Player self) {
             if (areAllDirectionsAllowed()) {
                 return orig(self);
             }
             return modDashCoroutine(orig(self), self);
         }
 
-        private IEnumerator modDashCoroutine(IEnumerator vanillaCoroutine, Player self) {
+        private static IEnumerator modDashCoroutine(IEnumerator vanillaCoroutine, Player self) {
             // make a step forward
             vanillaCoroutine = vanillaCoroutine.SafeEnumerate();
             if (vanillaCoroutine.MoveNext()) {
@@ -116,7 +109,7 @@ namespace ExtendedVariants.Variants {
             if (self.OverrideDashDirection.HasValue) {
                 direction = self.OverrideDashDirection.Value;
             } else {
-                direction = (Vector2) playerLastAim.GetValue(self);
+                direction = self.lastAim;
             }
 
             if (isDashDirectionAllowed(direction)) {
@@ -131,7 +124,7 @@ namespace ExtendedVariants.Variants {
             // forbidden direction! aaa
             if (direction != dashDirectionBeforeDash && isDashDirectionAllowed(dashDirectionBeforeDash)) {
                 // an allowed dash direction was held before the freeze frames, so just redirect the dash
-                playerLastAim.SetValue(self, dashDirectionBeforeDash);
+                self.lastAim = dashDirectionBeforeDash;
 
                 // continue with the dash like normal.
                 while (vanillaCoroutine.MoveNext()) {
@@ -142,13 +135,13 @@ namespace ExtendedVariants.Variants {
             }
 
             // prevent DashEnd from triggering dash events (no dash sound)
-            playerCalledDashEvents.SetValue(self, true);
+            self.calledDashEvents = true;
             // restore pre-dash speed
-            self.Speed = (Vector2) playerBeforeDashSpeed.GetValue(self);
+            self.Speed = self.beforeDashSpeed;
             // restore pre-dash dash count
             self.Dashes = dashCountBeforeDash;
             // prevent the hair from flashing
-            playerLastDashes.SetValue(self, self.Dashes);
+            self.lastDashes = self.Dashes;
 
             // if in a bubble, make the bubble explode
             if (self.CurrentBooster != null) {
@@ -160,7 +153,7 @@ namespace ExtendedVariants.Variants {
             self.StateMachine.State = 0;
         }
 
-        private bool areAllDirectionsAllowed() {
+        private static bool areAllDirectionsAllowed() {
             foreach (bool[] ba in GetVariantValue<bool[][]>(Variant.DashDirection)) {
                 foreach (bool b in ba) {
                     if (!b) return false;
@@ -169,7 +162,7 @@ namespace ExtendedVariants.Variants {
             return true;
         }
 
-        private bool isDashDirectionAllowed(Vector2 direction) {
+        private static bool isDashDirectionAllowed(Vector2 direction) {
             // if directions are not integers, make them integers.
             direction = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 

@@ -5,12 +5,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ScreenShakeIntensity : AbstractExtendedVariant {
-        private PropertyInfo shakeVectorInfo = typeof(Level).GetProperty("ShakeVector",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        private FieldInfo rumbleInfo = typeof(RumbleTrigger).GetField("rumble",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
         public ScreenShakeIntensity() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -27,26 +21,26 @@ namespace ExtendedVariants.Variants {
             On.Celeste.RumbleTrigger.RenderDisplacement -= onRumbleTriggerRenderDisplacement;
         }
 
-        private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
+        private static void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
             if (GetVariantValue<float>(Variant.ScreenShakeIntensity) == 1f) {
                 orig(self);
                 return;
             }
 
-            shakeVectorInfo.SetValue(self, self.ShakeVector * GetVariantValue<float>(Variant.ScreenShakeIntensity), null);
+            self.ShakeVector *= GetVariantValue<float>(Variant.ScreenShakeIntensity);
             orig(self);
         }
 
-        private void onRumbleTriggerRenderDisplacement(On.Celeste.RumbleTrigger.orig_RenderDisplacement orig, RumbleTrigger self) {
+        private static void onRumbleTriggerRenderDisplacement(On.Celeste.RumbleTrigger.orig_RenderDisplacement orig, RumbleTrigger self) {
             if (GetVariantValue<float>(Variant.ScreenShakeIntensity) == 1f) {
                 orig(self);
                 return;
             }
 
-            float tempRumble = (float) rumbleInfo.GetValue(self);
-            rumbleInfo.SetValue(self, tempRumble * GetVariantValue<float>(Variant.ScreenShakeIntensity));
+            float tempRumble = self.rumble;
+            self.rumble = tempRumble * GetVariantValue<float>(Variant.ScreenShakeIntensity);
             orig(self);
-            rumbleInfo.SetValue(self, tempRumble);
+            self.rumble = tempRumble;
         }
     }
 }

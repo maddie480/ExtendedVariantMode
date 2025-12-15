@@ -76,7 +76,7 @@ namespace ExtendedVariants.UI {
                 .Change(i => {
                     ExtendedVariantsModule.Settings.ChangeVariantsInterval = changeVariantsIntervalScale[i];
                     refreshOptionMenuEnabledStatus(items);
-                    ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
+                    VariantRandomizer.UpdateCountersFromSettings();
                 }));
 
             menu.Add(new TextMenu.Slider(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_VARIANTSET"),
@@ -107,7 +107,7 @@ namespace ExtendedVariants.UI {
             }, 0, vanillafyScale.Length - 1, indexFromVanillafyScale(ExtendedVariantsModule.Settings.Vanillafy))
                 .Change(newValue => {
                     ExtendedVariantsModule.Settings.Vanillafy = vanillafyScale[newValue];
-                    ExtendedVariantsModule.Instance.Randomizer.UpdateCountersFromSettings();
+                    VariantRandomizer.UpdateCountersFromSettings();
                 }));
 
             if (!inGame) {

@@ -11,8 +11,7 @@ using Mono.Cecil.Cil;
 
 namespace ExtendedVariants.Variants {
     public class PermanentDashAttack : AbstractExtendedVariant {
-        private Hook dashAttackingHook;
-        private static MethodInfo playerCorrectDashPrecision = typeof(Player).GetMethod("CorrectDashPrecision", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static Hook dashAttackingHook;
 
         public PermanentDashAttack() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -23,8 +22,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             dashAttackingHook = new Hook(
                 typeof(Player).GetMethod("get_DashAttacking"),
-                typeof(PermanentDashAttack).GetMethod("hookOnDashAttacking", BindingFlags.NonPublic | BindingFlags.Instance),
-                this
+                typeof(PermanentDashAttack).GetMethod("hookOnDashAttacking", BindingFlags.NonPublic | BindingFlags.Static)
             );
 
             On.Celeste.Player.Update += onPlayerUpdate;
@@ -41,7 +39,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.OnCollideV -= onPlayerCollide;
         }
 
-        private bool hookOnDashAttacking(Func<Player, bool> orig, Player self) {
+        private static bool hookOnDashAttacking(Func<Player, bool> orig, Player self) {
             if (GetVariantValue<bool>(Variant.PermanentDashAttack)) {
                 return true;
             }
@@ -49,18 +47,18 @@ namespace ExtendedVariants.Variants {
             return orig(self);
         }
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             if (self.StateMachine.State != Player.StDash && GetVariantValue<bool>(Variant.PermanentDashAttack)) {
                 // make the (fake) dash direction match the player's direction, to trigger dash blocks when running into them
                 // without having to dash in the right direction first for example.
                 self.DashDir = self.Speed.SafeNormalize();
-                self.DashDir = (Vector2) playerCorrectDashPrecision.Invoke(self, new object[] { self.DashDir });
+                self.DashDir = self.CorrectDashPrecision(self.DashDir);
             }
 
             orig(self);
         }
 
-        private void onPlayerCollide(ILContext il) {
+        private static void onPlayerCollide(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdstr("event:/game/06_reflection/feather_state_bump"))) {
@@ -68,12 +66,13 @@ namespace ExtendedVariants.Variants {
 
                 cursor.Emit(OpCodes.Ldarg_0);
                 cursor.Emit(OpCodes.Ldarg_1);
-                cursor.EmitDelegate<Action<Player, CollisionData>>((self, data) => {
-                    if (GetVariantValue<bool>(Variant.PermanentDashAttack)) {
-                        // trigger dash events when the player bounces around with the feather.
-                        data.Hit?.OnDashCollide?.Invoke(self, data.Direction);
-                    }
-                });
+                cursor.EmitDelegate<Action<Player, CollisionData>>(makeFeatherDashAttack);
+            }
+        }
+        private static void makeFeatherDashAttack(Player self, CollisionData data) {
+            if (GetVariantValue<bool>(Variant.PermanentDashAttack)) {
+                // trigger dash events when the player bounces around with the feather.
+                data.Hit?.OnDashCollide?.Invoke(self, data.Direction);
             }
         }
     }

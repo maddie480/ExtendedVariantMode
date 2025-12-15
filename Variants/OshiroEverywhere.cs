@@ -37,9 +37,9 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.Update -= onPlayerUpdate;
         }
 
-        private bool wasActiveOnLastFrame = false;
+        private static bool wasActiveOnLastFrame = false;
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -49,12 +49,12 @@ namespace ExtendedVariants.Variants {
             wasActiveOnLastFrame = GetVariantValue<bool>(Variant.OshiroEverywhere);
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
             addOshiroToLevel(self);
         }
 
-        private void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        private static void onPlayerUpdate(On.Celeste.Player.orig_Update orig, Player self) {
             orig(self);
 
             if (!wasActiveOnLastFrame && GetVariantValue<bool>(Variant.OshiroEverywhere)) {
@@ -64,7 +64,7 @@ namespace ExtendedVariants.Variants {
             wasActiveOnLastFrame = GetVariantValue<bool>(Variant.OshiroEverywhere);
         }
 
-        private void addOshiroToLevel(Level level, bool updateLists = true) {
+        private static void addOshiroToLevel(Level level, bool updateLists = true) {
             bool oshiroAdded = false;
 
             if (GetVariantValue<bool>(Variant.OshiroEverywhere)) {
@@ -86,7 +86,7 @@ namespace ExtendedVariants.Variants {
                 level.Entities.UpdateLists();
         }
 
-        private void addReverseOshiroToLevel(Level level) {
+        private static void addReverseOshiroToLevel(Level level) {
             for (int i = level.Tracker.CountEntities<AngryOshiroRight>(); i < GetVariantValue<int>(Variant.ReverseOshiroCount); i++) {
                 // this replicates the behavior of Oshiro Trigger in vanilla Celeste
                 Vector2 position = new Vector2(level.Bounds.Right + 32, level.Bounds.Top + level.Bounds.Height / 2);
@@ -96,7 +96,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modAngryOshiroUpdate(ILContext il) {
+        private static void modAngryOshiroUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to add ourselves in here: entity != null && !entity.Dead && base.CenterX < entity.CenterX + 4f
@@ -116,11 +116,11 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool isOshiroSlowdownDisabled() {
+        private static bool isOshiroSlowdownDisabled() {
             return GetVariantValue<bool>(Variant.DisableOshiroSlowdown);
         }
 
-        private void modHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
+        private static void modHeartGemCollect(On.Celeste.HeartGem.orig_Collect orig, HeartGem self, Player player) {
             // tell all extended variant Oshiros to stop controlling time
             foreach (AutoDestroyingAngryOshiro oshiro in self.Scene.Entities.OfType<AutoDestroyingAngryOshiro>()) {
                 oshiro.StopControllingTime();
@@ -133,7 +133,7 @@ namespace ExtendedVariants.Variants {
             orig(self, player);
         }
 
-        private void tellReverseOshirosToStopControllingTime(HeartGem self) {
+        private static void tellReverseOshirosToStopControllingTime(HeartGem self) {
             foreach (AngryOshiroRight oshiro in self.Scene.Entities.OfType<AngryOshiroRight>()) {
                 if (oshiro.Any(component => component.GetType() == typeof(AutoDestroyingReverseOshiroModder))) {
                     oshiro.StopControllingTime();

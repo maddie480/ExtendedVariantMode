@@ -10,7 +10,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class Friction : AbstractExtendedVariant {
 
-        private ILHook hookUpdateSprite;
+        private static ILHook hookUpdateSprite;
 
         public Friction() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -39,7 +39,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the NormalUpdate method in Player (handling the player state when not doing anything like climbing etc.) to apply ground friction.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modNormalUpdate(ILContext il) {
+        private static void modNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to the 500 in "this.Speed.X = Calc.Approach(this.Speed.X, 0f, 500f * Engine.DeltaTime);"
@@ -66,7 +66,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the UpdateSprite method in Player (updating the player animation) to fix the animations when using modded friction.
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modUpdateSprite(ILContext il) {
+        private static void modUpdateSprite(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we're jumping to this line: "if (Math.Abs(this.Speed.X) <= 25f && this.moveX == 0)"
@@ -84,7 +84,7 @@ namespace ExtendedVariants.Variants {
         /// her X speed gets below this value. Under this value, she will use her idle animation.)
         /// </summary>
         /// <returns>The idle animation threshold (minimum 25, gets higher as the friction factor is lower)</returns>
-        private float getIdleAnimationThreshold() {
+        private static float getIdleAnimationThreshold() {
             if (GetVariantValue<float>(Variant.Friction) >= 1f) {
                 // keep the default value
                 return 25f;
@@ -99,7 +99,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the currently configured friction factor.
         /// </summary>
         /// <returns>The friction factor (1 = default friction)</returns>
-        private float determineFrictionFactor() {
+        private static float determineFrictionFactor() {
             return GetVariantValue<float>(Variant.Friction);
         }
     }

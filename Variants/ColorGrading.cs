@@ -8,8 +8,6 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ColorGrading : AbstractExtendedVariant {
-        private static FieldInfo everestContentLoaded = typeof(Everest).GetField("_ContentLoaded", BindingFlags.NonPublic | BindingFlags.Static);
-
         private static HashSet<string> vanillaColorGrades = new HashSet<string> {
             "none", "oldsite", "panicattack", "templevoid", "reflection", "credits", "cold", "hot", "feelingdown", "golden"
         };
@@ -39,7 +37,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Level.Render -= modLevelRender;
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // when the variant is enabled, replace the values of both lastColorGrade and Session.ColorGrade when the Render method checks them.
@@ -57,7 +55,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private string modColorGrading(string vanillaValue) {
+        private static string modColorGrading(string vanillaValue) {
             if (GetVariantValue<string>(Variant.ColorGrading) == "" || (!vanillaColorGrades.Contains(GetVariantValue<string>(Variant.ColorGrading))
                 && !Everest.Content.Map.ContainsKey("Graphics/ColorGrading/" + GetVariantValue<string>(Variant.ColorGrading)))) {
 

@@ -10,7 +10,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class BackgroundBrightness : AbstractExtendedVariant {
-        private VirtualRenderTarget blackMask;
+        private static VirtualRenderTarget blackMask;
 
         public BackgroundBrightness() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
 
@@ -41,14 +41,14 @@ namespace ExtendedVariants.Variants {
             blackMask = null;
         }
 
-        private void ensureBufferIsCorrect() {
+        private static void ensureBufferIsCorrect() {
             if (blackMask == null || blackMask.Width != GameplayWidth || blackMask.Height != GameplayHeight) {
                 blackMask?.Dispose();
                 blackMask = VirtualContent.CreateRenderTarget("extended-variants-black-mask", GameplayWidth, GameplayHeight);
             }
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
@@ -64,7 +64,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
+        private static void onLevelBeforeRender(On.Celeste.Level.orig_BeforeRender orig, Level self) {
             orig(self);
 
             if (blackMask != null) {
@@ -75,7 +75,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void renderBackgroundLighting(Level self) {
+        private static void renderBackgroundLighting(Level self) {
             if (GetVariantValue<float>(Variant.BackgroundBrightness) < 1f) {
                 // Apply a mask over the background layer, but behind the gameplay layer.
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, GFX.DestinationTransparencySubtract, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, GFX.FxDither, Matrix.Identity);
@@ -84,14 +84,14 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
+        private static void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
             orig();
 
             // create the black mask as well.
             ensureBufferIsCorrect();
         }
 
-        private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
+        private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the black mask as well.

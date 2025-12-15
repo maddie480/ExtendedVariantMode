@@ -29,10 +29,9 @@ namespace ExtendedVariants.Entities.ForMappers {
         private void handleLegacy(Action<Player> orig, Player player) {
             if (legacy) {
                 // make sure activating the variant does not affect maxFall
-                DynData<Player> playerData = new DynData<Player>(player);
-                float maxFallBackup = playerData.Get<float>("maxFall");
+                float maxFallBackup = player.maxFall;
                 orig(player);
-                playerData["maxFall"] = maxFallBackup;
+                player.maxFall = maxFallBackup;
             } else {
                 orig(player);
             }

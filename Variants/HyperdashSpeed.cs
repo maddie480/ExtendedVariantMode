@@ -25,7 +25,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the SuperJump method in Player (called when super/hyperdashing.)
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modSuperJump(ILContext il) {
+        private static void modSuperJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we want to multiply 260f (speed given by a superdash) with the hyperdash speed factor
@@ -40,7 +40,7 @@ namespace ExtendedVariants.Variants {
         /// Returns the current hyperdash speed factor.
         /// </summary>
         /// <returns>The hyperdash speed factor (1 = default hyperdash speed)</returns>
-        private float determineHyperdashSpeedFactor() {
+        private static float determineHyperdashSpeedFactor() {
             return GetVariantValue<float>(Variant.HyperdashSpeed);
         }
     }

@@ -15,9 +15,9 @@ namespace ExtendedVariants.Variants {
 
         public override void VariantValueChanged() => UpdateBuffer();
 
-        private void UpdateBuffer() => Input.Grab.BufferTime = GetVariantValue<bool>(ExtendedVariantsModule.Variant.BufferableGrab) ? 0.08f : 0f;
+        private static void UpdateBuffer() => Input.Grab.BufferTime = GetVariantValue<bool>(ExtendedVariantsModule.Variant.BufferableGrab) ? 0.08f : 0f;
 
-        private void Player_Added(On.Celeste.Player.orig_Added added, Player player, Scene scene) {
+        private static void Player_Added(On.Celeste.Player.orig_Added added, Player player, Scene scene) {
             added(player, scene);
             UpdateBuffer();
         }

@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.SuperWallJump -= Player_SuperWallJump;
         }
 
-        private void Player_SuperWallJump(ILContext il) {
+        private static void Player_SuperWallJump(ILContext il) {
             ILCursor cursor = new ILCursor(il);
             if (!cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(-160f))) {
                 Logger.Log(LogLevel.Error, "ExtendedVariantMode/PreserveWallbounceSpeed",
@@ -37,7 +37,7 @@ namespace ExtendedVariants.Variants {
 
         // if the variant is disabled, return the original speed (normally -160f)
         // else, return player.Speed.Y, with a min cap of -160f
-        private float wallbounceSpeedModifier(float wallbounceSpeed, Player player) {
+        private static float wallbounceSpeedModifier(float wallbounceSpeed, Player player) {
             return GetVariantValue<bool>(Variant.PreserveWallbounceSpeed)
                 ? Math.Min(wallbounceSpeed, player.Speed.Y)
                 : wallbounceSpeed;

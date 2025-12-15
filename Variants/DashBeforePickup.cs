@@ -16,7 +16,7 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_NormalUpdate_il(ILContext il) {
+        private static void Player_NormalUpdate_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             cursor.GotoNext(MoveType.After,
@@ -26,15 +26,7 @@ namespace ExtendedVariants.Variants {
             var label = cursor.DefineLabel();
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Func<Player, bool>>(player => {
-                if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.DashBeforePickup) || !player.CanDash)
-                    return false;
-
-                player.Speed += DynamicData.For(player).Invoke<Vector2>("get_LiftBoost");
-                player.StartDash();
-
-                return true;
-            });
+            cursor.EmitDelegate<Func<Player, bool>>(modHolding);
             cursor.Emit(OpCodes.Brfalse_S, label);
             cursor.Emit(OpCodes.Ldc_I4_2);
             cursor.Emit(OpCodes.Ret);
@@ -42,7 +34,21 @@ namespace ExtendedVariants.Variants {
 
             cursor.GotoNext(MoveType.After, instr => instr.MatchCallvirt<Player>("get_CanDash"));
 
-            cursor.EmitDelegate<Func<bool, bool>>(value => value && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DashBeforePickup));
+            cursor.EmitDelegate<Func<bool, bool>>(modCanDash);
+        }
+
+        private static bool modHolding(Player player) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.DashBeforePickup) || !player.CanDash)
+                return false;
+
+            player.Speed += player.LiftBoost;
+            player.StartDash();
+
+            return true;
+        }
+
+        private static bool modCanDash(bool value) {
+            return value && !GetVariantValue<bool>(ExtendedVariantsModule.Variant.DashBeforePickup);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.WaterFall.Update -= addNullChecksToWaterTopSurface;
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (!self.Session?.LevelData?.Underwater ?? false) {
@@ -52,7 +52,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void addNullChecksToWaterTopSurface(ILContext il) {
+        private static void addNullChecksToWaterTopSurface(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             VariableDefinition positionStore = new VariableDefinition(il.Import(typeof(Vector2)));

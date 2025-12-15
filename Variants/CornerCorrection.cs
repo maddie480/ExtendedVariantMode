@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.OnCollideV -= hookCollideCornerCorrection;
         }
 
-        private void hookCollideCornerCorrection(ILContext il) {
+        private static void hookCollideCornerCorrection(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After,
@@ -30,13 +30,16 @@ namespace ExtendedVariants.Variants {
 
                 Logger.Log("ExtendedVariantMode/CornerCorrection", $"Editing corner correction pixels at {cursor.Index} in IL for {il.Method.FullName}");
 
-                cursor.EmitDelegate<Func<int, int>>(orig => {
-                    // vanilla corner correction already is 4 pixels, but we still pass orig through in case another mod mods it.
-                    if (GetVariantValue<int>(Variant.CornerCorrection) == 4) return orig;
-
-                    return GetVariantValue<int>(Variant.CornerCorrection) * Math.Sign(orig);
-                });
+                cursor.EmitDelegate<Func<int, int>>(modifyCornerCorrectionPixels);
             }
         }
+
+        private static int modifyCornerCorrectionPixels(int orig) {
+            // vanilla corner correction already is 4 pixels, but we still pass orig through in case another mod mods it.
+            if (GetVariantValue<int>(Variant.CornerCorrection) == 4) return orig;
+
+            return GetVariantValue<int>(Variant.CornerCorrection) * Math.Sign(orig);
+        }
     }
+
 }

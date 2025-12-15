@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using ExtendedVariants.Entities;
 using Microsoft.Xna.Framework;
 using Mono.Cecil;
@@ -9,21 +10,23 @@ using MonoMod.Cil;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class JumpCount : AbstractExtendedVariant {
 
-        private static FieldInfo playerDreamJump = typeof(Player).GetField("dreamJump", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static FieldInfo playerJumpGraceTimer = typeof(Player).GetField("jumpGraceTimer", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private static int jumpBuffer = 0;
 
-        private JumpCooldown jumpCooldown;
+        private static JumpCooldown jumpCooldown;
 
-        public JumpCount(DashCount dashCount, JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
-            dashCount.OnDashRefill += dashRefilled;
-            this.jumpCooldown = jumpCooldown;
+        private static JumpCount instance;
+
+        public JumpCount(JumpCooldown jumpCooldown) : base(variantType: typeof(int), defaultVariantValue: 1) {
+            instance = this;
+
+            DashCount.OnDashRefill += dashRefilled;
+            JumpCount.jumpCooldown = jumpCooldown;
         }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -61,25 +64,26 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.DreamDashUpdate -= preventDreamJumping;
         }
 
-        private void preventDreamJumping(ILContext il) {
+        private static void preventDreamJumping(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // the strategy here is "let's pretend the player didn't press Jump if their Jump Count is 0".
             if (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdsfld(typeof(Input), "Jump"), instr => instr.MatchCallvirt<VirtualButton>("get_Pressed"))) {
                 Logger.Log("ExtendedVariantMode/JumpCount", $"Preventing dream jumping with 0 jumps at {cursor.Index} in IL for Player.DreamDashUpdate");
 
-                cursor.EmitDelegate<Func<bool, bool>>(orig => {
-                    if (GetVariantValue<int>(Variant.JumpCount) == 0) {
-                        // no dream jumping!
-                        return false;
-                    }
-                    // we have at least 1 jump so don't change the value.
-                    return orig;
-                });
+                cursor.EmitDelegate<Func<bool, bool>>(disableDreamJumps);
             }
         }
+        private static bool disableDreamJumps(bool orig) {
+            if (GetVariantValue<int>(Variant.JumpCount) == 0) {
+                // no dream jumping!
+                return false;
+            }
+            // we have at least 1 jump so don't change the value.
+            return orig;
+        }
 
-        private void patchJumpGraceTimer(ILContext il) {
+        private static void patchJumpGraceTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             MethodReference wallJumpCheck = seekReferenceToMethod(il, "WallJumpCheck");
@@ -102,7 +106,7 @@ namespace ExtendedVariants.Variants {
                 cursor.Emit(OpCodes.Callvirt, wallJumpCheck);
 
                 // replace the jumpGraceTimer with the modded value
-                cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJump);
+                cursor.EmitDelegate<Func<float, Player, bool, bool, float>>(canJumpStatic);
             }
 
             // go back to the beginning of the method
@@ -118,7 +122,7 @@ namespace ExtendedVariants.Variants {
         /// <param name="il">Object allowing CIL patching</param>
         /// <param name="methodName">name of the method</param>
         /// <returns>A reference to the method</returns>
-        private MethodReference seekReferenceToMethod(ILContext il, string methodName) {
+        private static MethodReference seekReferenceToMethod(ILContext il, string methodName) {
             ILCursor cursor = new ILCursor(il);
             if (cursor.TryGotoNext(MoveType.Before, instr => instr.OpCode == OpCodes.Callvirt && ((MethodReference) instr.Operand).Name.Contains(methodName))) {
                 return (MethodReference) cursor.Next.Operand;
@@ -129,11 +133,11 @@ namespace ExtendedVariants.Variants {
         /// <summary>
         /// This hook makes dash crystals activate when refilling jumps is required.
         /// </summary>
-        private void modUseRefill(ILContext il) {
+        private static void modUseRefill(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // let's jump to if (this.Dashes < num)
-            if (cursor.TryGotoNext(MoveType.After,
+            if (cursor.TryGotoNextBestFit(MoveType.After,
                 instr => instr.MatchLdarg(0), // this
                 instr => instr.MatchLdfld<Player>("Dashes"), // this.Dashes
                 instr => instr.MatchLdloc(0), // num
@@ -148,19 +152,19 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool jumpNeedsRefilling() {
+        private static bool jumpNeedsRefilling() {
             // JumpCount - 1 because the first jump is from vanilla Celeste
             return GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2 && jumpBuffer < GetVariantValue<int>(Variant.JumpCount) - 1;
         }
 
-        private void dashRefilled() {
+        private static void dashRefilled() {
             if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2) {
                 RefillJumpBuffer();
             }
         }
 
-        private void refillJumpBuffer(Player player) {
-            float jumpGraceTimer = (float) playerJumpGraceTimer.GetValue(player);
+        private static void refillJumpBuffer(Player player) {
+            float jumpGraceTimer = player.jumpGraceTimer;
 
             if (jumpGraceTimer > 0f && GetVariantValue<bool>(Variant.ResetJumpCountOnGround)) {
                 // JumpCount - 1 because the first jump is from vanilla Celeste
@@ -172,7 +176,7 @@ namespace ExtendedVariants.Variants {
         /// Refills the jump buffer, giving the maximum amount of extra jumps possible.
         /// </summary>
         /// <returns>Whether extra jumps were refilled or not.</returns>
-        public bool RefillJumpBuffer() {
+        public static bool RefillJumpBuffer() {
             int oldJumpBuffer = jumpBuffer;
             jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
             return oldJumpBuffer != jumpBuffer;
@@ -213,9 +217,15 @@ namespace ExtendedVariants.Variants {
             }
         }
 
+        private static float canJumpStatic(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
+            // Frogeline Project relies on this method being non-static
+            return instance.canJump(initialJumpGraceTimer, self, canWallJumpRight, canWallJumpLeft);
+        }
+
         /// <summary>
         /// Detour the WallJump method in order to disable it if we want.
         /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private float canJump(float initialJumpGraceTimer, Player self, bool canWallJumpRight, bool canWallJumpLeft) {
             if (GetVariantValue<int>(Variant.JumpCount) == 0 && jumpBuffer <= 0) {
                 // we disabled jumping, so let's pretend the grace timer has run out
@@ -237,12 +247,12 @@ namespace ExtendedVariants.Variants {
             jumpCooldown.ArmCooldown();
 
             // be sure that the sound played is not the dream jump one.
-            playerDreamJump.SetValue(self, false);
+            self.dreamJump = false;
 
             return 1f;
         }
 
-        private void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
+        private static void modDreamDashEnd(On.Celeste.Player.orig_DreamDashEnd orig, Player self) {
             orig(self);
 
             if (GetVariantValue<bool>(Variant.ResetJumpCountOnGround)) {
@@ -252,7 +262,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool modClimbHopBlockedCheck(On.Celeste.Player.orig_ClimbHopBlockedCheck orig, Player self) {
+        private static bool modClimbHopBlockedCheck(On.Celeste.Player.orig_ClimbHopBlockedCheck orig, Player self) {
             if (orig(self)) {
                 return true;
             }
@@ -265,7 +275,7 @@ namespace ExtendedVariants.Variants {
             return false;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {

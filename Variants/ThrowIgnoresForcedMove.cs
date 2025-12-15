@@ -13,19 +13,20 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_Throw_il(ILContext il) {
+        private static void Player_Throw_il(ILContext il) {
             var cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("Facing"))) {
-                cursor.EmitDelegate<Func<Facings, Facings>>(facing => {
-                    if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.ThrowIgnoresForcedMove))
-                        return facing;
-
-                    int moveX = Input.MoveX.Value;
-
-                    return moveX != 0 ? (Facings) moveX : facing;
-                });
+                cursor.EmitDelegate<Func<Facings, Facings>>(applyFacingChange);
             }
+        }
+        private static Facings applyFacingChange(Facings facing) {
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.ThrowIgnoresForcedMove))
+                return facing;
+
+            int moveX = Input.MoveX.Value;
+
+            return moveX != 0 ? (Facings) moveX : facing;
         }
     }
 }

@@ -19,9 +19,8 @@ namespace ExtendedVariants.UI {
         private static bool?[] activeIsaVariants = new bool?[11];
 
         public static void Load() {
-            using (new DetourContext {
-                Before = { "*" } // we're replacing the menu, so we want to go first.
-            }) {
+            // we're replacing the menu, so we want to go first.
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_BeforeAll").WithPriority(int.MinValue)).Use()) {
                 On.Celeste.Level.VariantMode += buildVariantModeMenu;
                 On.Celeste.Level.AssistMode += buildAssistModeMenu;
             }
@@ -61,9 +60,9 @@ namespace ExtendedVariants.UI {
                     }
                 };
 
-                isaGrabBagHookSetVariant = new Hook(
-                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) }),
-                    setVariantHook);
+                MethodInfo setVariantMethod = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariant", new Type[] { typeof(IsaVariant), typeof(IsaVariantState) });
+                TryDisableInlining(setVariantMethod);
+                isaGrabBagHookSetVariant = new Hook(setVariantMethod, setVariantHook);
 
                 Action<Action<IsaVariant, bool>, IsaVariant, bool> setVariantInGameHook = (orig, variant, value) => {
                     orig(variant, value);
@@ -72,9 +71,9 @@ namespace ExtendedVariants.UI {
                     activeIsaVariants[(int) variant] = value;
                 };
 
-                isaGrabBagHookSetVariantInGame = new Hook(
-                    typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static),
-                    setVariantInGameHook);
+                MethodInfo setVariantInGameMethod = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetMethod("SetVariantInGame", BindingFlags.NonPublic | BindingFlags.Static);
+                TryDisableInlining(setVariantInGameMethod);
+                isaGrabBagHookSetVariantInGame = new Hook(setVariantInGameMethod, setVariantInGameHook);
 
                 PropertyInfo isaVariantsDefault = typeof(Celeste.Mod.IsaGrabBag.ForceVariants).GetProperty("Variants_Default", BindingFlags.NonPublic | BindingFlags.Static);
                 if (isaVariantsDefault == null) {
@@ -226,7 +225,7 @@ namespace ExtendedVariants.UI {
 
             (ExtendedVariantsModule.Instance.VariantHandlers[variantChange] as AbstractVanillaVariant).VariantValueChangedByPlayer(newValue);
             ExtendedVariantsModule.Instance.VariantHandlers[variantChange].VariantValueChanged();
-            ExtendedVariantsModule.Instance.Randomizer.RefreshEnabledVariantsDisplayList();
+            VariantRandomizer.RefreshEnabledVariantsDisplayList();
             if (newValue is bool value) updateIsaDefault?.Invoke(variantChange, value);
         }
     }

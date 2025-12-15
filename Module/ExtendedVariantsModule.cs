@@ -45,8 +45,6 @@ namespace ExtendedVariants.Module {
         public static int GameplayWidth => GameplayBuffers.Gameplay?.Width ?? 320;
         public static int GameplayHeight => GameplayBuffers.Gameplay?.Height ?? 180;
 
-        public VariantRandomizer Randomizer;
-
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
@@ -57,7 +55,7 @@ namespace ExtendedVariants.Module {
             InvertDashes, InvertGrab, AllStrawberriesAreGoldens, GameSpeed, ColorGrading, JellyfishEverywhere, RisingLavaEverywhere, RisingLavaSpeed, InvertHorizontalControls,
             BounceEverywhere, SuperdashSteeringSpeed, ScreenShakeIntensity, AnxietyEffect, BlurLevel, ZoomLevel, DashDirection, BackgroundBrightness, DisableMadelineSpotlight,
             ForegroundEffectOpacity, MadelineIsSilhouette, DashTrailAllTheTime, DisableClimbingUpOrDown, BoostMultiplier, FriendlyBadelineFollower,
-            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
+            DisableRefillsOnScreenTransition, RestoreDashesOnRespawn, SpawnDashCount, ScreenTransitionDashCount, DisableSuperBoosts, DisplayDashCount, MadelineHasPonytail, MadelineBackpackMode, InvertVerticalControls,
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
@@ -66,7 +64,8 @@ namespace ExtendedVariants.Module {
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
-            ConsistentThrowing,
+            ConsistentThrowing, JumpBoost,
+            ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -81,10 +80,8 @@ namespace ExtendedVariants.Module {
 
         public ExtendedVariantsModule() {
             Instance = this;
-            Randomizer = new VariantRandomizer();
             TriggerManager = new ExtendedVariantTriggerManager();
 
-            DashCount dashCount;
             JumpCooldown jumpCooldown;
             ZoomLevel zoomLevel;
             VariantHandlers[Variant.Gravity] = new Gravity();
@@ -94,7 +91,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SpeedX] = new SpeedX();
             VariantHandlers[Variant.Stamina] = new Stamina();
             VariantHandlers[Variant.DashSpeed] = new DashSpeed();
-            VariantHandlers[Variant.DashCount] = (dashCount = new DashCount());
+            VariantHandlers[Variant.DashCount] = new DashCount();
             VariantHandlers[Variant.CornerCorrection] = new CornerCorrection();
             VariantHandlers[Variant.DisableDashCooldown] = new DisableDashCooldown();
             VariantHandlers[Variant.HeldDash] = new HeldDash();
@@ -104,7 +101,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableClimbJumping] = new DisableClimbJumping();
             VariantHandlers[Variant.DisableJumpingOutOfWater] = new DisableJumpingOutOfWater();
             VariantHandlers[Variant.JumpCooldown] = (jumpCooldown = new JumpCooldown());
-            VariantHandlers[Variant.JumpCount] = new JumpCount(dashCount, jumpCooldown);
+            VariantHandlers[Variant.JumpCount] = new JumpCount(jumpCooldown);
             VariantHandlers[Variant.ZoomLevel] = (zoomLevel = new ZoomLevel());
             VariantHandlers[Variant.UpsideDown] = new UpsideDown(zoomLevel);
             VariantHandlers[Variant.HyperdashSpeed] = new HyperdashSpeed();
@@ -189,6 +186,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.FriendlyBadelineFollower] = new FriendlyBadelineFollower();
             VariantHandlers[Variant.DisableRefillsOnScreenTransition] = new DisableRefillsOnScreenTransition();
             VariantHandlers[Variant.RestoreDashesOnRespawn] = new RestoreDashesOnRespawn();
+            VariantHandlers[Variant.SpawnDashCount] = new SpawnDashCount();
+            VariantHandlers[Variant.ScreenTransitionDashCount] = new ScreenTransitionDashCount();
             VariantHandlers[Variant.DisplayDashCount] = new DisplayDashCount();
             VariantHandlers[Variant.MadelineBackpackMode] = new MadelineBackpackMode();
             VariantHandlers[Variant.EveryJumpIsUltra] = new EveryJumpIsUltra();
@@ -234,6 +233,12 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SlowfallSpeedThreshold] = new SlowfallSpeedThreshold();
             VariantHandlers[Variant.AutoDash] = new AutoDash();
             VariantHandlers[Variant.ConsistentThrowing] = new ConsistentThrowing();
+            VariantHandlers[Variant.JumpBoost] = new JumpBoost();
+            VariantHandlers[Variant.ClimbUpSpeed] = new ClimbUpSpeed();
+            VariantHandlers[Variant.ClimbDownSpeed] = new ClimbDownSpeed();
+            VariantHandlers[Variant.ClimbJumpStaminaCost] = new ClimbJumpStaminaCost();
+            VariantHandlers[Variant.ClimbUpStaminaDrainRate] = new ClimbUpStaminaDrainRate();
+            VariantHandlers[Variant.ClimbHoldStaminaDrainRate] = new ClimbHoldStaminaDrainRate();
             // vanilla variants
             VariantHandlers[Variant.AirDashes] = new AirDashes();
             VariantHandlers[Variant.DashAssist] = new DashAssist();
@@ -298,6 +303,20 @@ namespace ExtendedVariants.Module {
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Initializing Extended Variant Mode");
 
+            foreach (Tuple<string, string[]> toople in new[] {
+                new Tuple<string, string[]>("Celeste.BadelineOldsite", ["CanChangeMusic", "IsChaseEnd"]),
+                new Tuple<string, string[]>("Celeste.FinalBoss", ["CanChangeMusic"]),
+                new Tuple<string, string[]>("Celeste.Player", ["NormalBegin", "RefillStamina", "DashCoroutine", "RedDashCoroutine", "CreateTrail", "PickupCoroutine"]),
+                new Tuple<string, string[]>("Celeste.Seeker", ["RegenerateCoroutine"]),
+                new Tuple<string, string[]>("Monocle.VirtualButton", ["Update"]),
+            }) {
+                Type type = typeof(Player).Assembly.GetType(toople.Item1);
+                foreach (string methodName in toople.Item2) {
+                    MethodInfo method = type.GetMethod(methodName) ?? type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+                    TryDisableInlining(method);
+                }
+            }
+
             On.Celeste.LevelLoader.ctor += checkForceEnableVariants;
 
             typeof(LuaCutscenesUtils).ModInterop();
@@ -305,6 +324,12 @@ namespace ExtendedVariants.Module {
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
                 HookStuff();
+            }
+        }
+
+        public static void TryDisableInlining(MethodInfo method) {
+            if (!HookUtils.TryDisableInlining(method)) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not inline method {method.DeclaringType.FullName}.{method.Name}");
             }
         }
 
@@ -325,7 +350,6 @@ namespace ExtendedVariants.Module {
 
             DashCountIndicator.Initialize();
             JumpIndicator.Initialize();
-            (VariantHandlers[Variant.ExplodeLaunchSpeed] as ExplodeLaunchSpeed).Initialize();
             (VariantHandlers[Variant.SpinnerColor] as SpinnerColor).Initialize();
 
             DJMapHelperInstalled = Everest.Loader.DependencyLoaded(new EverestModuleMetadata { Name = "DJMapHelper", Version = new Version(1, 8, 35) });
@@ -434,7 +458,9 @@ namespace ExtendedVariants.Module {
 
         private void hookStuffRightNow() {
             if (stuffIsHooked) return;
-
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_Default")).Use()) hookStuffRightNowInner();
+        }
+        private void hookStuffRightNowInner() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant common methods...");
             On.Celeste.AreaComplete.VersionNumberAndVariants += modVersionNumberAndVariants;
             Everest.Events.Level.OnExit += onLevelExit;
@@ -450,7 +476,7 @@ namespace ExtendedVariants.Module {
             VanillaVariantOptions.Load();
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant randomizer...");
-            Randomizer.Load();
+            VariantRandomizer.Load();
 
             foreach (Variant variant in VariantHandlers.Keys.ToList()) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Loading variant {variant}...");
@@ -476,6 +502,9 @@ namespace ExtendedVariants.Module {
 
         private void initializeStuff() {
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", "Loading mod hooks...");
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_Default")).Use()) initializeStuffInner();
+        }
+        private void initializeStuffInner() {
             UpsideDown.Initialize();
             AbstractVanillaVariant.Initialize();
             VanillaVariantOptions.Initialize();
@@ -503,7 +532,7 @@ namespace ExtendedVariants.Module {
             onLevelExit();
 
             Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant randomizer...");
-            Randomizer.Unload();
+            VariantRandomizer.Unload();
 
             foreach (Variant variant in VariantHandlers.Keys) {
                 Logger.Log("ExtendedVariantMode/ExtendedVariantsModule", $"Unloading variant {variant}...");
@@ -527,23 +556,23 @@ namespace ExtendedVariants.Module {
             return name == "ExtendedVariantTrigger" || name.StartsWith("ExtendedVariantMode/");
         }
 
-        private void checkForceEnableVariants(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
-            forceEnabled = false;
+        private static void checkForceEnableVariants(On.Celeste.LevelLoader.orig_ctor orig, LevelLoader self, Session session, Vector2? startPosition) {
+            Instance.forceEnabled = false;
 
             if (AreaData.Areas.Count > session.Area.ID && AreaData.Areas[session.Area.ID].Mode.Length > (int) session.Area.Mode
                 && AreaData.Areas[session.Area.ID].Mode[(int) session.Area.Mode] != null
                 && session.MapData.Levels.Exists(levelData =>
-                    levelData.Triggers.Exists(entityData => isExtendedVariantEntity(entityData.Name)) ||
-                    levelData.Entities.Exists(entityData => isExtendedVariantEntity(entityData.Name)))) {
+                    levelData.Triggers.Exists(entityData => Instance.isExtendedVariantEntity(entityData.Name)) ||
+                    levelData.Entities.Exists(entityData => Instance.isExtendedVariantEntity(entityData.Name)))) {
 
                 // the level we're entering has an Extended Variant Trigger: force-enable extended variants.
-                forceEnabled = true;
+                Instance.forceEnabled = true;
 
                 // if variants are disabled, we want to enable them as well, with default values
                 // (so that we don't get variants that were enabled long ago).
-                if (!stuffIsHooked) {
+                if (!Instance.stuffIsHooked) {
                     Settings.MasterSwitch = true;
-                    HookStuff();
+                    Instance.HookStuff();
                 }
             }
 
@@ -569,7 +598,7 @@ namespace ExtendedVariants.Module {
                 Settings.EnabledVariants.Remove(variantId);
                 Session?.VariantsOverridenByUser.Remove(variantId);
                 variant.VariantValueChanged();
-                Randomizer.RefreshEnabledVariantsDisplayList();
+                VariantRandomizer.RefreshEnabledVariantsDisplayList();
             }
         }
 
@@ -584,7 +613,7 @@ namespace ExtendedVariants.Module {
                     Session?.VariantsOverridenByUser.Remove(variantId);
                     vanillaVariant.VariantValueChangedByPlayer(TriggerManager.GetCurrentVariantValue(variantId));
                     variant.VariantValueChanged();
-                    Randomizer.RefreshEnabledVariantsDisplayList();
+                    VariantRandomizer.RefreshEnabledVariantsDisplayList();
                 }
             }
 
@@ -616,23 +645,23 @@ namespace ExtendedVariants.Module {
 
         // ================ Stamp on Chapter Complete screen ================
 
-        private void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
-            isLevelEnding = true;
+        private static void onLevelEnd(On.Celeste.Level.orig_End orig, Level self) {
+            Instance.isLevelEnding = true;
             orig(self);
-            isLevelEnding = false;
+            Instance.isLevelEnding = false;
         }
 
-        private void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void onLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
-            checkForUsedVariants();
+            Instance.checkForUsedVariants();
         }
 
-        private void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
+        private static void onUnpause(On.Celeste.Level.orig_EndPauseEffects orig, Level self) {
             orig(self);
 
-            if (!isLevelEnding) {
-                checkForUsedVariants();
+            if (!Instance.isLevelEnding) {
+                Instance.checkForUsedVariants();
             }
         }
 
@@ -646,19 +675,19 @@ namespace ExtendedVariants.Module {
         /// <summary>
         /// Wraps the VersionNumberAndVariants in the base game in order to add the Variant Mode logo if Extended Variants are enabled.
         /// </summary>
-        private void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
+        private static void modVersionNumberAndVariants(On.Celeste.AreaComplete.orig_VersionNumberAndVariants orig, string version, float ease, float alpha) {
             if (Session.ExtendedVariantsWereUsed) {
                 // The "if" conditioning the display of the Variant Mode logo is in an "orig_" method, we can't access it with IL.Celeste.
                 // The best we can do is turn on Variant Mode, run the method then restore its original value.
                 bool oldVariantModeValue = SaveData.Instance.VariantMode;
                 SaveData.Instance.VariantMode = true;
 
-                orig.Invoke(version, ease, alpha);
+                orig(version, ease, alpha);
 
                 SaveData.Instance.VariantMode = oldVariantModeValue;
             } else {
                 // Extended Variants are disabled so just keep the original behaviour
-                orig.Invoke(version, ease, alpha);
+                orig(version, ease, alpha);
             }
         }
 
@@ -671,7 +700,7 @@ namespace ExtendedVariants.Module {
             }
         }
 
-        private string modVariantModeLogo(string orig) {
+        private static string modVariantModeLogo(string orig) {
             if (Session.ExtendedVariantsWereUsed) {
                 return "ExtendedVariantMode/complete_screen_stamp";
             }
@@ -795,193 +824,7 @@ namespace ExtendedVariants.Module {
                 || !Instance.stuffIsHooked; // this makes all the mess instant vanish when Extended Variants are disabled entirely.
         }
 
-        // helpers for finding the next fitting match in a sequence of IL, with some level of tolerance
-        // (i.e. if some other mod hooks the same set of instructions)
-        // - Snip
-        //
-        // is this probably overkill? yes.
-        // did I have fun writing this? yes.
-
-        /// <summary>
-        ///   Go to the next match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
-        ///   (i.e. if something else hooks the same sequence)
-        /// </summary>
-        ///
-        /// <param name="cursor">
-        ///   The IL cursor to look for a match in.
-        /// </param>
-        /// <param name="moveType">
-        ///   The move type to use.
-        /// </param>
-        /// <param name="predicates">
-        ///   The IL instructions to match against.
-        /// </param>
-        ///
-        /// <returns>
-        ///   Whether a match has been found, and the cursor has been moved.
-        /// </returns>
-        public static bool TryGotoNextBestFit(ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
-            return TryGotoNextBestFit(cursor, moveType, 0x10, predicates);
-        }
-
-        /// <summary>
-        ///   Go to the next match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
-        ///   (i.e. if something else hooks the same sequence)
-        /// </summary>
-        ///
-        /// <param name="cursor">
-        ///   The IL cursor to look for a match in.
-        /// </param>
-        /// <param name="moveType">
-        ///   The move type to use.
-        /// </param>
-        /// <param name="maxIndexDiff">
-        ///   The amount of instructions between predicate matches to still consider as a successful match.
-        /// </param>
-        /// <param name="predicates">
-        ///   The IL instructions to match against.
-        /// </param>
-        ///
-        /// <returns>
-        ///   Whether a match has been found, and the cursor has been moved.
-        /// </returns>
-        public static bool TryGotoNextBestFit(ILCursor cursor, MoveType moveType, int maxIndexDiff, params Func<Instruction, bool>[] predicates) {
-            if (predicates.Length == 0)
-                throw new ArgumentException("No predicates given.");
-
-            if (predicates.Length == 1)
-                return cursor.TryGotoNext(moveType, predicates[0]);
-
-            int initialPosition = cursor.Index;
-
-            // go to each instance of the first predicate
-            while (cursor.TryGotoNext(MoveType.After, predicates[0])) {
-                int savedCursorPosition = cursor.Index;
-
-                // then try to match the rest of the predicates, making sure
-                // the cursor has not gone further than maxIndexDiff instructions
-                for (int i = 1; i < predicates.Length; i++) {
-                    Func<Instruction, bool> matcher = predicates[i];
-                    int beforeMoveIndex = cursor.Index;
-
-                    if (!cursor.TryGotoNext(MoveType.After, matcher))
-                        goto FailedToMatch;
-
-                    if (cursor.Index - beforeMoveIndex > maxIndexDiff)
-                        goto FailedToMatch;
-                }
-
-                // we found a match!
-                // now put the cursor where we should be before returning
-                if (moveType is MoveType.Before or MoveType.AfterLabel)
-                    // -1 because we used After
-                    cursor.Index = savedCursorPosition - 1;
-                if (moveType is MoveType.AfterLabel)
-                    cursor.MoveAfterLabels();
-                return true;
-
-                FailedToMatch:
-                // we go again
-                cursor.Index = savedCursorPosition;
-            }
-
-            // no match :c
-            // put the cursor back to where it was
-            cursor.Index = initialPosition;
-            return false;
-        }
-
-        /// <summary>
-        ///   Go to the previous match of a given IL sequence, allowing up to <c>0x10</c> instructions of tolerance if the instructions are not sequential.<br/>
-        ///   (i.e. if something else hooks the same sequence)
-        /// </summary>
-        ///
-        /// <param name="cursor">
-        ///   The IL cursor to look for a match in.
-        /// </param>
-        /// <param name="moveType">
-        ///   The move type to use.
-        /// </param>
-        /// <param name="predicates">
-        ///   The IL instructions to match against.
-        /// </param>
-        ///
-        /// <returns>
-        ///   Whether a match has been found, and the cursor has been moved.
-        /// </returns>
-        public static bool TryGotoPrevBestFit(ILCursor cursor, MoveType moveType, params Func<Instruction, bool>[] predicates) {
-            return TryGotoPrevBestFit(cursor, moveType, 0x10, predicates);
-        }
-
-        /// <summary>
-        ///   Go to the previous match of a given IL sequence, allowing up to <paramref name="maxIndexDiff"/> instructions of tolerance if the instructions are not sequential.<br/>
-        ///   (i.e. if something else hooks the same sequence)
-        /// </summary>
-        ///
-        /// <param name="cursor">
-        ///   The IL cursor to look for a match in.
-        /// </param>
-        /// <param name="moveType">
-        ///   The move type to use.
-        /// </param>
-        /// <param name="maxIndexDiff">
-        ///   The amount of instructions between predicate matches to still consider as a successful match.
-        /// </param>
-        /// <param name="predicates">
-        ///   The IL instructions to match against.
-        /// </param>
-        ///
-        /// <returns>
-        ///   Whether a match has been found, and the cursor has been moved.
-        /// </returns>
-        public static bool TryGotoPrevBestFit(ILCursor cursor, MoveType moveType, int maxIndexDiff, params Func<Instruction, bool>[] predicates) {
-            if (predicates.Length == 0)
-                throw new ArgumentException("No predicates given.");
-
-            if (predicates.Length == 1)
-                return cursor.TryGotoPrev(moveType, predicates[0]);
-
-            int initialPosition = cursor.Index;
-
-            // go to each instance of the first predicate
-            while (cursor.TryGotoPrev(MoveType.After, predicates[0])) {
-                int savedCursorPosition = cursor.Index;
-
-                // then try to match the rest of the predicates, making sure
-                // the cursor has not gone further than maxIndexDiff instructions
-                for (int i = 1; i < predicates.Length; i++) {
-                    Func<Instruction, bool> matcher = predicates[i];
-                    int beforeMoveIndex = cursor.Index;
-
-                    // don't TryGotoPrev here! this'll reverse the order of predicates!
-                    if (!cursor.TryGotoNext(MoveType.After, matcher))
-                        goto FailedToMatch;
-
-                    if (cursor.Index - beforeMoveIndex > maxIndexDiff)
-                        goto FailedToMatch;
-                }
-
-                // we found a match!
-                // now put the cursor where we should be before returning
-                if (moveType is MoveType.Before or MoveType.AfterLabel)
-                    // -1 because we used After
-                    cursor.Index = savedCursorPosition - 1;
-                if (moveType is MoveType.AfterLabel)
-                    cursor.MoveAfterLabels();
-                return true;
-
-                FailedToMatch:
-                // we go again
-                cursor.Index = savedCursorPosition;
-            }
-
-            // no match :c
-            // put the cursor back to where it was
-            cursor.Index = initialPosition;
-            return false;
-        }
-
-        private IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
+        private static IEnumerator modBadelineBoostRoutine(On.Celeste.BadelineBoost.orig_BoostRoutine orig, BadelineBoost self, Player player) {
             badelineBoosting = true;
             yield return new SwapImmediately(orig(self, player));
             badelineBoosting = false;
@@ -996,7 +839,7 @@ namespace ExtendedVariants.Module {
             prologueEndingCutscene = false;
         }
 
-        private void onPrologueEndingCutsceneBegin(On.Celeste.CS00_Ending.orig_OnBegin orig, CS00_Ending self, Level level) {
+        private static void onPrologueEndingCutsceneBegin(On.Celeste.CS00_Ending.orig_OnBegin orig, CS00_Ending self, Level level) {
             orig(self, level);
 
             prologueEndingCutscene = true;

@@ -9,7 +9,7 @@ namespace ExtendedVariants.Variants {
     // that's actually the same as BlurLevel except not at the same place in Render. :p
     // we are blurring the Level buffer after only the BG stylegrounds were rendered.
     public class BackgroundBlurLevel : AbstractExtendedVariant {
-        private VirtualRenderTarget tempBuffer;
+        private static VirtualRenderTarget tempBuffer;
 
         public BackgroundBlurLevel() : base(variantType: typeof(float), defaultVariantValue: 0f) { }
 
@@ -38,14 +38,14 @@ namespace ExtendedVariants.Variants {
             tempBuffer = null;
         }
 
-        private void ensureBufferIsCorrect() {
+        private static void ensureBufferIsCorrect() {
             if (tempBuffer == null || tempBuffer.Width != GameplayWidth || tempBuffer.Height != GameplayHeight) {
                 tempBuffer?.Dispose();
                 tempBuffer = VirtualContent.CreateRenderTarget("extended-variants-temp-bg-blur-buffer", GameplayWidth, GameplayHeight);
             }
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             if (cursor.TryGotoNext(MoveType.After,
@@ -59,7 +59,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void BackgroundBlurLevelBuffer() {
+        private static void BackgroundBlurLevelBuffer() {
             if (GetVariantValue<float>(Variant.BackgroundBlurLevel) > 0) {
                 // what if... I just gaussian blur the level buffer
                 ensureBufferIsCorrect();
@@ -67,14 +67,14 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
+        private static void onGameplayBuffersCreate(On.Celeste.GameplayBuffers.orig_Create orig) {
             orig();
 
             // create the blur temp buffer as well.
             ensureBufferIsCorrect();
         }
 
-        private void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
+        private static void onGameplayBuffersUnload(On.Celeste.GameplayBuffers.orig_Unload orig) {
             orig();
 
             // dispose the blur temp buffer as well.

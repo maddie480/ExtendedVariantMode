@@ -7,13 +7,8 @@ using System.Reflection;
 namespace ExtendedVariants.Entities {
     [TrackedAs(typeof(AngryOshiro))]
     public class AutoDestroyingAngryOshiro : AngryOshiro {
-        // cached accessor for AngryOshiro's "state" private field.
-        private static FieldInfo stateMachine = typeof(AngryOshiro).GetField("state", BindingFlags.Instance | BindingFlags.NonPublic);
-
         private const int StWaitingOffset = 9;
 
-        private Level level;
-        private StateMachine state;
         private float waitTimer;
         private bool playerMoved = false;
 
@@ -21,7 +16,6 @@ namespace ExtendedVariants.Entities {
             // bump Oshiro up so that he goes over FakeWalls
             Depth = -13500;
 
-            state = (StateMachine) stateMachine.GetValue(this);
             waitTimer = offsetTime;
 
             state.SetCallbacks(StWaitingOffset, WaitingOffsetUpdate);
@@ -29,8 +23,6 @@ namespace ExtendedVariants.Entities {
 
         public override void Added(Scene scene) {
             base.Added(scene);
-
-            level = (Level) scene;
 
             // if the state is Waiting and Oshiro has an offset, hijack the state to take our own instead.
             if (state.State == 4 && waitTimer > 0f)
@@ -55,7 +47,6 @@ namespace ExtendedVariants.Entities {
         public override void Update() {
             base.Update();
 
-            Level level = SceneAs<Level>();
             Player player = level.Tracker.GetEntity<Player>();
 
             if (ExtendedVariantsModule.ShouldEntitiesAutoDestroy(player)) {

@@ -21,7 +21,7 @@ namespace ExtendedVariants.Variants {
         public override void Load() {
             liftBoostHook = new Hook(
                 typeof(Player).GetMethod("get_LiftBoost", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BoostMultiplier).GetMethod("multiplyLiftBoost", BindingFlags.NonPublic | BindingFlags.Instance), this);
+                typeof(BoostMultiplier).GetMethod("multiplyLiftBoost", BindingFlags.NonPublic | BindingFlags.Static));
 
             IL.Celeste.Player.NormalUpdate += modPlayerNormalUpdate;
         }
@@ -33,7 +33,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.NormalUpdate -= modPlayerNormalUpdate;
         }
 
-        private Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
+        private static Vector2 multiplyLiftBoost(Func<Player, Vector2> orig, Player self) {
             Vector2 result = orig(self);
 
             float capX = GetVariantValue<float>(Variant.LiftboostCapX);
@@ -58,14 +58,20 @@ namespace ExtendedVariants.Variants {
             return result * GetVariantValue<float>(Variant.BoostMultiplier);
         }
 
-        private void modPlayerNormalUpdate(ILContext il) {
+        private static void modPlayerNormalUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // disable the boost multiplier for the first part of the method: it is intended to be able to walk off from a block seamlessly...
             // and multiplying the boost makes it *a bit* less seamless.
-            cursor.EmitDelegate<Action>(() => isBoostMultiplierApplied = false);
+            cursor.EmitDelegate<Action>(disableBoostMultiplier);
             cursor.GotoNext(instr => instr.MatchCallvirt<Player>("get_Holding"));
-            cursor.EmitDelegate<Action>(() => isBoostMultiplierApplied = true);
+            cursor.EmitDelegate<Action>(enableBoostMultiplier);
+        }
+        private static void enableBoostMultiplier() {
+            isBoostMultiplierApplied = true;
+        }
+        private static void disableBoostMultiplier() {
+            isBoostMultiplierApplied = false;
         }
     }
 }

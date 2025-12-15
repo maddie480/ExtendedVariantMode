@@ -1,0 +1,36 @@
+using Celeste.Mod;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System;
+using static ExtendedVariants.Module.ExtendedVariantsModule;
+
+namespace ExtendedVariants.Variants {
+    public class ClimbUpStaminaDrainRate : AbstractExtendedVariant {
+        public ClimbUpStaminaDrainRate() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
+
+        public override object ConvertLegacyVariantValue(int value) {
+            return value / 10f;
+        }
+
+        public override void Load() {
+            IL.Celeste.Player.ClimbUpdate += onPlayerClimbUpdate;
+        }
+
+        public override void Unload() {
+            IL.Celeste.Player.ClimbUpdate -= onPlayerClimbUpdate;
+        }
+
+        private static void onPlayerClimbUpdate(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+
+            while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdcR4(45.454544f))) {
+                Logger.Log("ExtendedVariantMode/ClimbUpStaminaDrainRate", $"Applying multiplier to Stamina @ {cursor.Index} in IL for Player.ClimbUpdate");
+                cursor.EmitDelegate<Func<float>>(getVariantValue);
+                cursor.Emit(OpCodes.Mul);
+            }
+        }
+        private static float getVariantValue() {
+            return GetVariantValue<float>(Variant.ClimbUpStaminaDrainRate);
+        }
+    }
+}

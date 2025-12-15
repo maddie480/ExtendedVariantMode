@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
         /// Edits the CallDashEvents method in Player (called multiple times when the player dashes).
         /// </summary>
         /// <param name="il">Object allowing CIL patching</param>
-        private void modCallDashEvents(ILContext il) {
+        private static void modCallDashEvents(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // enter the if in the method (the "if" checks if dash events were already called) and inject ourselves in there
@@ -47,7 +47,7 @@ namespace ExtendedVariants.Variants {
         /// Modifies the dash speed of the player.
         /// </summary>
         /// <param name="self">A reference to the player</param>
-        private void modifyDashSpeed(Player self) {
+        private static void modifyDashSpeed(Player self) {
             self.Speed *= GetVariantValue<float>(Variant.DashSpeed);
         }
     }

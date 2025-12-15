@@ -12,8 +12,6 @@ namespace ExtendedVariants.Entities {
     /// except controlled by the extended variant setting instead of a session flag.
     /// </summary>
     public class UnderwaterSwitchController : Entity {
-        private static FieldInfo waterFill = typeof(Water).GetField("fill", BindingFlags.NonPublic | BindingFlags.Instance);
-
         private Func<bool> everythingIsUnderwater;
         private Water water;
 
@@ -60,10 +58,10 @@ namespace ExtendedVariants.Entities {
                 false, false, levelBounds.Width, levelBounds.Height + 10);
 
             // but we don't want the water to render off-screen, because it is visible on upwards transitions.
-            Rectangle fill = (Rectangle) waterFill.GetValue(water);
+            Rectangle fill = water.fill;
             fill.Y += 10;
             fill.Height -= 10;
-            waterFill.SetValue(water, fill);
+            water.fill = fill;
 
             Scene.Add(water);
         }

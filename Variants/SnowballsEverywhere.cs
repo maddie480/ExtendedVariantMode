@@ -32,7 +32,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Snowball.Added -= modSnowballAdded;
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -40,12 +40,12 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
             addSnowballToLevel(self);
         }
 
-        private void addSnowballToLevel(Level level) {
+        private static void addSnowballToLevel(Level level) {
             // do pretty much the same thing as the so-called "Wind Attack Trigger" from vanilla
             if (GetVariantValue<bool>(Variant.SnowballsEverywhere) && level.Entities.FindFirst<Snowball>() == null) {
                 Snowball snowball = new AutoDestroyingSnowball();
@@ -57,7 +57,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modSnowballAdded(ILContext il) {
+        private static void modSnowballAdded(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump right after ResetPosition() is called
@@ -71,13 +71,13 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float determineInitialResetTimer() {
+        private static float determineInitialResetTimer() {
             // we want the first snowball to be issued with a minimum delay of 0.8 seconds whatever the setting to avoid softlocks.
             // to do that, we will initialize the resetTimer to -0.5f if the snowball delay is of 0.3 seconds for example.
             return Math.Min(0, GetVariantValue<float>(Variant.SnowballDelay) - 0.8f);
         }
 
-        private void modSnowballUpdate(ILContext il) {
+        private static void modSnowballUpdate(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // go everywhere where the 0.8 second delay is defined
@@ -90,7 +90,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float determineDelayBetweenSnowballs() {
+        private static float determineDelayBetweenSnowballs() {
             if (ExtendedVariantsModule.ShouldIgnoreCustomDelaySettings()) {
                 return 0.8f;
             }

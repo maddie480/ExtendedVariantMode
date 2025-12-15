@@ -49,14 +49,17 @@ namespace ExtendedVariants.Variants {
             hookPlayerOrigWallJump = null;
         }
 
-        private void modVarJumpTimer(ILContext il) {
+        private static void modVarJumpTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("varJumpTimer"))) {
                 Logger.Log("ExtendedVariantMode/JumpDuration", $"Modding varJumpTimer at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.JumpDuration));
+                cursor.EmitDelegate<Func<float, float>>(applyJumpDuration);
                 cursor.Index++;
             }
+        }
+        private static float applyJumpDuration(float orig) {
+            return orig * GetVariantValue<float>(Variant.JumpDuration);
         }
     }
 }

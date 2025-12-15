@@ -7,8 +7,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DisableDashCooldown : AbstractExtendedVariant {
-        private ILHook hookOnCanDash;
-        private ILHook hookOnOrigUpdate;
+        private static ILHook hookOnCanDash;
+        private static ILHook hookOnOrigUpdate;
 
         public DisableDashCooldown() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
@@ -29,7 +29,7 @@ namespace ExtendedVariants.Variants {
             hookOnOrigUpdate = null;
         }
 
-        private void modCanDash(ILContext il) {
+        private static void modCanDash(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Player>("dashCooldownTimer") || instr.MatchLdfld<Player>("dashRefillCooldownTimer"))) {
@@ -38,7 +38,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float modDashCooldownTimer(float orig) {
+        private static float modDashCooldownTimer(float orig) {
             if (GetVariantValue<bool>(Variant.DisableDashCooldown)) {
                 return 0f;
             }

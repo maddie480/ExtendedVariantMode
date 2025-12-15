@@ -7,13 +7,8 @@ using System.Reflection;
 
 namespace ExtendedVariants.UI {
     public class InputSearchUI : Entity {
-        private static readonly MethodInfo ouiModOptionsAddSearchBox = typeof(OuiModOptions).GetMethod("AddSearchBox", BindingFlags.Public | BindingFlags.Static);
-        private static readonly FieldInfo overworldInputEaseField = typeof(Overworld).GetField("inputEase", BindingFlags.NonPublic | BindingFlags.Instance);
-
         public static void Load() {
-            if (ouiModOptionsAddSearchBox != null && overworldInputEaseField != null) {
-                On.Celeste.Overworld.ctor += onOverworldConstruct;
-            }
+            On.Celeste.Overworld.ctor += onOverworldConstruct;
         }
 
         public static void Unload() {
@@ -56,7 +51,7 @@ namespace ExtendedVariants.UI {
         public override void Render() {
             if (inputEase <= 0f) return;
 
-            float overworldInputEase = overworld == null ? 0f : (float) overworldInputEaseField.GetValue(overworld);
+            float overworldInputEase = overworld == null ? 0f : overworld.inputEase;
 
             const float scale = 0.5f;
             float positionOffset = overworldInputEase > 0f ? 48f : 0f;
@@ -78,13 +73,13 @@ namespace ExtendedVariants.UI {
                 Engine.Scene.Add(this);
                 this.overworld = overworld;
             }
-            Action startSearching = ouiModOptionsAddSearchBox.Invoke(null, new object[] { menu, overworld }) as Action;
+            Action startSearching = OuiModOptions.AddSearchBox(menu, overworld);
             // Remove Celeste.TextMenuExt+SearchToolTip added in the previous line
             menu.Remove(menu.Items[menu.Items.Count - 1]);
 
             menu.OnClose += () => this.showSearchUI = false;
             menu.OnUpdate += () => {
-                if (key.Pressed) startSearching.Invoke();
+                if (key.Pressed) startSearching();
             };
         }
     }

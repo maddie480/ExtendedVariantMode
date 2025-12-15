@@ -4,14 +4,13 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System;
 using System.Collections;
-using Celeste.Mod.EV;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DontRefillDashOnGround : AbstractExtendedVariant {
         public enum DashRefillOnGroundConfiguration { DEFAULT, ON, OFF }
 
-        private ILHook patchOrigUpdate;
+        private static ILHook patchOrigUpdate;
 
         public DontRefillDashOnGround() : base(variantType: typeof(DashRefillOnGroundConfiguration), defaultVariantValue: DashRefillOnGroundConfiguration.DEFAULT) { }
 
@@ -51,7 +50,7 @@ namespace ExtendedVariants.Variants {
             patchOrigUpdate = null;
         }
 
-        private void patchNoRefills(ILContext il) {
+        private static void patchNoRefills(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // jump to if(!Inventory.NoRefills)
@@ -61,26 +60,26 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
+        private static void patchBumperOnPlayer(On.Celeste.Bumper.orig_OnPlayer orig, Bumper self, Player player) {
             swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
         }
 
-        private void patchPufferExplode(On.Celeste.Puffer.orig_Explode orig, Puffer self) {
+        private static void patchPufferExplode(On.Celeste.Puffer.orig_Explode orig, Puffer self) {
             swapNoRefillsTemporarily(() => orig(self), self.SceneAs<Level>().Session);
         }
 
-        private void patchTempleBigEyeballOnPlayer(On.Celeste.TempleBigEyeball.orig_OnPlayer orig, TempleBigEyeball self, Player player) {
+        private static void patchTempleBigEyeballOnPlayer(On.Celeste.TempleBigEyeball.orig_OnPlayer orig, TempleBigEyeball self, Player player) {
             swapNoRefillsTemporarily(() => orig(self, player), self.SceneAs<Level>().Session);
         }
 
-        private void swapNoRefillsTemporarily(Action action, Session session) {
+        private static void swapNoRefillsTemporarily(Action action, Session session) {
             bool origNoRefills = session.Inventory.NoRefills;
             session.Inventory.NoRefills = areRefillsOnGroundDisabled(origNoRefills);
             action();
             session.Inventory.NoRefills = origNoRefills;
         }
 
-        private bool areRefillsOnGroundDisabled(bool vanilla) {
+        private static bool areRefillsOnGroundDisabled(bool vanilla) {
             switch (GetVariantValue<DashRefillOnGroundConfiguration>(Variant.DontRefillDashOnGround)) {
                 case DashRefillOnGroundConfiguration.ON: return true;
                 case DashRefillOnGroundConfiguration.OFF: return false;
@@ -88,7 +87,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
+        private static IEnumerator patchSeekerRegenerateCoroutine(On.Celeste.Seeker.orig_RegenerateCoroutine orig, Seeker self) {
             IEnumerator original = orig(self).SafeEnumerate();
 
             Session session = self.SceneAs<Level>().Session;

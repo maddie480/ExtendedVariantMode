@@ -4,14 +4,18 @@ using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
 using System;
+using System.Runtime.CompilerServices;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class ZoomLevel : AbstractExtendedVariant {
-        private Vector2 previousDiff;
-        private float transitionPercent = 1f;
+        private static Vector2 previousDiff;
+        private static float transitionPercent = 1f;
 
-        public ZoomLevel() : base(variantType: typeof(float), defaultVariantValue: 1f) { }
+        private static ZoomLevel instance;
+        public ZoomLevel() : base(variantType: typeof(float), defaultVariantValue: 1f) {
+            instance = this;
+        }
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
@@ -27,7 +31,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Level.Render -= modLevelRender;
         }
 
-        private void onPlayerConstructor(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
+        private static void onPlayerConstructor(On.Celeste.Player.orig_ctor orig, Player self, Vector2 position, PlayerSpriteMode spriteMode) {
             orig(self, position, spriteMode);
 
             // make the player spy on transitions
@@ -37,15 +41,21 @@ namespace ExtendedVariants.Variants {
             });
         }
 
-        private void modLevelRender(ILContext il) {
+        private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchLdfld<Level>("Zoom"))) {
                 Logger.Log("ExtendedVariantMode/ZoomLevel", $"Modding zoom at {cursor.Index} in IL code for Level.Render");
-                cursor.EmitDelegate<Func<float, float>>(modZoom);
+                cursor.EmitDelegate<Func<float, float>>(modZoomStatic);
             }
         }
 
+        private static float modZoomStatic(float zoom) {
+            // CelesteTAS relies on this method being non-static
+            return instance.modZoom(zoom);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private float modZoom(float zoom) {
             return zoom * GetVariantValue<float>(Variant.ZoomLevel);
         }

@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
@@ -25,7 +26,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.SwimUpdate -= Player_SwimUpdate;
         }
 
-        private void Player_SwimUpdate(ILContext il) {
+        private static void Player_SwimUpdate(ILContext il) {
             ILCursor xSpeedVariable = new ILCursor(il);
             if (!xSpeedVariable.TryGotoNext(MoveType.AfterLabel, static instr => instr.MatchStloc(2))) {
                 Logger.Log(LogLevel.Error, LogID,
@@ -41,7 +42,7 @@ namespace ExtendedVariants.Variants {
             }
 
             ILCursor xIfCheck = ySpeedVariable.Clone();
-            if (!TryGotoNextBestFit(xIfCheck, MoveType.Before,
+            if (!xIfCheck.TryGotoNextBestFit(MoveType.Before,
                 static instr => instr.MatchLdcR4(SlowerDecelerationSpeedThreshold),
                 static instr => instr.MatchBleUn(out _)))
             {
@@ -52,7 +53,7 @@ namespace ExtendedVariants.Variants {
             xIfCheck.Index++;
 
             ILCursor yIfCheck = xIfCheck.Clone();
-            if (!TryGotoNextBestFit(yIfCheck, MoveType.Before,
+            if (!yIfCheck.TryGotoNextBestFit(MoveType.Before,
                 static instr => instr.MatchLdcR4(SlowerDecelerationSpeedThreshold),
                 static instr => instr.MatchBleUn(out _)))
             {
@@ -84,7 +85,7 @@ namespace ExtendedVariants.Variants {
             yIfCheck.EmitDelegate<Func<float, float, bool, float>>(OverrideYSwimSpeedThreshold);
         }
 
-        private float OverrideWaterXSpeed(float previousSpeedX) {
+        private static float OverrideWaterXSpeed(float previousSpeedX) {
             return previousSpeedX switch {
                 UnderwaterSpeedX.VanillaSpeed => GetVariantValue<float>(Variant.UnderwaterSpeedX),
                 WaterSurfaceSpeedX.VanillaSpeed => GetVariantValue<float>(Variant.WaterSurfaceSpeedX),
@@ -94,7 +95,7 @@ namespace ExtendedVariants.Variants {
             };
         }
 
-        private float OverrideWaterYSpeed(float previousSpeedY, bool isUnderwater) {
+        private static float OverrideWaterYSpeed(float previousSpeedY, bool isUnderwater) {
             // this should never happen, do nothing
             if (previousSpeedY != UnderwaterSpeedY.VanillaSpeed)
                 return previousSpeedY;
@@ -104,7 +105,7 @@ namespace ExtendedVariants.Variants {
                 : GetVariantValue<float>(Variant.WaterSurfaceSpeedY);
         }
 
-        private float OverrideXSwimSpeedThreshold(float previousThreshold, float swimSpeedX, bool isUnderwater) {
+        private static float OverrideXSwimSpeedThreshold(float previousThreshold, float swimSpeedX, bool isUnderwater) {
             if (isUnderwater)
                 return GetVariantValue<float>(Variant.UnderwaterSpeedX) == UnderwaterSpeedX.VanillaSpeed
                     ? previousThreshold
@@ -115,7 +116,7 @@ namespace ExtendedVariants.Variants {
                     : swimSpeedX;
         }
 
-        private float OverrideYSwimSpeedThreshold(float previousThreshold, float swimSpeedY, bool isUnderwater) {
+        private static float OverrideYSwimSpeedThreshold(float previousThreshold, float swimSpeedY, bool isUnderwater) {
             if (isUnderwater)
                 return GetVariantValue<float>(Variant.UnderwaterSpeedY) == UnderwaterSpeedY.VanillaSpeed
                     ? previousThreshold

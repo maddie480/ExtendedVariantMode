@@ -32,7 +32,7 @@ namespace ExtendedVariants.Variants {
             redDashCoroutineHook = null;
         }
 
-        private void modDashSpeed(ILContext il) {
+        private static void modDashSpeed(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // find 240f in the method (dash speed) and multiply it with our modifier.
@@ -44,7 +44,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float getDashSpeedMultiplier() {
+        private static float getDashSpeedMultiplier() {
             return GetVariantValue<float>(Variant.DashSpeed);
         }
     }

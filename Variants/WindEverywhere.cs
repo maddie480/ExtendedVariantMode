@@ -11,9 +11,9 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WindEverywhere : AbstractExtendedVariant {
 
-        private Random randomGenerator = new Random();
+        private static Random randomGenerator = new Random();
 
-        private bool snowBackdropAddedByEVM = false;
+        private static bool snowBackdropAddedByEVM = false;
 
         public enum WindPattern {
             Default, None, Left, Right, LeftStrong, RightStrong, RightCrazy, LeftOnOff, RightOnOff, Alternating,
@@ -70,7 +70,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
+        private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
             if (playerIntro != Player.IntroTypes.Transition) {
@@ -78,12 +78,12 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
+        private static IEnumerator modTransitionRoutine(On.Celeste.Level.orig_TransitionRoutine orig, Level self, LevelData next, Vector2 direction) {
             yield return new SwapImmediately(orig(self, next, direction));
             applyWind(self);
         }
 
-        private void applyWind(Level level) {
+        private static void applyWind(Level level) {
             if (GetVariantValue<WindPattern>(Variant.WindEverywhere) != WindPattern.Default) {
                 WindController.Patterns selectedPattern;
                 if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Random) {
@@ -131,11 +131,11 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
+        private static void onLevelExit(Level level, LevelExit exit, LevelExit.Mode mode, Session session, HiresSnow snow) {
             snowBackdropAddedByEVM = false;
         }
 
-        private void onWireRender(ILContext il) {
+        private static void onWireRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             // we'll replace "level.VisualWind" with "transformVisualWind(level.VisualWind)"
@@ -146,7 +146,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private float transformVisualWind(float vanilla) {
+        private static float transformVisualWind(float vanilla) {
             if (GetVariantValue<WindPattern>(Variant.WindEverywhere) == WindPattern.Default) {
                 // variant disabled: don't affect vanilla.
                 return vanilla;

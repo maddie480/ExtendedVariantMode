@@ -20,14 +20,17 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.SideBounce -= modForceMoveXTimer;
         }
 
-        private void modForceMoveXTimer(ILContext il) {
+        private static void modForceMoveXTimer(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(instr => instr.MatchStfld<Player>("forceMoveXTimer"))) {
                 Logger.Log("ExtendedVariantMode/HorizontalSpringBounceDuration", $"Modding forceMoveXTimer at {cursor.Index} in IL for {il.Method.FullName}");
-                cursor.EmitDelegate<Func<float, float>>(orig => orig * GetVariantValue<float>(Variant.HorizontalSpringBounceDuration));
+                cursor.EmitDelegate<Func<float, float>>(applyHorizontalSpringBounceDuration);
                 cursor.Index++;
             }
+        }
+        private static float applyHorizontalSpringBounceDuration(float orig) {
+            return orig * GetVariantValue<float>(Variant.HorizontalSpringBounceDuration);
         }
     }
 }

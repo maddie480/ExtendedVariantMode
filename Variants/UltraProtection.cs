@@ -12,8 +12,7 @@ namespace ExtendedVariants.Variants {
         private static void PlayLandingEffects(Player player) {
             Input.Rumble(RumbleStrength.Light, RumbleLength.Short);
 
-            var dynamicData = DynamicData.For(player);
-            var platform = SurfaceIndex.GetPlatformByPriority(player.CollideAll<Platform>(player.Position + Vector2.UnitY, dynamicData.Get<List<Entity>>("temp")));
+            var platform = SurfaceIndex.GetPlatformByPriority(player.CollideAll<Platform>(player.Position + Vector2.UnitY, player.temp));
             int surfaceIndex = -1;
 
             if (platform != null) {
@@ -29,7 +28,7 @@ namespace ExtendedVariants.Variants {
             }
 
             if (player.Speed.Y >= 80.0)
-                Dust.Burst(player.Position, (-Vector2.UnitY).Angle(), 8, dynamicData.Invoke<ParticleType>("DustParticleFromSurfaceIndex", surfaceIndex));
+                Dust.Burst(player.Position, (-Vector2.UnitY).Angle(), 8, player.DustParticleFromSurfaceIndex(surfaceIndex));
         }
 
         public override void Load() {
@@ -46,10 +45,10 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
 
-        private void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
+        private static void Player_Jump(On.Celeste.Player.orig_Jump jump, Player player, bool particles, bool playsfx) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
                 && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f
-                && DynamicData.For(player).Get<bool>("onGround")) {
+                && player.onGround) {
                 player.DashDir.X = Math.Sign(player.DashDir.X);
                 player.DashDir.Y = 0f;
                 player.Speed.X *= GetVariantValue<float>(ExtendedVariantsModule.Variant.UltraSpeedMultiplier);
@@ -59,10 +58,10 @@ namespace ExtendedVariants.Variants {
             jump(player, particles, playsfx);
         }
 
-        private void Player_DashBegin(On.Celeste.Player.orig_DashBegin dashBegin, Player player) {
+        private static void Player_DashBegin(On.Celeste.Player.orig_DashBegin dashBegin, Player player) {
             if (GetVariantValue<bool>(ExtendedVariantsModule.Variant.UltraProtection)
                 && player.DashDir.X != 0f && player.DashDir.Y > 0f && player.Speed.Y > 0f
-                && DynamicData.For(player).Get<bool>("onGround")) {
+                && player.onGround) {
                 player.Speed.X *= GetVariantValue<float>(ExtendedVariantsModule.Variant.UltraSpeedMultiplier);
                 PlayLandingEffects(player);
             }
