@@ -61,7 +61,7 @@ namespace ExtendedVariants.Module {
             DontRefillStaminaOnGround, EveryJumpIsUltra, CoyoteTime, BackgroundBlurLevel, NoFreezeFrames, PreserveExtraDashesUnderwater, AlwaysInvisible, DisplaySpeedometer,
             WallSlidingSpeed, DisableJumpingOutOfWater, DisableDashCooldown, DisableKeysSpotlight, JungleSpidersEverywhere, CornerCorrection, PickupDuration,
             MinimumDelayBeforeThrowing, DelayBeforeRegrabbing, DashTimerMultiplier, JumpDuration, HorizontalSpringBounceDuration, HorizontalWallJumpDuration,
-            ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode,
+            ResetJumpCountOnGround, UltraSpeedMultiplier, JumpCooldown, SpinnerColor, WallJumpDistance, WallBounceDistance, DashRestriction, CorrectedMirrorMode, WindCrouchMove,
             FastFallAcceleration, AlwaysFeather, PermanentDashAttack, PermanentBinoStorage, WalllessWallbounce, TrueNoGrabbing, BufferableGrab, UltraProtection, LiftboostProtection,
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
@@ -204,6 +204,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.WallJumpDistance] = new WallJumpDistance();
             VariantHandlers[Variant.WallBounceDistance] = new WallBounceDistance();
             VariantHandlers[Variant.CorrectedMirrorMode] = new CorrectedMirrorMode();
+            VariantHandlers[Variant.WindCrouchMove] = new WindCrouchMove();
             VariantHandlers[Variant.FastFallAcceleration] = new FastFallAcceleration();
             VariantHandlers[Variant.AlwaysFeather] = new AlwaysFeather();
             VariantHandlers[Variant.PermanentDashAttack] = new PermanentDashAttack();

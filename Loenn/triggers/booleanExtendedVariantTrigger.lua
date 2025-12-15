@@ -88,7 +88,8 @@ trigger.fieldInformation = {
             "TrueNoGrabbing",
             "UltraProtection",
             "UpsideDown",
-            "WalllessWallbounce"
+            "WalllessWallbounce",
+            "WindCrouchMove"
         },
         editable = false
     }
