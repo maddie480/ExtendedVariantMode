@@ -342,7 +342,7 @@ namespace ExtendedVariants.UI {
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
                     Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump, Variant.AutoDash
+                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.WindCrouchMove, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump, Variant.AutoDash
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
@@ -797,6 +797,7 @@ namespace ExtendedVariants.UI {
                 menu.Add(getToggleOption(Variant.AllStrawberriesAreGoldens));
                 menu.Add(getToggleOption(Variant.AlwaysInvisible));
                 menu.Add(correctedMirrorModeOption = getToggleOption(Variant.CorrectedMirrorMode));
+                menu.Add(getToggleOption(Variant.WindCrouchMove));
 
                 menu.Add(buildHeading(menu, "TROLL"));
                 menu.Add(getToggleOption(Variant.ForceDuckOnGround));
