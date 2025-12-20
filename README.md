@@ -117,6 +117,7 @@ Adds some options to the Mod Options menu:
 *   **Fast Fall Acceleration**: tunes how fast Madeline's speed switches from slow to fast falling.
 *   **Madeline is Always Invisible**: just makes Madeline invisible. Like the vanilla Invisible Motion variant, but even when Madeline is not moving!
 *   **Corrected Mirror Mode**: Fixes Mirror Mode so that holding 2 opposite directions doesn't make Madeline freak out in place. (brought to you by @nhruo123)
+*   **Wind Affects Crouching Madeline**: The wind continues pushing Madeline even if she is ducking. (brought to you by @whatsGravity)
 *   A few variants related to **holdables** (like **Theo and jellies**):
     * **Pickup Duration**: the time it takes for Madeline to take the holdable. If you make this delay bigger, the animation will be slowed down, and Madeline's position will be frozen for longer.
     * **Minimum Delay Before Throwing**: the minimum delay after grabbing the holdable before you can throw it away.

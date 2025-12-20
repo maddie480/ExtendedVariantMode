@@ -17,8 +17,7 @@ namespace ExtendedVariants.Variants {
             return value != 0;
         }
 
-        public override void Load()
-        {
+        public override void Load() {
             hookOnOrigWindMove = new ILHook(typeof(Player).GetMethod("orig_WindMove", BindingFlags.NonPublic | BindingFlags.Instance), modWindMove);
         }
 
@@ -27,7 +26,7 @@ namespace ExtendedVariants.Variants {
             hookOnOrigWindMove = null;
         }
 
-        private void modWindMove (ILContext il) {
+        private static void modWindMove(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
             while (cursor.TryGotoNext(MoveType.After, instr => instr.MatchCallvirt(m_get_Ducking))) {
@@ -36,7 +35,7 @@ namespace ExtendedVariants.Variants {
             }
         }
 
-        private bool modDuckCheck(bool orig) {
+        private static bool modDuckCheck(bool orig) {
             if (GetVariantValue<bool>(Variant.WindCrouchMove)) {
                 return false;
             }

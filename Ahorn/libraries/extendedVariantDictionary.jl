@@ -145,7 +145,8 @@ const BooleanVariants = [
     "TrueNoGrabbing",
     "UltraProtection",
     "UpsideDown",
-    "WalllessWallbounce"
+    "WalllessWallbounce",
+    "WindCrouchMove"
 ]
 
 const SpecialHandlingVariants = [
