@@ -320,6 +320,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelLoader.ctor += checkForceEnableVariants;
 
             typeof(LuaCutscenesUtils).ModInterop();
+			typeof(MotionSmoothingImports).ModInterop();
 
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
