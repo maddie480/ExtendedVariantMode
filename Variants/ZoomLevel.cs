@@ -1,6 +1,5 @@
 ﻿using Celeste;
 using Celeste.Mod;
-using ExtendedVariants.Module;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
@@ -67,16 +66,9 @@ namespace ExtendedVariants.Variants {
                 return originalPosition;
             }
 
-			VirtualRenderTarget gameplay =
-				MotionSmoothingImports.GetResizableBuffer?.Invoke(GameplayBuffers.Gameplay)
-				?? GameplayBuffers.Gameplay;
-
-			int gameplayWidth = gameplay.Width;
-			int gameplayHeight = gameplay.Height;
-
             // compute the size difference between regular screen and zoomed in screen
-            Vector2 screenSize = new Vector2(gameplayWidth, gameplayHeight) * GetVariantValue<float>(Variant.ZoomLevel);
-            Vector2 diff = screenSize - new Vector2(gameplayWidth, gameplayHeight);
+            Vector2 screenSize = new Vector2(GameplayWidth, GameplayHeight) * GetVariantValue<float>(Variant.ZoomLevel);
+            Vector2 diff = screenSize - new Vector2(GameplayWidth, GameplayHeight);
 
             Player player = Engine.Scene.Tracker.GetEntity<Player>();
             if (GetVariantValue<float>(Variant.ZoomLevel) > 1f && player != null) {

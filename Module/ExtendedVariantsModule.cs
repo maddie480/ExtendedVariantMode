@@ -42,8 +42,15 @@ namespace ExtendedVariants.Module {
         public static ExtendedVariantsSession Session => (ExtendedVariantsSession) Instance._Session;
 
         // size of the screen, taking zooming out into account (Extended Camera Dynamics mod)
-        public static int GameplayWidth => GameplayBuffers.Gameplay?.Width ?? 320;
-        public static int GameplayHeight => GameplayBuffers.Gameplay?.Height ?? 180;
+        // and also taking Motion Smoothing into account
+        public static int GameplayWidth => 
+            MotionSmoothingImports.GetResizableBuffer?.Invoke(GameplayBuffers.Gameplay)?.Width
+                ?? GameplayBuffers.Gameplay?.Width
+                ?? 320;
+        public static int GameplayHeight =>
+            MotionSmoothingImports.GetResizableBuffer?.Invoke(GameplayBuffers.Gameplay)?.Height
+                ?? GameplayBuffers.Gameplay?.Height
+                ?? 180;
 
         public enum Variant {
             Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
@@ -320,7 +327,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.LevelLoader.ctor += checkForceEnableVariants;
 
             typeof(LuaCutscenesUtils).ModInterop();
-			typeof(MotionSmoothingImports).ModInterop();
+            typeof(MotionSmoothingImports).ModInterop();
 
             if (Settings.MasterSwitch) {
                 // variants are enabled: we want to hook them on startup.
