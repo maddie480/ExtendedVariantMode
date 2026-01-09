@@ -43,7 +43,7 @@ namespace ExtendedVariants.Module {
 
         // size of the screen, taking zooming out into account (Extended Camera Dynamics mod)
         // and also taking Motion Smoothing into account
-        public static int GameplayWidth => 
+        public static int GameplayWidth =>
             MotionSmoothingImports.GetResizableBuffer?.Invoke(GameplayBuffers.Gameplay)?.Width
                 ?? GameplayBuffers.Gameplay?.Width
                 ?? 320;
