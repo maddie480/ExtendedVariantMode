@@ -3,7 +3,7 @@
   DLL: bin/ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
-      Version: 1.6088.0
+      Version: 1.6129.0
   OptionalDependencies:
     - Name: BetterRefillGems
       Version: 1.0.1
