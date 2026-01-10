@@ -587,12 +587,7 @@ namespace ExtendedVariants.UI {
 
                 TextMenuExt.OnOff midairTechToggle;
                 menu.Add(midairTechToggle = getToggleOption(Variant.MidairTech));
-                if (Dialog.Has("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_3")) {
-                    // thank the French for that one
-                    midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_3"));
-                }
-                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_2"));
-                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT_1"));
+                midairTechToggle.AddDescription(menu, Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_MIDAIRTECH_HINT"));
 
                 menu.Add(buildHeading(menu, "MOVING"));
                 menu.Add(getScaleOption(Variant.SpeedX, "x", multiplierScale));
