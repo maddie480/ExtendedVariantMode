@@ -1,5 +1,5 @@
 - Name: ExtendedVariantMode
-  Version: 0.47.8
+  Version: 0.47.9
   DLL: bin/ExtendedVariantMode.dll
   Dependencies:
     - Name: Everest
@@ -13,5 +13,3 @@
       Version: 1.6.12
     - Name: JungleHelper
       Version: 1.1.5
-    - Name: MotionSmoothing
-      Version: 1.3.2
