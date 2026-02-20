@@ -313,7 +313,7 @@ namespace ExtendedVariants.Module {
             foreach (Tuple<string, string[]> toople in new[] {
                 new Tuple<string, string[]>("Celeste.BadelineOldsite", ["CanChangeMusic", "IsChaseEnd"]),
                 new Tuple<string, string[]>("Celeste.FinalBoss", ["CanChangeMusic"]),
-                new Tuple<string, string[]>("Celeste.Player", ["NormalBegin", "RefillStamina", "DashCoroutine", "RedDashCoroutine", "CreateTrail", "PickupCoroutine"]),
+                new Tuple<string, string[]>("Celeste.Player", ["NormalBegin", "DashCoroutine", "RedDashCoroutine", "CreateTrail", "PickupCoroutine", "FlingBirdBegin"]),
                 new Tuple<string, string[]>("Celeste.Seeker", ["RegenerateCoroutine"]),
                 new Tuple<string, string[]>("Monocle.VirtualButton", ["Update"]),
             }) {
@@ -337,7 +337,7 @@ namespace ExtendedVariants.Module {
 
         public static void TryDisableInlining(MethodInfo method) {
             if (!HookUtils.TryDisableInlining(method)) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not inline method {method.DeclaringType.FullName}.{method.Name}");
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not disable inlining on method {method.DeclaringType.FullName}.{method.Name}");
             }
         }
 
