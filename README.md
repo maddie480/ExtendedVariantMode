@@ -43,6 +43,8 @@ Adds some options to the Mod Options menu:
 *   **Wind Everywhere**: Adds wind to every screen. Also replaces wind on screens where there is already wind. You can pick "No Wind" in order to disable wind on screens that have it!
 *   **Snowballs Everywhere**: Add snowballs to every screen etc etc (you can also set the delay between two snowballs!)
 *   **Add Seekers**: This adds seekers in random locations on every screen. (If the screen already contained seekers, those will add up.) You can also disable the slowdown effect the seekers trigger when they get closed to you (this only happens in some levels though).
+*   **Harmless Seekers**: Prevents seekers from killing the player. (brought to you by @dizzy-egg)
+*   **Mute Seeker Sounds**: Disables the sounds emitted by seekers when they attack you. (brought to you by @dizzy-egg)
 *   **Theo Crystals Everywhere**: Whenever you respawn, a Theo crystal spawns with you. You can't change screens unless you hold it!
 *   **Rising Lava / Falling Ice Everywhere**: Makes "sandwich lava" (_this is the internal name for this thing_) appear in every room, with customizable speed. Dashing makes it switch from lava (up) to ice (down).
 *   **Regular Hiccups:** Exactly like the vanilla variant, but you can set the hiccup frequency instead of having a random delay between 1.2 and 1.8 seconds. You can make it go down to 0.1 second. Except you shouldn't. _(If you also enable the vanilla Hiccups variant, they will stack up and you will get twice the hiccups.)_ You can also modify the hiccups' strength.
