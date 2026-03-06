@@ -72,7 +72,7 @@ namespace ExtendedVariants.Module {
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
             ConsistentThrowing, JumpBoost,
-            ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate,
+            ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate, HarmlessSeekers, MuteSeekerSounds,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -153,6 +153,8 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.SnowballDelay] = new SnowballDelay();
             VariantHandlers[Variant.AddSeekers] = new AddSeekers();
             VariantHandlers[Variant.DisableSeekerSlowdown] = new DisableSeekerSlowdown();
+            VariantHandlers[Variant.HarmlessSeekers] = new HarmlessSeekers();
+            VariantHandlers[Variant.MuteSeekerSounds] = new MuteSeekerSounds();
             VariantHandlers[Variant.TheoCrystalsEverywhere] = new TheoCrystalsEverywhere();
             VariantHandlers[Variant.AllowThrowingTheoOffscreen] = new AllowThrowingTheoOffscreen();
             VariantHandlers[Variant.AllowLeavingTheoBehind] = new AllowLeavingTheoBehind();

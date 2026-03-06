@@ -1,4 +1,4 @@
-﻿using Celeste;
+using Celeste;
 using Celeste.Mod;
 using Celeste.Mod.UI;
 using ExtendedVariants.Module;
@@ -637,6 +637,11 @@ namespace ExtendedVariants.UI {
             // ======
 
             if (category == VariantCategory.GameElements) {
+
+                menu.Add(buildHeading(menu, "SEEKERS"));
+                menu.Add(getToggleOption(Variant.HarmlessSeekers));
+                menu.Add(getToggleOption(Variant.MuteSeekerSounds));
+
                 menu.Add(buildHeading(menu, "CHASERS"));
                 menu.Add(getToggleOption(Variant.BadelineChasersEverywhere));
                 menu.Add(getScaleOption(Variant.ChaserCount, "", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
