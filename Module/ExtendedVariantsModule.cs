@@ -337,7 +337,7 @@ namespace ExtendedVariants.Module {
 
         public static void TryDisableInlining(MethodInfo method) {
             if (!HookUtils.TryDisableInlining(method)) {
-                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not inline method {method.DeclaringType.FullName}.{method.Name}");
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not disable inlining on method {method.DeclaringType.FullName}.{method.Name}");
             }
         }
 

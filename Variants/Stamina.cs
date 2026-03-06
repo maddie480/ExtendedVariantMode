@@ -39,6 +39,8 @@ namespace ExtendedVariants.Variants {
 
             playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), patchOutStamina);
             summitGemSmashRoutineHook = new ILHook(typeof(SummitGem).GetMethod("SmashRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchOutStamina);
+
+            IL.Celeste.Player.OnTransition += wrapRefillStamina;
         }
 
         public override void Unload() {
@@ -54,6 +56,8 @@ namespace ExtendedVariants.Variants {
 
             if (playerUpdateHook != null) playerUpdateHook.Dispose();
             if (summitGemSmashRoutineHook != null) summitGemSmashRoutineHook.Dispose();
+
+            IL.Celeste.Player.OnTransition -= wrapRefillStamina;
         }
 
 
@@ -133,6 +137,35 @@ namespace ExtendedVariants.Variants {
         /// <returns>The max stamina (default 110)</returns>
         private static float determineBaseStamina() {
             return GetVariantValue<int>(Variant.Stamina);
+        }
+
+        // TODO: remove when RefillStamina has been uninlined on Everest stable
+        private static void wrapRefillStamina(ILContext il) {
+            ILCursor cursor = new ILCursor(il);
+            while (cursor.TryGotoNext(instr => instr.MatchCallvirt<Player>("RefillStamina"))) {
+                Logger.Log("ExtendedVariantMode/Stamina", $"Wrapping call to RefillStamina at index {cursor.Index} in CIL code for {cursor.Method.FullName}");
+
+                // if (!shouldSkipRefillStamina()) {
+                //     player.RefillStamina();
+                //     afterRefillStamina(player);
+                // }
+                cursor.Emit(OpCodes.Dup);
+                cursor.EmitDelegate(shouldSkipRefillStamina);
+                cursor.Emit(OpCodes.Brfalse, cursor.Next);
+                cursor.Emit(OpCodes.Pop);
+                cursor.Emit(OpCodes.Pop);
+                cursor.Emit(OpCodes.Br, cursor.Next.Next);
+                cursor.Index++;
+                cursor.EmitDelegate(afterRefillStamina);
+            }
+        }
+        private static bool shouldSkipRefillStamina() {
+            return GetVariantValue<bool>(Variant.DontRefillStaminaOnGround) && !SaveData.Instance.Assists.InfiniteStamina && !forceRefillStamina;
+        }
+        private static void afterRefillStamina(Player self) {
+            if (GetVariantValue<int>(Variant.Stamina) != 110) {
+                self.Stamina = determineBaseStamina();
+            }
         }
     }
 }
