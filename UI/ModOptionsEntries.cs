@@ -306,48 +306,51 @@ namespace ExtendedVariants.UI {
                 menu.Add(qualityOfLifeSubmenu = AbstractSubmenu.BuildOpenMenuButton<OuiCategorySubmenu>(menu, inGame, submenuBackAction, new object[] { VariantCategory.QualityOfLife }));
 
                 // each submenu entry should be highlighted if one of the options in it has a non-default value.
+                // these can be updated by copy pasting the code rendering each subsection into a file and running this abomination on it:
+                // cat [file] | sed -E "s/(Variant\.[A-Za-z]+)/\1\n/g" | sed -E "s/.*(Variant\.[A-Za-z]+).*/\1,/" | grep -i Variant\\. | uniq | tr '\n' ' '
 
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.WallBouncingSpeed, Variant.DisableWallJumping, Variant.DisableClimbJumping,
-                    Variant.DisableNeutralJumping, Variant.JumpCount, Variant.DashSpeed, Variant.DashLength, Variant.HyperdashSpeed, Variant.DashCount, Variant.HeldDash,
-                    Variant.DontRefillDashOnGround, Variant.DashRestriction, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY,
-                    Variant.WaterSurfaceSpeedX, Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed,
-                    Variant.SuperdashSteeringSpeed, Variant.DisableClimbingUpOrDown, Variant.BoostMultiplier, Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.SpawnDashCount, Variant.ScreenTransitionDashCount,
-                    Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.PreserveExtraDashesUnderwater, Variant.RefillJumpsOnDashRefill, Variant.LegacyDashSpeedBehavior,
-                    Variant.DisableSuperBoosts, Variant.DontRefillStaminaOnGround, Variant.WallSlidingSpeed, Variant.DisableJumpingOutOfWater, Variant.DisableDashCooldown,
-                    Variant.CornerCorrection, Variant.PickupDuration, Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing, Variant.DashTimerMultiplier,
-                    Variant.JumpDuration, Variant.HorizontalWallJumpDuration, Variant.HorizontalSpringBounceDuration, Variant.ResetJumpCountOnGround, Variant.UltraSpeedMultiplier,
-                    Variant.DashDirection, Variant.JumpCooldown, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.FastFallAcceleration, Variant.TrueNoGrabbing,
-                    Variant.WalllessWallbounce, Variant.MidairTech, Variant.PreserveWallbounceSpeed, Variant.StretchUpDashes, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering,
-                    Variant.SlowfallGravityMultiplier, Variant.SlowfallSpeedThreshold, Variant.JumpBoost,
-                    Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate
+                    Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.JumpBoost, Variant.JumpDuration, Variant.WallBouncingSpeed, Variant.DisableWallJumping,
+                    Variant.DisableJumpingOutOfWater, Variant.DisableNeutralJumping, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.WalllessWallbounce,
+                    Variant.PreserveWallbounceSpeed, Variant.HorizontalWallJumpDuration, Variant.JumpCount, Variant.RefillJumpsOnDashRefill, Variant.ResetJumpCountOnGround, Variant.JumpCooldown,
+                    Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering, Variant.SlowfallGravityMultiplier,
+                    Variant.SlowfallSpeedThreshold, Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.DisableClimbJumping, Variant.DisableClimbingUpOrDown, Variant.TrueNoGrabbing,
+                    Variant.Stamina, Variant.DontRefillStaminaOnGround, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate, Variant.DashSpeed,
+                    Variant.LegacyDashSpeedBehavior, Variant.DashLength, Variant.DashTimerMultiplier, Variant.DashDirection, Variant.HyperdashSpeed, Variant.SuperdashSteeringSpeed,
+                    Variant.UltraSpeedMultiplier, Variant.StretchUpDashes, Variant.DashCount, Variant.HeldDash, Variant.DontRefillDashOnGround, Variant.DashRestriction,
+                    Variant.DisableRefillsOnScreenTransition, Variant.RestoreDashesOnRespawn, Variant.SpawnDashCount, Variant.ScreenTransitionDashCount, Variant.PreserveExtraDashesUnderwater,
+                    Variant.DisableDashCooldown, Variant.CornerCorrection, Variant.MidairTech, Variant.SpeedX, Variant.UnderwaterSpeedX, Variant.UnderwaterSpeedY, Variant.WaterSurfaceSpeedX,
+                    Variant.WaterSurfaceSpeedY, Variant.Friction, Variant.AirFriction, Variant.ExplodeLaunchSpeed, Variant.WallSlidingSpeed, Variant.DisableSuperBoosts, Variant.BoostMultiplier,
+                    Variant.LiftboostCapX, Variant.LiftboostCapUp, Variant.LiftboostCapDown, Variant.HorizontalSpringBounceDuration, Variant.FastFallAcceleration, Variant.PickupDuration,
+                    Variant.MinimumDelayBeforeThrowing, Variant.DelayBeforeRegrabbing
                 });
 
                 gameElementsSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.BadelineChasersEverywhere, Variant.BadelineBossesEverywhere, Variant.OshiroEverywhere, Variant.WindEverywhere,
-                    Variant.SnowballsEverywhere, Variant.AddSeekers, Variant.TheoCrystalsEverywhere, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere,
-                    Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag, Variant.DelayBetweenBadelines, Variant.BadelineAttackPattern,
-                    Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom, Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroCount,
-                    Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown, Variant.SnowballDelay, Variant.DisableSeekerSlowdown, Variant.RisingLavaSpeed,
-                    Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind, Variant.JungleSpidersEverywhere
+                    Variant.HarmlessSeekers, Variant.MuteSeekerSounds, Variant.BadelineChasersEverywhere, Variant.ChaserCount, Variant.AffectExistingChasers, Variant.BadelineLag,
+                    Variant.DelayBetweenBadelines, Variant.BadelineBossesEverywhere, Variant.BadelineAttackPattern, Variant.ChangePatternsOfExistingBosses, Variant.FirstBadelineSpawnRandom,
+                    Variant.BadelineBossCount, Variant.BadelineBossNodeCount, Variant.OshiroEverywhere, Variant.OshiroCount, Variant.ReverseOshiroCount, Variant.DisableOshiroSlowdown,
+                    Variant.TheoCrystalsEverywhere, Variant.AllowThrowingTheoOffscreen, Variant.AllowLeavingTheoBehind, Variant.WindEverywhere, Variant.SnowballsEverywhere,
+                    Variant.SnowballDelay, Variant.AddSeekers, Variant.DisableSeekerSlowdown, Variant.JellyfishEverywhere, Variant.RisingLavaEverywhere, Variant.RisingLavaSpeed,
+                    Variant.JungleSpidersEverywhere
                 });
 
                 visualSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity, Variant.DisableMadelineSpotlight, Variant.RoomBloom,
-                    Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.ZoomLevel, Variant.ColorGrading, Variant.ScreenShakeIntensity, Variant.MadelineIsSilhouette,
-                    Variant.DashTrailAllTheTime, Variant.FriendlyBadelineFollower, Variant.DisplayDashCount, Variant.MadelineHasPonytail, Variant.MadelineBackpackMode, Variant.BackgroundBlurLevel,
-                    Variant.DisplaySpeedometer, Variant.DisableKeysSpotlight, Variant.SpinnerColor
+                    Variant.DisableMadelineSpotlight, Variant.MadelineIsSilhouette, Variant.DashTrailAllTheTime, Variant.MadelineHasPonytail, Variant.DisplayDashCount,
+                    Variant.DisplaySpeedometer, Variant.MadelineBackpackMode, Variant.UpsideDown, Variant.RoomLighting, Variant.BackgroundBrightness, Variant.ForegroundEffectOpacity,
+                    Variant.RoomBloom, Variant.GlitchEffect, Variant.AnxietyEffect, Variant.BlurLevel, Variant.BackgroundBlurLevel, Variant.ZoomLevel, Variant.ColorGrading,
+                    Variant.DisableKeysSpotlight, Variant.SpinnerColor, Variant.ScreenShakeIntensity, Variant.FriendlyBadelineFollower,
                 });
 
                 gameplayTweaksSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.GameSpeed, Variant.NoFreezeFrames, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.Stamina, Variant.RegularHiccups, Variant.AllStrawberriesAreGoldens,
-                    Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls, Variant.InvertVerticalControls, Variant.BounceEverywhere,
-                    Variant.AlwaysInvisible, Variant.HiccupStrength, Variant.CorrectedMirrorMode, Variant.WindCrouchMove, Variant.PermanentDashAttack, Variant.PermanentBinoStorage, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.AutoJump, Variant.AutoDash
+                    Variant.GameSpeed, Variant.NoFreezeFrames, Variant.NoFreezeFramesAdvanceCassetteBlocks, Variant.EverythingIsUnderwater, Variant.AlwaysFeather, Variant.PermanentDashAttack,
+                    Variant.AutoJump, Variant.AutoDash, Variant.PermanentBinoStorage, Variant.RegularHiccups, Variant.HiccupStrength, Variant.AllStrawberriesAreGoldens, Variant.AlwaysInvisible,
+                    Variant.CorrectedMirrorMode, Variant.WindCrouchMove, Variant.ForceDuckOnGround, Variant.InvertDashes, Variant.InvertGrab, Variant.InvertHorizontalControls,
+                    Variant.InvertVerticalControls, Variant.BounceEverywhere
                 });
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
-                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering, Variant.MultiBuffering,
-                    Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove, Variant.ConsistentThrowing
+                    Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering, Variant.ConsistentThrowing,
+                    Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetVanillaVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu, qualityOfLifeSubmenu };
@@ -637,7 +640,6 @@ namespace ExtendedVariants.UI {
             // ======
 
             if (category == VariantCategory.GameElements) {
-
                 menu.Add(buildHeading(menu, "SEEKERS"));
                 menu.Add(getToggleOption(Variant.HarmlessSeekers));
                 menu.Add(getToggleOption(Variant.MuteSeekerSounds));
