@@ -33,9 +33,12 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.Player.ctor += patchOutStamina;
             On.Celeste.Player.RefillStamina += modRefillStamina;
 
-            On.Celeste.Player.OnTransition += modOnTransition;
-            On.Celeste.Player.ctor += modPlayerConstructor;
-            On.Celeste.Player.UseRefill += modPlayerUseRefill;
+            // be sure to intercept those calls before other mods do, some of them don't call orig!
+            using (new DetourConfigContext(new DetourConfig("ExtendedVariantMode_AfterAll").WithPriority(int.MaxValue)).Use()) {
+                On.Celeste.Player.OnTransition += modOnTransition;
+                On.Celeste.Player.ctor += modPlayerConstructor;
+                On.Celeste.Player.UseRefill += modPlayerUseRefill;
+            }
 
             playerUpdateHook = new ILHook(typeof(Player).GetMethod("orig_Update"), patchOutStamina);
             summitGemSmashRoutineHook = new ILHook(typeof(SummitGem).GetMethod("SmashRoutine", BindingFlags.NonPublic | BindingFlags.Instance).GetStateMachineTarget(), patchOutStamina);
