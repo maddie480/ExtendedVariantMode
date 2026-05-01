@@ -1,4 +1,5 @@
 ﻿using Celeste.Mod;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
 namespace ExtendedVariants.Module {
@@ -49,6 +50,15 @@ namespace ExtendedVariants.Module {
         // ======================================
 
         [SettingName("MODOPTIONS_EXTENDEDVARIANTS_RANDOMIZER_DISPLAYONSCREEN")]
+        [DefaultButtonBinding((Buttons) 0, Keys.None)]
         public ButtonBinding HotKey_DisplayEnabledVariantsToScreen { get; set; }
+
+        [SettingName("MODOPTIONS_EXTENDEDVARIANTS_HOTKEY_INCREASE_GAMESPEED")]
+        [DefaultButtonBinding((Buttons) 0, Keys.None)]
+        public ButtonBinding HotKey_IncreaseGameSpeed { get; set; }
+
+        [SettingName("MODOPTIONS_EXTENDEDVARIANTS_HOTKEY_DECREASE_GAMESPEED")]
+        [DefaultButtonBinding((Buttons) 0, Keys.None)]
+        public ButtonBinding HotKey_DecreaseGameSpeed { get; set; }
     }
 }

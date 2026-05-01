@@ -738,6 +738,8 @@ namespace ExtendedVariants.Module {
                 OnScreenDisplayTextOpacity = Settings.OnScreenDisplayTextOpacity,
                 OnScreenDisplayBackgroundOpacity = Settings.OnScreenDisplayBackgroundOpacity,
                 HotKey_DisplayEnabledVariantsToScreen = Settings.HotKey_DisplayEnabledVariantsToScreen,
+                HotKey_IncreaseGameSpeed = Settings.HotKey_IncreaseGameSpeed,
+                HotKey_DecreaseGameSpeed = Settings.HotKey_DecreaseGameSpeed,
             };
 
             try {

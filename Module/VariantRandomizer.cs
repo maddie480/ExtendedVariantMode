@@ -100,6 +100,8 @@ namespace ExtendedVariants {
             if (!((scene as Level)?.Paused ?? false)) {
                 Draw.SpriteBatch.Begin();
 
+                processGameSpeedHotkeys();
+
                 if (ExtendedVariantsModule.Settings.HotKey_DisplayEnabledVariantsToScreen?.Pressed == true) {
                     ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen = !ExtendedVariantsModule.Settings.DisplayEnabledVariantsToScreen;
                 }
@@ -176,6 +178,24 @@ namespace ExtendedVariants {
             }
 
             orig(self);
+        }
+
+        private static void processGameSpeedHotkeys() {
+            if (ExtendedVariantsModule.Settings.HotKey_IncreaseGameSpeed?.Pressed == true) {
+                changeGameSpeedBy(0.1f);
+            }
+            if (ExtendedVariantsModule.Settings.HotKey_DecreaseGameSpeed?.Pressed == true) {
+                changeGameSpeedBy(-0.1f);
+            }
+        }
+
+        private static void changeGameSpeedBy(float delta) {
+            float current = (float) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.GameSpeed);
+            float updated = current + delta;
+            updated = Math.Max(0f, Math.Min(100f, updated));
+            updated = (float) Math.Round(updated, 1);
+
+            setVariantValue(ExtendedVariantsModule.Variant.GameSpeed, updated);
         }
 
         private static void changeVariantNow(bool disableOnly = false) {
