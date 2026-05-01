@@ -482,6 +482,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.Level.LoadLevel += onLoadLevel;
             On.Celeste.Level.EndPauseEffects += onUnpause;
             On.Celeste.Level.End += onLevelEnd;
+            On.Celeste.Level.Update += onLevelUpdate;
 
             VanillaVariantOptions.Load();
 
@@ -535,6 +536,7 @@ namespace ExtendedVariants.Module {
             On.Celeste.Level.LoadLevel -= onLoadLevel;
             On.Celeste.Level.EndPauseEffects -= onUnpause;
             On.Celeste.Level.End -= onLevelEnd;
+            On.Celeste.Level.Update -= onLevelUpdate;
 
             VanillaVariantOptions.Unload();
 
@@ -652,6 +654,33 @@ namespace ExtendedVariants.Module {
         public static void CmdResetExtendedVariants() {
             Instance.ResetExtendedVariantsToDefaultSettings();
         }
+
+
+        // ================ Game speed hotkeys ================
+
+        private static void onLevelUpdate(On.Celeste.Level.orig_Update orig, Level self) {
+            processGameSpeedHotkeys();
+            orig(self);
+        }
+
+        private static void processGameSpeedHotkeys() {
+            if (ExtendedVariantsModule.Settings.HotKey_IncreaseGameSpeed?.Pressed == true) {
+                changeGameSpeedBy(0.1f);
+            }
+            if (ExtendedVariantsModule.Settings.HotKey_DecreaseGameSpeed?.Pressed == true) {
+                changeGameSpeedBy(-0.1f);
+            }
+        }
+
+        private static void changeGameSpeedBy(float delta) {
+            float current = (float) ExtendedVariantsModule.Instance.TriggerManager.GetCurrentVariantValue(ExtendedVariantsModule.Variant.GameSpeed);
+            float updated = current + delta;
+            updated = Math.Max(0f, Math.Min(100f, updated));
+            updated = (float) Math.Round(updated, 1);
+
+            ModOptionsEntries.SetVariantValue(ExtendedVariantsModule.Variant.GameSpeed, updated);
+        }
+
 
         // ================ Stamp on Chapter Complete screen ================
 
