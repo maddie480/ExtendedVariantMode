@@ -29,7 +29,8 @@ namespace ExtendedVariants.UI {
             Variant.ThrowIgnoresForcedMove,
             Variant.MultiBuffering,
             Variant.MidairTech, // Could be used to fudge a super
-            Variant.ConsistentThrowing
+            Variant.ConsistentThrowing,
+            Variant.DashbounceControl
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {

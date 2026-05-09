@@ -350,7 +350,7 @@ namespace ExtendedVariants.UI {
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering, Variant.ConsistentThrowing,
-                    Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove
+                    Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.DashbounceControl, Variant.ThrowIgnoresForcedMove
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetVanillaVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu, qualityOfLifeSubmenu };
@@ -838,6 +838,18 @@ namespace ExtendedVariants.UI {
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_1"));
                 }
+
+                TextMenuOptionExt<int> dashbounceControlOption = getScaleOption(Variant.DashbounceControl, "", getEnumValues<DashbounceControl.DashbounceControlMode>(),
+                    value => new[] {
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHBOUNCECONTROL_OFF"),
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHBOUNCECONTROL_NEVER"),
+                        Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHBOUNCECONTROL_HOLD")
+                    }[(int) value]
+                );
+
+                menu.Add(dashbounceControlOption);
+                dashbounceControlOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHBOUNCECONTROL_HINT_2"));
+                dashbounceControlOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_DASHBOUNCECONTROL_HINT_1"));
             }
 
             if (includeRandomizer) {
