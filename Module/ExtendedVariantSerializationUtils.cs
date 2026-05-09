@@ -70,6 +70,9 @@ namespace ExtendedVariants.Module {
                         case "DashRestrictionType":
                             convertedVariants[v] = Enum.Parse(typeof(DashRestriction.DashRestrictionType), value);
                             break;
+                        case "DashbounceControlMode":
+                            convertedVariants[v] = Enum.Parse(typeof(DashbounceControl.DashbounceControlMode), value);
+                            break;
                         default:
                             throw new NotImplementedException("Cannot deserialize value of type " + type + "!");
                     }

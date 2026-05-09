@@ -3,15 +3,19 @@ using System.Reflection;
 using Celeste;
 using ExtendedVariants.Module;
 using Mono.Cecil.Cil;
+using Monocle;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using MonoMod.Utils;
 
 namespace ExtendedVariants.Variants {
     public class CornerboostProtection : AbstractExtendedVariant {
-        private static ILHook il_Celeste_Player_Orig_Update;
+        private class PlayerData : Component {
+            public bool SafeCornerboostReady;
 
-        private static bool safeCornerboostReady = false;
+            public PlayerData() : base(false, false) { }
+        }
+
+        private static ILHook il_Celeste_Player_Orig_Update;
 
         public override void Load() {
             il_Celeste_Player_Orig_Update = new ILHook(typeof(Player).GetMethod(nameof(Player.orig_Update), BindingFlags.Instance | BindingFlags.Public), Player_orig_Update_il);
@@ -25,6 +29,22 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Player.ClimbJump -= Player_ClimbJump;
         }
 
+        private static PlayerData GetPlayerData(Player player) {
+            if (player.Components.Get<PlayerData>() is { } playerData)
+                return playerData;
+
+            playerData = new PlayerData();
+            player.Components.Add(playerData);
+
+            return playerData;
+        }
+
+        private static bool TryGetPlayerData(Player player, out PlayerData playerData) {
+            playerData = player.Components.Get<PlayerData>();
+
+            return playerData is not null;
+        }
+
         public CornerboostProtection() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) => value != 0;
@@ -35,10 +55,12 @@ namespace ExtendedVariants.Variants {
             cursor.GotoNext(MoveType.After, instr => instr.MatchCall<Actor>("Update"));
 
             cursor.Emit(OpCodes.Ldarg_0);
-            cursor.EmitDelegate<Action<Player>>(disableSafeCornerboostReady);
+            cursor.EmitDelegate(DisableSafeCornerboostReady);
         }
-        private static void disableSafeCornerboostReady(Player player) {
-            safeCornerboostReady = false;
+
+        private static void DisableSafeCornerboostReady(Player player) {
+            if (TryGetPlayerData(player, out var data))
+                data.SafeCornerboostReady = false;
         }
 
         private static void Player_OnCollideH_il(ILContext il) {
@@ -48,34 +70,30 @@ namespace ExtendedVariants.Variants {
 
             cursor.Emit(OpCodes.Ldarg_0);
             cursor.Emit(OpCodes.Ldarg_1);
-            cursor.EmitDelegate<Action<Player, CollisionData>>(enableSafeCornerboostReady);
+            cursor.EmitDelegate(EnableSafeCornerboostReady);
         }
-        private static void enableSafeCornerboostReady(Player player, CollisionData data) {
 
+        private static void EnableSafeCornerboostReady(Player player, CollisionData data) {
             if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection) || Math.Abs(data.Moved.X) <= 2)
                 return;
 
             int state = player.StateMachine.State;
 
-            if (state == 0 || state == 2 || state == 5)
-                safeCornerboostReady = true;
+            if (state is Player.StNormal or Player.StDash or Player.StRedDash)
+                GetPlayerData(player).SafeCornerboostReady = true;
         }
 
         private static void Player_ClimbJump(On.Celeste.Player.orig_ClimbJump climbJump, Player player) {
             climbJump(player);
 
-            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection))
+            if (!GetVariantValue<bool>(ExtendedVariantsModule.Variant.CornerboostProtection)
+                || !TryGetPlayerData(player, out var data) || !data.SafeCornerboostReady)
                 return;
 
-            if (!safeCornerboostReady)
-                return;
+            if (Input.MoveX == Math.Sign(player.wallSpeedRetained))
+                player.wallSpeedRetained += 40f * Input.MoveX;
 
-            float wallSpeedRetained = player.wallSpeedRetained;
-
-            if (Input.MoveX == Math.Sign(wallSpeedRetained))
-                player.wallSpeedRetained = wallSpeedRetained + 40f * Input.MoveX;
-
-            safeCornerboostReady = false;
+            data.SafeCornerboostReady = false;
         }
     }
 }
