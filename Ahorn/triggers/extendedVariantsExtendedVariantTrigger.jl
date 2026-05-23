@@ -87,6 +87,10 @@ using ..Ahorn, Maple
     newValue::String="None", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
     flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
 
+@mapdef Trigger "ExtendedVariantMode/DashbounceControlTrigger" DashbounceControlTrigger(x::Integer, y::Integer, width::Integer=16, height::Integer=16,
+    newValue::String="Off", revertOnLeave::Bool=false, revertOnDeath::Bool=true, delayRevertOnDeath::Bool=false, withTeleport::Bool=false, coversScreen::Bool=false,
+    flag::String="", flagInverted::Bool=false, onlyOnce::Bool=false)
+
 const placements = Ahorn.PlacementDict(
     "Extended Variant Trigger – Generic (On/Off Toggles) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         BooleanExtendedVariantTrigger,
@@ -166,6 +170,10 @@ const placements = Ahorn.PlacementDict(
     ),
     "Extended Variant Trigger (Dash Restriction) (Extended Variant Mode)" => Ahorn.EntityPlacement(
         DashRestrictionTrigger,
+        "rectangle"
+    ),
+    "Extended Variant Trigger (Dashbounce Control) (Extended Variant Mode)" => Ahorn.EntityPlacement(
+        DashbounceControlTrigger,
         "rectangle"
     )
 )
@@ -307,6 +315,9 @@ Ahorn.editingOptions(trigger::DashRestrictionTrigger) = Dict{String, Any}(
         "Grounded Only" => "GroundedOnly",
         "Airborne Only" => "AirborneOnly"
     )
+)
+Ahorn.editingOptions(trigger::DashbounceControlTrigger) = Dict{String, Any}(
+    "newValue" => [ "Off", "Hold", "Never" ]
 )
 
 Ahorn.editingOrder(trigger::DashDirectionTrigger) = String["x", "y", "width", "height", "topLeft", "top", "topRight", "left", "right", "bottomLeft", "bottom", "bottomRight"]
