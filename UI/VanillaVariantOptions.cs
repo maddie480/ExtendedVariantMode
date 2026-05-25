@@ -215,10 +215,10 @@ namespace ExtendedVariants.UI {
         public static void SetVariantValue(Variant variantChange, object newValue) {
             if (Engine.Scene is Level) {
                 if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variantChange))) {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides.");
                     ExtendedVariantsModule.Session.VariantsOverridenByUser.Remove(variantChange);
                 } else {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was added to the overrides.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was added to the overrides.");
                     ExtendedVariantsModule.Session.VariantsOverridenByUser.Add(variantChange);
                 }
             }

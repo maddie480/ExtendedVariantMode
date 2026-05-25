@@ -209,10 +209,10 @@ namespace ExtendedVariants { // other mods rely on this, we can't just move it
 
         private void setVariantValueInSession(ExtendedVariantsModule.Variant variantChange, object newValue) {
             if (AreValuesIdentical(newValue, GetDefaultValueForVariant(variantChange))) {
-                Logger.Log("ExtendedVariantsModule/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was equal to the default, so it was removed from the session.");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was equal to the default, so it was removed from the session.");
                 ExtendedVariantsModule.Session.VariantsEnabledViaTrigger.Remove(variantChange);
             } else {
-                Logger.Log("ExtendedVariantsModule/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set in the session.");
+                Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set in the session.");
                 ExtendedVariantsModule.Session.VariantsEnabledViaTrigger[variantChange] = newValue;
             }
 
@@ -220,7 +220,7 @@ namespace ExtendedVariants { // other mods rely on this, we can't just move it
         }
 
         private void setVariantValueInRoom(ExtendedVariantsModule.Variant variantChange, object newValue) {
-            Logger.Log("ExtendedVariantsModule/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set in the room overrides.");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set in the room overrides.");
             ExtendedVariantsModule.Session.OverriddenVariantsInRoom[variantChange] = newValue;
 
             onVariantValueChanged(variantChange);
@@ -233,7 +233,7 @@ namespace ExtendedVariants { // other mods rely on this, we can't just move it
             List<object> valuesRevertOnLeave = ExtendedVariantsModule.Session.RevertOnLeaveVariantsActive[variantChange];
             valuesRevertOnLeave.Add(newValue);
 
-            Logger.Log("ExtendedVariantsModule/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set as revert on leave. There are now {valuesRevertOnLeave.Count} value(s).");
+            Logger.Log("ExtendedVariantMode/ExtendedVariantTriggerManager", $"Variant value {variantChange} = {newValue} was set as revert on leave. There are now {valuesRevertOnLeave.Count} value(s).");
 
             onVariantValueChanged(variantChange);
         }

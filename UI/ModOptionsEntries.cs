@@ -181,22 +181,22 @@ namespace ExtendedVariants.UI {
 
             if (Engine.Scene is Level) {
                 if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantsModule.Instance.TriggerManager.GetCurrentMapDefinedVariantValue(variantChange))) {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides and from the settings.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the map-defined value, so it was removed from the overrides and from the settings.");
                     ExtendedVariantsModule.Session.VariantsOverridenByUser.Remove(variantChange);
                     ExtendedVariantsModule.Settings.EnabledVariants.Remove(variantChange);
                     mapDefaultValue = true;
                 } else {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was added to the overrides.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was added to the overrides.");
                     ExtendedVariantsModule.Session.VariantsOverridenByUser.Add(variantChange);
                 }
             }
 
             if (!mapDefaultValue) {
                 if (ExtendedVariantTriggerManager.AreValuesIdentical(newValue, ExtendedVariantTriggerManager.GetDefaultValueForVariant(variantChange))) {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the default value, so it was removed from the settings.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was equal to the default value, so it was removed from the settings.");
                     ExtendedVariantsModule.Settings.EnabledVariants.Remove(variantChange);
                 } else {
-                    Logger.Log("ExtendedVariantsModule/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was set.");
+                    Logger.Log("ExtendedVariantMode/ModOptionsEntries", $"Variant value {variantChange} = {newValue} was set.");
                     ExtendedVariantsModule.Settings.EnabledVariants[variantChange] = newValue;
                 }
             }
@@ -526,8 +526,13 @@ namespace ExtendedVariants.UI {
 
                         TextMenu.OnOff toggle = new TextMenu.OnOff(Dialog.Clean("MODOPTIONS_EXTENDEDVARIANTS_DASHDIRECTION_" + directionNames[i, j]), allowedDashDirections[i][j]);
                         toggle.Change(value => {
-                            allowedDashDirections[a][b] = value;
-                            setVariantValue(Variant.DashDirection, allowedDashDirections);
+                            bool[][] newDashDirections = [
+                                [allowedDashDirections[0][0], allowedDashDirections[0][1], allowedDashDirections[0][2]],
+                                [allowedDashDirections[1][0], allowedDashDirections[1][1], allowedDashDirections[1][2]],
+                                [allowedDashDirections[2][0], allowedDashDirections[2][1], allowedDashDirections[2][2]],
+                            ];
+                            newDashDirections[a][b] = value;
+                            setVariantValue(Variant.DashDirection, newDashDirections);
                         });
                         dashDirectionsSubMenu.Add(toggle);
                     }
