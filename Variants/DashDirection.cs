@@ -62,7 +62,7 @@ namespace ExtendedVariants.Variants {
         }
 
         private static bool modCanDash(Func<Player, bool> orig, Player self) {
-            Vector2 aim = Input.GetAimVector();
+            Vector2 aim = self.OverrideDashDirection ?? self.lastAim;
 
             // block the dash directly if the player is holding a forbidden direction, and does not have Dash Assist enabled.
             return orig(self) && (SaveData.Instance.Assists.DashAssist || isDashDirectionAllowed(aim));
@@ -105,12 +105,7 @@ namespace ExtendedVariants.Variants {
             }
 
             // get the dash general direction
-            Vector2 direction;
-            if (self.OverrideDashDirection.HasValue) {
-                direction = self.OverrideDashDirection.Value;
-            } else {
-                direction = self.lastAim;
-            }
+            Vector2 direction = self.OverrideDashDirection ?? self.lastAim;
 
             if (isDashDirectionAllowed(direction)) {
                 // continue with the dash like normal.
