@@ -339,6 +339,10 @@ namespace ExtendedVariants.Module {
         }
 
         public static void TryDisableInlining(MethodInfo method) {
+            if (method == null) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Attempt to call TryDisableInlining on null");
+                return;
+            }
             if (!HookUtils.TryDisableInlining(method)) {
                 Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", $"Could not disable inlining on method {method.DeclaringType.FullName}.{method.Name}");
             }
