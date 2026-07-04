@@ -49,6 +49,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void hooklining(MethodInfo method) {
+            if (method == null) {
+                Logger.Log(LogLevel.Warn, "ExtendedVariantMode/ExtendedVariantsModule", "Attempt to call hooklining on null");
+                return;
+            }
             TryDisableInlining(method);
             doneILHooks.Add(new ILHook(method, hookMadelineIsSilhouette));
         }
