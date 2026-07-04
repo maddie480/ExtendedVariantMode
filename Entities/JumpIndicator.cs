@@ -34,6 +34,9 @@ namespace ExtendedVariants.Entities {
             AddTag(Tags.Persistent); // this entity isn't bound to the screen it was spawned in, keep it when transitioning to another level.
 
             settings = ExtendedVariantsModule.Settings;
+
+            // If Motion Smoothing is loaded, make the dots track Madeline's position exactly, including potentially with subpixel rendering.
+            MotionSmoothingImports.TieToPlayer?.Invoke(this);
         }
 
         public override void Update() {
@@ -86,7 +89,16 @@ namespace ExtendedVariants.Entities {
                     int totalWidth = jumpIndicatorsToDrawOnLine * 6 - 2;
                     for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
                         Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6 - offsetY);
-                        jumpIndicator.DrawJustified(new Vector2((float) Math.Round(position.X), (float) Math.Round(position.Y)), new Vector2(0f, 0.5f));
+                        // Round away from zero rather than with Math.Round's default banker's rounding, which causes jitter
+						// and breaks Motion Smoothing's subpixel rendering in the Y direction when Madeline's Y subpixels are exactly
+						// 0.5 (typical when on the ground)
+                        jumpIndicator.DrawJustified(
+							new Vector2(
+								(float) Math.Round(position.X, MidpointRounding.AwayFromZero),
+								(float) Math.Round(position.Y, MidpointRounding.AwayFromZero)
+							),
+							new Vector2(0f, 0.5f)
+						);
 
                         if (minX == float.MaxValue) {
                             minX = maxX = position.X;
