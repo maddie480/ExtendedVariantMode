@@ -90,15 +90,15 @@ namespace ExtendedVariants.Entities {
                     for (int i = 0; i < jumpIndicatorsToDrawOnLine; i++) {
                         Vector2 position = player.Center + new Vector2(-totalWidth / 2 + i * 6, -15f - line * 6 - offsetY);
                         // Round away from zero rather than with Math.Round's default banker's rounding, which causes jitter
-						// and breaks Motion Smoothing's subpixel rendering in the Y direction when Madeline's Y subpixels are exactly
-						// 0.5 (typical when on the ground)
+                        // and breaks Motion Smoothing's subpixel rendering in the Y direction when Madeline's Y subpixels are exactly
+                        // 0.5 (typical when on the ground)
                         jumpIndicator.DrawJustified(
-							new Vector2(
-								(float) Math.Round(position.X, MidpointRounding.AwayFromZero),
-								(float) Math.Round(position.Y, MidpointRounding.AwayFromZero)
-							),
-							new Vector2(0f, 0.5f)
-						);
+                            new Vector2(
+                                (float) Math.Round(position.X, MidpointRounding.AwayFromZero),
+                                (float) Math.Round(position.Y, MidpointRounding.AwayFromZero)
+                            ),
+                            new Vector2(0f, 0.5f)
+                        );
 
                         if (minX == float.MaxValue) {
                             minX = maxX = position.X;
