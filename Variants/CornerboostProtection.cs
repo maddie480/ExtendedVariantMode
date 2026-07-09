@@ -90,8 +90,10 @@ namespace ExtendedVariants.Variants {
                 || !TryGetPlayerData(player, out var data) || !data.SafeCornerboostReady)
                 return;
 
-            if (Input.MoveX == Math.Sign(player.wallSpeedRetained))
-                player.wallSpeedRetained += 40f * Input.MoveX;
+            float addSpeed = 40f * Input.MoveX + player.LiftBoost.X;
+
+            if (Math.Sign(addSpeed) == Math.Sign(player.wallSpeedRetained))
+                player.wallSpeedRetained += addSpeed;
 
             data.SafeCornerboostReady = false;
         }
