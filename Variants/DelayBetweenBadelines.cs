@@ -1,4 +1,4 @@
-﻿using System;
+﻿using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
     public class DelayBetweenBadelines : AbstractExtendedVariant {
@@ -6,6 +6,11 @@ namespace ExtendedVariants.Variants {
 
         public override object ConvertLegacyVariantValue(int value) {
             return value / 10f;
+        }
+
+        public override void VariantValueChanged() {
+            BadelineChasersEverywhere.ChangeValueRightAway(Variant.DelayBetweenBadelines,
+                (baddy, value) => baddy.followBehindIndexDelay = value * baddy.index);
         }
     }
 }

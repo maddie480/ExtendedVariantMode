@@ -10,6 +10,7 @@ using MonoMod.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using static ExtendedVariants.Module.ExtendedVariantsModule;
 
 namespace ExtendedVariants.Variants {
@@ -17,6 +18,7 @@ namespace ExtendedVariants.Variants {
 
         public static bool UsingWatchtower { get; private set; } = false;
 
+        private static bool delaysAreLockedIn = false;
         private static float lastChaserLag = 0f;
 
         public BadelineChasersEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
@@ -33,6 +35,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.BadelineOldsite.CanChangeMusic += modBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.IsChaseEnd += modBadelineOldsiteIsChaseEnd;
             IL.Celeste.Player.UpdateChaserStates += modUpdateChaserStates;
+            On.Celeste.BadelineOldsite.StartChasingRoutine += modStartChasingRoutine;
 
             On.Celeste.LevelLoader.ctor += onLevelStart;
             On.Celeste.Lookout.Interact += onWatchtowerInteract;
@@ -48,6 +51,7 @@ namespace ExtendedVariants.Variants {
             IL.Celeste.BadelineOldsite.CanChangeMusic -= modBadelineOldsiteCanChangeMusic;
             On.Celeste.BadelineOldsite.IsChaseEnd -= modBadelineOldsiteIsChaseEnd;
             IL.Celeste.Player.UpdateChaserStates -= modUpdateChaserStates;
+            On.Celeste.BadelineOldsite.StartChasingRoutine -= modStartChasingRoutine;
 
             On.Celeste.LevelLoader.ctor -= onLevelStart;
             On.Celeste.Lookout.Interact -= onWatchtowerInteract;
@@ -102,6 +106,8 @@ namespace ExtendedVariants.Variants {
         /// <param name="isFromLoader">unused</param>
         private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
+
+            delaysAreLockedIn = false;
 
             // this method takes care of every situation except transitions, we let this one to TransitionRoutine
             if (GetVariantValue<bool>(Variant.BadelineChasersEverywhere) && playerIntro != Player.IntroTypes.Transition) {
@@ -261,6 +267,34 @@ namespace ExtendedVariants.Variants {
                 // call a method that will compute the right delay instead
                 cursor.EmitDelegate<Func<float, float>>(determineHistoryAmountToKeep);
             }
+        }
+
+        private static IEnumerator modStartChasingRoutine(On.Celeste.BadelineOldsite.orig_StartChasingRoutine orig, BadelineOldsite self, Level level) {
+            IEnumerator e = orig(self, level).SafeEnumerate();
+            while (e.MoveNext()) {
+                if (e.Current?.Equals(self.followBehindIndexDelay) ?? false) {
+                    delaysAreLockedIn = true;
+                }
+                yield return e.Current;
+            }
+        }
+
+        internal static void ChangeValueRightAway(Variant variant, Action<BadelineOldsite, float> setter) {
+            if (Engine.Scene is not Level level) return;
+
+            BadelineOldsite[] baddies = level.Tracker.GetEntities<BadelineOldsite>().Cast<BadelineOldsite>().ToArray();
+            if (baddies.Length == 0) return;
+
+            if (delaysAreLockedIn) {
+                Logger.Debug($"ExtendedVariantMode/{variant}", "Cannot apply change right away, it's already too late :faintshiro:");
+                return;
+            }
+
+            float value = GetVariantValue<float>(variant);
+            Logger.Debug($"ExtendedVariantMode/{variant}", $"Applying change to {baddies.Length} Baddies right away: {variant} = {value}");
+
+            foreach (BadelineOldsite baddy in baddies) setter(baddy, value);
+            updateLastChaserLag(level);
         }
 
         private static float determineHistoryAmountToKeep(float orig) {
