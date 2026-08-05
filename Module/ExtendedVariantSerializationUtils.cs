@@ -137,6 +137,9 @@ namespace ExtendedVariants.Module {
                     case DashRestriction.DashRestrictionType castValue:
                         convertedVariants[v] = "DashRestrictionType:" + castValue;
                         break;
+                    case DashbounceControl.DashbounceControlMode castValue:
+                        convertedVariants[v] = "DashbounceControlMode:" + castValue;
+                        break;
                     default:
                         Logger.Log(LogLevel.Error, "ExtendedVariantMode/ExtendedVariantModule", "Cannot serialize value of type " + value.GetType() + "!");
                         break;
