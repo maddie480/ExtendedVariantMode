@@ -30,7 +30,8 @@ namespace ExtendedVariants.UI {
             Variant.MultiBuffering,
             Variant.MidairTech, // Could be used to fudge a super
             Variant.ConsistentThrowing,
-            Variant.DashbounceControl
+            Variant.DashbounceControl,
+            Variant.InteractBeforeGrab
         };
 
         public void Update(IEnumerable<ExtendedVariantsModule.Variant> userSettings) {
