@@ -13,6 +13,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class BadelineBossesEverywhere : AbstractExtendedVariant {
 
+        private static Random randomGenerator = new Random();
+
         public BadelineBossesEverywhere() : base(variantType: typeof(bool), defaultVariantValue: false) { }
 
         public override object ConvertLegacyVariantValue(int value) {
@@ -20,10 +22,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void SetRandomSeed(int seed) {
-            Calc.PushRandom(seed);
+            randomGenerator = new Random(seed);
         }
 
         public override void Load() {
+            Everest.Events.LevelLoader.OnLoadingThread += setRNGSeed;
             IL.Celeste.FinalBoss.CanChangeMusic += modCanChangeMusic;
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
@@ -35,6 +38,11 @@ namespace ExtendedVariants.Variants {
             On.Celeste.Level.LoadLevel -= modLoadLevel;
             On.Celeste.Level.TransitionRoutine -= modTransitionRoutine;
             IL.Celeste.FinalBoss.ctor_Vector2_Vector2Array_int_float_bool_bool_bool -= modBadelineBossConstructor;
+        }
+
+        private void setRNGSeed(Level level) {
+            int seed = GetVariantValue<int>(Variant.SetSeed);
+            SetRandomSeed(seed);
         }
 
         private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
