@@ -62,7 +62,7 @@ trigger.fieldInformation = {
             "ForceDuckOnGround",
             "FriendlyBadelineFollower",
             "HeldDash",
-			"InteractBeforeGrab",
+            "InteractBeforeGrab",
             "InvertDashes",
             "InvertGrab",
             "InvertHorizontalControls",

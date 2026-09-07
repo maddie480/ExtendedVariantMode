@@ -150,7 +150,7 @@ Adds some options to the Mod Options menu:
     *   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform. (brought to you by @DominicAglialoro)
     *   **Throw Ignores Forced Move**: Allows you to throw in either direction, even when an interaction forces you to move in one direction. (brought to you by @DominicAglialoro)
     *   **Dashbounce Control**: Prevents dashbounces from occurring, or makes them only occur if the player holds jump as their dash ends. (brought to you by @DominicAglialoro)
-	*   **Interact Before Grab**: Prevents the player from accidentally grabbing a dash-interactable solid during dash attack. (brought to you by @DominicAglialoro)
+    *   **Interact Before Grab**: Prevents the player from accidentally grabbing a dash-interactable solid during dash attack. (brought to you by @DominicAglialoro)
 
 
 This can be extended by downloading other mods:
