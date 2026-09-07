@@ -1,5 +1,6 @@
 ﻿using Celeste;
 using Celeste.Mod;
+using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Monocle;
@@ -39,7 +40,7 @@ namespace ExtendedVariants.Variants {
         private static void modLevelRender(ILContext il) {
             ILCursor cursor = new ILCursor(il);
 
-            if (cursor.TryGotoNext(
+            if (cursor.TryGotoNextBestFit(MoveType.Before,
                 instr => instr.MatchLdarg(0),
                 instr => instr.MatchLdfld<Level>("Foreground"),
                 instr => instr.MatchLdarg(0),
