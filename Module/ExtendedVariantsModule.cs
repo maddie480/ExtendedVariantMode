@@ -53,7 +53,7 @@ namespace ExtendedVariants.Module {
                 ?? 180;
 
         public enum Variant {
-            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
+            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, CapJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom, LegacyDashSpeedBehavior,
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
@@ -136,6 +136,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.RegularHiccups] = new RegularHiccups();
             VariantHandlers[Variant.HiccupStrength] = new HiccupStrength();
             VariantHandlers[Variant.RefillJumpsOnDashRefill] = new RefillJumpsOnDashRefill();
+            VariantHandlers[Variant.CapJumpsOnDashRefill] = new CapJumpsOnDashRefill();
             VariantHandlers[Variant.ResetJumpCountOnGround] = new ResetJumpCountOnGround();
             VariantHandlers[Variant.RoomLighting] = new RoomLighting();
             VariantHandlers[Variant.RoomBloom] = new RoomBloom();
