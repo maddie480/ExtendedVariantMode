@@ -178,7 +178,12 @@ namespace ExtendedVariants.Variants {
         /// <returns>Whether extra jumps were refilled or not.</returns>
         public static bool RefillJumpBuffer() {
             int oldJumpBuffer = jumpBuffer;
-            jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
+            
+            int extraJumpCount = GetVariantValue<int>(Variant.JumpCount) - 1;
+            jumpBuffer = GetVariantValue<bool>(Variant.CapJumpsOnDashRefill)
+                ? extraJumpCount // reset to the extra jump count even if the player has more
+                : Math.Max(jumpBuffer, extraJumpCount); // reset to the extra jump count only if the player has less
+            
             return oldJumpBuffer != jumpBuffer;
         }
 
@@ -280,7 +285,7 @@ namespace ExtendedVariants.Variants {
 
             if (playerIntro != Player.IntroTypes.Transition) {
                 // always reset the jump count when the player enters a new level (respawn, new map, etc... everything but a transition)
-                RefillJumpBuffer();
+                jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
             }
 
             if (self.Tracker.CountEntities<JumpIndicator>() == 0) {
