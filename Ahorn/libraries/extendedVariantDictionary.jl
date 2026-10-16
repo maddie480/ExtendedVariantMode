@@ -120,6 +120,7 @@ const BooleanVariants = [
     "ForceDuckOnGround",
     "FriendlyBadelineFollower",
     "HeldDash",
+    "InteractBeforeGrab",
     "InvertDashes",
     "InvertGrab",
     "InvertHorizontalControls",
