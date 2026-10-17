@@ -158,7 +158,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void dashRefilled() {
-            if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2) {
+            int jumpCount = GetVariantValue<int>(Variant.JumpCount);
+            if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && jumpCount >= 2
+                && (GetVariantValue<bool>(Variant.CapJumpsOnDashRefill) || jumpCount - 1 > jumpBuffer)) {
+
                 RefillJumpBuffer();
             }
         }
@@ -178,12 +181,7 @@ namespace ExtendedVariants.Variants {
         /// <returns>Whether extra jumps were refilled or not.</returns>
         public static bool RefillJumpBuffer() {
             int oldJumpBuffer = jumpBuffer;
-            
-            int extraJumpCount = GetVariantValue<int>(Variant.JumpCount) - 1;
-            jumpBuffer = GetVariantValue<bool>(Variant.CapJumpsOnDashRefill)
-                ? extraJumpCount // reset to the extra jump count even if the player has more
-                : Math.Max(jumpBuffer, extraJumpCount); // reset to the extra jump count only if the player has less
-            
+            jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
             return oldJumpBuffer != jumpBuffer;
         }
 
@@ -285,7 +283,7 @@ namespace ExtendedVariants.Variants {
 
             if (playerIntro != Player.IntroTypes.Transition) {
                 // always reset the jump count when the player enters a new level (respawn, new map, etc... everything but a transition)
-                jumpBuffer = GetVariantValue<int>(Variant.JumpCount) - 1;
+                RefillJumpBuffer();
             }
 
             if (self.Tracker.CountEntities<JumpIndicator>() == 0) {

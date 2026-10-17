@@ -31,6 +31,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> allowThrowingTheoOffscreenOption;
         private TextMenuOptionExt<bool> allowLeavingTheoBehindOption;
         private TextMenuOptionExt<bool> noFreezeFramesAdvanceCassetteBlocksOption;
+        private TextMenuOptionExt<bool> capJumpsOnDashRefillOption;
         private TextMenuOptionExt<int> dashDirection;
         private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
         private List<TextMenu.Item> elementsToHideOnToggle;
@@ -405,8 +406,17 @@ namespace ExtendedVariants.UI {
                     return i.ToString();
                 }));
 
-                menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill));
-                menu.Add(getToggleOption(Variant.CapJumpsOnDashRefill));
+                menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill).Change(newValue => {
+                    setVariantValue(Variant.RefillJumpsOnDashRefill, newValue);
+                    refreshOptionMenuEnabledStatus();
+                    if (!newValue) {
+                        // reset it to default when disabling the option, to make sure the category doesn't turn orange
+                        setVariantValue(Variant.CapJumpsOnDashRefill, true);
+                        capJumpsOnDashRefillOption.Index = 1;
+                    }
+                }));
+                menu.Add(capJumpsOnDashRefillOption = getToggleOption(Variant.CapJumpsOnDashRefill));
+
                 menu.Add(getToggleOption(Variant.ResetJumpCountOnGround));
                 menu.Add(getScaleOption(Variant.JumpCooldown, "s", multiplierScale));
 
@@ -909,6 +919,7 @@ namespace ExtendedVariants.UI {
             if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
             if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !(Engine.Scene is Level) || !((bool) triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
             if (noFreezeFramesAdvanceCassetteBlocksOption != null) noFreezeFramesAdvanceCassetteBlocksOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.NoFreezeFrames));
+            if (capJumpsOnDashRefillOption != null) capJumpsOnDashRefillOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.RefillJumpsOnDashRefill));
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
