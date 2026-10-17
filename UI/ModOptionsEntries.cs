@@ -312,7 +312,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.JumpBoost, Variant.JumpDuration, Variant.WallBouncingSpeed, Variant.DisableWallJumping,
                     Variant.DisableJumpingOutOfWater, Variant.DisableNeutralJumping, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.WalllessWallbounce,
-                    Variant.PreserveWallbounceSpeed, Variant.HorizontalWallJumpDuration, Variant.JumpCount, Variant.RefillJumpsOnDashRefill, Variant.ResetJumpCountOnGround, Variant.JumpCooldown,
+                    Variant.PreserveWallbounceSpeed, Variant.HorizontalWallJumpDuration, Variant.JumpCount, Variant.RefillJumpsOnDashRefill, Variant.CapJumpsOnDashRefill, Variant.ResetJumpCountOnGround, Variant.JumpCooldown,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering, Variant.SlowfallGravityMultiplier,
                     Variant.SlowfallSpeedThreshold, Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.DisableClimbJumping, Variant.DisableClimbingUpOrDown, Variant.TrueNoGrabbing,
                     Variant.Stamina, Variant.DontRefillStaminaOnGround, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate, Variant.DashSpeed,
@@ -406,6 +406,7 @@ namespace ExtendedVariants.UI {
                 }));
 
                 menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill));
+                menu.Add(getToggleOption(Variant.CapJumpsOnDashRefill));
                 menu.Add(getToggleOption(Variant.ResetJumpCountOnGround));
                 menu.Add(getScaleOption(Variant.JumpCooldown, "s", multiplierScale));
 
