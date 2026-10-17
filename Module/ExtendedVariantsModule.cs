@@ -53,7 +53,7 @@ namespace ExtendedVariants.Module {
                 ?? 180;
 
         public enum Variant {
-            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, CapJumpsOnDashRefill, DashSpeed, DashLength,
+            Gravity, FallSpeed, JumpHeight, WallBouncingSpeed, DisableWallJumping, DisableClimbJumping, JumpCount, RefillJumpsOnDashRefill, DashSpeed, DashLength,
             HyperdashSpeed, ExplodeLaunchSpeed, DashCount, HeldDash, DontRefillDashOnGround, SpeedX, Friction, AirFriction, BadelineChasersEverywhere, ChaserCount,
             AffectExistingChasers, BadelineBossesEverywhere, BadelineAttackPattern, ChangePatternsOfExistingBosses, FirstBadelineSpawnRandom, LegacyDashSpeedBehavior,
             BadelineBossCount, BadelineBossNodeCount, BadelineLag, DelayBetweenBadelines, OshiroEverywhere, OshiroCount, ReverseOshiroCount, DisableOshiroSlowdown,
@@ -71,8 +71,7 @@ namespace ExtendedVariants.Module {
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, DashbounceControl, InteractBeforeGrab, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
-            ConsistentThrowing, JumpBoost,
-            ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate, HarmlessSeekers, MuteSeekerSounds,
+            ConsistentThrowing, JumpBoost, ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate, HarmlessSeekers, MuteSeekerSounds, CapJumpsOnDashRefill,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
