@@ -15,6 +15,8 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class AddSeekers : AbstractExtendedVariant {
 
+        private static Random randomGenerator = new Random();
+
         private static bool killSeekerSlowdownToFixHeart = false;
         private static string calcLogPrefix = null;
         private static bool pathfindingForVariant => calcLogPrefix != null;
@@ -28,10 +30,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void SetRandomSeed(int seed) {
-            Calc.PushRandom(seed);
+            randomGenerator = new Random(seed);
         }
 
         public override void Load() {
+            Everest.Events.LevelLoader.OnLoadingThread += setRNGSeed;
             On.Celeste.Level.LoadLevel += modLoadLevel;
             IL.Celeste.SeekerEffectsController.Update += onSeekerEffectsControllerUpdate;
             On.Celeste.HeartGem.Collect += onHeartGemCollect;
@@ -52,6 +55,10 @@ namespace ExtendedVariants.Variants {
             killSeekerSlowdownToFixHeart = false;
         }
 
+        private void setRNGSeed(Level level) {
+            int seed = GetVariantValue<int>(Variant.SetSeed);
+            SetRandomSeed(seed);
+        }
         private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {
             orig(self, playerIntro, isFromLoader);
 
@@ -89,8 +96,8 @@ namespace ExtendedVariants.Variants {
 
                     for (int i = 0; i < 100; i++) {
                         // roll a seeker position in the room
-                        int x = Calc.Random.Next(level.Bounds.Width) + level.Bounds.X;
-                        int y = Calc.Random.Next(level.Bounds.Height) + level.Bounds.Y;
+                        int x = randomGenerator.Next(level.Bounds.Width) + level.Bounds.X;
+                        int y = randomGenerator.Next(level.Bounds.Height) + level.Bounds.Y;
 
                         // should be at least 100 pixels from the player
                         double playerDistance = Math.Sqrt(Math.Pow(MathHelper.Distance(x, player.X), 2) + Math.Pow(MathHelper.Distance(y, player.Y), 2));
