@@ -21,7 +21,7 @@ Adds some options to the Mod Options menu:
 *   **Disable climbing up or down**: you can still grab walls, but won't be able to climb up, down, or both. You can still go up by climb jumping (_unless you disable that too_).
 
 *   **Jump count**: removes your ability to jump or gives you the ability to jump again in midair.
-    *    **Refill Jumps on Dash Refill** will give you back your extra jumps whenever you get your dash back.
+    *    **Refill Jumps on Dash Refill** will give you back your extra jumps whenever you get your dash back. You can use the **Cap Jumps on Dash Refill** option to choose whether it should reset your jump count even when you are above the limit, or in other words, if it is allowed to take jumps away from you.
     *    **Reset Jump Count on Ground** allows you to choose whether you want to refill jumps on ground (if you have a base Jump Count higher than 1) or whether you get to keep extra jumps when landing on the ground in maps using jump refills!
     *    **Delay Between Midair Jumps** adds a cooldown between two midair jumps, to prevent the player from using them too fast.
 *   **Jump Boost**: Modifies the horizontal jump boost you get from jumping, climbjumping, wallboosting and wallbouncing. (brought to you by @SnipUndercover)
@@ -150,6 +150,7 @@ Adds some options to the Mod Options menu:
     *   **Dash Before Pickup**: Gives dashing input priority over picking up throwables, making instant dash regrabs easier to perform. (brought to you by @DominicAglialoro)
     *   **Throw Ignores Forced Move**: Allows you to throw in either direction, even when an interaction forces you to move in one direction. (brought to you by @DominicAglialoro)
     *   **Dashbounce Control**: Prevents dashbounces from occurring, or makes them only occur if the player holds jump as their dash ends. (brought to you by @DominicAglialoro)
+    *   **Interact Before Grab**: Prevents the player from accidentally grabbing a dash-interactable solid during dash attack. (brought to you by @DominicAglialoro)
 
 
 This can be extended by downloading other mods:

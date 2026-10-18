@@ -158,7 +158,10 @@ namespace ExtendedVariants.Variants {
         }
 
         private static void dashRefilled() {
-            if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && GetVariantValue<int>(Variant.JumpCount) >= 2) {
+            int jumpCount = GetVariantValue<int>(Variant.JumpCount);
+            if (GetVariantValue<bool>(Variant.RefillJumpsOnDashRefill) && jumpCount >= 2
+                && (GetVariantValue<bool>(Variant.CapJumpsOnDashRefill) || jumpCount - 1 > jumpBuffer)) {
+
                 RefillJumpBuffer();
             }
         }

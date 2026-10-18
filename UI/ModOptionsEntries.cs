@@ -31,6 +31,7 @@ namespace ExtendedVariants.UI {
         private TextMenuOptionExt<bool> allowThrowingTheoOffscreenOption;
         private TextMenuOptionExt<bool> allowLeavingTheoBehindOption;
         private TextMenuOptionExt<bool> noFreezeFramesAdvanceCassetteBlocksOption;
+        private TextMenuOptionExt<bool> capJumpsOnDashRefillOption;
         private TextMenuOptionExt<int> dashDirection;
         private Celeste.TextMenuExt.SubMenu dashDirectionsSubMenu;
         private List<TextMenu.Item> elementsToHideOnToggle;
@@ -312,7 +313,7 @@ namespace ExtendedVariants.UI {
                 movementSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.Gravity, Variant.FallSpeed, Variant.JumpHeight, Variant.JumpBoost, Variant.JumpDuration, Variant.WallBouncingSpeed, Variant.DisableWallJumping,
                     Variant.DisableJumpingOutOfWater, Variant.DisableNeutralJumping, Variant.WallJumpDistance, Variant.WallBounceDistance, Variant.WalllessWallbounce,
-                    Variant.PreserveWallbounceSpeed, Variant.HorizontalWallJumpDuration, Variant.JumpCount, Variant.RefillJumpsOnDashRefill, Variant.ResetJumpCountOnGround, Variant.JumpCooldown,
+                    Variant.PreserveWallbounceSpeed, Variant.HorizontalWallJumpDuration, Variant.JumpCount, Variant.RefillJumpsOnDashRefill, Variant.CapJumpsOnDashRefill, Variant.ResetJumpCountOnGround, Variant.JumpCooldown,
                     Variant.EveryJumpIsUltra, Variant.CoyoteTime, Variant.DisableJumpGravityLowering, Variant.DisableAutoJumpGravityLowering, Variant.SlowfallGravityMultiplier,
                     Variant.SlowfallSpeedThreshold, Variant.ClimbUpSpeed, Variant.ClimbDownSpeed, Variant.DisableClimbJumping, Variant.DisableClimbingUpOrDown, Variant.TrueNoGrabbing,
                     Variant.Stamina, Variant.DontRefillStaminaOnGround, Variant.ClimbJumpStaminaCost, Variant.ClimbUpStaminaDrainRate, Variant.ClimbHoldStaminaDrainRate, Variant.DashSpeed,
@@ -350,7 +351,7 @@ namespace ExtendedVariants.UI {
 
                 qualityOfLifeSubmenu.GetHighlightColor = () => getColorForVariantSubmenu(new List<Variant> {
                     Variant.UltraProtection, Variant.LiftboostProtection, Variant.CornerboostProtection, Variant.CrouchDashFix, Variant.AlternativeBuffering, Variant.ConsistentThrowing,
-                    Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.DashbounceControl, Variant.ThrowIgnoresForcedMove
+                    Variant.MultiBuffering, Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.DashbounceControl, Variant.ThrowIgnoresForcedMove, Variant.InteractBeforeGrab
                 });
 
                 elementsToHideOnToggle = new List<TextMenu.Item>() { resetVanillaVariants, resetExtendedVariants, title, movementSubmenu, gameElementsSubmenu, visualSubmenu, gameplayTweaksSubmenu, qualityOfLifeSubmenu };
@@ -405,7 +406,17 @@ namespace ExtendedVariants.UI {
                     return i.ToString();
                 }));
 
-                menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill));
+                menu.Add(getToggleOption(Variant.RefillJumpsOnDashRefill).Change(newValue => {
+                    setVariantValue(Variant.RefillJumpsOnDashRefill, newValue);
+                    refreshOptionMenuEnabledStatus();
+                    if (!newValue) {
+                        // reset it to default when disabling the option, to make sure the category doesn't turn orange
+                        setVariantValue(Variant.CapJumpsOnDashRefill, true);
+                        capJumpsOnDashRefillOption.Index = 1;
+                    }
+                }));
+                menu.Add(capJumpsOnDashRefillOption = getToggleOption(Variant.CapJumpsOnDashRefill));
+
                 menu.Add(getToggleOption(Variant.ResetJumpCountOnGround));
                 menu.Add(getScaleOption(Variant.JumpCooldown, "s", multiplierScale));
 
@@ -837,7 +848,7 @@ namespace ExtendedVariants.UI {
                 multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_2"));
                 multiBufferingOption.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_MULTIBUFFERING_HINT_1"));
 
-                foreach (Variant variant in new Variant[] { Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove }) {
+                foreach (Variant variant in new Variant[] { Variant.SaferDiagonalSmuggle, Variant.DashBeforePickup, Variant.ThrowIgnoresForcedMove, Variant.InteractBeforeGrab }) {
                     TextMenuExt.OnOff option = getToggleOption(variant);
                     menu.Add(option);
                     option.AddDescription(menu, Dialog.Clean($"MODOPTIONS_EXTENDEDVARIANTS_{variant}_HINT_2"));
@@ -908,6 +919,7 @@ namespace ExtendedVariants.UI {
             if (dashDirectionsSubMenu != null) dashDirectionsSubMenu.Visible = dashDirection.Index == 3;
             if (correctedMirrorModeOption != null) correctedMirrorModeOption.Disabled = !(Engine.Scene is Level) || !((bool) triggerManager.GetCurrentVariantValue(Variant.MirrorMode) || SaveData.Instance.Assists.MirrorMode);
             if (noFreezeFramesAdvanceCassetteBlocksOption != null) noFreezeFramesAdvanceCassetteBlocksOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.NoFreezeFrames));
+            if (capJumpsOnDashRefillOption != null) capJumpsOnDashRefillOption.Disabled = !((bool) triggerManager.GetCurrentVariantValue(Variant.RefillJumpsOnDashRefill));
         }
 
         // gets the index of the currently selected Dash Direction index, from 0 to 3
