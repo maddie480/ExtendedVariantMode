@@ -11,6 +11,7 @@ using static ExtendedVariants.Module.ExtendedVariantsModule;
 namespace ExtendedVariants.Variants {
     public class WindEverywhere : AbstractExtendedVariant {
 
+        private static Random randomGenerator = new Random();
 
         private static bool snowBackdropAddedByEVM = false;
 
@@ -42,10 +43,11 @@ namespace ExtendedVariants.Variants {
         }
 
         public override void SetRandomSeed(int seed) {
-            Calc.PushRandom(seed);
+            randomGenerator = new Random(seed);
         }
 
         public override void Load() {
+            Everest.Events.LevelLoader.OnLoadingThread += setRNGSeed;
             On.Celeste.Level.LoadLevel += modLoadLevel;
             On.Celeste.Level.TransitionRoutine += modTransitionRoutine;
             Everest.Events.Level.OnExit += onLevelExit;
@@ -67,6 +69,11 @@ namespace ExtendedVariants.Variants {
                 snowBackdropAddedByEVM = false;
                 level.Foreground.Backdrops.RemoveAll(backdrop => backdrop.GetType() == typeof(ExtendedVariantWindSnowFG));
             }
+        }
+
+        private void setRNGSeed(Level level) {
+            int seed = GetVariantValue<int>(Variant.SetSeed);
+            SetRandomSeed(seed);
         }
 
         private static void modLoadLevel(On.Celeste.Level.orig_LoadLevel orig, Level self, Player.IntroTypes playerIntro, bool isFromLoader) {

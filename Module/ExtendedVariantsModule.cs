@@ -71,7 +71,8 @@ namespace ExtendedVariants.Module {
             CornerboostProtection, CrouchDashFix, AlternativeBuffering, MultiBuffering, SaferDiagonalSmuggle, DashBeforePickup, ThrowIgnoresForcedMove, DashbounceControl, InteractBeforeGrab, MidairTech,
             NoFreezeFramesAdvanceCassetteBlocks, PreserveWallbounceSpeed, StretchUpDashes, DisableJumpGravityLowering, DisableAutoJumpGravityLowering, UnderwaterSpeedX, UnderwaterSpeedY,
             WaterSurfaceSpeedX, WaterSurfaceSpeedY, LiftboostCapX, LiftboostCapUp, LiftboostCapDown, AutoJump, SlowfallGravityMultiplier, SlowfallSpeedThreshold, AutoDash,
-            ConsistentThrowing, JumpBoost, ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate, HarmlessSeekers, MuteSeekerSounds, CapJumpsOnDashRefill,
+            ConsistentThrowing, JumpBoost, SetSeed,
+            ClimbUpSpeed, ClimbDownSpeed, ClimbJumpStaminaCost, ClimbUpStaminaDrainRate, ClimbHoldStaminaDrainRate, HarmlessSeekers, MuteSeekerSounds,
 
             // vanilla variants
             AirDashes, DashAssist, VanillaGameSpeed, Hiccups, InfiniteStamina, Invincible, InvisibleMotion, LowFriction, MirrorMode, NoGrabbing, PlayAsBadeline,
@@ -125,6 +126,7 @@ namespace ExtendedVariants.Module {
             VariantHandlers[Variant.DisableNeutralJumping] = new DisableNeutralJumping();
             VariantHandlers[Variant.BadelineChasersEverywhere] = new BadelineChasersEverywhere();
             VariantHandlers[Variant.ChaserCount] = new ChaserCount();
+            VariantHandlers[Variant.SetSeed] = new SetSeed();
             VariantHandlers[Variant.AffectExistingChasers] = new AffectExistingChasers();
             VariantHandlers[Variant.BadelineBossesEverywhere] = new BadelineBossesEverywhere();
             VariantHandlers[Variant.BadelineAttackPattern] = new BadelineAttackPattern();
